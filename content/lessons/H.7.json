@@ -5,6 +5,32 @@
   "title": "Notice what is absent: the missing log line, the request that never arrived",
   "status": "unsourced",
   "story": "Most monitoring is built to notice things happening. Errors raise alarms, latency crosses thresholds, exceptions get counted. Almost none of it notices things not happening, and a significant class of failure produces no event at all.\n\nA job that should run hourly and stops produces nothing. A queue consumer that dies leaves a queue that grows, and growth is only visible if somebody is watching the depth rather than the errors. A request that never arrives generates no log, no error and no metric, because the code that would have produced them never ran. These failures are quiet by construction, and they are frequently found by a customer rather than by a system, days later.\n\nDetecting absence requires inverting the question. Instead of alerting when something bad occurs, assert that something expected occurred and alert when it did not. A heartbeat is the simplest form: the job reports that it ran, and the alarm fires when the report fails to arrive. The habit generalises beyond monitoring — in debugging, asking which log line should be here and is not will often locate a fault faster than reading the lines that are.",
+  "problem": {
+    "name": "Detecting absence",
+    "aka": [
+      "dead man's switch",
+      "heartbeat monitoring"
+    ],
+    "shape": "Something that should be happening has stopped, and it emits no event when it stops.",
+    "tell": [
+      "the failure mode is a thing not happening rather than a thing going wrong",
+      "your alerting is built entirely on errors, exceptions and thresholds",
+      "the component is a scheduled job, a queue consumer, or anything periodic"
+    ],
+    "move": "Assert the expected signal and alert on its absence: a heartbeat that must arrive, a success count that must be non-zero, a queue depth that must not grow.",
+    "invariant": "The check runs outside the thing it checks. A job that never starts cannot run its own monitoring.",
+    "breaks": "A window tuned wrongly in either direction — too tight and normal variation pages someone at night, too loose and the outage is hours old before anyone hears. And expectations that go stale when a job is legitimately retired.",
+    "cost": {
+      "time": "one check per expectation",
+      "space": "none",
+      "beats": "error-based alerting, which reads silence as health"
+    },
+    "worked": {
+      "problem": "A nightly batch job silently stops running. Why does error alerting miss it?",
+      "reasoning": "Because a job that does not start cannot fail, so it emits no error and every alarm stays green. Detection has to invert: alert when no success record has arrived in the last twenty-five hours, and run that check from somewhere other than the job itself. The same reasoning covers a dead queue consumer, which produces no errors because it produces nothing — but the queue depth grows, and that is observable."
+    },
+    "practice": "List everything in your system that would produce silence rather than an error if it stopped. Check how many have an absence alarm."
+  },
   "beats": {
     "broke": "Detection is built around events, and a thing that fails to happen emits no event. A stopped scheduler, a dead consumer, a request lost before it arrived — all produce silence, which every alarm reads as health.",
     "fix": "Assert expectations rather than watching for faults. A heartbeat that must arrive, a queue depth that must not grow, a count that must be non-zero in each interval. The alarm fires on the absence of the expected signal.",

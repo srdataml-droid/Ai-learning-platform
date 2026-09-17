@@ -5,6 +5,32 @@
   "title": "Measure before you optimise, always",
   "status": "unsourced",
   "story": "Intuition about performance is unreliable in a specific and consistent way: it tracks what the code looks like rather than what the machine does. A nested loop looks expensive and may take microseconds. A single innocuous line may open a connection, wait on a disk, or serialise an object graph, and take a hundred times longer than everything around it combined.\n\nSo the rule is not a suggestion about rigour. It is a response to the fact that the guess is usually wrong, and acting on a wrong guess costs twice: the work spent optimising something that did not matter, and the complexity permanently added to code that was previously simple and fast enough. Optimised code is harder to read, harder to change and more likely to be subtly incorrect, and that price is paid whether or not the optimisation helped.\n\nMeasuring also establishes something optimisation cannot proceed without: a number from before. Without it there is no way to tell whether a change helped, and no way to notice when a later change quietly gives the improvement back.",
+  "problem": {
+    "name": "Optimisation target selection",
+    "aka": [
+      "measure before you optimise",
+      "Amdahl's constraint"
+    ],
+    "shape": "Something is too slow and you need to know which part to change, given that changing anything costs permanent complexity.",
+    "tell": [
+      "you have an opinion about what is slow",
+      "you do not have a number",
+      "the code that looks expensive is intricate rather than measured"
+    ],
+    "move": "Measure first, take a baseline, change one thing, measure again, and keep the change only if the number justifies the complexity it adds.",
+    "invariant": "Every change is judged against a recorded baseline. Without one you cannot show a change helped, or notice when a later change gives it back.",
+    "breaks": "A workload that does not resemble production. Optimising against an unrepresentative benchmark tunes the system for a situation that never occurs, accurately.",
+    "cost": {
+      "time": "minutes to measure, against days to optimise the wrong thing",
+      "space": "none",
+      "beats": "acting on intuition, which tracks visual complexity rather than cost"
+    },
+    "worked": {
+      "problem": "A nested loop looks expensive and a single line calls an external service. Which do you optimise?",
+      "reasoning": "Neither, until measured — but the prior strongly favours the single line. The nested loop is compute and may cost microseconds; the innocuous line may wait on a network round trip. Intuition tracks how intricate code looks, and cost tracks what the machine actually does, which is why the guess is usually wrong. Also: something that is 5% of runtime cannot win you more than 5%, no matter how clever the fix."
+    },
+    "practice": "Take something you believe is the bottleneck in your own code. Measure it before reading further, and record whether you were right."
+  },
   "beats": {
     "broke": "Performance work was directed by reading code and judging what looked expensive. That judgment tracks visual complexity rather than actual cost, so effort went to whatever appeared intricate while the real cost sat in an unremarkable line.",
     "fix": "Measure first and let the measurement choose the target. Establish a baseline number before changing anything, so the effect of a change can be observed rather than assumed.",

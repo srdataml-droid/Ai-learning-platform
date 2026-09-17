@@ -5,6 +5,32 @@
   "title": "Watch a real person use something you built, in silence",
   "status": "unsourced",
   "story": "You cannot un-know your own interface. Every label is obvious because you chose the word, every next step is discoverable because you built the path. The only way to see the thing as it is, rather than as you intended it, is to watch somebody meet it for the first time.\n\nSilence is the method, not the manners. The moment you explain, you have repaired the interface with your voice, and what you learn is that the design plus a person explaining it works. Nobody ships with you attached. The hesitation before a click, the scroll back up to re-read a label, the wrong menu opened first — those are the data, and they only survive if you say nothing. Watching someone struggle without helping is genuinely uncomfortable, which is why so few people manage it.\n\nIt also takes very few people. The same confusions recur almost immediately across users, because they come from the design rather than from the individual. A handful of sessions surfaces most of what a hundred would, which means the excuse that proper testing is too expensive does not hold at the scale most work happens.",
+  "problem": {
+    "name": "Usability observation",
+    "aka": [
+      "silent user testing",
+      "the curse of knowledge"
+    ],
+    "shape": "You need to know whether an interface works for someone who did not build it, and you cannot evaluate that yourself.",
+    "tell": [
+      "you designed or built the thing",
+      "every label seems obvious and every next step discoverable",
+      "you are about to decide it is fine based on your own use of it"
+    ],
+    "move": "Watch someone unfamiliar use it, in silence, and record where they hesitate, re-read, or go the wrong way.",
+    "invariant": "The design is tested alone, as it ships. The moment you explain anything, you are testing the design plus a person narrating it.",
+    "breaks": "A user who has already been helped, or who has started performing competence to be agreeable. From that point the session produces reassurance rather than evidence.",
+    "cost": {
+      "time": "a handful of sessions",
+      "space": "none",
+      "beats": "your own judgement, which cannot un-know the intended model"
+    },
+    "worked": {
+      "problem": "Five people all pause on the same screen. What have you learned?",
+      "reasoning": "That the pause is a property of the design, not of any individual — which is why so few people are needed. The same confusions recur almost immediately across users because they originate in the interface. A handful of sessions surfaces most of what a hundred would, which removes the excuse that proper testing is unaffordable."
+    },
+    "practice": "Watch one person use something you built. Say nothing for the whole session and count how many times you wanted to."
+  },
   "beats": {
     "broke": "The builder cannot evaluate their own interface, because they have the intended model in their head and cannot remove it. Everything is discoverable to the person who decided where to put it.",
     "fix": "Watch someone unfamiliar use it, and say nothing. Their hesitations, misreadings and wrong turns are direct evidence about the design rather than about them.",

@@ -5,6 +5,32 @@
   "title": "Learn your system's normal before you need to recognise abnormal",
   "status": "unsourced",
   "story": "Abnormal is not a property of a measurement. Four hundred milliseconds is fine for one endpoint and a crisis for another; eighty percent memory is steady state for a service that caches and a warning for one that does not. Without knowing what a system does when nothing is wrong, every number is uninterpretable, and the interpretation gets invented under pressure.\n\nThis is why the worst moment to first look at a dashboard is during an incident. Everything on it looks alarming, because you have no basis for comparison and adrenaline supplies one. Teams routinely spend the first half of an outage investigating a metric that has looked exactly like that every day for a year.\n\nNormal also has shape rather than a single value. Traffic has a daily rhythm and a weekly one; batch jobs make memory sawtooth; deploys leave a signature. Knowing the shape means an anomaly can be recognised as a break in a pattern rather than a threshold crossing, which catches things no fixed limit would — a Tuesday that looks like a Sunday is a problem even though every individual number is within range.",
+  "problem": {
+    "name": "Anomaly detection against a baseline",
+    "aka": [
+      "knowing normal",
+      "seasonality"
+    ],
+    "shape": "You need to judge whether a measurement indicates a problem, and the measurement alone cannot tell you.",
+    "tell": [
+      "someone is quoting a number as though it were self-evidently alarming",
+      "there is no comparison to what that number usually is",
+      "you are looking at a dashboard for the first time during an incident"
+    ],
+    "move": "Learn the system's ordinary shape while nothing is wrong — daily and weekly rhythms, the sawtooth memory makes, what a deploy looks like — and judge deviation from the pattern rather than crossings of a fixed line.",
+    "invariant": "Every judgement is relative to a recorded baseline rather than to an impression formed under pressure.",
+    "breaks": "Baseline drift. Traffic grows and dependencies change, so a baseline learned last quarter goes quietly wrong — and a fault arriving gradually gets absorbed into the baseline and becomes the new normal.",
+    "cost": {
+      "time": "an afternoon on a quiet day",
+      "space": "none",
+      "beats": "a fixed threshold, which is wrong at some hour of some day"
+    },
+    "worked": {
+      "problem": "CPU is at 70% during an incident. Is that the problem?",
+      "reasoning": "Unanswerable without a baseline, and during an incident adrenaline will supply one. If CPU is 70% every weekday at 09:00, it is not the incident and looking at it costs you the first half of the outage. Normal also has shape rather than a value: a memory graph that sawtooths is a healthy collector, and a suddenly flat line there is the anomaly even though every number is lower."
+    },
+    "practice": "On a quiet day, screenshot your main dashboard and annotate what normal looks like, including the weekly shape."
+  },
   "beats": {
     "broke": "Thresholds treat a measurement as meaningful in isolation, but the same number is healthy for one system and catastrophic for another. Without a baseline, judging severity during an incident means inventing one while under pressure.",
     "fix": "Learn the system's ordinary behaviour before you need it: its daily and weekly rhythms, the shape memory makes between collections, what a deploy looks like on the graphs. Anomalies then appear as breaks in a known pattern rather than crossings of an arbitrary line.",

@@ -5,6 +5,32 @@
   "title": "Profile a real program",
   "status": "unsourced",
   "story": "A profiler answers a question a benchmark cannot: not how fast is this function, but where did the time actually go. The answer is regularly somewhere nobody would have proposed, which is the entire reason the tool exists.\n\nThere are two families and the difference matters. A sampling profiler interrupts the program many times a second and records what it was doing, producing a statistical picture with very little overhead. An instrumenting profiler records every call, which is exact and slows the program enough to change its behaviour, sometimes enough to move the bottleneck. Sampling is the right default for anything resembling a real workload.\n\nReading the output has one trap worth naming. Time spent inside a function alone is not the same as time spent inside it and everything it called. A function that appears to consume most of the runtime may be doing nothing but waiting for something further down. Sorting by the first number finds the work; sorting by the second finds the responsible path. Both are needed, and confusing them sends you to optimise a function whose body is three lines long.",
+  "problem": {
+    "name": "Runtime attribution",
+    "aka": [
+      "profiling",
+      "self time versus total time"
+    ],
+    "shape": "Time is being spent somewhere in a program and you need to know where, not where you would guess.",
+    "tell": [
+      "you know the program is slow and not which part",
+      "hand-placed timers would only measure what you already suspect",
+      "the workload is real rather than a microbenchmark"
+    ],
+    "move": "Sample the whole program under a realistic workload, then read self time to find where the work happens and total time to find who is causing it.",
+    "invariant": "The profile reflects the workload you actually care about. A profile of an unrepresentative run attributes time correctly for a program nobody runs.",
+    "breaks": "Time spent waiting rather than computing. A CPU profile of a service that is ninety percent blocked on the network shows an idle program that is nevertheless slow to its users.",
+    "cost": {
+      "time": "one instrumented run",
+      "space": "sampling overhead is small; instrumenting is not",
+      "beats": "hand-placed timers, which only measure your existing hypothesis"
+    },
+    "worked": {
+      "problem": "json.loads shows 94% self time. What do you change?",
+      "reasoning": "Probably not json.loads — it is already fast and hard to beat. Walk up the call tree: process_all has 97% total and 0.3% self, meaning it causes nearly all the work while doing almost none. The question worth asking is why it invokes the parser forty thousand times. The win is usually in the caller's behaviour, not in the leaf."
+    },
+    "practice": "Profile something you wrote. Before looking, write down where you think the time goes, then compare."
+  },
   "beats": {
     "broke": "Timing whole runs tells you something is slow and nothing about where. Adding timers by hand only measures the places you already suspected, so the measurement confirms the guess it was meant to test.",
     "fix": "Profile the whole program and let it report where time was spent. Sampling profilers interrupt periodically and build a statistical picture at low cost; instrumenting profilers record every call for exactness at much higher cost.",

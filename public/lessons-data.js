@@ -1361,6 +1361,31 @@
     "title": "Read the whole error message, out loud if necessary",
     "status": "unsourced",
     "story": "The instruction sounds insulting until you watch how people actually behave in front of a failure. The message appears, the eye goes to the last line, and a fix is attempted within seconds. The middle of the message, which frequently contains the answer, is never read.\n\nReading aloud works because it defeats the specific failure mode at play. Skimming is pattern matching: you recognise the shape of an error you have seen before and act on the recognition rather than the text. Saying the words forces serial processing, so a path you assumed said one thing turns out to say another, and a number you assumed was a count turns out to be a byte offset. The trick is not about diligence. It is about disabling a shortcut that is usually helpful and is wrong here.\n\nThe habit compounds because error messages are the highest quality evidence you will ever get. They are produced by the program at the moment it stopped, describing its own state, with no reconstruction involved. Every other debugging technique is an attempt to recover information that the error message may already be handing you.",
+    "problem": {
+      "name": "Evidence-first diagnosis",
+      "aka": [
+        "read the error"
+      ],
+      "shape": "A system has failed and produced a report about its own failure. You need the cause before you start manufacturing new evidence.",
+      "tell": [
+        "a failure has already emitted a message, trace or status",
+        "you feel the urge to change something within seconds of seeing it",
+        "you can recall the shape of the error but not its actual wording"
+      ],
+      "move": "Read the message end to end, aloud if necessary, before touching anything. Then act on what it said rather than what it resembled.",
+      "invariant": "Everything you act on was actually read. Pattern-matching a message to one you have seen before is recognition, not reading.",
+      "breaks": "A message that is genuinely uninformative — a bare exit code, a swallowed exception re-raised as something generic. Then the evidence really is exhausted and instrumenting is the next step.",
+      "cost": {
+        "time": "seconds",
+        "space": "none",
+        "beats": "an hour of instrumenting to rediscover what was already on screen"
+      },
+      "worked": {
+        "problem": "ConnectionError appears during a deploy. What do you do first?",
+        "reasoning": "Read the whole thing. 'Connection refused to 127.0.0.1 port 5432 after 0.003 seconds' is a completely different problem from a timeout: three milliseconds to a loopback address means nothing is listening on that port. Not the network, not DNS, not a slow database. The three words in the middle eliminated four hypotheses before any were formed."
+      },
+      "practice": "Next failure you hit, read it aloud before doing anything, and write down what you learn that you would have skipped."
+    },
     "beats": {
       "broke": "A failure is read in under a second by pattern recognition, so a message that differs from the one it resembles gets treated as the one it resembles. The fix that follows addresses a problem the program never reported.",
       "fix": "Read the message completely, word by word, before touching anything. Reading aloud forces serial processing and defeats the skimming that caused the misread in the first place.",
@@ -1381,6 +1406,31 @@
     "title": "Read a stack trace: where it started, where it surfaced",
     "status": "unsourced",
     "story": "A stack trace is a record of unfinished business. Each frame is a function that called another and is still waiting for it to return, so the trace is a chain of who asked whom, captured at the instant the chain broke.\n\nTwo positions in it matter and they are rarely the same. The place it surfaced is the innermost frame, where the program finally could not continue. The place it started is the outermost, where execution entered. The cause usually sits at neither end but at the boundary: the last frame belonging to code you control, just before it hands a value to code you do not. Library functions mostly fail because they were given something wrong, so the frames inside the library describe the symptom in detail and say nothing about the cause.\n\nDifferent runtimes print the two ends in different orders, and getting that backwards wastes a great deal of time. Some print the innermost first, some last. Before relying on position, check which convention you are looking at, because a trace read upside down leads you to investigate the entry point of your program as though it were the fault.",
+    "problem": {
+      "name": "Fault localisation from a call chain",
+      "aka": [
+        "reading a stack trace"
+      ],
+      "shape": "A failure surfaced somewhere in a chain of calls, and you need the place the mistake was made rather than the place it was detected.",
+      "tell": [
+        "you have a stack trace or an equivalent chain of frames",
+        "the deepest frame is inside a framework or library you did not write",
+        "the error describes a value being wrong rather than an action failing"
+      ],
+      "move": "Read the whole trace, identify the deepest frame belonging to code you own, and inspect what was passed at that boundary.",
+      "invariant": "The cause sits at or above the last frame you control. Library code generally fails because of what it was given, so frames below the boundary describe the symptom.",
+      "breaks": "Asynchronous execution, where the code that scheduled the work is no longer on the stack, so the chain is genuinely broken rather than merely long. And genuine library defects, which exist but are rare.",
+      "cost": {
+        "time": "minutes",
+        "space": "none",
+        "beats": "reading the whole codebase looking for something that looks wrong"
+      },
+      "worked": {
+        "problem": "The trace ends at IntegrityError inside an ORM's insert path. Where do you look?",
+        "reasoning": "Not in the ORM. Walk up to the last frame you wrote — save_user — and look at what it handed over. The ORM is accurately reporting that the database rejected a row; the decision that produced that row was made one frame up. Check the value at the handover before suspecting the library."
+      },
+      "practice": "Take a recent trace and mark the boundary frame. Check whether the fix turned out to be above or below it."
+    },
     "beats": {
       "broke": "A failure reports only its immediate location, which is almost never where the mistake was made. Without the chain of callers, diagnosing it means reconstructing by hand how execution could possibly have arrived there.",
       "fix": "Capture and print the call stack at the moment of failure: every function that is still waiting for the one below it to return, with file and line for each. The path that produced the failure becomes visible instead of inferred.",
@@ -1401,6 +1451,31 @@
     "title": "Read logs at volume without drowning",
     "status": "unsourced",
     "story": "A system under real load produces more log lines per minute than anyone can read in a day. Reading them in sequence does not scale and never will, so the skill is not reading faster. It is narrowing before reading.\n\nNarrowing has a natural order. Time first: establish when the problem occurred and discard everything outside a window around it. Identity second: find the one request, user or job that failed, and follow only that. Severity last, and with suspicion, because the line that explains the failure is frequently at info level while the errors are all downstream consequences shouting about a thing that already went wrong.\n\nThis is why structured logging matters more than it appears to. A log line that is a sentence can only be searched as text. A log line that is a record with fields can be filtered by any of them, so the narrowing is a query rather than a guess at a substring. The most useful field is the one that ties every line produced by a single request together, because that is what turns a flat stream of everything into the story of one thing.",
+    "problem": {
+      "name": "Needle-in-haystack retrieval under volume",
+      "aka": [
+        "log narrowing"
+      ],
+      "shape": "The relevant record exists among far more records than anyone can read, and sequential reading will not find it.",
+      "tell": [
+        "volume exceeds what you can read in the time available",
+        "you know roughly when the event happened, or which request it belonged to",
+        "grepping for a guessed substring is the alternative on offer"
+      ],
+      "move": "Narrow before reading: first to a time window around the event, then to a single identity such as one request or job, and only then consider severity.",
+      "invariant": "Each narrowing preserves the causal sequence. That is why severity comes last — filtering by it removes the cause and keeps the consequences.",
+      "breaks": "A failure that originates outside the window, or under a different identity in another service. Both fall outside your narrowing and become invisible, which is why the window should start generously.",
+      "cost": {
+        "time": "O(log) in human effort rather than O(n) reading",
+        "space": "none",
+        "beats": "reading sequentially, which cannot keep pace with production volume"
+      },
+      "worked": {
+        "problem": "400 error lines during an incident. Which do you read?",
+        "reasoning": "None of them yet. Cut to a one-minute window around the first symptom, find the request id of one failing request, then read every level for that id — including info. The originating event is frequently logged at info, such as a fallback being taken or a config value read, while all 400 errors are downstream consequences of it."
+      },
+      "practice": "Find an incident in your logs and reconstruct it by identity rather than by severity. Note which level the actual cause was logged at."
+    },
     "beats": {
       "broke": "Volume grows with traffic while human reading speed does not. At a few hundred lines a second, sequential reading is not slow but impossible, and the relevant line is statistically certain to be skipped.",
       "fix": "Narrow before reading. Cut to a time window around the event, then to a single identity such as one request or one job, and only then consider severity. Structured records with fields make each narrowing a query rather than a guess at a substring.",
@@ -1421,6 +1496,32 @@
     "title": "Measure before you optimise, always",
     "status": "unsourced",
     "story": "Intuition about performance is unreliable in a specific and consistent way: it tracks what the code looks like rather than what the machine does. A nested loop looks expensive and may take microseconds. A single innocuous line may open a connection, wait on a disk, or serialise an object graph, and take a hundred times longer than everything around it combined.\n\nSo the rule is not a suggestion about rigour. It is a response to the fact that the guess is usually wrong, and acting on a wrong guess costs twice: the work spent optimising something that did not matter, and the complexity permanently added to code that was previously simple and fast enough. Optimised code is harder to read, harder to change and more likely to be subtly incorrect, and that price is paid whether or not the optimisation helped.\n\nMeasuring also establishes something optimisation cannot proceed without: a number from before. Without it there is no way to tell whether a change helped, and no way to notice when a later change quietly gives the improvement back.",
+    "problem": {
+      "name": "Optimisation target selection",
+      "aka": [
+        "measure before you optimise",
+        "Amdahl's constraint"
+      ],
+      "shape": "Something is too slow and you need to know which part to change, given that changing anything costs permanent complexity.",
+      "tell": [
+        "you have an opinion about what is slow",
+        "you do not have a number",
+        "the code that looks expensive is intricate rather than measured"
+      ],
+      "move": "Measure first, take a baseline, change one thing, measure again, and keep the change only if the number justifies the complexity it adds.",
+      "invariant": "Every change is judged against a recorded baseline. Without one you cannot show a change helped, or notice when a later change gives it back.",
+      "breaks": "A workload that does not resemble production. Optimising against an unrepresentative benchmark tunes the system for a situation that never occurs, accurately.",
+      "cost": {
+        "time": "minutes to measure, against days to optimise the wrong thing",
+        "space": "none",
+        "beats": "acting on intuition, which tracks visual complexity rather than cost"
+      },
+      "worked": {
+        "problem": "A nested loop looks expensive and a single line calls an external service. Which do you optimise?",
+        "reasoning": "Neither, until measured — but the prior strongly favours the single line. The nested loop is compute and may cost microseconds; the innocuous line may wait on a network round trip. Intuition tracks how intricate code looks, and cost tracks what the machine actually does, which is why the guess is usually wrong. Also: something that is 5% of runtime cannot win you more than 5%, no matter how clever the fix."
+      },
+      "practice": "Take something you believe is the bottleneck in your own code. Measure it before reading further, and record whether you were right."
+    },
     "beats": {
       "broke": "Performance work was directed by reading code and judging what looked expensive. That judgment tracks visual complexity rather than actual cost, so effort went to whatever appeared intricate while the real cost sat in an unremarkable line.",
       "fix": "Measure first and let the measurement choose the target. Establish a baseline number before changing anything, so the effect of a change can be observed rather than assumed.",
@@ -1441,6 +1542,32 @@
     "title": "Profile a real program",
     "status": "unsourced",
     "story": "A profiler answers a question a benchmark cannot: not how fast is this function, but where did the time actually go. The answer is regularly somewhere nobody would have proposed, which is the entire reason the tool exists.\n\nThere are two families and the difference matters. A sampling profiler interrupts the program many times a second and records what it was doing, producing a statistical picture with very little overhead. An instrumenting profiler records every call, which is exact and slows the program enough to change its behaviour, sometimes enough to move the bottleneck. Sampling is the right default for anything resembling a real workload.\n\nReading the output has one trap worth naming. Time spent inside a function alone is not the same as time spent inside it and everything it called. A function that appears to consume most of the runtime may be doing nothing but waiting for something further down. Sorting by the first number finds the work; sorting by the second finds the responsible path. Both are needed, and confusing them sends you to optimise a function whose body is three lines long.",
+    "problem": {
+      "name": "Runtime attribution",
+      "aka": [
+        "profiling",
+        "self time versus total time"
+      ],
+      "shape": "Time is being spent somewhere in a program and you need to know where, not where you would guess.",
+      "tell": [
+        "you know the program is slow and not which part",
+        "hand-placed timers would only measure what you already suspect",
+        "the workload is real rather than a microbenchmark"
+      ],
+      "move": "Sample the whole program under a realistic workload, then read self time to find where the work happens and total time to find who is causing it.",
+      "invariant": "The profile reflects the workload you actually care about. A profile of an unrepresentative run attributes time correctly for a program nobody runs.",
+      "breaks": "Time spent waiting rather than computing. A CPU profile of a service that is ninety percent blocked on the network shows an idle program that is nevertheless slow to its users.",
+      "cost": {
+        "time": "one instrumented run",
+        "space": "sampling overhead is small; instrumenting is not",
+        "beats": "hand-placed timers, which only measure your existing hypothesis"
+      },
+      "worked": {
+        "problem": "json.loads shows 94% self time. What do you change?",
+        "reasoning": "Probably not json.loads — it is already fast and hard to beat. Walk up the call tree: process_all has 97% total and 0.3% self, meaning it causes nearly all the work while doing almost none. The question worth asking is why it invokes the parser forty thousand times. The win is usually in the caller's behaviour, not in the leaf."
+      },
+      "practice": "Profile something you wrote. Before looking, write down where you think the time goes, then compare."
+    },
     "beats": {
       "broke": "Timing whole runs tells you something is slow and nothing about where. Adding timers by hand only measures the places you already suspected, so the measurement confirms the guess it was meant to test.",
       "fix": "Profile the whole program and let it report where time was spent. Sampling profilers interrupt periodically and build a statistical picture at low cost; instrumenting profilers record every call for exactness at much higher cost.",
@@ -1461,6 +1588,32 @@
     "title": "Watch a real person use something you built, in silence",
     "status": "unsourced",
     "story": "You cannot un-know your own interface. Every label is obvious because you chose the word, every next step is discoverable because you built the path. The only way to see the thing as it is, rather than as you intended it, is to watch somebody meet it for the first time.\n\nSilence is the method, not the manners. The moment you explain, you have repaired the interface with your voice, and what you learn is that the design plus a person explaining it works. Nobody ships with you attached. The hesitation before a click, the scroll back up to re-read a label, the wrong menu opened first — those are the data, and they only survive if you say nothing. Watching someone struggle without helping is genuinely uncomfortable, which is why so few people manage it.\n\nIt also takes very few people. The same confusions recur almost immediately across users, because they come from the design rather than from the individual. A handful of sessions surfaces most of what a hundred would, which means the excuse that proper testing is too expensive does not hold at the scale most work happens.",
+    "problem": {
+      "name": "Usability observation",
+      "aka": [
+        "silent user testing",
+        "the curse of knowledge"
+      ],
+      "shape": "You need to know whether an interface works for someone who did not build it, and you cannot evaluate that yourself.",
+      "tell": [
+        "you designed or built the thing",
+        "every label seems obvious and every next step discoverable",
+        "you are about to decide it is fine based on your own use of it"
+      ],
+      "move": "Watch someone unfamiliar use it, in silence, and record where they hesitate, re-read, or go the wrong way.",
+      "invariant": "The design is tested alone, as it ships. The moment you explain anything, you are testing the design plus a person narrating it.",
+      "breaks": "A user who has already been helped, or who has started performing competence to be agreeable. From that point the session produces reassurance rather than evidence.",
+      "cost": {
+        "time": "a handful of sessions",
+        "space": "none",
+        "beats": "your own judgement, which cannot un-know the intended model"
+      },
+      "worked": {
+        "problem": "Five people all pause on the same screen. What have you learned?",
+        "reasoning": "That the pause is a property of the design, not of any individual — which is why so few people are needed. The same confusions recur almost immediately across users because they originate in the interface. A handful of sessions surfaces most of what a hundred would, which removes the excuse that proper testing is unaffordable."
+      },
+      "practice": "Watch one person use something you built. Say nothing for the whole session and count how many times you wanted to."
+    },
     "beats": {
       "broke": "The builder cannot evaluate their own interface, because they have the intended model in their head and cannot remove it. Everything is discoverable to the person who decided where to put it.",
       "fix": "Watch someone unfamiliar use it, and say nothing. Their hesitations, misreadings and wrong turns are direct evidence about the design rather than about them.",
@@ -1481,6 +1634,32 @@
     "title": "Notice what is absent: the missing log line, the request that never arrived",
     "status": "unsourced",
     "story": "Most monitoring is built to notice things happening. Errors raise alarms, latency crosses thresholds, exceptions get counted. Almost none of it notices things not happening, and a significant class of failure produces no event at all.\n\nA job that should run hourly and stops produces nothing. A queue consumer that dies leaves a queue that grows, and growth is only visible if somebody is watching the depth rather than the errors. A request that never arrives generates no log, no error and no metric, because the code that would have produced them never ran. These failures are quiet by construction, and they are frequently found by a customer rather than by a system, days later.\n\nDetecting absence requires inverting the question. Instead of alerting when something bad occurs, assert that something expected occurred and alert when it did not. A heartbeat is the simplest form: the job reports that it ran, and the alarm fires when the report fails to arrive. The habit generalises beyond monitoring — in debugging, asking which log line should be here and is not will often locate a fault faster than reading the lines that are.",
+    "problem": {
+      "name": "Detecting absence",
+      "aka": [
+        "dead man's switch",
+        "heartbeat monitoring"
+      ],
+      "shape": "Something that should be happening has stopped, and it emits no event when it stops.",
+      "tell": [
+        "the failure mode is a thing not happening rather than a thing going wrong",
+        "your alerting is built entirely on errors, exceptions and thresholds",
+        "the component is a scheduled job, a queue consumer, or anything periodic"
+      ],
+      "move": "Assert the expected signal and alert on its absence: a heartbeat that must arrive, a success count that must be non-zero, a queue depth that must not grow.",
+      "invariant": "The check runs outside the thing it checks. A job that never starts cannot run its own monitoring.",
+      "breaks": "A window tuned wrongly in either direction — too tight and normal variation pages someone at night, too loose and the outage is hours old before anyone hears. And expectations that go stale when a job is legitimately retired.",
+      "cost": {
+        "time": "one check per expectation",
+        "space": "none",
+        "beats": "error-based alerting, which reads silence as health"
+      },
+      "worked": {
+        "problem": "A nightly batch job silently stops running. Why does error alerting miss it?",
+        "reasoning": "Because a job that does not start cannot fail, so it emits no error and every alarm stays green. Detection has to invert: alert when no success record has arrived in the last twenty-five hours, and run that check from somewhere other than the job itself. The same reasoning covers a dead queue consumer, which produces no errors because it produces nothing — but the queue depth grows, and that is observable."
+      },
+      "practice": "List everything in your system that would produce silence rather than an error if it stopped. Check how many have an absence alarm."
+    },
     "beats": {
       "broke": "Detection is built around events, and a thing that fails to happen emits no event. A stopped scheduler, a dead consumer, a request lost before it arrived — all produce silence, which every alarm reads as health.",
       "fix": "Assert expectations rather than watching for faults. A heartbeat that must arrive, a queue depth that must not grow, a count that must be non-zero in each interval. The alarm fires on the absence of the expected signal.",
@@ -1501,6 +1680,32 @@
     "title": "Keep an engineering notebook: symptom, hypothesis, test, result",
     "status": "unsourced",
     "story": "Debugging held entirely in your head degrades in a predictable way. After an hour you cannot recall whether a particular theory was tested or merely considered, which configurations have already been tried, or what the behaviour was before the last four changes. So theories get retested, changes accumulate unrecorded, and the original symptom becomes unreachable.\n\nFour fields fix most of it. The symptom, stated precisely enough to recognise if it returns. The hypothesis, one at a time, written before the test rather than after. The test that would distinguish it from the alternatives. The result, including the ones that ruled nothing out. Writing the hypothesis first is the part that does the work, because a theory written down can be wrong in a way a theory in your head cannot: it stops quietly reshaping itself to fit whatever you just observed.\n\nThe record keeps paying after the bug is closed. It is the raw material for the postmortem, it is the evidence when someone asks why the fix is what it is, and it is what you consult in eight months when the same symptom reappears and you have entirely forgotten that you have met it before.",
+    "problem": {
+      "name": "State externalisation during search",
+      "aka": [
+        "the engineering notebook",
+        "hypothesis logging"
+      ],
+      "shape": "An investigation is long enough that working memory cannot hold what has been tried and what it showed.",
+      "tell": [
+        "you have been at it more than about an hour",
+        "you cannot remember whether a theory was tested or only considered",
+        "several changes have been made and none written down"
+      ],
+      "move": "Record four fields per attempt: the symptom, one hypothesis, the test that distinguishes it, and the result — with the hypothesis written before the test runs.",
+      "invariant": "The hypothesis is fixed before the evidence arrives, so the result either matches it or does not. An unwritten theory quietly reshapes itself to fit whatever you just saw.",
+      "breaks": "A notebook filled in retrospectively. That is a reconstruction, which is precisely the failure it exists to prevent.",
+      "cost": {
+        "time": "a minute per attempt",
+        "space": "a text file",
+        "beats": "retesting the same theory in different clothes at 16:30"
+      },
+      "worked": {
+        "problem": "Why write the hypothesis down before running the test rather than recording the finding afterwards?",
+        "reasoning": "Because an unwritten hypothesis absorbs an ambiguous result as partial confirmation and survives in a slightly altered form you never consciously chose. Writing it first fixes what was predicted, so a genuinely eliminated cause stays eliminated. The wrong hypotheses are the valuable entries — they are what stops you re-testing the proxy timeout hours later having forgotten you already did."
+      },
+      "practice": "Keep the four fields for your next real bug. Count how many hypotheses you would otherwise have tested twice."
+    },
     "beats": {
       "broke": "Working memory is too small and too editable for a long investigation. Hypotheses get retested, changes stack up unrecorded, and a theory held only in the head rewrites itself to fit each new observation without anyone noticing.",
       "fix": "Write four things per attempt: the symptom, one hypothesis, the test that would distinguish it, and the result. Recording the hypothesis before the test is what makes it falsifiable, because it can no longer be quietly adjusted afterwards.",
@@ -1521,6 +1726,32 @@
     "title": "Learn your system's normal before you need to recognise abnormal",
     "status": "unsourced",
     "story": "Abnormal is not a property of a measurement. Four hundred milliseconds is fine for one endpoint and a crisis for another; eighty percent memory is steady state for a service that caches and a warning for one that does not. Without knowing what a system does when nothing is wrong, every number is uninterpretable, and the interpretation gets invented under pressure.\n\nThis is why the worst moment to first look at a dashboard is during an incident. Everything on it looks alarming, because you have no basis for comparison and adrenaline supplies one. Teams routinely spend the first half of an outage investigating a metric that has looked exactly like that every day for a year.\n\nNormal also has shape rather than a single value. Traffic has a daily rhythm and a weekly one; batch jobs make memory sawtooth; deploys leave a signature. Knowing the shape means an anomaly can be recognised as a break in a pattern rather than a threshold crossing, which catches things no fixed limit would — a Tuesday that looks like a Sunday is a problem even though every individual number is within range.",
+    "problem": {
+      "name": "Anomaly detection against a baseline",
+      "aka": [
+        "knowing normal",
+        "seasonality"
+      ],
+      "shape": "You need to judge whether a measurement indicates a problem, and the measurement alone cannot tell you.",
+      "tell": [
+        "someone is quoting a number as though it were self-evidently alarming",
+        "there is no comparison to what that number usually is",
+        "you are looking at a dashboard for the first time during an incident"
+      ],
+      "move": "Learn the system's ordinary shape while nothing is wrong — daily and weekly rhythms, the sawtooth memory makes, what a deploy looks like — and judge deviation from the pattern rather than crossings of a fixed line.",
+      "invariant": "Every judgement is relative to a recorded baseline rather than to an impression formed under pressure.",
+      "breaks": "Baseline drift. Traffic grows and dependencies change, so a baseline learned last quarter goes quietly wrong — and a fault arriving gradually gets absorbed into the baseline and becomes the new normal.",
+      "cost": {
+        "time": "an afternoon on a quiet day",
+        "space": "none",
+        "beats": "a fixed threshold, which is wrong at some hour of some day"
+      },
+      "worked": {
+        "problem": "CPU is at 70% during an incident. Is that the problem?",
+        "reasoning": "Unanswerable without a baseline, and during an incident adrenaline will supply one. If CPU is 70% every weekday at 09:00, it is not the incident and looking at it costs you the first half of the outage. Normal also has shape rather than a value: a memory graph that sawtooths is a healthy collector, and a suddenly flat line there is the anomaly even though every number is lower."
+      },
+      "practice": "On a quiet day, screenshot your main dashboard and annotate what normal looks like, including the weekly shape."
+    },
     "beats": {
       "broke": "Thresholds treat a measurement as meaningful in isolation, but the same number is healthy for one system and catastrophic for another. Without a baseline, judging severity during an incident means inventing one while under pressure.",
       "fix": "Learn the system's ordinary behaviour before you need it: its daily and weekly rhythms, the shape memory makes between collections, what a deploy looks like on the graphs. Anomalies then appear as breaks in a known pattern rather than crossings of an arbitrary line.",

@@ -5,6 +5,31 @@
   "title": "Read logs at volume without drowning",
   "status": "unsourced",
   "story": "A system under real load produces more log lines per minute than anyone can read in a day. Reading them in sequence does not scale and never will, so the skill is not reading faster. It is narrowing before reading.\n\nNarrowing has a natural order. Time first: establish when the problem occurred and discard everything outside a window around it. Identity second: find the one request, user or job that failed, and follow only that. Severity last, and with suspicion, because the line that explains the failure is frequently at info level while the errors are all downstream consequences shouting about a thing that already went wrong.\n\nThis is why structured logging matters more than it appears to. A log line that is a sentence can only be searched as text. A log line that is a record with fields can be filtered by any of them, so the narrowing is a query rather than a guess at a substring. The most useful field is the one that ties every line produced by a single request together, because that is what turns a flat stream of everything into the story of one thing.",
+  "problem": {
+    "name": "Needle-in-haystack retrieval under volume",
+    "aka": [
+      "log narrowing"
+    ],
+    "shape": "The relevant record exists among far more records than anyone can read, and sequential reading will not find it.",
+    "tell": [
+      "volume exceeds what you can read in the time available",
+      "you know roughly when the event happened, or which request it belonged to",
+      "grepping for a guessed substring is the alternative on offer"
+    ],
+    "move": "Narrow before reading: first to a time window around the event, then to a single identity such as one request or job, and only then consider severity.",
+    "invariant": "Each narrowing preserves the causal sequence. That is why severity comes last — filtering by it removes the cause and keeps the consequences.",
+    "breaks": "A failure that originates outside the window, or under a different identity in another service. Both fall outside your narrowing and become invisible, which is why the window should start generously.",
+    "cost": {
+      "time": "O(log) in human effort rather than O(n) reading",
+      "space": "none",
+      "beats": "reading sequentially, which cannot keep pace with production volume"
+    },
+    "worked": {
+      "problem": "400 error lines during an incident. Which do you read?",
+      "reasoning": "None of them yet. Cut to a one-minute window around the first symptom, find the request id of one failing request, then read every level for that id — including info. The originating event is frequently logged at info, such as a fallback being taken or a config value read, while all 400 errors are downstream consequences of it."
+    },
+    "practice": "Find an incident in your logs and reconstruct it by identity rather than by severity. Note which level the actual cause was logged at."
+  },
   "beats": {
     "broke": "Volume grows with traffic while human reading speed does not. At a few hundred lines a second, sequential reading is not slow but impossible, and the relevant line is statistically certain to be skipped.",
     "fix": "Narrow before reading. Cut to a time window around the event, then to a single identity such as one request or one job, and only then consider severity. Structured records with fields make each narrowing a query rather than a guess at a substring.",
