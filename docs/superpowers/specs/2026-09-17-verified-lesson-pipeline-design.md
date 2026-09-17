@@ -234,8 +234,10 @@ consequence of.
   become `notation`. They are not links in the general-purpose chain, they are
   parallel notations, and forcing them into one numbered timeline is the only reason
   their dates appear scrambled (SQL 1974 listed after Rust 2015).
-- Smalltalk (`C.8`) currently leads nowhere and nothing points to it; it feeds C++.
-- PHP (`C.14`) is likewise unreferenced.
+- Smalltalk (`C.8`) and PHP (`C.14`) have no predecessor pointing at them. They
+  are roots, not dead ends: Smalltalk already carries `leadsTo: "C.9"` and does
+  feed C++. An earlier draft of this spec said it led nowhere, which was wrong.
+  The structure is a DAG with several roots and the page should render it as one.
 - Four chain languages have no syntax table at all: **Fortran, LISP, Smalltalk,
   Perl.** LISP matters most — s-expressions, garbage collection, the REPL and
   code-as-data all enter the story there.

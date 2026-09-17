@@ -78,8 +78,21 @@
       const chainContainer = document.getElementById('chain-container');
       const languages = window.CURRICULUM.languages || [];
 
+      // The chain proper, in the order it happened. sortYear is the first year
+      // an entry names, so Erlang sorts at 1986 rather than at Elixir's 2012.
+      const chain = languages
+        .filter(l => l.kind !== 'notation')
+        .slice()
+        .sort((a, b) => (a.sortYear || 0) - (b.sortYear || 0));
+
+      // SQL, CUDA, HTML/CSS, Bash and regular expressions are not links in the
+      // general-purpose lineage; they are other notations running alongside it.
+      // Listing them in one numbered timeline is the only reason their dates
+      // ever looked scrambled.
+      const notations = languages.filter(l => l.kind === 'notation');
+
       let html = '';
-      languages.forEach((lang, index) => {
+      const renderItem = (lang, withConnector) => {
         html += `
           <article class="chain-item interactive-item" id="lang-${lang.id}">
             <div class="chain-header">
@@ -111,15 +124,15 @@
             </div>
 
             <div style="margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid var(--rule-soft); display: flex; justify-content: flex-end;">
-              <a href="./lesson.html?id=${lang.id}" class="lesson-link-btn" title="Read historical lesson story and four beats analysis for ${lang.name}">
-                <span>Read Four Beats Lesson Story (${lang.id}) →</span>
+              <a href="./language.html?id=${lang.id}" class="lesson-link-btn" title="How ${lang.name}'s constraints produced its syntax">
+                <span>The decisions behind its syntax →</span>
               </a>
             </div>
           </article>
         `;
 
         // Render visible connector if leadsTo exists
-        if (lang.leadsTo) {
+        if (withConnector && lang.leadsTo) {
           const target = languages.find(l => l.id === lang.leadsTo);
           const targetName = target ? target.name : lang.leadsTo;
           const reason = lang.leadsToReason ? lang.leadsToReason : `makes ${targetName}`;
@@ -130,7 +143,20 @@
             </div>
           `;
         }
-      });
+      };
+
+      chain.forEach((lang, i) => renderItem(lang, i < chain.length - 1));
+
+      if (notations.length) {
+        html += `
+          <div class="notation-divider">
+            <h2>Running alongside, not in the chain</h2>
+            <p>These answer different questions and did not hand a wall to a
+               successor. They are here because you will use them constantly,
+               not because the lineage passes through them.</p>
+          </div>`;
+        notations.forEach(lang => renderItem(lang, false));
+      }
 
       chainContainer.innerHTML = html;
 

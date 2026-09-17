@@ -6,7 +6,7 @@ const root = fileURLToPath(new URL('.', import.meta.url));
 // Every page the site serves. The build breaks if one is missing from here: a
 // page absent from rollupOptions.input is served fine by the dev server and
 // 404s in production, which is how lesson.html shipped broken.
-export const PAGES = ['index', 'lesson', 'track', 'languages', 'words', 'progress'];
+export const PAGES = ['index', 'lesson', 'track', 'language', 'languages', 'words', 'progress'];
 
 // The site is multi-page vanilla HTML/CSS/JS. There is no framework and no CSS
 // toolchain: styles.css is hand-written and every page loads it directly. Vite

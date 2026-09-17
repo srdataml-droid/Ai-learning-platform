@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Language — Curriculum</title>
+  <meta name="description" content="How a language's constraints produced its syntax: the wall it inherited, the decisions it made, and the wall it left behind.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..900&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to main content</a>
+  <div class="scroll-progress-line" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="./index.html" class="site-brand">
+        <span class="brand-symbol">0→L</span>
+        <span class="brand-name">Curriculum</span>
+      </a>
+      <nav class="site-nav" aria-label="Main Navigation">
+        <a href="./index.html" class="nav-link">Curriculum Map</a>
+        <a href="./languages.html" class="nav-link">Language Chain</a>
+        <a href="./words.html" class="nav-link">Word Lists</a>
+        <a href="./progress.html" class="nav-link">Progress</a>
+        <button type="button" class="theme-toggle-btn" aria-label="Toggle visual theme">Dark</button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="main-wrapper page-entrance">
+    <div id="language-mount">
+      <div class="inverted-band"><p class="signal-text">Loading language…</p></div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span class="footer-copy">Curriculum — Zero to AI Engineer</span>
+      <span class="footer-meta" id="footer-stats-line"></span>
+    </div>
+  </footer>
+
+  <script src="./data.js"></script>
+  <script src="./storylines-data.js"></script>
+  <script src="./app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!window.CURRICULUM) return;
+
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get('id') || 'C.7';
+      const mount = document.getElementById('language-mount');
+
+      const languages = window.CURRICULUM.languages || [];
+      const language = languages.find(l => l.id === id);
+
+      if (!language) {
+        mount.innerHTML = `
+          <div class="inverted-band">
+            <h1>No such language</h1>
+            <p>Nothing in the chain has the ID "${escapeHtml(id)}".</p>
+            <a href="./languages.html" class="btn" style="margin-top:1rem;background:var(--inv-signal);color:var(--inv-bg);">Back to the chain</a>
+          </div>`;
+        return;
+      }
+
+      document.title = `${language.name} — the decisions behind the syntax`;
+
+      const story = window.CurriculumStorylines ? window.CurriculumStorylines.get(id) : null;
+      const predecessor = languages.find(l => l.leadsTo === id);
+      const successor = languages.find(l => l.id === language.leadsTo);
+
+      const header = `
+        <div class="lesson-meta-bar">
+          <div class="lesson-breadcrumbs">
+            <a href="./index.html">Curriculum Map</a>
+            <span>/</span>
+            <a href="./languages.html">Language Chain</a>
+            <span>/</span>
+            <span>${escapeHtml(language.name)}</span>
+          </div>
+          <div><span class="track-card-count">${escapeHtml(language.year)}</span></div>
+        </div>
+
+        <section class="inverted-band" aria-labelledby="lang-heading">
+          <span class="lesson-number-badge">${escapeHtml(language.id)} · ${language.kind === 'notation' ? 'PARALLEL NOTATION' : 'IN THE CHAIN'}</span>
+          <h1 id="lang-heading" class="lesson-main-title">${escapeHtml(language.name)}</h1>
+          <p style="color:var(--inv-ink);opacity:.85;max-inline-size:66ch;">
+            ${escapeHtml(language.year)} · ${escapeHtml(language.who)}
+          </p>
+          ${story && story.opening ? `<p style="color:var(--inv-ink);max-inline-size:66ch;margin-top:.75rem;">${escapeHtml(story.opening)}</p>` : ''}
+        </section>`;
+
+      // The wall it inherited. Preferring the predecessor's own words about
+      // the wall it left, because that is the same wall seen from the far side.
+      const inheritedText = (story && story.inherited && story.inherited.wall)
+        || (predecessor && predecessor.wall)
+        || language.answered;
+
+      const walls = `
+        <section class="section-block" aria-labelledby="inherited-heading">
+          <div class="section-header">
+            <h2 id="inherited-heading">The wall it inherited</h2>
+            <span class="section-counter">Beat 01</span>
+          </div>
+          <p style="max-inline-size:72ch;">${escapeHtml(inheritedText)}</p>
+          ${predecessor ? `<p class="lang-chain-link">Left behind by <a href="./language.html?id=${predecessor.id}">${escapeHtml(predecessor.name)}</a>.</p>` : ''}
+        </section>
+
+        <section class="section-block" aria-labelledby="solved-heading">
+          <div class="section-header">
+            <h2 id="solved-heading">What it did about it</h2>
+            <span class="section-counter">Beat 02</span>
+          </div>
+          <p style="max-inline-size:72ch;">${escapeHtml(language.solved)}</p>
+          ${story && story.constraint ? `
+            <div class="lang-constraint">
+              <span class="lang-constraint-label">The constraint everything follows from</span>
+              <p>${escapeHtml(story.constraint)}</p>
+            </div>` : ''}
+        </section>`;
+
+      // Beat 03: the syntax, as consequence rather than topic list.
+      let decisions;
+      if (story && story.decisions && story.decisions.length) {
+        decisions = `
+          <section class="section-block" aria-labelledby="decisions-heading">
+            <div class="section-header">
+              <h2 id="decisions-heading">The syntax that followed</h2>
+              <span class="section-counter">Beat 03</span>
+            </div>
+            <p style="max-inline-size:72ch;color:var(--ink-2);">
+              Not a list of features. Each of these is a decision the constraint forced, and the syntax underneath it is what that decision looks like when you type it. Read in this order, not alphabetically.
+            </p>
+            ${story.decisions.map((d, i) => `
+              <article class="lang-decision">
+                <div class="lang-decision-head">
+                  <span class="lang-decision-num">${String(i + 1).padStart(2, '0')}</span>
+                  <h3>${escapeHtml(d.decision)}</h3>
+                </div>
+                <p class="lang-decision-why"><strong>Why:</strong> ${escapeHtml(d.because)}</p>
+                <div class="lang-syntax-list">
+                  ${d.syntax.map(s => `
+                    <div class="lang-syntax">
+                      <code class="lang-syntax-code">${escapeHtml(s.code)}</code>
+                      <p class="lang-syntax-means">${escapeHtml(s.means)}</p>
+                      <p class="lang-syntax-consequence">${escapeHtml(s.consequence)}</p>
+                    </div>`).join('')}
+                </div>
+              </article>`).join('')}
+          </section>`;
+      } else {
+        decisions = `
+          <section class="section-block" aria-labelledby="decisions-heading">
+            <div class="section-header">
+              <h2 id="decisions-heading">The syntax that followed</h2>
+              <span class="section-counter">Beat 03</span>
+            </div>
+            <div class="provenance-banner provenance-warn" role="note">
+              <span class="provenance-label">Not written yet</span>
+              <span class="provenance-text">
+                The storyline for ${escapeHtml(language.name)} has not been written. What belongs here is each design decision its constraints forced, with the syntax that is a consequence of it — not a list of features.
+                ${language.blueprint ? `In the meantime, the chain entry names its building blocks: ${escapeHtml(language.blueprint)}.` : ''}
+              </span>
+            </div>
+          </section>`;
+      }
+
+      const wallLeft = (story && story.wall) || language.wall;
+      const reason = (story && story.leadsToReason) || language.leadsToReason;
+
+      const ending = `
+        <section class="section-block" aria-labelledby="wall-heading">
+          <div class="section-header">
+            <h2 id="wall-heading">The wall it left behind</h2>
+            <span class="section-counter">Beat 04</span>
+          </div>
+          <p style="max-inline-size:72ch;">${escapeHtml(wallLeft)}</p>
+          ${successor ? `
+            <div class="lang-next">
+              <span class="lang-next-label">Which is why the next one exists</span>
+              <a href="./language.html?id=${successor.id}" class="lang-next-link">${escapeHtml(successor.name)} &rarr;</a>
+              ${reason ? `<p>${escapeHtml(reason)}</p>` : ''}
+            </div>` : `
+            <p class="lang-chain-link">${language.kind === 'notation'
+              ? 'A parallel notation rather than a link in the chain, so nothing follows from it here.'
+              : 'Nothing in this chain follows from it yet.'}</p>`}
+        </section>
+
+        <div style="margin-block:2rem;display:flex;gap:.75rem;flex-wrap:wrap;">
+          <a href="./languages.html" class="btn">All languages</a>
+          <a href="./words.html#lang-table-${language.name.toLowerCase().replace(/[^a-z0-9]/g, '-')}" class="btn">Its word list</a>
+          <a href="./lesson.html?id=${language.id}" class="btn">The lesson</a>
+        </div>`;
+
+      mount.innerHTML = header + walls + decisions + ending;
+
+      function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text == null ? '' : String(text);
+        return div.innerHTML;
+      }
+    });
+  </script>
+</body>
+</html>

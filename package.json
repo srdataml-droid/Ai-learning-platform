@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "clean": "rm -rf dist",
     "test": "node --test \"tests/*.test.mjs\" && node tools/validate.mjs && node tools/verify.mjs",
-    "build:data": "node tools/build-data.mjs"
+    "build:data": "node tools/build-data.mjs && node tools/build-languages.mjs"
   },
   "devDependencies": {
     "vite": "^6.2.3"

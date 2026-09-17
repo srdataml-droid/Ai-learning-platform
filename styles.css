@@ -1798,3 +1798,156 @@ p, .body-copy {
 [data-theme="dark"] .provenance-warn .provenance-label {
   color: #e0a563;
 }
+
+/* ── Language storylines ───────────────────────────────────────────────────
+   Syntax presented as consequence. The constraint is set apart because
+   everything below it follows from it; each decision is numbered because the
+   order is the argument, not a convenience. */
+.lang-constraint {
+  margin-block-start: 1.25rem;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid var(--rule);
+  border-inline-start: 3px solid var(--signal);
+  background: var(--raise);
+}
+
+.lang-constraint-label {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-size: 0.72rem;
+  color: var(--signal);
+  margin-block-end: 0.35rem;
+}
+
+.lang-constraint p {
+  margin: 0;
+  max-inline-size: 70ch;
+}
+
+.lang-decision {
+  margin-block-start: 1.75rem;
+  padding-block-start: 1.25rem;
+  border-block-start: 1px solid var(--rule-soft);
+}
+
+.lang-decision-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+
+.lang-decision-num {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: var(--t-1);
+  color: var(--signal);
+  line-height: 1;
+  flex: none;
+}
+
+.lang-decision-head h3 {
+  margin: 0;
+  font-size: var(--t-1);
+}
+
+.lang-decision-why {
+  margin-block: 0.5rem 1rem;
+  max-inline-size: 70ch;
+  color: var(--ink-2);
+}
+
+.lang-decision-why strong {
+  color: var(--ink);
+}
+
+.lang-syntax-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.lang-syntax {
+  padding: 0.85rem 1rem;
+  background: var(--raise);
+  border: 1px solid var(--rule-soft);
+}
+
+.lang-syntax-code {
+  display: block;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.92em;
+  color: var(--ink);
+  margin-block-end: 0.4rem;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.lang-syntax-means {
+  margin: 0 0 0.4rem;
+  font-weight: 600;
+}
+
+.lang-syntax-consequence {
+  margin: 0;
+  color: var(--ink-2);
+  max-inline-size: 68ch;
+}
+
+.lang-chain-link {
+  margin-block-start: 0.75rem;
+  color: var(--ink-2);
+  font-size: var(--t--1);
+}
+
+.lang-next {
+  margin-block-start: 1.25rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--rule);
+  background: var(--raise);
+}
+
+.lang-next-label {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-size: 0.72rem;
+  color: var(--ink-2);
+  margin-block-end: 0.3rem;
+}
+
+.lang-next-link {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--t-1);
+  color: var(--signal);
+  text-decoration: none;
+}
+
+.lang-next-link:hover { text-decoration: underline; }
+
+.lang-next p {
+  margin-block-start: 0.4rem;
+  margin-block-end: 0;
+  color: var(--ink-2);
+  max-inline-size: 70ch;
+}
+
+.notation-divider {
+  margin-block: 3rem 1.5rem;
+  padding-block-start: 1.5rem;
+  border-block-start: 2px solid var(--rule);
+}
+
+.notation-divider h2 {
+  margin: 0 0 0.5rem;
+}
+
+.notation-divider p {
+  margin: 0;
+  color: var(--ink-2);
+  max-inline-size: 66ch;
+}

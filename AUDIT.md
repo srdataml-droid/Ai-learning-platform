@@ -39,10 +39,18 @@ N 14, K 14, J 13, G 11, D 10, F 10, P 10, I 10, H 9, C 8, A 8, 0 7.
 Duplicated keys — `K.2 K.6 K.11 K.13 L.6 L.9 L.12 J.1 E.4 F.8 A.2 B.32` — are
 legal JS; the later value just wins. No error, no warning.
 
-Two of the losses are real regressions, not identical twins:
-- **A.2** — the discarded copy is 3081 B, the surviving one 2951 B.
-- **J.1** — the discarded copy is 2993 B, the surviving 3176 B (this one improved).
-- **B.32** — surviving copy is 9970 B vs 3237 B, the richest lesson in the file.
+Three of the twelve differ in content; the other nine are identical twins.
+(The byte figures in the first version of this audit were measured between
+entry markers, which over-counted any entry near the end of the object. These
+are measured from each entry's own text.)
+- **A.2** — the discarded copy is 3079 B, the surviving 2949 B. The larger one
+  attributes system dynamics to Jay Forrester and Donella Meadows; the survivor
+  drops the attribution. This is the only case where the rendered text changes.
+- **B.32** — the discarded copy is 3235 B, the surviving 3079 B. Neither was
+  correct: one dates Brewer's CAP keynote to 1999, the other to 2000 while
+  calling it a theorem. It was a conjecture in the keynote, and the keynote was
+  19 July 2000; the 1999 date belongs to the Fox and Brewer HotOS paper.
+- **K.6** — differ only by backticks around a code fragment.
 
 So the file was written, then partly re-written, and the second pass was appended
 instead of merged. ~37 KB of the 177 KB file is unreachable.
@@ -75,8 +83,11 @@ written as multi-page vanilla JS inside it, and the two were never reconciled.
 
 `leadsTo` is supposed to make one story. It doesn't close:
 - Chain ends at **C.23 CUDA, C.24 HTML/CSS, C.25 Bash, C.26 regex** — four terminal nodes.
-- Nothing points *to* **C.8 Smalltalk, C.14 PHP, C.24, C.25, C.26** — five orphans.
-  Smalltalk being an orphan is the notable one: it is the node that should feed C++.
+- Nothing points *to* **C.8 Smalltalk, C.14 PHP, C.24, C.25, C.26** — five roots.
+  Correction to the first version of this audit: Smalltalk is not a dead end.
+  It carries `leadsTo: "C.9"` and does feed C++. What it lacks is a predecessor.
+  The structure is a DAG with several roots, not a single line, and describing
+  it as a chain is what makes those roots look like faults.
 - Listed order goes backward in time at C.4 (LISP 1958 after COBOL 1959), C.16
   (Erlang 1986 after Ruby 1995), C.21, C.22 (SQL 1974 after Rust 2015), C.24, C.25, C.26.
 

@@ -548,7 +548,9 @@ window.CURRICULUM = {
   languages: [
     {
       id: "C.1",
+      kind: "chain",
       year: "1940s",
+      sortYear: 1940,
       name: "Machine code and assembly",
       who: "Early computing pioneers",
       answered: "The physical limits of vacuum tubes, plugboards, and paper tape",
@@ -560,7 +562,9 @@ window.CURRICULUM = {
     },
     {
       id: "C.2",
+      kind: "chain",
       year: "1957",
+      sortYear: 1957,
       name: "Fortran",
       who: "Backus, IBM",
       answered: "Hand-coding formulas in assembly for each new architecture",
@@ -572,7 +576,9 @@ window.CURRICULUM = {
     },
     {
       id: "C.3",
+      kind: "chain",
       year: "1959",
+      sortYear: 1959,
       name: "COBOL",
       who: "CODASYL, Hopper's influence",
       answered: "Mathematical notations were illegible to corporate clerks and commercial auditors",
@@ -584,7 +590,9 @@ window.CURRICULUM = {
     },
     {
       id: "C.4",
+      kind: "chain",
       year: "1958",
+      sortYear: 1958,
       name: "LISP",
       who: "McCarthy",
       answered: "The rigidity of fixed numeric arrays and inability to represent symbolic logic",
@@ -596,7 +604,9 @@ window.CURRICULUM = {
     },
     {
       id: "C.5",
+      kind: "chain",
       year: "1960",
+      sortYear: 1960,
       name: "ALGOL",
       who: "International committee (ACM / GAMM)",
       answered: "Ad-hoc language structures lacking formal mathematical grammar and scope",
@@ -608,7 +618,9 @@ window.CURRICULUM = {
     },
     {
       id: "C.6",
+      kind: "chain",
       year: "1964",
+      sortYear: 1964,
       name: "BASIC",
       who: "Kemeny and Kurtz",
       answered: "Batch-processing punch cards created multi-day turnarounds that prevented novices from learning",
@@ -620,7 +632,9 @@ window.CURRICULUM = {
     },
     {
       id: "C.7",
+      kind: "chain",
       year: "1972",
+      sortYear: 1972,
       name: "C",
       who: "Ritchie, Bell Labs",
       answered: "Assembly was unportable, everything else too far from hardware to write an OS",
@@ -632,7 +646,9 @@ window.CURRICULUM = {
     },
     {
       id: "C.8",
+      kind: "chain",
       year: "1972 to 1980",
+      sortYear: 1972,
       name: "Smalltalk",
       who: "Kay, Xerox PARC",
       answered: "Procedural programs treating data as passive structures acted on by remote procedures",
@@ -644,7 +660,9 @@ window.CURRICULUM = {
     },
     {
       id: "C.9",
+      kind: "chain",
       year: "1983",
+      sortYear: 1983,
       name: "C++",
       who: "Stroustrup",
       answered: "C had no way to organise a large program",
@@ -656,7 +674,9 @@ window.CURRICULUM = {
     },
     {
       id: "C.10",
+      kind: "chain",
       year: "1987",
+      sortYear: 1987,
       name: "Perl",
       who: "Wall",
       answered: "Shell scripting was too weak for reports and C was too tedious for stream transformations",
@@ -668,7 +688,9 @@ window.CURRICULUM = {
     },
     {
       id: "C.11",
+      kind: "chain",
       year: "1991",
+      sortYear: 1991,
       name: "Python",
       who: "van Rossum",
       answered: "C too slow to write, Perl unreadable, shell too limited",
@@ -680,7 +702,9 @@ window.CURRICULUM = {
     },
     {
       id: "C.12",
+      kind: "chain",
       year: "1995",
+      sortYear: 1995,
       name: "Java",
       who: "Gosling, Sun",
       answered: "C++ memory bugs and per platform rebuilds",
@@ -692,7 +716,9 @@ window.CURRICULUM = {
     },
     {
       id: "C.13",
+      kind: "chain",
       year: "1995",
+      sortYear: 1995,
       name: "JavaScript",
       who: "Eich, Netscape, about ten days",
       answered: "Web pages were frozen, validating a form meant a server round trip",
@@ -704,7 +730,9 @@ window.CURRICULUM = {
     },
     {
       id: "C.14",
+      kind: "chain",
       year: "1995",
+      sortYear: 1995,
       name: "PHP",
       who: "Lerdorf",
       answered: "CGI binaries written in C or Perl crashed easily and required complex web server configuration",
@@ -716,7 +744,9 @@ window.CURRICULUM = {
     },
     {
       id: "C.15",
+      kind: "chain",
       year: "1995 and 2004",
+      sortYear: 1995,
       name: "Ruby, then Rails",
       who: "Matsumoto, then Hansson",
       answered: "Java's bureaucratic ceremony and XML configuration files drained developer joy",
@@ -728,7 +758,9 @@ window.CURRICULUM = {
     },
     {
       id: "C.16",
+      kind: "chain",
       year: "1986 and 2012",
+      sortYear: 1986,
       name: "Erlang, then Elixir",
       who: "Ericsson (Erlang) & Valim (Elixir)",
       answered: "A telephone switch is not allowed to go down, ever",
@@ -740,7 +772,9 @@ window.CURRICULUM = {
     },
     {
       id: "C.17",
+      kind: "chain",
       year: "2000",
+      sortYear: 2000,
       name: "C#",
       who: "Hejlsberg, Microsoft",
       answered: "Java was proprietary to Sun and lacked clean language integration on Windows",
@@ -752,7 +786,9 @@ window.CURRICULUM = {
     },
     {
       id: "C.18",
+      kind: "chain",
       year: "2009",
+      sortYear: 2009,
       name: "Go",
       who: "Griesemer, Pike, Thompson at Google",
       answered: "C++ compiled slowly, Java was verbose, Python could not hold many connections",
@@ -764,7 +800,9 @@ window.CURRICULUM = {
     },
     {
       id: "C.19",
+      kind: "chain",
       year: "2012",
+      sortYear: 2012,
       name: "TypeScript",
       who: "Microsoft",
       answered: "JavaScript codebases nobody could hold in their head",
@@ -776,7 +814,9 @@ window.CURRICULUM = {
     },
     {
       id: "C.20",
+      kind: "chain",
       year: "2015",
+      sortYear: 2015,
       name: "Rust reaches 1.0",
       who: "Mozilla",
       answered: "Memory bugs in C and C++ were a large share of every serious security vulnerability",
@@ -788,7 +828,9 @@ window.CURRICULUM = {
     },
     {
       id: "C.21",
+      kind: "chain",
       year: "2011 and 2014",
+      sortYear: 2011,
       name: "Kotlin and Swift",
       who: "JetBrains (Kotlin) & Apple (Swift)",
       answered: "Null pointer exceptions plagued both Java on Android and Objective-C on iOS",
@@ -800,7 +842,9 @@ window.CURRICULUM = {
     },
     {
       id: "C.22",
+      kind: "notation",
       year: "1974",
+      sortYear: 1974,
       name: "SQL",
       who: "Chamberlin and Boyce, IBM",
       answered: "Navigational network and hierarchical databases tied code to physical storage pointers",
@@ -812,7 +856,9 @@ window.CURRICULUM = {
     },
     {
       id: "C.23",
+      kind: "notation",
       year: "2007",
+      sortYear: 2007,
       name: "CUDA",
       who: "NVIDIA",
       answered: "Graphics cards could only do graphics",
@@ -823,7 +869,9 @@ window.CURRICULUM = {
     },
     {
       id: "C.24",
+      kind: "notation",
       year: "1990s to present",
+      sortYear: 1990,
       name: "HTML and CSS",
       who: "Berners-Lee, Lie, Bos, W3C",
       answered: "Monolithic proprietary binary document viewers and unstyled text terminals",
@@ -834,7 +882,9 @@ window.CURRICULUM = {
     },
     {
       id: "C.25",
+      kind: "notation",
       year: "1970s to 1989",
+      sortYear: 1970,
       name: "Bash and the shell",
       who: "Thompson, Bourne, Fox",
       answered: "Recompiling programs just to pass data between them",
@@ -845,7 +895,9 @@ window.CURRICULUM = {
     },
     {
       id: "C.26",
+      kind: "notation",
       year: "1950s to 1970s",
+      sortYear: 1950,
       name: "Regular expressions",
       who: "Kleene, Thompson",
       answered: "Writing custom character-by-character state machines for every string validation",
