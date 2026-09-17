@@ -16,6 +16,7 @@ export default defineConfig(() => {
       rollupOptions: {
         input: {
           main: path.resolve(__dirname, 'index.html'),
+          lesson: path.resolve(__dirname, 'lesson.html'),
           track: path.resolve(__dirname, 'track.html'),
           languages: path.resolve(__dirname, 'languages.html'),
           words: path.resolve(__dirname, 'words.html'),
