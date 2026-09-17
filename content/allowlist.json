@@ -1,0 +1,10 @@
+{
+  "CPU": { "reason": "a category of hardware, not a claim about the world; no date or figure attaches to it" },
+  "GPU": { "reason": "as CPU: a category of hardware, not a sourced claim" },
+  "RAM": { "reason": "as CPU: a category of hardware, not a sourced claim" },
+  "API": { "reason": "a generic term of art with no date, person or figure attached" },
+  "HTTP": { "reason": "a protocol named generically in prose; any specific version or date still needs a claim" },
+  "SQL": { "reason": "a language named generically; its 1974 origin still needs a claim to be stated" },
+  "OS": { "reason": "abbreviation for operating system, a category rather than a claim" },
+  "IO": { "reason": "abbreviation for input/output, a category rather than a claim" }
+}
