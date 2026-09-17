@@ -1,0 +1,20 @@
+{
+  "id": "B.2",
+  "trackId": "B",
+  "trackName": "System design",
+  "title": "Program versus process",
+  "status": "unsourced",
+  "story": "A program is dead bits sitting cold on a hard drive: a passive ELF binary, `.exe`, or JavaScript script file. A process is a program brought to life by the operating system kernel.\n\nWhen you execute a program, the OS kernel performs a sequence of allocations: it reads the binary header, maps virtual memory pages into a private 64-bit address space (protecting other processes from accidental corruption), allocates a Call Stack for local function variables, allocates a Heap for dynamic memory, creates a file descriptor table (mapping stdin, stdout, stderr), and hands control to an execution thread with CPU register state and an Instruction Pointer.\n\nUnderstanding this distinction explains why two instances of the same program running simultaneously don't corrupt each other: each process lives in its own isolated virtual memory sandbox enforced by the CPU's Memory Management Unit (MMU). It also explains why inter-process communication (IPC) requires explicit OS channels like pipes, unix domain sockets, or shared memory.",
+  "beats": {
+    "broke": "Early computers ran bare programs directly on physical memory without isolation. One rogue pointer or infinite loop in a program crashed the entire physical computer.",
+    "fix": "Multiprogramming and virtual memory hardware (1960s) allowed operating systems to encapsulate running programs into isolated processes with protected virtual address spaces.",
+    "cost": "Process isolation introduces memory overhead (page tables, duplicated libraries) and context-switching penalties: switching between processes flushes CPU TLB caches and burns hundreds of clock cycles.",
+    "interview": {
+      "q": "What is the structural difference between a process and a thread, and what resources are shared versus private?",
+      "trap": "Saying threads are just 'lightweight processes' without specifying memory boundaries.",
+      "answer": "A process owns its own isolated virtual address space, file descriptor table, and security credentials. Threads live inside a process: they share the exact same address space (heap, global variables, open files), but each thread retains its own private register state, program counter, and execution stack. Sharing memory makes threads fast for concurrency, but exposes them to race conditions and memory corruption."
+    }
+  },
+  "blueprint": "# In Linux terminal:\n# The static program on disk:\n$ ls -l /usr/bin/node\n\n# The active processes running in memory:\n$ ps aux | grep node\nUSER   PID  %CPU %MEM    VSZ   RSS TTY STAT START TIME COMMAND\nroot  4821   1.2  0.8 124500 32400 ?   Sl   10:00 0:12 node server.js",
+  "takeaway": "A program is a recipe written on paper; a process is the kitchen running with active cooks and hot ovens."
+}

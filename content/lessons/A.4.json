@@ -1,0 +1,20 @@
+{
+  "id": "A.4",
+  "trackId": "A",
+  "trackName": "Systems thinking",
+  "title": "Second order effects: Redis fixed slow reads and created cache invalidation",
+  "status": "unsourced",
+  "story": "First-order thinking asks: 'What is the immediate problem, and what solves it?' Second-order thinking asks: 'And then what happens?'\n\nIn 2010, an engineering team noticed that querying user profile pages took 200ms of database disk seek time. First-order solution: Put Redis in front of the database. Profile lookups now take 1ms from RAM. First-order celebration: latency dropped by 99%!\n\nThen second-order reality arrived: 1) When a user changes their avatar, how does the cache know? Cache invalidation logic was added across twenty microservices. 2) Two services raced to update the cache, leaving stale avatar pointers for hours. 3) Redis ran out of memory, so keys were evicted unpredictably. 4) When Redis rebooted, all traffic slammed the raw database simultaneously, taking down the site (thundering herd). Redis didn't eliminate complexity; it traded read latency for cache coherence, memory management, and failover engineering. In systems engineering, every solution creates the next problem.",
+  "beats": {
+    "broke": "Engineering teams implemented quick local optimizations without modeling downstream ripple effects, only to be ambushed by severe secondary operational failures.",
+    "fix": "Second-order systems modeling: evaluating decisions across time horizons, identifying secondary failure modes before introducing new stateful components.",
+    "cost": "Prevents quick-fix cowboy coding; requires architectural design reviews and risk assessments before adding caching, queues, or distributed components.",
+    "interview": {
+      "q": "Give an example of a common software architecture fix where the second-order effect was worse than the original problem.",
+      "trap": "Giving an answer that focuses only on code syntax rather than operational system dynamics.",
+      "answer": "Auto-scaling web servers to handle database slowdowns: When queries slow down, web server queues fill up, triggering cloud auto-scaling to launch 50 new web server instances. The 50 new instances immediately open 500 new database connection pools, completely overwhelming the database with connection handshakes and crashing it permanently. The first-order fix (scale servers) caused a catastrophic second-order blackout."
+    }
+  },
+  "blueprint": "/* Second-Order Analysis Matrix: */\nAction:             Introduce distributed cache (Redis)\nFirst-Order Effect: Read latency drops from 200ms to 1ms\nSecond-Order:       Cache invalidation bugs, stale data windows, memory costs\nThird-Order:        Database crashes during cache cold restart (Stampede)\nMitigation:         Cache stampede locks, probabilistic early expiration",
+  "takeaway": "Every architectural fix is a mortgage: it pays for today's latency with tomorrow's consistency and operational debt."
+}

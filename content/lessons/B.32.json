@@ -1,0 +1,20 @@
+{
+  "id": "B.32",
+  "trackId": "B",
+  "trackName": "System design",
+  "title": "Consistency: what you give up, and CAP in plain words",
+  "status": "unsourced",
+  "story": "The idea surfaced in Fox and Brewer's 1999 HotOS paper 'Harvest, Yield and Scalable Tolerant Systems', then on 19 July 2000 Eric Brewer put it in front of the field as a keynote at the 19th ACM Symposium on Principles of Distributed Computing. He posed it as the CAP Conjecture, not a theorem: it was Seth Gilbert and Nancy Lynch who proved it in 2002. Brewer stated that any distributed data store can simultaneously guarantee at most two of three properties: Consistency (every read receives the most recent write), Availability (every non-failing node returns a response), and Partition Tolerance (the system continues to operate despite network messages being dropped or delayed).\n\nIn a real distributed network, network cables get severed, switches reboot, and cloud routers drop packets. Therefore, Network Partitions (P) are an inescapable physical reality, not an optional preference. You cannot 'choose CA'. When a partition occurs between Data Center East and Data Center West, you are forced to make an existential architectural choice:\n\nDo you choose CP: halt writes in Data Center West because it cannot coordinate with East, preferring to return an error rather than risk inconsistent data? (Banks, inventory checkout). Or do you choose AP: allow Data Center West to keep accepting writes, accepting that East and West now hold diverging, conflicting realities that must be reconciled later? (Social media feeds, shopping carts).",
+  "beats": {
+    "broke": "Engineers built multi-node databases claiming they could deliver instantaneous synchronization, infinite uptime, and survive network cable cuts simultaneously.",
+    "fix": "Fox and Brewer published the idea in 1999 (HotOS); Brewer posed it as a conjecture in his PODC keynote on 19 July 2000; Gilbert and Lynch turned it into a theorem with a proof in 2002. When a network partition occurs, a distributed system must choose between Consistency and Availability.",
+    "cost": "True consistency (CP) requires cross-node consensus rounds (Paxos, Raft) that spike write latency. Availability (AP) requires eventual consistency, vector clocks, and CRDTs to merge divergent states.",
+    "interview": {
+      "q": "Why is 'I choose CA' an impossible answer in modern cloud system design, and how does Amazon Dynamo illustrate an AP tradeoff?",
+      "trap": "Claiming CA is achievable if your cloud provider promises 99.999% network reliability.",
+      "answer": "Partitions (P) are a physical property of networks, not an option you can decline. When a network link drops, you must choose either to reject the write (CP) to protect consistency, or accept the write on isolated nodes (AP) to maintain availability. Amazon's 2007 Dynamo paper chose AP: they prioritized never dropping a customer's 'Add to Cart' action, accepting that conflicting cart versions would be resolved later via vector clocks."
+    }
+  },
+  "blueprint": "/* The Inescapable CAP Reality: */\nNormal Operation:  Nodes communicate  --> C and A both work\nNetwork Partition: Link between Node 1 and Node 2 severed\n\nChoice 1 (CP): Node 2 refuses writes --> Consistency preserved, Availability broken\nChoice 2 (AP): Node 2 accepts writes --> Availability preserved, Consistency broken",
+  "takeaway": "You do not choose CAP; physics chooses P, and you choose how to fail."
+}

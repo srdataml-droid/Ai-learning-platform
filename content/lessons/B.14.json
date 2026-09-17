@@ -1,0 +1,20 @@
+{
+  "id": "B.14",
+  "trackId": "B",
+  "trackName": "System design",
+  "title": "Why databases exist at all: Codd 1970 and the Relational Model",
+  "status": "unsourced",
+  "story": "In the 1960s, before relational databases existed, large enterprise applications stored records in hierarchical or navigational network databases (like IBM's IMS or CODASYL). In these systems, records were linked together by raw physical disk pointers.\n\nIf you wanted to find which department an employee worked in, your COBOL program had to write manual traversal loops navigating pointer graphs: 'FIND FIRST EMPLOYEE WITHIN DEPT-EMP SET', then 'FIND NEXT'. The fatal flaw: whenever the DBA altered the physical disk layout, added a new index, or restructured a file, every single application program in the company broke and had to be manually recompiled and debugged.\n\nIn June 1970, Edgar F. Codd, an Oxford-trained mathematician working at IBM, published a seminal paper: 'A Relational Model of Data for Large Shared Data Banks'. Codd's radical insight was physical data independence: programmers should declare WHAT data they want using first-order predicate logic (tables, rows, relations), and a database management engine should figure out HOW to physically retrieve it from disk. In 1974, Donald Chamberlin and Raymond Boyce created SEQUEL (later SQL) at IBM to give Codd's relational algebra an English-like syntax.",
+  "beats": {
+    "broke": "Programs navigated physical disk memory pointers directly. Any schema migration or disk reorganization broke every application codebase across the enterprise.",
+    "fix": "Edgar F. Codd (1970) introduced relational algebra and physical data independence. Donald Chamberlin and Raymond Boyce (1974) built System R and SQL at IBM.",
+    "cost": "Relational queries require query optimizers, cost planners, and join algorithms that consume heavy CPU and RAM. Rigid normalization makes distributed sharding across servers difficult.",
+    "interview": {
+      "q": "What is 'physical data independence' and why did it make relational databases the dominant persistence model for 50 years?",
+      "trap": "Confusing physical data independence with ACID transactions.",
+      "answer": "Physical data independence means the logical representation of data (tables, columns, constraints) is decoupled from its physical storage on disk (B-trees, heap files, compression, indexing). You can add an index, convert an HDD to an NVMe SSD, or reorganize disk pages without modifying a single line of application SQL code."
+    }
+  },
+  "blueprint": "-- Logical declaration: the engine determines the physical plan\nSELECT users.name, orders.total\nFROM users\nJOIN orders ON users.id = orders.user_id\nWHERE orders.created_at >= '2026-01-01';\n\n-- Engine chooses Index Scan vs Sequential Scan automatically\nEXPLAIN ANALYZE SELECT ...;",
+  "takeaway": "Codd moved the boundary: code stopped telling disk heads how to move and began declaring what truth it needed."
+}

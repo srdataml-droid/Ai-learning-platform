@@ -1,0 +1,20 @@
+{
+  "id": "J.1",
+  "trackId": "J",
+  "trackName": "Debugging",
+  "title": "Reproduce it reliably before touching anything",
+  "status": "unsourced",
+  "story": "Every engineer has witnessed the panic: production throws an exception, an alert blares in Slack, and a frantic developer opens an IDE, starts editing code, and pushes three consecutive speculative commits with messages like 'maybe fix', 'try null check', and 'revert previous'. The bug remains, and now the git history is polluted with noise.\n\nA bug you cannot reproduce is not a bug; it is a rumor. Until you have a deterministic reproduction script or minimal failing unit test that triggers the failure at will, you do not understand the problem. Touching code before reproducing the failure violates the fundamental scientific method.\n\nIn June 1996, the Ariane 5 rocket exploded 37 seconds after liftoff because a 64-bit floating point number representing horizontal velocity was converted into a 16-bit signed integer in reused guidance code. The value was greater than 32,767. The conversion threw an unhandled hardware trap, the computer shut down, and the rocket sheared itself in half. The failure was completely reproducible—and had the team run the real flight trajectory simulation against the software, the explosion would never have occurred.",
+  "beats": {
+    "broke": "Engineers guessing and editing code speculatively without reproducing the failure often introduce secondary bugs and obscure the root cause.",
+    "fix": "The scientific discipline of reproduction: isolate the exact inputs, environment, and state until the failure can be triggered deterministically on demand.",
+    "cost": "Reproducing heisenbugs (race conditions, memory leaks, distributed timing issues) requires significant time and observability tooling before writing a single line of fix.",
+    "interview": {
+      "q": "What is a 'Heisenbug' and what step-by-step strategy do you use to diagnose a bug that disappears when you attach a debugger?",
+      "trap": "Adding random sleep statements or print lines without structured hypotheses.",
+      "answer": "A Heisenbug is a defect that alters its behavior or vanishes when observed (usually due to timing changes from debugger breakpoints or compiler optimization flags). Strategy: 1) Inspect structured asynchronous logs and trace IDs without halting execution threads, 2) Stress test concurrency using thread sanitizers or load generators to amplify timing windows, 3) Bisect recent environmental or dependency changes."
+    }
+  },
+  "blueprint": "# The Debugging Discipline Checklist:\n1. Stop editing code.\n2. Isolate exact inputs: user payload, headers, environment variables.\n3. Write an automated reproduction script or failing test.\n4. Run it: confirm it fails 100% of the time.\n5. Apply minimal fix.\n6. Run test: confirm it passes. Keep the test in CI permanently.",
+  "takeaway": "A bug you cannot reproduce is a rumor. Never write a fix for something you haven't seen fail."
+}

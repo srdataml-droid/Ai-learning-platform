@@ -1,0 +1,20 @@
+{
+  "id": "B.22",
+  "trackId": "B",
+  "trackName": "System design",
+  "title": "NoSQL: Dynamo 2007, why people gave up relational databases, what they lost",
+  "status": "unsourced",
+  "story": "During the 2004 holiday shopping season, Amazon's monolithic relational database clusters buckled under global shopping traffic. Scaling a relational database vertically by buying ever-larger Sun Microsystems multi-socket servers cost millions of dollars and hit physical hardware ceilings.\n\nIn October 2007, Giuseppe DeCandia and Amazon engineers published the historic 'Dynamo: Amazon's Highly Available Key-value Store' paper. Amazon asked a radical question: what if we give up ACID transactions, complex SQL joins, and relational normalization in exchange for horizontal scalability across thousands of cheap commodity Linux servers?\n\nDynamo combined consistent hashing (to distribute keys across a ring of nodes without re-shuffling the entire cluster), sloppy quorums (R + W > N), vector clocks (to reconcile conflicting concurrent writes), and gossip protocols (for failure detection). The NoSQL revolution was born. Systems like Cassandra, MongoDB, and DynamoDB proved you could handle petabytes of data. But the cost was heavy: application developers had to manually write code to handle eventual consistency, duplicate data, and missing foreign keys.",
+  "beats": {
+    "broke": "Relational database clusters hit scaling limits: vertical hardware upgrades cost millions and multi-node sharding with ACID joins was extraordinarily fragile.",
+    "fix": "Amazon engineers published the Dynamo paper in 2007, pioneering distributed key-value storage using consistent hashing, vector clocks, and tunable eventual consistency.",
+    "cost": "Developers lost declarative SQL queries, transactions, foreign key constraints, and immediate consistency. Application code had to handle race conditions and divergent data.",
+    "interview": {
+      "q": "How does Dynamo's quorum formula `R + W > N` ensure strong read consistency, and what happens if `R + W <= N`?",
+      "trap": "Thinking NoSQL systems can never provide strong consistency.",
+      "answer": "N is the replication factor, W is the number of nodes that must confirm a write, and R is the number of nodes contacted on a read. If `R + W > N`, the set of read nodes and write nodes must mathematically overlap by at least one node by the Pigeonhole Principle, guaranteeing the reader sees the latest version. If `R + W <= N`, the system provides only eventual consistency: reads can return stale data."
+    }
+  },
+  "blueprint": "/* The Distributed Quorum Invariant: */\nN = 3 (3 copies of every key)\nStrong Consistency: W = 2, R = 2  -->  R + W = 4 > 3  (Overlaps!)\nHigh Write Availability: W = 1, R = 1 --> R + W = 2 <= 3 (Eventual consistency)",
+  "takeaway": "NoSQL did not kill SQL; it traded relational guarantees for horizontal commodity scale."
+}

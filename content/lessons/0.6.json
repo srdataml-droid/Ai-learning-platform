@@ -1,0 +1,20 @@
+{
+  "id": "0.6",
+  "trackId": "0",
+  "trackName": "Before any code",
+  "title": "Integers versus floats, and why 0.1 plus 0.2 is not 0.3",
+  "status": "unsourced",
+  "story": "Every newcomer to programming experiences the same shock: they type 0.1 + 0.2 into Python or the JavaScript console and receive 0.30000000000000004. They assume the CPU is broken. It isn't. The computer is obeying the IEEE 754 standard established in 1985 by William Kahan and the IEEE committee.\n\nIn base 10, the fraction 1/3 cannot be written finitely: it repeats forever as 0.3333... Similarly, in base 2 (binary), numbers like 1/10 (0.1) and 2/10 (0.2) have repeating binary representations (0.0001100110011...). Because a 64-bit float has only 53 bits of precision for its mantissa, the computer must truncate the infinite repetition, introducing a tiny rounding discrepancy.\n\nWhen calculating financial transactions, e-commerce cart totals, or satellite navigation, rounding discrepancies compound. In 1991, during the Gulf War, an American Patriot missile battery failed to intercept an incoming Scud missile because an internal clock running in 24-bit floating point accumulated a 0.34-second drift after 100 hours of operation, shifting the target range gate by over 500 meters. Twenty-eight soldiers died.",
+  "beats": {
+    "broke": "Early computer manufacturers used proprietary, inconsistent hardware formats for fractional numbers. Code calculating scientific simulations yielded completely different answers when run on IBM, CDC, or DEC machines.",
+    "fix": "William Kahan led the creation of IEEE 754 in 1985, standardising single (32-bit) and double (64-bit) precision floating point arithmetic using sign, exponent, and mantissa fields.",
+    "cost": "Fractions with decimal denominators that are not powers of two cannot be represented precisely in binary. Rounding errors accumulate silently, breaking strict equality checks (==) and corrupting financial calculations.",
+    "interview": {
+      "q": "Why should you never use floating point numbers to store money in a relational database, and how do you fix it?",
+      "trap": "Thinking you can just round the float to 2 decimal places with Math.round().",
+      "answer": "Never use FLOAT or DOUBLE for currency because binary representations cannot accurately represent 0.10 or 0.01 without precision decay across arithmetic operations. Store currency either as an integer representing the smallest subunit (e.g. cents) or use arbitrary-precision decimal types (DECIMAL/NUMERIC in SQL, BigDecimal in Java)."
+    }
+  },
+  "blueprint": "// The classic binary floating point trap:\nconsole.log(0.1 + 0.2 === 0.3); // false\nconsole.log(0.1 + 0.2); // 0.30000000000000004\n\n// Correct approach: integer cents or epsilon comparison\nconst cents = 10 + 20; // 30 cents exact\nconst isEqual = Math.abs((0.1 + 0.2) - 0.3) < Number.EPSILON; // true",
+  "takeaway": "In binary floating point, 0.1 is an infinite repeating fraction. Never trust floats with money."
+}

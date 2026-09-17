@@ -1,0 +1,20 @@
+{
+  "id": "M.8",
+  "trackId": "M",
+  "trackName": "Math for machines",
+  "title": "The chain rule: literally backpropagation",
+  "status": "unsourced",
+  "story": "Many machine learning courses present backpropagation as an arcane, intimidating algorithm filled with subscripts and matrix calculus. In truth, backpropagation is nothing more than the freshman calculus chain rule applied systematically to a directed acyclic graph of computations.\n\nIf variable y depends on u, and u depends on x, the rate of change of y with respect to x is simply dy/dx = (dy/du) * (du/dx). In a neural network, the loss L depends on the activation of layer 3, which depends on layer 2, which depends on layer 1, which depends on the weights W.\n\nBy computing local derivatives at each node during the forward pass and multiplying them backwards from the loss to the inputs, we calculate exact partial derivatives dL/dW for every single weight in the network. Memorizing backprop as a separate concept from the chain rule causes developers to view neural networks as mysterious black boxes rather than transparent composite functions.",
+  "beats": {
+    "broke": "Early multi-layer neural networks were abandoned because researchers lacked an efficient algorithm to determine how early hidden layers contributed to output error.",
+    "fix": "Rumelhart, Hinton, and Williams (1986) showed that the calculus chain rule allows error signals to flow backwards through arbitrary computational graphs in O(N) time.",
+    "cost": "Multiplying many chain rule fractions smaller than 1 across deep networks causes the vanishing gradient problem, starving early layers of updates.",
+    "interview": {
+      "q": "How does the chain rule allow reverse-mode automatic differentiation to compute gradients for millions of parameters in a single backward pass?",
+      "trap": "Thinking backprop calculates each parameter's gradient independently from scratch.",
+      "answer": "The chain rule allows intermediate derivatives to be cached and reused. In reverse-mode, the gradient of the scalar loss with respect to an intermediate tensor is computed once and propagated backwards to all upstream nodes that contributed to it. Each weight requires only a single multiplication of the incoming gradient by its local derivative: dL/dw = dL/dout * dout/dw."
+    }
+  },
+  "blueprint": "# Chain rule in 3 lines of autograd:\n# If L = (w * x + b)^2, where z = w * x + b and L = z^2:\n# dz/dw = x, and dL/dz = 2 * z\n# By Chain Rule: dL/dw = (dL/dz) * (dz/dw) = (2 * z) * x",
+  "takeaway": "Backpropagation is not machine learning magic. It is just the chain rule applied backwards through a graph."
+}

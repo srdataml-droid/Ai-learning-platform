@@ -59,14 +59,53 @@
       const contentEl = document.getElementById('lesson-content-mount');
 
       const lesson = window.CurriculumLessons.getLesson(taskId);
+
+      // Two different absences, which used to look identical. A task that
+      // exists but has no lesson written is the normal state of most of this
+      // curriculum, and saying so is the point: the site used to fill that
+      // silence with a template that asserted nothing and sounded like it did.
       if (!lesson) {
+        let owningTrack = null;
+        let task = null;
+        for (const t of window.CURRICULUM.tracks) {
+          const found = t.tasks.find(x => x.id === taskId);
+          if (found) { owningTrack = t; task = found; break; }
+        }
+
+        if (!task) {
+          contentEl.innerHTML = `
+            <div class="inverted-band">
+              <h1>No such task</h1>
+              <p>Nothing in the curriculum has the ID "${escapeHtml(taskId)}".</p>
+              <a href="./index.html" class="btn" style="margin-top: 1rem; background: var(--inv-signal); color: var(--inv-bg);">Return to Curriculum Map</a>
+            </div>
+          `;
+          return;
+        }
+
+        const adjacentMissing = window.CurriculumLessons.getAdjacentLessons(taskId);
         contentEl.innerHTML = `
+          <div class="lesson-meta-bar">
+            <div class="lesson-breadcrumbs">
+              <a href="./index.html">Curriculum Map</a>
+              <span>/</span>
+              <a href="./track.html?id=${owningTrack.id}">Track ${owningTrack.id}: ${escapeHtml(owningTrack.name)}</a>
+              <span>/</span>
+              <span>${escapeHtml(taskId)}</span>
+            </div>
+          </div>
           <div class="inverted-band">
-            <h1>Lesson Not Found</h1>
-            <p>We could not find a curriculum lesson matching ID "${taskId}".</p>
-            <a href="./index.html" class="btn" style="margin-top: 1rem; background: var(--inv-signal); color: var(--inv-bg);">Return to Curriculum Map</a>
+            <span class="track-card-letter" style="color: var(--inv-signal); font-size: var(--t-0); display: block; margin-bottom: 0.5rem;">${escapeHtml(taskId)}</span>
+            <h1>${escapeHtml(task.text)}</h1>
+            <p style="max-inline-size: 62ch;">This task is on the curriculum. The lesson has not been written yet.</p>
+            <p style="max-inline-size: 62ch; opacity: 0.75; font-size: var(--t--1);">It is left blank on purpose. A lesson here would have to name what broke, who fixed it, in what year, and what the fix cost, with each of those traceable to a source. Until it does, an empty space is the honest answer.</p>
+            <div style="margin-top: 1.25rem; display: flex; gap: 0.75rem; flex-wrap: wrap;">
+              <a href="./track.html?id=${owningTrack.id}" class="btn" style="background: var(--inv-signal); color: var(--inv-bg); border: none;">Back to Track ${owningTrack.id}</a>
+              ${adjacentMissing.next ? `<a href="./lesson.html?id=${adjacentMissing.next}" class="btn" style="color: var(--inv-ink); border-color: rgba(239,235,227,0.35);">Next task &rarr;</a>` : ''}
+            </div>
           </div>
         `;
+        document.title = `${taskId}: ${task.text} — not written yet`;
         return;
       }
 
@@ -116,6 +155,11 @@
           </p>
         </section>
 
+        <!-- Provenance. A reader is never shown unmarked prose of unknown
+             origin: either its facts are traced to sources, a person has
+             checked it, or the page says neither has happened yet. -->
+        ${provenanceBanner(lesson)}
+
         <!-- Core Takeaway Banner -->
         ${lesson.takeaway ? `
           <div class="lesson-takeaway-banner" role="note" aria-label="Core Engineering Invariant">
@@ -148,7 +192,7 @@
                 <span class="beat-card-badge badge-beat1">BEAT 01</span>
                 <span style="font-family: var(--font-display); font-weight: 800; font-size: var(--t-0); color: #c92a2a;">What Broke</span>
               </div>
-              <p class="beat-card-content">${lesson.beat1}</p>
+              <p class="beat-card-content">${lesson.beats.broke}</p>
             </article>
 
             <!-- Beat 2: The Fix -->
@@ -157,7 +201,7 @@
                 <span class="beat-card-badge badge-beat2">BEAT 02</span>
                 <span style="font-family: var(--font-display); font-weight: 800; font-size: var(--t-0); color: var(--signal);">The Fix</span>
               </div>
-              <p class="beat-card-content">${lesson.beat2}</p>
+              <p class="beat-card-content">${lesson.beats.fix}</p>
             </article>
 
             <!-- Beat 3: What It Cost -->
@@ -166,7 +210,7 @@
                 <span class="beat-card-badge badge-beat3">BEAT 03</span>
                 <span style="font-family: var(--font-display); font-weight: 800; font-size: var(--t-0); color: #c07700;">What It Cost</span>
               </div>
-              <p class="beat-card-content">${lesson.beat3}</p>
+              <p class="beat-card-content">${lesson.beats.cost}</p>
             </article>
 
             <!-- Beat 4: Interview Question -->
@@ -177,23 +221,23 @@
               </div>
               <div class="beat-card-content">
                 <p style="font-weight: 600; margin-bottom: 0.5rem; font-size: var(--t-0);">
-                  "${typeof lesson.beat4 === 'object' ? lesson.beat4.q : lesson.beat4}"
+                  "${typeof lesson.beats.interview === 'object' ? lesson.beats.interview.q : lesson.beats.interview}"
                 </p>
 
-                ${typeof lesson.beat4 === 'object' && lesson.beat4.trap ? `
+                ${typeof lesson.beats.interview === 'object' && lesson.beats.interview.trap ? `
                   <div class="interview-trap-box">
                     <span class="interview-trap-title">⚠️ Common Candidate Trap:</span>
-                    <span>${lesson.beat4.trap}</span>
+                    <span>${lesson.beats.interview.trap}</span>
                   </div>
                 ` : ''}
 
-                ${typeof lesson.beat4 === 'object' && lesson.beat4.answer ? `
+                ${typeof lesson.beats.interview === 'object' && lesson.beats.interview.answer ? `
                   <button type="button" class="interview-answer-reveal-btn" id="reveal-answer-btn" aria-expanded="false" aria-controls="answer-panel">
                     <span>Reveal Senior Engineer Answer ↓</span>
                   </button>
                   <div class="interview-answer-panel" id="answer-panel" role="region" aria-label="Model Answer">
                     <strong style="font-family: var(--font-display); display: block; margin-bottom: 0.5rem; color: #2b8a3e;">Model Answer:</strong>
-                    <p style="margin-bottom: 0;">${lesson.beat4.answer}</p>
+                    <p style="margin-bottom: 0;">${lesson.beats.interview.answer}</p>
                   </div>
                 ` : ''}
               </div>
@@ -352,6 +396,45 @@
       function truncate(str, max) {
         if (!str) return '';
         return str.length > max ? str.substring(0, max - 1) + '…' : str;
+      }
+
+      /**
+       * Three states, and the reader can tell them apart at a glance:
+       *
+       *   unsourced  written before sourcing was required, no claims attached
+       *   traced     every date, figure and name in it is licensed by a
+       *              sourced claim, checked mechanically
+       *   verified   traced, and then read and accepted by a person
+       *
+       * There is no state for "failed the check": such a lesson is never
+       * written to content/, so it cannot reach this page.
+       */
+      function provenanceBanner(lesson) {
+        const states = {
+          unsourced: {
+            label: 'Not yet sourced',
+            text: 'This lesson was written before sources were required. Its dates and figures have not been traced, so treat them as a starting point to check rather than a fact to quote.',
+            tone: 'warn',
+          },
+          traced: {
+            label: 'Sources traced',
+            text: 'Every date, figure and name in this lesson is licensed by a claim with a source. Nobody has read it end to end yet.',
+            tone: 'ok',
+          },
+          verified: {
+            label: 'Verified',
+            text: 'Traced to sources and read end to end by a person.',
+            tone: 'ok',
+          },
+        };
+        const state = states[lesson.status];
+        if (!state) return '';
+        return `
+          <div class="provenance-banner provenance-${state.tone}" role="note">
+            <span class="provenance-label">${state.label}</span>
+            <span class="provenance-text">${state.text}</span>
+          </div>
+        `;
       }
 
       function escapeHtml(text) {

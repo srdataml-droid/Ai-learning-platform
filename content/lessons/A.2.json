@@ -1,0 +1,20 @@
+{
+  "id": "A.2",
+  "trackId": "A",
+  "trackName": "Systems thinking",
+  "title": "Reinforcing versus balancing feedback loops: why retries without backoff take down systems",
+  "status": "unsourced",
+  "story": "In system dynamics (pioneered by Jay Forrester and Donella Meadows), all systems are governed by two kinds of feedback loops: Balancing loops (negative feedback that stabilizes a system, like a thermostat) and Reinforcing loops (positive feedback that amplifies change, causing runaway exponential growth or collapse).\n\nIn distributed systems engineering, naive error handling frequently converts a temporary minor slowdown into a catastrophic, company-wide blackout via reinforcing feedback.\n\nHere is how a cascading retry storm happens: A database encounters a 1-second disk IO hiccup. 100 API requests time out at 1,000ms. If client apps immediately retry with zero delay, those 100 clients instantly send 100 new requests. The database, already struggling, now receives 200 requests. It slows down further. Now 500 requests time out and retry. Within 30 seconds, millions of retries hammer the dead database. The system is trapped in a vicious reinforcing feedback loop. The only cure is architectural balancing loops: Exponential Backoff, Jitter (randomizing retry intervals so requests don't pulse in lockstep), and Circuit Breakers (tripping open to cut all traffic when failure rates cross 50%).",
+  "beats": {
+    "broke": "Temporary minor network or database hiccups triggered waves of immediate client retries, turning momentary delays into total system blackouts.",
+    "fix": "Systems dynamics feedback control: implementing Exponential Backoff with Jitter and Circuit Breakers to convert reinforcing death spirals into self-stabilizing balancing loops.",
+    "cost": "Failed requests take longer to fail, client latency degrades gracefully rather than failing instantly, and circuit breakers require fallback degradation paths.",
+    "interview": {
+      "q": "Why is adding 'jitter' to exponential backoff mandatory to prevent server self-destruction during recovery?",
+      "trap": "Assuming exponential backoff alone prevents thundering herds.",
+      "answer": "Without jitter, if 10,000 clients fail simultaneously at t=0, exponential backoff causes all 10,000 clients to retry simultaneously at t=1s, then again at t=2s, then at t=4s—creating synchronized, pulsating waves of traffic (thundering herd) that knock the recovering server back down. Adding random jitter decorrelates client retry timers across time, smoothing the load into an even, manageable stream."
+    }
+  },
+  "blueprint": "// Exponential Backoff with Full Jitter (The AWS standard formula):\nfunction getRetryDelay(attempt, baseDelay = 100, maxDelay = 10000) {\n  const expDelay = Math.min(maxDelay, baseDelay * (2 ** attempt));\n  // Full Jitter: randomize between 0 and expDelay\n  return Math.random() * expDelay;\n}",
+  "takeaway": "Retries are reinforcing feedback loops. Without backoff and jitter, your recovery mechanism is a denial-of-service weapon against your own servers."
+}

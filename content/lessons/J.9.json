@@ -1,0 +1,20 @@
+{
+  "id": "J.9",
+  "trackId": "J",
+  "trackName": "Debugging",
+  "title": "Check what is actually running: right code, wrong environment, is the most common wasted hour in software",
+  "status": "unsourced",
+  "story": "It is the universal tragedy of software development: An engineer edits a file, saves, runs the test or refreshes the browser, and nothing changes. They add a `console.log(\"HELLO\")`, refresh, and the log does not print.\n\nThey spend the next three hours rewriting their algorithms, questioning their sanity, and scouring StackOverflow. Eventually, at 11:30 PM, they discover the truth: they were editing the code in `/Users/dev/project`, but the server running in their terminal was booted from `/Users/dev/project-backup`. Or their Docker container was running a cached image from yesterday. Or their browser was aggressively serving a cached service-worker bundle.\n\n'Right code, wrong environment' is the single most common wasted hour in engineering. Before debugging logic, you must prove that the code you are editing is physically the code being executed by the CPU. Change an arbitrary string to 'BANANA_CHECK_123' and verify that 'BANANA_CHECK_123' appears in the runtime output. If it does not appear, stop debugging algorithms: you have an environment deployment problem.",
+  "beats": {
+    "broke": "Developers spent countless hours debugging perfect code because the running runtime was executing an old build, a different directory, or a cached container image.",
+    "fix": "The sanity beacon protocol: inject an undeniable observable marker (e.g. printing a unique UUID or exit code) to verify the execution pipeline before debugging logic.",
+    "cost": "Requires patience to verify dull build steps and caching pipelines rather than diving straight into code logic.",
+    "interview": {
+      "q": "What systematic verification steps do you take when changes in your code editor do not appear to affect runtime behavior?",
+      "trap": "Continuing to modify logic or assumptions about the code.",
+      "answer": "1) Confirm process PID and current working directory (`lsof -i :port` or `pwdx <pid>`), 2) Check file modification timestamps on the compiled bundle vs source (`ls -la dist/`), 3) Check hot-reload watcher logs to verify recompilation, 4) Inject a deliberate syntax error or visible sentinel string to verify compilation fails, 5) Bypass browser/CDN caches via hard refresh (Cmd+Shift+R) or Incognito."
+    }
+  },
+  "blueprint": "# Quick verification commands:\n$ which node            # Confirm which binary is active\n$ pwd                   # Confirm current working directory\n$ lsof -i :3000          # Check which PID actually owns port 3000\n$ git status            # Confirm you are on the expected branch",
+  "takeaway": "Before debugging your code, prove that your code is actually running. Right code, wrong environment, wastes thousands of engineering hours."
+}

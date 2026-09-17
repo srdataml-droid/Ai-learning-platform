@@ -1,0 +1,20 @@
+{
+  "id": "P.3",
+  "trackId": "P",
+  "trackName": "Security",
+  "title": "SQL injection: how it works, why parameterised queries are the only real fix",
+  "status": "unsourced",
+  "story": "In the early days of web programming (PHP 3, ASP, Perl CGI), developers constructed database queries by concatenating user input strings directly into SQL commands: `query = \"SELECT * FROM users WHERE name = '\" + userInput + \"'\";`.\n\nIf a malicious user typed `' OR '1'='1`, the concatenated string became: `SELECT * FROM users WHERE name = '' OR '1'='1'`. Because '1'='1' is always true, the database dumped the entire user table. If the attacker typed `'; DROP TABLE users; --`, the database executed both queries and wiped the business data entirely.\n\nFor years, developers attempted to fix this by writing 'sanitizers' and regex blacklists, attempting to strip out single quotes and semicolons. Attackers bypassed every blacklist using Unicode tricks, hex encoding, and nested escapes. The only true fix is Parameterized Queries (Prepared Statements). In a prepared statement, the SQL query structure is sent to the database engine and compiled FIRST. Then, the user parameters are sent separately as raw data values. The database parser never interprets the user parameters as executable SQL syntax.",
+  "beats": {
+    "broke": "String concatenation treated untrusted user data as executable code instructions, allowing attackers to extract entire databases or wipe disk tables.",
+    "fix": "Prepared statements and parameterized queries separate the query compilation phase from data binding, making SQL injection mathematically impossible through parameters.",
+    "cost": "Requires developers to discipline themselves never to construct raw string queries, and prevents dynamic identifier selection (column or table names cannot be parameterized).",
+    "interview": {
+      "q": "Why can you not parameterize table names or column names in prepared statements (e.g. `SELECT ? FROM ?`), and how do you safely handle dynamic sorting?",
+      "trap": "Thinking prepared statements work for all SQL syntax tokens.",
+      "answer": "Prepared statements require the database query planner to parse the AST and compile the execution plan BEFORE parameters are bound. Table and column names dictate the query plan itself (which indexes to scan, which heap to read). To safely handle dynamic columns or sorting, you must use strict server-side whitelisting: validate the user input against a hardcoded array of allowed column names."
+    }
+  },
+  "blueprint": "// VULNERABLE: String concatenation\nconst sql = `SELECT * FROM users WHERE email = '${req.body.email}'`;\n\n// SECURE: Parameterized Query (Prepared Statement)\nconst sql = `SELECT * FROM users WHERE email = $1`;\nawait db.query(sql, [req.body.email]);",
+  "takeaway": "Never mix instructions with data. Parameterized queries compile the instructions before data is ever touched."
+}

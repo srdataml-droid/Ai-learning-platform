@@ -1,0 +1,20 @@
+{
+  "id": "E.4",
+  "trackId": "E",
+  "trackName": "Data structures and algorithms",
+  "title": "Hash maps: how they work, and when they degrade",
+  "status": "unsourced",
+  "story": "Before hash tables became ubiquitous, looking up a record among N elements required either scanning an array in O(n) time or searching a balanced binary tree in O(log n) time. In 1953, Hans Peter Luhn of IBM proposed hashing: pass an arbitrary key through a mathematical function to produce an integer index, directly addressing an array bucket in O(1) time.\n\nHash tables are the workhorses of software engineering. Dictionaries in Python, objects in JavaScript, indexes in databases, and caches in memory all rely on them. But the promise of 'O(1) lookup' is an average-case mathematical abstraction that hides dangerous failure modes.\n\nWhen two different keys produce the same hash code (a collision), the hash table must resolve it—either by chaining linked lists or probing open addresses. If an attacker knows your hash function (like Java's old polynomial string hash), they can submit 100,000 HTTP POST parameters engineered to collide on the exact same bucket. Lookup time degrades from O(1) to O(n), turning your web server's CPU to 100% load on a single HTTP request (HashDoS attack). Modern runtimes adopted randomized SipHash algorithms to survive.",
+  "beats": {
+    "broke": "Looking up data in large collections required O(n) array scans or O(log n) tree traversals, limiting database and compiler symbol lookup throughput.",
+    "fix": "Hans Peter Luhn (1953) invented hashing and hash tables, mapping arbitrary keys to array memory offsets in O(1) average time.",
+    "cost": "Hash tables degrade to O(n) under heavy collisions; resizing (re-hashing) causes sudden latency spikes, and sparse tables consume substantial extra memory.",
+    "interview": {
+      "q": "What causes a hash map to degrade from O(1) to O(n) time complexity, and how do modern language runtimes prevent HashDoS attacks?",
+      "trap": "Thinking hash maps are always guaranteed O(1) without conditions.",
+      "answer": "Degradation occurs when the hash function clusters keys into the same bucket (due to high load factor or malicious collisions), forcing O(n) traversal of collision chains. Modern runtimes (Python, Rust) use SipHash with randomized secret seeds per process, preventing attackers from predicting collisions to launch denial-of-service attacks."
+    }
+  },
+  "blueprint": "# Conceptual hash table lookup:\ndef get(table, key):\n    bucket = hash(key) % len(table.buckets)\n    for k, v in table.buckets[bucket]: # O(1) if buckets are sparse\n        if k == key:\n            return v\n    return None",
+  "takeaway": "A hash map buys O(1) speed by trading away memory and risking O(n) collapse if the hash function is compromised."
+}

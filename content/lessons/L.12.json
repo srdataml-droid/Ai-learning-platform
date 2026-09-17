@@ -1,0 +1,20 @@
+{
+  "id": "L.12",
+  "trackId": "L",
+  "trackName": "AI engineering",
+  "title": "Agent loops: termination, budgets, compounding error",
+  "status": "unsourced",
+  "story": "An AI agent is an LLM running inside a loop with access to tools: it observes the environment, reasons about the next step, calls an external function (database query, shell command, calculator, API), inspects the result, and repeats until it decides the goal is achieved.\n\nIn 2023, early agent frameworks (AutoGPT, BabyAGI) mesmerized the internet. But when deployed in production, they reliably self-destructed. If an agent has a 90% accuracy rate at each individual reasoning step, after 5 steps its probability of success is 0.90^5 = 59%. After 10 steps, it drops to 34%. Errors compound exponentially.\n\nWorse, when an agent encounters an unexpected error message from a tool, it often enters an infinite self-reinforcing loop: trying the same failed API call with slight prompt variations until the developer's credit card is maxed out. Production agent engineering is primarily defensive engineering: strict step limits, hard dollar token budgets, schema-enforced tool validators, and human-in-the-loop escape hatches.",
+  "beats": {
+    "broke": "Naive agent loops entered infinite loops, hallucinatory recursion, and runaway API spend when external tool responses deviated from expectations.",
+    "fix": "Finite State Machine (FSM) control layers, hard token/step budget guards, deterministic schema validation, and exponential backoff termination policies.",
+    "cost": "Constraining agent autonomy reduces open-ended problem-solving capability; developers must write more glue code to govern edge cases.",
+    "interview": {
+      "q": "What is the 'compounding error' problem in multi-step AI agents and what architectural patterns mitigate it?",
+      "trap": "Assuming newer, smarter models eliminate the need for loop constraints.",
+      "answer": "If each step has independent accuracy p, multi-step success scales as p^n. At p=0.95 and n=10, success is only 60%. Mitigations: 1) Deterministic orchestration (LangGraph / state machines) rather than purely autonomous LLM loops, 2) Per-step validation gates (schema validation, unit tests, linters), 3) Short execution horizons (max 3-5 tool turns), and 4) Early failure termination."
+    }
+  },
+  "blueprint": "// Defensive Agent Guard Pattern:\nlet turns = 0;\nconst MAX_TURNS = 5;\nconst MAX_TOKEN_BUDGET = 8000;\n\nwhile (!done) {\n  turns++;\n  if (turns > MAX_TURNS || totalTokens > MAX_TOKEN_BUDGET) {\n    throw new AgentBudgetExceededError('Terminating loop to protect budget.');\n  }\n  const step = await model.generateNextAction(state);\n  if (!validateAction(step)) { /* abort or repair */ }\n  // Execute tool...\n}",
+  "takeaway": "In multi-step agents, errors compound exponentially. Without hard budgets and state machines, autonomy is just runaway spend."
+}

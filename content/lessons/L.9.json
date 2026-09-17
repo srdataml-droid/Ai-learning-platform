@@ -1,0 +1,20 @@
+{
+  "id": "L.9",
+  "trackId": "L",
+  "trackName": "AI engineering",
+  "title": "Refusal and the honest 'I don't know'",
+  "status": "unsourced",
+  "story": "Large language models are probabilistic next-token predictors trained on internet text. By default, they have an overwhelming generative bias: when asked a question, their objective is to produce a plausible-sounding continuation, even if no factual basis exists. This produces hallucination.\n\nIn a prototype RAG demo, a hallucinated answer looks convincing to executives. In a production enterprise system (medical diagnosis, financial auditing, contract review), a hallucinated citation is a catastrophic liability. The most important metric in production RAG is not precision or recall; it is the Honest Refusal Rate: does the model explicitly refuse when the retrieved context lacks the necessary facts?\n\nAchieving clean refusals requires context boundary defense: instructing the model in system prompts that answering outside the provided documents is a critical failure, injecting negative test sets into evaluation pipelines, and calibrating retrieval confidence thresholds so queries with low similarity scores trigger deterministic fallbacks before ever touching an LLM.",
+  "beats": {
+    "broke": "Generative models hallucinated plausible falsehoods when retrieved contexts did not contain the answer, destroying customer trust in enterprise deployments.",
+    "fix": "Strict system boundary prompt conditioning, grounding verification passes, and deterministic retrieval confidence gates enforce explicit 'I do not have enough information' refusals.",
+    "cost": "Over-refusal: models reject valid questions with borderline relevance, requiring continuous calibration against golden evaluation benchmark datasets.",
+    "interview": {
+      "q": "How do you evaluate and eliminate hallucination in an enterprise RAG pipeline?",
+      "trap": "Saying you tell the model 'Please do not hallucinate' in the prompt.",
+      "answer": "1) Grounding verification (using a smaller fast model or LLM-as-a-judge to verify every claim in the response is attributed to a specific retrieved chunk), 2) Synthetic negative evaluation sets (questions with no answers in the corpus to measure true refusal rate), and 3) Deterministic similarity thresholds (if top retrieval score < threshold, bypass the LLM and return a pre-canned honest refusal)."
+    }
+  },
+  "blueprint": "// Production Prompt Conditioning Pattern:\nconst SYSTEM_PROMPT = `\nYou are a factual corporate assistant. Answer the question STRICTLY using only the CONTEXT below.\nIf the answer cannot be directly determined from the CONTEXT, you MUST state:\n\"I do not have sufficient information in the provided records to answer this question.\"\nDo NOT extrapolate or use outside training data.\n`;",
+  "takeaway": "The ability to reliably say 'I don't know' is what separates a production AI product from a toy demo."
+}

@@ -1,0 +1,20 @@
+{
+  "id": "B.24",
+  "trackId": "B",
+  "trackName": "System design",
+  "title": "Caching: what, where, and the cache invalidation problem",
+  "status": "unsourced",
+  "story": "Phil Karlton famously observed that 'There are only two hard things in Computer Science: cache invalidation and naming things.' Caching is the universal optimization: when computing an answer or fetching a record from disk is slow, store the result in fast memory and serve subsequent requests from there.\n\nThe web exploded in the early 2000s, and relational databases melted under read traffic. In 2003, Brad Fitzpatrick built Memcached for LiveJournal, allowing web servers to share pools of RAM. In 2009, Salvatore Sanfilippo released Redis, adding in-memory data structures and persistence. Suddenly, websites could handle millions of reads per second.\n\nThe disaster arrives on writes. When a user updates their profile name, does the application update the database first or the cache first? What if the database write succeeds but the cache eviction fails? What if two concurrent requests race? If you use Time-to-Live (TTL), your users see stale data for 5 minutes. If you use cache-aside with write-through, network splits leave stale data permanently.",
+  "beats": {
+    "broke": "Disk-bound databases choked on repetitive read traffic (e.g. 100,000 requests for the same homepage or product listing), driving database latencies into seconds.",
+    "fix": "In-memory key-value caches like Memcached (Fitzpatrick, 2003) and Redis (Sanfilippo, 2009) placed an O(1) DRAM lookup layer in front of the database.",
+    "cost": "Cache invalidation is notoriously bug-prone. Systems suffer cache stampedes (thundering herds) when keys expire, and risk serving corrupted, inconsistent, or stale data to users.",
+    "interview": {
+      "q": "What is the 'thundering herd' (cache stampede) problem and how do you protect a system when a hot cache key expires?",
+      "trap": "Suggesting you simply increase the TTL or add more Redis nodes.",
+      "answer": "When a cache key queried by 10,000 concurrent requests expires, all 10,000 requests miss simultaneously and slam the backend database with identical expensive queries, causing an outage. Fixes: 1) Mutex locking (only one thread regenerates the key while others wait), 2) Probabilistic early expiration (XFetch algorithm), or 3) Background asynchronous cache warming before TTL expiry."
+    }
+  },
+  "blueprint": "// Cache-aside with single-flight mutex protection\nasync function getProduct(id) {\n  let cached = await redis.get(`product:${id}`);\n  if (cached) return JSON.parse(cached);\n\n  // Acquire lock to avoid thundering herd on database\n  const lock = await redis.set(`lock:${id}`, '1', 'NX', 'EX', 5);\n  if (lock) {\n    const product = await db.products.findById(id);\n    await redis.set(`product:${id}`, JSON.stringify(product), 'EX', 3600);\n    return product;\n  }\n  // Wait and retry read from cache\n  await sleep(50);\n  return getProduct(id);\n}",
+  "takeaway": "A cache is an agreement to trade memory and eventual consistency for lower read latency. The bill is paid on invalidation."
+}

@@ -1,0 +1,20 @@
+{
+  "id": "B.1",
+  "trackId": "B",
+  "trackName": "System design",
+  "title": "What a computer is: CPU, RAM, disk, and why the difference matters",
+  "status": "unsourced",
+  "story": "In 1945, John von Neumann authored the First Draft of a Report on the EDVAC, establishing the stored-program architecture. Before von Neumann, calculating a new formula meant physically rewiring patch cords on ENIAC. Von Neumann proposed holding both instructions and data in the same electronic memory, decoded sequentially by a Central Processing Unit.\n\nEvery bottleneck in distributed system design traces directly back to the physical latency differences of the von Neumann hierarchy. In CPU registers and L1 cache, data arrives in 1 nanosecond (the speed of light through a few millimeters of silicon). To reach main memory (RAM), it takes ~100 nanoseconds—100 times slower. To reach a Solid State Drive over a PCIe bus takes ~100 microseconds (100,000 ns). To read an spinning magnetic disk or fetch over a local network takes ~10 milliseconds (10,000,000 ns).\n\nIf an L1 cache access were equivalent to 1 second of human time, fetching from RAM is like walking down the hall (1.5 minutes), reading from an NVMe SSD is like taking a weekend trip (1.5 days), and making an un-cached database query or network round trip is like waiting for an entire decade (12 years). System design is the art of never letting the CPU wait 12 years for data.",
+  "beats": {
+    "broke": "Early machines were hardwired for single equations. When computers became general-purpose, programmers treated all storage as uniform, causing arithmetic units to idle 99% of the time waiting for IO.",
+    "fix": "John von Neumann (1945) defined the CPU-memory architecture, which engineers evolved into a strict memory hierarchy: L1/L2/L3 cache, DRAM, SSD, and cold disk storage.",
+    "cost": "The 'von Neumann bottleneck': CPUs run orders of magnitude faster than the memory bus can supply data. Systems require complex multi-level caching, speculative execution, and cache coherence protocols.",
+    "interview": {
+      "q": "Explain the latency numbers every engineer should know, and how they dictate database indexing and caching strategies.",
+      "trap": "Quoting arbitrary numbers without explaining the orders-of-magnitude architectural consequences.",
+      "answer": "L1 cache is ~1ns, RAM is ~100ns, SSD read is ~100μs, network roundtrip cross-datacenter is ~50ms. Because disk/network is 100,000x to 1,000,000x slower than RAM, databases use B-Trees (optimised for block I/O pages) and in-memory caches (Redis) to avoid touching the I/O bus on every user request."
+    }
+  },
+  "blueprint": "/* Latency Human Scale Analogy (1 ns = 1 second) */\nL1 CPU Cache:      0.5 ns  --> 0.5 seconds (a heartbeat)\nRAM Access:        100 ns  --> 1.7 minutes (a coffee break)\nNVMe SSD Read:     100 μs  --> 1.1 days    (a weekend trip)\nCross-DC Network:  50 ms   --> 1.6 years   (a college degree)",
+  "takeaway": "System design is the engineering discipline of preventing a 1-nanosecond CPU from waiting on a 50-millisecond wire."
+}

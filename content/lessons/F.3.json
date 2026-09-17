@@ -1,0 +1,20 @@
+{
+  "id": "F.3",
+  "trackId": "F",
+  "trackName": "Logic",
+  "title": "Contrapositive: why debugging is contrapositive reasoning",
+  "status": "unsourced",
+  "story": "In formal logic, a conditional statement is 'If P, then Q' (P implies Q). The converse ('If Q, then P') is a logical fallacy. The inverse ('If not P, then not Q') is also a fallacy. But the contrapositive: 'If not Q, then not P' is mathematically identical to the original claim.\n\nConsider an engineering invariant: 'If this function executed correctly, then the user's balance was updated in the database.' (P -> Q).\n\nWhen debugging a production incident, you do not observe the internal code execution directly. You observe the output state. You inspect the database and see: 'The user's balance was NOT updated' (not Q). By contrapositive reasoning, you know with mathematical certainty: 'Therefore, the function did NOT execute correctly' (not P). Debugging is the systematic pursuit of falsification using contrapositive deduction to eliminate impossible causes.",
+  "beats": {
+    "broke": "Engineers fall into the affirmation-of-the-consequent fallacy: seeing symptom Q and falsely assuming bug P caused it, wasting hours debugging the wrong subsystem.",
+    "fix": "Formal contrapositive equivalence: establishing that `P -> Q` is logically identical to `not Q -> not P`, grounding the debugging process in deductive science.",
+    "cost": "Requires establishing airtight invariants; if the premise `P -> Q` was flawed or incomplete, contrapositive deduction will lead you to false conclusions.",
+    "interview": {
+      "q": "Explain why 'affirming the consequent' is the most common cognitive trap in software debugging, with a concrete example.",
+      "trap": "Confusing symptom correlation with causal deduction.",
+      "answer": "The fallacy is: 'If database is down (P), API returns 500 (Q). API returned 500 (Q), therefore database is down (P).' This ignores all other causes that yield Q (e.g. out of memory, null pointer, syntax error, network timeout). Deductive debugging requires testing the contrapositive: if the database is healthy (not P), does the error persist? If yes, the database cannot be the root cause."
+    }
+  },
+  "blueprint": "/* Logic Truth Table: */\nStatement:      P -> Q       (\"If code works, tests pass\")\nContrapositive: not Q -> not P (\"Tests failed, so code does NOT work\") [VALID]\nConverse:       Q -> P       (\"Tests passed, so code works\")          [FALLACY!]",
+  "takeaway": "Debugging is not guessing; it is the rigorous elimination of hypotheses via contrapositive falsification."
+}

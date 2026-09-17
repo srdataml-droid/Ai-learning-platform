@@ -1,0 +1,20 @@
+{
+  "id": "O.17",
+  "trackId": "O",
+  "trackName": "Classical ML",
+  "title": "Why accuracy lies on imbalanced data",
+  "status": "unsourced",
+  "story": "Imagine a doctor who diagnoses credit card fraud. Out of 10,000 transactions, only 10 are actually fraudulent (a 0.1% base rate). The doctor writes a machine learning algorithm with a single line of code: return 'Not Fraud' for every single transaction.\n\nWhat is the model's accuracy? Exactly 99.9%. The model will receive stellar accuracy scores in novice evaluation benchmarks. But it has caught zero fraudsters and is completely useless.\n\nIn real-world machine learning—fraud detection, rare disease diagnosis, ad click prediction, equipment failure alerts—classes are almost always severely imbalanced. Accuracy measures total correct predictions divided by total samples, which allows the dominant majority class to drown out the minority class entirely. Senior engineers reject raw accuracy in favor of Precision, Recall, F1-Score, and PR-AUC.",
+  "beats": {
+    "broke": "Naive models boasting 99% accuracy failed to detect catastrophic rare events like financial fraud, malignant tumors, or cyber intrusions.",
+    "fix": "Adoption of asymmetric metrics: Precision (false positive control), Recall (false negative capture), F1-Score, and Precision-Recall Area Under Curve (PR-AUC).",
+    "cost": "Tuning for recall catches more anomalies but increases false alarms; teams must align decision thresholds with actual business costs.",
+    "interview": {
+      "q": "Why is ROC-AUC misleading on datasets with extreme class imbalance (e.g. 1 positive per 10,000 negatives), and what metric should you use instead?",
+      "trap": "Saying ROC-AUC is always immune to class imbalance.",
+      "answer": "ROC-AUC plots True Positive Rate against False Positive Rate (FPR = FP / (FP + TN)). When the negative class is massive, even a large number of false positives yields a tiny FPR denominator, making the ROC curve look deceptively perfect. PR-AUC (Precision-Recall Curve) compares Precision (TP / (TP + FP)) against Recall, directly penalizing false positives without being cushioned by true negatives."
+    }
+  },
+  "blueprint": "from sklearn.metrics import classification_report, confusion_matrix\n\n# Never rely on model.score() or accuracy_score alone on imbalanced data:\nprint(classification_report(y_true, y_pred, target_names=['Legit', 'Fraud']))\n# Look at Fraud Recall: did we actually catch the rare cases?",
+  "takeaway": "Accuracy is a vanity metric on imbalanced datasets. A model that always predicts 'no' has 99% accuracy and zero value."
+}

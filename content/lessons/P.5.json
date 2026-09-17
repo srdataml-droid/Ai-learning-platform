@@ -1,0 +1,20 @@
+{
+  "id": "P.5",
+  "trackId": "P",
+  "trackName": "Security",
+  "title": "Password hashing: why SHA256 is wrong and bcrypt/argon2 are right",
+  "status": "unsourced",
+  "story": "When developers learn about cryptographic hash functions (like MD5, SHA-1, or SHA-256), they learn that hashes are one-way mathematical functions: easy to compute forward, impossible to invert backwards. Naively, they conclude: 'I will hash the user's password with SHA-256 and store the hash.'\n\nThis is a catastrophic security vulnerability. SHA-256 was designed for digital signatures and file integrity verification; its primary design requirement was SPEED. A modern consumer graphics card (like an NVIDIA RTX 4090) can compute over 10 billion SHA-256 hashes per second. If an attacker dumps your database, they can run a brute-force dictionary attack through billions of common passwords in seconds.\n\nPassword hashing algorithms MUST BE DELIBERATELY SLOW and memory-hard. In 1999, Niels Provos and David Mazières designed bcrypt, based on the Blowfish cipher, featuring an adjustable work factor (cost). In 2015, the Password Hashing Competition selected Argon2 as the gold standard. Argon2 requires substantial RAM (memory hardness), preventing attackers from using cheap ASIC chips or GPUs to parallelize cracking attacks.",
+  "beats": {
+    "broke": "Fast cryptographic hashes (MD5, SHA-256) allowed attackers who obtained database dumps to crack millions of user passwords per second using GPUs.",
+    "fix": "Provos & Mazières (1999, bcrypt) and the Password Hashing Competition (2015, Argon2) created slow, memory-hard adaptive hashing algorithms with configurable work factors.",
+    "cost": "Authentication CPU cost: computing bcrypt or Argon2 consumes 50-100ms of server CPU per login, exposing login endpoints to Denial-of-Service attacks if rate limits are omitted.",
+    "interview": {
+      "q": "What is a cryptographic salt in password hashing, and what specific attack does it neutralize?",
+      "trap": "Thinking salt encrypts the password or hides its length.",
+      "answer": "A salt is a cryptographically random string generated uniquely for each user and concatenated with their password before hashing (stored in plaintext alongside the hash). It neutralizes: 1) Rainbow table attacks (precomputed tables of hash values), and 2) Batch cracking across users (two users with the identical password 'password123' produce completely different hash strings, forcing the attacker to crack each password individually)."
+    }
+  },
+  "blueprint": "// Using Argon2id (The Modern Gold Standard):\nconst argon2 = require('argon2');\n\n// Hash with automatic cryptographic salt and memory cost:\nconst hash = await argon2.hash(password, {\n  type: argon2.argon2id,\n  memoryCost: 2 ** 16, // 64 MB RAM\n  timeCost: 3          // 3 iterations\n});\n\n// Verify during login:\nconst isValid = await argon2.verify(hash, password);",
+  "takeaway": "For passwords, fast algorithms are vulnerabilities. A good password hash is deliberately slow and memory-hungry."
+}

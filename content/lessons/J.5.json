@@ -1,0 +1,20 @@
+{
+  "id": "J.5",
+  "trackId": "J",
+  "trackName": "Debugging",
+  "title": "Binary search the problem space: git bisect as automated scientific method",
+  "status": "unsourced",
+  "story": "A major software system has 1,200 commits pushed over the last two months. Suddenly, a customer reports that exporting a PDF report with special international characters crashes with an obscure encoding error. The team knows the export feature worked properly in the v2.4 release, but is broken in v2.6.\n\nA junior engineer begins reading recent commits, guessing which PR might be responsible, or trying to understand all 40,000 changed lines of code across two months.\n\nA senior engineer runs git bisect. Git bisect is binary search applied directly to the directed acyclic graph of version control history. You mark the current commit as 'bad' and the old release as 'good'. Git checks out the exact middle commit (600 commits away). You test: does it work? If yes, mark 'good'. If no, mark 'bad'. In log2(1200) = roughly 10 tests, Git pinpoints the exact single commit, author, diff, and date that introduced the regression. If you write an automated test script, git bisect run ./test.sh finds the culprit automatically in thirty seconds.",
+  "beats": {
+    "broke": "Developers spent days reading source code differences trying to deduce which change among thousands broke an existing feature.",
+    "fix": "Git bisect formalized binary search over version control history, turning regression diagnosis into an O(log N) automated test routine.",
+    "cost": "Requires a clean, buildable history; commits that do not compile break bisect runs unless skipped with git bisect skip.",
+    "interview": {
+      "q": "How do you automate git bisect with an automated shell script to find a regression without human intervention?",
+      "trap": "Thinking git bisect requires manual testing at every step.",
+      "answer": "Write a reproduction script that exits with status code 0 if the commit is good/working, and status code 1 (or any code 1-127 except 125) if the commit is bad/broken. Run: git bisect start HEAD v2.4, followed by git bisect run ./test.sh. Git will automatically execute the binary search loop unattended until printing the exact offending commit."
+    }
+  },
+  "blueprint": "# Automated regression hunting with git bisect:\ngit bisect start\ngit bisect bad HEAD              # Current broken state\ngit bisect good v1.4.0            # Last known working release\n\n# Run automated test script:\ngit bisect run npm test -- test/regression.test.js\n# Output: \"[hash] is the first bad commit\"",
+  "takeaway": "Never read 1,000 commits when binary search can isolate the single broken line in ten steps."
+}

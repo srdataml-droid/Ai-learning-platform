@@ -1,0 +1,20 @@
+{
+  "id": "F.1",
+  "trackId": "F",
+  "trackName": "Logic",
+  "title": "Propositional logic: AND, OR, NOT, XOR, truth tables",
+  "status": "unsourced",
+  "story": "In 1854, self-taught English mathematician George Boole published 'An Investigation of the Laws of Thought'. Boole proposed that human reasoning could be reduced to an algebraic system where variables take only two states: True (1) or False (0). For nearly a century, Boole's work remained a curious mathematical abstraction studied only by philosophers.\n\nIn 1937, Claude Shannon, a 21-year-old master's student at MIT, wrote what has been called the most important master's thesis of the 20th century: 'A Symbolic Analysis of Relay and Switching Circuits'. Shannon realized that electromechanical telephone switches and vacuum tubes could physically execute Boolean algebra: a series circuit was an AND gate; a parallel circuit was an OR gate.\n\nEvery microchip, arithmetic logic unit, conditional statement, and SQL query is built on this foundation. When an engineer writes `if (is_admin || (has_permission && !is_banned))`, they are executing the exact Boolean algebra that Claude Shannon mapped onto physical electronic relays in 1937.",
+  "beats": {
+    "broke": "Mechanical calculators used complex gears and decimal wheels that jammed easily, wore out mechanically, and could not perform symbolic logical decision-making.",
+    "fix": "George Boole (1854) invented Boolean algebra, and Claude Shannon (1937) proved that electronic switching circuits could physically compute Boolean logic.",
+    "cost": "Physical circuits suffer propagation delay (gate delay) as electrical signals pass through cascades of gates, creating clock speed ceilings.",
+    "interview": {
+      "q": "What is De Morgan's Law, and how do you rewrite `!(is_admin || is_editor)` to eliminate the negative outer parenthesis?",
+      "trap": "Forgetting to flip the OR operator to an AND operator.",
+      "answer": "De Morgan's Laws state: 1) `!(A || B)` is equivalent to `!A && !B`, and 2) `!(A && B)` is equivalent to `!A || !B`. Rewriting `!(is_admin || is_editor)` yields `!is_admin && !is_editor`. In code refactoring, applying De Morgan's laws eliminates deeply nested negated conditionals, vastly improving readability and preventing subtle Boolean logic bugs."
+    }
+  },
+  "blueprint": "// Truth Table for XOR (Exclusive OR):\n// A | B | A ^ B\n// 0 | 0 |   0\n// 0 | 1 |   1\n// 1 | 0 |   1\n// 1 | 1 |   0\n\n// Invert conditional via De Morgan's Law:\nif (!(hasToken && isValid)) { /* ... */ }\n// Becomes:\nif (!hasToken || !isValid)  { /* ... */ }",
+  "takeaway": "All computation is physical logic gates; Claude Shannon showed that electrical switches can evaluate human truth."
+}

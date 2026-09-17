@@ -1,0 +1,20 @@
+{
+  "id": "B.8",
+  "trackId": "B",
+  "trackName": "System design",
+  "title": "Networking: IP addresses, ports, TCP versus UDP",
+  "status": "unsourced",
+  "story": "The fundamental miracle of the Internet is packet switching. In 1974, Vint Cerf and Bob Kahn authored RFC 675, defining the Transmission Control Protocol (TCP) and Internet Protocol (IP).\n\nIP (Layer 3) handles routing: it stamps packets with source and destination IP addresses, moving bytes from host to host across unreliable routers. A Port (Layer 4) provides addressing inside the host: it tells the OS which specific process (e.g. port 80 for web, port 5432 for PostgreSQL) owns the data.\n\nAt Layer 4, you face the eternal fork in the road: TCP versus UDP. TCP is the polite, obsessive accountant: it guarantees ordered delivery, retransmits lost packets, adjusts speed based on network congestion, and performs handshakes. But that guarantee costs latency: if packet 3 is dropped, packets 4 and 5 must wait in memory (Head-of-Line blocking) while packet 3 is retransmitted. UDP is the reckless broadcaster: it fires packets into the ether with zero handshakes and zero retransmissions. If a packet drops, it is lost forever. Video streaming, multiplayer gaming, and voice calls use UDP because a late audio packet is useless.",
+  "beats": {
+    "broke": "Circuit-switched telephone networks reserved dedicated copper wires for entire calls. If a wire was cut, the call died. Network capacity was wasted when participants paused to think.",
+    "fix": "Cerf & Kahn (1974) designed packet-switched IP routing and TCP reliable transport, allowing millions of computers to share packet streams over unpredictable networks.",
+    "cost": "TCP's reliability causes Head-of-Line blocking and latency jitter under packet loss. UDP avoids this, but forces application developers to write their own congestion control and packet loss handling.",
+    "interview": {
+      "q": "Why did HTTP/3 abandon TCP to run on top of QUIC (UDP), and what specific problem did this solve on mobile networks?",
+      "trap": "Saying UDP is simply 'faster' without mentioning Head-of-Line blocking.",
+      "answer": "In HTTP/2 over TCP, all multiplexed streams share a single TCP connection. If a single packet drops, TCP halts all streams until that packet is retransmitted (TCP Head-of-Line blocking). HTTP/3 runs on QUIC over UDP: it implements stream multiplexing at the transport layer, so a dropped packet on stream A never halts or delays stream B. It also supports connection migration when switching from Wi-Fi to cellular without renegotiating handshakes."
+    }
+  },
+  "blueprint": "/* Protocol Comparison: */\nTCP:  Connection-oriented | 3-way handshake | Reliable | Ordered | Congestion control\n      Use case: Financial APIs, Web pages, Database connections, File transfers\n\nUDP:  Connectionless | No handshake | Fire-and-forget | Unordered | Minimal overhead\n      Use case: Real-time gaming, Voice (VoIP), Live video, DNS queries, QUIC",
+  "takeaway": "TCP guarantees every byte arrives in order; UDP guarantees no byte ever waits for a dead predecessor."
+}

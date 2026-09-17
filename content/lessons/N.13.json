@@ -1,0 +1,20 @@
+{
+  "id": "N.13",
+  "trackId": "N",
+  "trackName": "Data work",
+  "title": "Leakage, the bug that makes you look brilliant",
+  "status": "unsourced",
+  "story": "Data leakage is the most humiliating bug in data science because it masquerades as superhuman success. A data scientist builds a customer churn prediction model or loan default predictor, evaluates it on their test set, and achieves 99.8% ROC-AUC. Management celebrates, bonuses are discussed, and the model is pushed to production.\n\nWithin two weeks of deployment, the model fails completely, performing worse than a random coin flip. What happened? Data leakage.\n\nLeakage occurs when information from the target variable or the future is inadvertently included in the training features. Classic examples: including 'cancellation_survey_completed_date' as a feature to predict whether a customer will cancel, or calculating the mean of the entire dataset for imputation before splitting into train and test sets. In production, future data does not exist yet. If your model gets a 99% score on a difficult real-world problem, do not celebrate—hunt for leakage.",
+  "beats": {
+    "broke": "Models achieving near-perfect metrics during offline experimentation collapsed completely upon exposure to real-world live traffic.",
+    "fix": "Strict temporal data splitting, feature pipeline isolation, and rigorous feature-store time-travel mechanics prevent future information from leaking into training sets.",
+    "cost": "Preventing leakage requires rigid data segregation; standard random train_test_split functions must be discarded in favor of time-based splits.",
+    "interview": {
+      "q": "Give two concrete examples of data leakage in ML pipelines and explain how to prevent them in production code.",
+      "trap": "Assuming random k-fold cross validation is sufficient to prevent leakage.",
+      "answer": "1) Preprocessing leakage: fitting scalers or imputers on the entire dataset before splitting (fix: use sklearn Pipelines and fit only on the train partition). 2) Temporal leakage: using future state in time-series (e.g. predicting fraud using features updated after the chargeback occurs). Prevent by enforcing strict point-in-time joins where training features only use data timestamped prior to the prediction event."
+    }
+  },
+  "blueprint": "# The WRONG way (LEAKAGE):\nscaler = StandardScaler()\nX_scaled = scaler.fit_transform(X) # Leaks test statistics into train!\nX_train, X_test, y_train, y_test = train_test_split(X_scaled, y)\n\n# The RIGHT way (No Leakage):\nX_train, X_test, y_train, y_test = train_test_split(X, y)\nscaler = StandardScaler()\nX_train = scaler.fit_transform(X_train) # Fit ONLY on train\nX_test = scaler.transform(X_test)       # Only transform test",
+  "takeaway": "If your model accuracy looks miraculous, you haven't built a genius model—you've leaked the answer."
+}

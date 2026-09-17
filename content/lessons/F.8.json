@@ -1,0 +1,20 @@
+{
+  "id": "F.8",
+  "trackId": "F",
+  "trackName": "Logic",
+  "title": "Null, undefined, and three valued logic in SQL: NULL is not equal to NULL",
+  "status": "unsourced",
+  "story": "In 1965, British computer scientist Tony Hoare invented the null reference for the ALGOL W language. Decades later in 2009, Hoare publicly apologized at an engineering conference: 'I call it my billion-dollar mistake. It has led to innumerable errors, vulnerabilities, and system crashes.'\n\nNowhere is the peril of null more insidious than in relational databases. SQL does not use classical two-valued Boolean logic (True or False); it uses Kleene's Three-Valued Logic: True, False, and NULL (Unknown).\n\nBecause NULL means 'unknown value', asking the database 'Is NULL equal to NULL?' (`NULL = NULL`) does not evaluate to True; it evaluates to UNKNOWN! If you do not know Alice's salary, and you do not know Bob's salary, you cannot assert their salaries are equal. If you write `SELECT * FROM users WHERE status != 'active'`, any user whose status is NULL will NOT be returned, because `NULL != 'active'` evaluates to UNKNOWN, and WHERE clauses only return rows where the condition evaluates to TRUE. Thousands of production bugs stem from forgetting that NULL is a third logical state.",
+  "beats": {
+    "broke": "Programs and databases crashed or returned corrupt calculations when real-world records had missing or uncollected information.",
+    "fix": "Tony Hoare (1965) introduced the null reference, and Edgar F. Codd incorporated Three-Valued Logic (True, False, Unknown) into SQL to represent missing data.",
+    "cost": "Null pointer exceptions became the single most common crash in software history. SQL queries silently drop rows because WHERE filters exclude UNKNOWN results.",
+    "interview": {
+      "q": "Why does `SELECT * FROM users WHERE id NOT IN (SELECT manager_id FROM departments)` return 0 rows if a single manager_id is NULL?",
+      "trap": "Assuming SQL treats NULL as false or ignores it.",
+      "answer": "The NOT IN operator expands into a chain of inequality comparisons joined by AND: `id != 1 AND id != 2 AND id != NULL`. In three-valued logic, `id != NULL` evaluates to UNKNOWN. Anything AND UNKNOWN evaluates to UNKNOWN or FALSE, never TRUE. As a result, the entire WHERE clause fails for every single row, silently returning an empty result set."
+    }
+  },
+  "blueprint": "-- The Three-Valued Logic Trap in SQL:\nSELECT * FROM employees WHERE bonus = NULL;   -- Returns NOTHING (always Unknown)\nSELECT * FROM employees WHERE bonus IS NULL;  -- Correct!\n\n-- Boolean evaluation table with NULL:\n-- TRUE  AND NULL = NULL (Fails WHERE)\n-- FALSE AND NULL = FALSE\n-- NOT NULL       = NULL",
+  "takeaway": "In SQL, NULL is not a value; it is the state of unknowability. NULL is never equal to NULL."
+}

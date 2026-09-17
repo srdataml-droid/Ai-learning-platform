@@ -1,0 +1,20 @@
+{
+  "id": "0.2",
+  "trackId": "0",
+  "trackName": "Before any code",
+  "title": "The terminal: how to navigate, move files, read files",
+  "status": "unsourced",
+  "story": "Before visual desktop windows and computer mice were invented at Xerox PARC in the 1970s, human interaction with computers took place through electromechanical teleprinters (like the Teletype Model 33). You typed a line of text, paper advanced, and the remote computer punched back an answer.\n\nThe Unix terminal shell (Bourne Shell 1977, Bash 1989) preserved this stream-based paradigm. In a terminal, commands are small, single-purpose executables that take text from standard input (stdin) and stream text to standard output (stdout). Navigating via 'cd', inspecting with 'ls', moving with 'mv', and reading with 'cat' or 'less' is not an antiquated retro aesthetic—it is the direct programming interface of operating system kernels and remote cloud servers.\n\nWhen a cloud container crashes in AWS or Google Cloud, there is no desktop GUI to double-click. There is only an SSH terminal. Engineers who cannot navigate, grep logs, and inspect processes in the terminal are effectively blind in production environments.",
+  "beats": {
+    "broke": "Physical teleprinters and punch cards had massive latency turnarounds. GUI desktops were later created for consumers but hid the process streams, file descriptors, and exit codes necessary for systems automation.",
+    "fix": "Ken Thompson (Unix 1971) and Stephen Bourne (Bourne Shell 1977) created the standard command-line interface based on streams, environment variables, and process composition.",
+    "cost": "The terminal provides zero safety nets. A typographical error in a command like 'rm -rf /' will silently destroy an entire server without prompting for confirmation.",
+    "interview": {
+      "q": "What is the difference between standard output (stdout, file descriptor 1) and standard error (stderr, file descriptor 2), and why does piping `cmd1 | cmd2` not pipe errors?",
+      "trap": "Assuming all terminal text belongs to the same stream.",
+      "answer": "Standard output (fd 1) carries normal program output, while standard error (fd 2) carries diagnostics and errors out-of-band so error messages do not pollute data pipelines. In Unix, the pipe operator `|` connects ONLY fd 1 of the first process to stdin of the second; to redirect stderr into the pipe, you must explicitly merge streams using `2>&1 |`."
+    }
+  },
+  "blueprint": "# Pipe stdout to grep while keeping errors visible on terminal\n$ node server.js 2> error.log | grep \"CRITICAL\"\n\n# Combine stdout and stderr into one stream\n$ ./build.sh > output.log 2>&1",
+  "takeaway": "The terminal is not a retro interface; it is the raw stream API of operating system kernels."
+}

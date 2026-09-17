@@ -1,0 +1,20 @@
+{
+  "id": "A.3",
+  "trackId": "A",
+  "trackName": "Systems thinking",
+  "title": "The bottleneck rule: a system moves at the speed of its slowest part",
+  "status": "unsourced",
+  "story": "Eliyahu Goldratt formulated the Theory of Constraints in his 1984 book 'The Goal'. The core theorem is mathematically unyielding: any improvement made anywhere other than the system's primary bottleneck is an illusion.\n\nIf an API spends 2 milliseconds executing application code in Node.js and 180 milliseconds waiting for an unindexed PostgreSQL query, rewriting your backend in Rust or Go to reduce Node.js execution time from 2ms to 0.2ms achieves a 0.9% overall latency improvement. You spent three months on a rewrite that changed nothing for users.\n\nSenior engineers constantly identify the constraint before doing any optimization work: is the bottleneck CPU bound, Memory bandwidth bound, Disk I/O bound, Network latency bound, or Database connection lock bound? You only optimize the constraint. Once the constraint is relieved, the bottleneck shifts somewhere else.",
+  "beats": {
+    "broke": "Engineering teams spent millions rewriting services in low-level languages only to see zero improvement in real user page load speeds.",
+    "fix": "The Theory of Constraints: systematically profile the end-to-end call path, identify the single active bottleneck, and concentrate all engineering effort there.",
+    "cost": "Removing one bottleneck immediately exposes the next hidden constraint in the system (e.g., speeding up DB queries exposes network socket limits).",
+    "interview": {
+      "q": "How does Amdahl's Law govern system optimization, and how do you calculate the maximum theoretical speedup of a system?",
+      "trap": "Believing that doubling compute or adding more parallel workers doubles total system speed.",
+      "answer": "Amdahl's Law states that overall speedup S = 1 / ((1 - p) + (p / s)), where p is the proportion of the task that can be parallelized/optimized and s is the speedup of that part. If 80% of a request is blocked waiting on an unindexed database query (p = 0.2 parallelizable), even making the application compute infinitely fast (s = infinity) yields a maximum theoretical speedup of only 1 / 0.8 = 1.25x."
+    }
+  },
+  "blueprint": "# Amdahl's Law speedup calculation:\ndef max_speedup(parallel_fraction, component_speedup):\n    return 1.0 / ((1.0 - parallel_fraction) + (parallel_fraction / component_speedup))\n\n# If only 20% of the program is optimizable, even 100x speedup yields only 1.24x overall:\nprint(max_speedup(0.20, 100.0)) # ~1.24x",
+  "takeaway": "Optimizing anything except the bottleneck is an illusion. Find the constraint before writing code."
+}

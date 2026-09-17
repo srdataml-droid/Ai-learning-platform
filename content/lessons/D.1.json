@@ -1,0 +1,20 @@
+{
+  "id": "D.1",
+  "trackId": "D",
+  "trackName": "Craft",
+  "title": "Git beyond the three commands: log, diff, rebase, cherry pick, bisect",
+  "status": "unsourced",
+  "story": "Most junior developers memorize three git commands: `git add .`, `git commit -m \"update\"`, and `git push origin main`. When a merge conflict happens or a regression is introduced, they panic, clone a fresh copy of the repository into a new folder, and manually copy files over.\n\nIn 2005, Linus Torvalds wrote Git in roughly ten days to replace BitKeeper for Linux kernel development. Torvalds designed Git as a content-addressable directed acyclic graph (DAG) of immutable tree and commit objects identified by SHA-1 hashes. Branches are not physical copies of folders; they are simply lightweight 41-byte text files holding a pointer to a commit hash.\n\nMastering tools like `git bisect` (which binary searches your commit history to find the exact commit that introduced a bug in O(log n) tests) and `git rebase -i` (which curates atomic, readable history) transforms version control from a stressful chore into a precision diagnostic instrument.",
+  "beats": {
+    "broke": "Centralized version control (CVS, Subversion) required network connections to commit, branching was painfully slow, and tracking down regressions across large teams took days of manual investigation.",
+    "fix": "Linus Torvalds (2005) designed Git as a decentralized, content-addressable graph of immutable objects, creating rapid branching and cryptographic commit integrity.",
+    "cost": "Git's command-line interface is notoriously idiosyncratic and unforgiving; commands like `git reset --hard` or improper force pushes can wipe uncommitted or unpushed work.",
+    "interview": {
+      "q": "How does `git bisect` work, and how do you automate regression detection with a unit test script?",
+      "trap": "Thinking you have to manually checkout and test each commit one by one.",
+      "answer": "`git bisect` performs a binary search between a known good commit and a known bad commit. You run `git bisect start`, `git bisect bad HEAD`, and `git bisect good <commit-hash>`. You can automate the entire search by executing `git bisect run ./test.sh`: Git will automatically check out commits, run the test script, check the exit code (0 for pass, non-zero for fail), and identify the offending commit in O(log N) steps."
+    }
+  },
+  "blueprint": "# Automated bisect search:\n$ git bisect start HEAD v1.4.0\n$ git bisect run npm test\n# Output: 34a8e2b is the first bad commit\n$ git bisect reset",
+  "takeaway": "Git is not a backup cloud; it is an immutable directed acyclic graph of project evolution."
+}

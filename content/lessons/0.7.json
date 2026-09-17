@@ -1,0 +1,20 @@
+{
+  "id": "0.7",
+  "trackId": "0",
+  "trackName": "Before any code",
+  "title": "ASCII, Unicode, UTF-8, and why emojis break things",
+  "status": "unsourced",
+  "story": "In 1963, the American Standards Association created ASCII: a 7-bit character set mapping 128 numbers to the English alphabet, digits, and teletype control codes like carriage return. It worked perfectly as long as the entire computing world spoke English in the United States.\n\nAs computing spread internationally, every nation bolted on custom 8-bit extensions (code pages like ISO-8859-1 for Western Europe, KOI8-R for Russia, Shift-JIS for Japan). If you opened a Russian document on a French computer, it turned into unreadable gibberish known as 'mojibake'. In 1988, Xerox and Apple engineers formed the Unicode Consortium to assign a unique numeric code point to every character in every human language.\n\nIn 1992, Ken Thompson and Rob Pike designed UTF-8 on a placemat in a New Jersey diner. UTF-8 was backward-compatible with ASCII: English letters remained 1 byte, while other languages and emojis used between 2 and 4 bytes. But this created a new crisis: string length was no longer the number of bytes. If you truncate a string at 20 bytes and slice directly through a 4-byte emoji, you create invalid byte sequences that crash database drivers.",
+  "beats": {
+    "broke": "ASCII only supported 128 English characters. Competing 8-bit code pages turned international documents into illegible mojibake and caused software to crash across borders.",
+    "fix": "The Unicode standard assigned universal code points (U+0000 to U+10FFFF), and Ken Thompson and Rob Pike (1992) invented UTF-8, a backward-compatible variable-length encoding (1 to 4 bytes).",
+    "cost": "String length no longer equals byte length. Substring operations can split multi-byte characters, and naive indexing runs in O(n) time rather than O(1) memory offsets.",
+    "interview": {
+      "q": "Why does `\"💩\".length` return 2 in JavaScript and Java, and what bug does this cause in database column limits?",
+      "trap": "Assuming JavaScript length counts visible characters or grapheme clusters.",
+      "answer": "JavaScript and Java strings are internally encoded in UTF-16 code units (16-bit). Emojis like 💩 reside above U+FFFF and require a surrogate pair (two 16-bit code units), so length reports 2. If a system allocates VARCHAR(1) or chops strings by index, it corrupts the surrogate pair into illegal lone surrogates."
+    }
+  },
+  "blueprint": "# In Python:\ntext = '🚀'\nprint(len(text))              # 1 character (Unicode code point)\nprint(len(text.encode('utf-8')) # 4 bytes on wire/disk\n\n// In JavaScript:\nconsole.log('🚀'.length);     // 2 (UTF-16 code units)\nconsole.log([...'🚀'].length); // 1 (Spread into code points)",
+  "takeaway": "One character is not one byte, and in modern text, one glyph is not even one code point."
+}

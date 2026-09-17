@@ -1,0 +1,20 @@
+{
+  "id": "D.12",
+  "trackId": "D",
+  "trackName": "Craft",
+  "title": "The protocol for AI-generated code: read it, explain it, find the questionable choice, replace one part, test it every time",
+  "status": "unsourced",
+  "story": "With the rise of code generation tools, developers can generate 500 lines of complex TypeScript, Python, or SQL in three seconds. The temptation is enormous: copy, paste, click run. If it doesn't crash on the first click, ship it to production.\n\nThis is the fastest path to architectural decay. AI models generate code based on statistical likelihood, not system responsibility. They frequently introduce subtle hallucinations: deprecated API flags, unindexed database queries that collapse at volume, subtle race conditions, or security vulnerabilities like missing authorization checks.\n\nThe disciplined engineer treats AI-generated code not as an infallible oracle, but as a draft produced by a brilliant but sleep-deprived intern. The protocol is strict: 1) Read every line before pasting. 2) Explain out loud what each block does. 3) Find the questionable choice (there is always at least one: an unhandled null, an O(n^2) nested loop, or missing timeout). 4) Refactor or replace at least one part yourself to reclaim ownership. 5) Write and run a rigorous automated test before opening a PR.",
+  "beats": {
+    "broke": "Blindly accepting AI-generated boilerplate introduced unverified edge-case bugs, security holes, and code that nobody on the engineering team actually understood or could maintain.",
+    "fix": "The verification protocol: establishing an active review discipline where AI-generated code must be decomposed, critiqued, partially rewritten, and verified with tests.",
+    "cost": "Slows down the immediate illusion of 10x coding speed, requiring cognitive effort and discipline instead of passive copy-pasting.",
+    "interview": {
+      "q": "Why is shipping code you cannot explain out loud a critical engineering violation, especially when using LLM coding assistants?",
+      "trap": "Believing that passing happy-path manual tests is sufficient proof of code correctness.",
+      "answer": "When a production outage occurs at 3 AM, the LLM will not be on-call to debug it. If the engineer who committed the code cannot articulate its internal invariants, state machine, and failure modes, mean-time-to-recovery (MTTR) spikes dramatically. Code authorship is not typing keystrokes; it is taking operational responsibility for system behavior under failure."
+    }
+  },
+  "blueprint": "/* The AI Code Protocol: */\n1. READ: Line by line. No skimming.\n2. EXPLAIN: What is the time complexity and memory overhead?\n3. CRITIQUE: Where is the failure mode when network drops or data is empty?\n4. REFACTOR: Rewrite the questionable block in team's idiom.\n5. TEST: Add unit test verifying the edge case before commit.",
+  "takeaway": "If you cannot explain why the code was written this way, you do not own the system; the system owns you."
+}

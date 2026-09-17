@@ -1,0 +1,20 @@
+{
+  "id": "K.13",
+  "trackId": "K",
+  "trackName": "Neural networks",
+  "title": "Attention, 2014, then the transformer, 2017",
+  "status": "unsourced",
+  "story": "By 2014, sequence modeling (machine translation, speech recognition) relied on Recurrent Neural Networks (RNNs) and Long Short-Term Memory (LSTM) units. In an RNN, tokens are processed strictly one by one. The model compresses a 50-word sentence sequentially into a single fixed-size hidden vector. By the time the network reached word 45, it had forgotten word 3.\n\nIn 2014, Dzmitry Bahdanau, Kyunghyun Cho, and Yoshua Bengio introduced Attention: instead of compressing an entire sentence into one rigid vector, allow the decoder to look back at all encoder hidden states and dynamically weight which words matter for the current output.\n\nIn 2017, Ashish Vaswani and seven Google Brain/Research co-authors published 'Attention Is All You Need'. They threw away recurrence and convolution entirely. If attention could calculate relationships between all words simultaneously, why process tokens one by one at all? In the Transformer architecture, Self-Attention computes compatibility between every token in parallel using Queries, Keys, and Values (Softmax(QK^T / sqrt(d_k)) * V). This unlocked massive parallelization on GPU clusters, making large language models possible.",
+  "beats": {
+    "broke": "Recurrent networks processed words sequentially, creating an unparallelizable computational bottleneck and suffering from catastrophic forgetting on long sentences.",
+    "fix": "Bahdanau et al. (2014) invented attention; Vaswani et al. (2017) published 'Attention Is All You Need', creating the fully parallelizable self-attention Transformer.",
+    "cost": "Standard self-attention scales quadratically (O(n^2)) with sequence length, causing memory and compute costs to explode as context windows widen.",
+    "interview": {
+      "q": "Derive the scaled dot-product attention formula and explain why the scaling factor sqrt(d_k) is mandatory.",
+      "trap": "Forgetting to explain why division by the square root of key dimension prevents gradient vanishing.",
+      "answer": "Attention(Q, K, V) = softmax((Q * K^T) / sqrt(d_k)) * V. The scaling factor 1/sqrt(d_k) is mandatory because as key dimension d_k grows large, the dot products grow large in magnitude, pushing the softmax function into regions with tiny gradients (gradient saturation), which halts backpropagation training."
+    }
+  },
+  "blueprint": "# Scaled Dot-Product Attention in Pure PyTorch\nimport torch\nimport torch.nn.functional as F\n\ndef attention(q, k, v):\n    d_k = q.size(-1)\n    scores = torch.matmul(q, k.transpose(-2, -1)) / (d_k ** 0.5)\n    weights = F.softmax(scores, dim=-1)\n    return torch.matmul(weights, v), weights",
+  "takeaway": "The Transformer discarded recurrence to achieve GPU parallelism, trading linear sequence memory for quadratic pairwise attention."
+}

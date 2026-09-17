@@ -1742,3 +1742,59 @@ p, .body-copy {
   }
 }
 
+
+/* ── Provenance banners ────────────────────────────────────────────────────
+   A reader must be able to tell a sourced lesson from an unsourced one
+   without reading either. These carry that distinction. */
+.provenance-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 0.75rem;
+  padding: 0.7rem 0.9rem;
+  margin-block: 1.25rem;
+  border: 1px solid var(--rule);
+  border-inline-start: 3px solid var(--ink-2);
+  background: var(--raise);
+  font-size: var(--t--1);
+  line-height: 1.5;
+}
+
+.provenance-label {
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.78em;
+  white-space: nowrap;
+}
+
+.provenance-text {
+  color: var(--ink-2);
+  flex: 1 1 26ch;
+  min-inline-size: 0;
+}
+
+.provenance-warn {
+  border-inline-start-color: #a8641b;
+}
+
+.provenance-warn .provenance-label {
+  color: #a8641b;
+}
+
+.provenance-ok {
+  border-inline-start-color: var(--signal);
+}
+
+.provenance-ok .provenance-label {
+  color: var(--signal);
+}
+
+[data-theme="dark"] .provenance-warn {
+  border-inline-start-color: #e0a563;
+}
+
+[data-theme="dark"] .provenance-warn .provenance-label {
+  color: #e0a563;
+}

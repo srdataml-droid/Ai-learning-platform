@@ -1,0 +1,20 @@
+{
+  "id": "K.2",
+  "trackId": "K",
+  "trackName": "Neural networks",
+  "title": "The Perceptron, 1958, and exactly why XOR broke it in 1969",
+  "status": "unsourced",
+  "story": "In 1958, Frank Rosenblatt, a psychologist at the Cornell Aeronautical Laboratory, unveiled the Perceptron: an electromechanical analog machine wired to a 400-photocell camera. The New York Times reported on its front page that the Navy expected the Perceptron would soon be able to 'walk, talk, see, write, reproduce itself and be conscious of its existence.'\n\nA single-layer Perceptron computes a linear combination of inputs: dot product of inputs and weights, plus a bias, passed through a step threshold. Geometrically, this represents a straight line (or hyperplane in higher dimensions) slicing through space. It learned AND gates and OR gates with ease.\n\nIn 1969, Marvin Minsky and Seymour Papert of MIT published their book 'Perceptrons'. They proved mathematically that a single-layer perceptron could never learn the simple XOR (exclusive OR) function. If inputs are (0,0) -> 0, (1,1) -> 0, but (1,0) -> 1 and (0,1) -> 1, no single straight line can separate the zeroes from the ones. Because researchers did not yet have an efficient mathematical algorithm to train multi-layer networks (backpropagation was still unviable), the book triggered the devastating First AI Winter: government funding vanished for nearly fifteen years.",
+  "beats": {
+    "broke": "Single-layer neural models were hailed as artificial brains, but researchers hit a wall when simple non-linear logic could not be learned.",
+    "fix": "Frank Rosenblatt (1958) created the Perceptron. Marvin Minsky & Seymour Papert (1969) published their mathematical proof demonstrating linear separability limits.",
+    "cost": "The inability to train multi-layer networks destroyed scientific credibility and halted research funding in artificial intelligence for over a decade.",
+    "interview": {
+      "q": "Explain why a single-layer perceptron cannot solve XOR, and what mathematical component resolves this in modern deep learning.",
+      "trap": "Saying it needs more data or more training epochs.",
+      "answer": "XOR is not linearly separable: plotting the four points (0,0), (0,1), (1,0), (1,1) in 2D space demonstrates that no single straight hyperplane can isolate the positive outputs from the negative outputs. The solution is adding hidden layers with non-linear activation functions (ReLU, GELU), which fold and transform the coordinate space so a linear classifier in the final layer can separate them."
+    }
+  },
+  "blueprint": "# XOR Truth Table (Not Linearly Separable):\n# (0, 0) -> 0\n# (0, 1) -> 1\n# (1, 0) -> 1\n# (1, 1) -> 0\n\n# Modern PyTorch solution: Multi-Layer with non-linearity\nimport torch.nn as nn\nmodel = nn.Sequential(\n    nn.Linear(2, 4), # Hidden layer projects into higher dimension\n    nn.ReLU(),       # Non-linear activation folds the space\n    nn.Linear(4, 1)  # Output layer separates cleanly\n)",
+  "takeaway": "Without non-linear activations, stacking a hundred linear layers is mathematically equivalent to a single linear layer."
+}

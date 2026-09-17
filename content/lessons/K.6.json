@@ -1,0 +1,20 @@
+{
+  "id": "K.6",
+  "trackId": "K",
+  "trackName": "Neural networks",
+  "title": "Backpropagation, 1986, derived rather than memorised",
+  "status": "unsourced",
+  "story": "Even after researchers understood that multi-layer perceptrons could solve non-linear problems like XOR, they faced an insurmountable computational hurdle: if you have millions of weights spread across hidden layers, how do you know how much a specific weight in layer 2 contributed to an error on the output layer?\n\nIn 1986, David Rumelhart, Geoffrey Hinton, and Ronald Williams published 'Learning representations by back-propagating errors' in Nature. They applied the calculus chain rule backwards through computational graphs. By calculating the partial derivative of the scalar loss function with respect to every weight, layer by layer from output to input, gradients could be computed in a single reverse sweep with the exact same computational complexity as the forward pass.\n\nBuilding a micro-autograd engine from scratch (like Karpathy's micrograd) is the single highest-value exercise in machine learning. Once you see that backprop is simply recursively accumulating local gradients via `node.grad += out.grad * local_derivative`, the mystique of deep learning dissolves into clean, exact differential calculus.",
+  "beats": {
+    "broke": "Multi-layer networks existed in theory, but adjusting weights in hidden layers required brute-force numerical perturbation that scaled in O(n^2) or O(2^n) time.",
+    "fix": "David Rumelhart, Geoffrey Hinton, and Ronald Williams (1986) popularized reverse-mode automatic differentiation (backpropagation) using the chain rule in O(n) time.",
+    "cost": "Deep networks suffered from vanishing and exploding gradients: multiplying many numbers smaller than 1.0 caused early layers to receive zero gradient updates.",
+    "interview": {
+      "q": "What is the difference between forward-mode and reverse-mode automatic differentiation, and why does deep learning strictly use reverse-mode?",
+      "trap": "Confusing automatic differentiation with symbolic algebra or numerical finite differences.",
+      "answer": "Forward-mode calculates derivatives with respect to one input variable per forward pass; for N inputs and M outputs, it scales with O(N). Reverse-mode (backprop) calculates derivatives of a single scalar output with respect to all N inputs in one backward pass; it scales with O(M). Because deep learning loss is a single scalar (M=1) evaluated over millions of weights (N=millions), reverse-mode scales in O(1) passes rather than millions."
+    }
+  },
+  "blueprint": "# Minimal autograd node (The Chain Rule in code):\nclass Value:\n    def __init__(self, data, _children=()):\n        self.data = data\n        self.grad = 0.0\n        self._backward = lambda: None\n        self._prev = set(_children)\n\n    def __mul__(self, other):\n        out = Value(self.data * other.data, (self, other))\n        def _backward():\n            self.grad += other.data * out.grad  # dz/dx = y * dz/dout\n            other.grad += self.data * out.grad  # dz/dy = x * dz/dout\n        out._backward = _backward\n        return out",
+  "takeaway": "Backpropagation is simply the chain rule applied in reverse to evaluate millions of gradients in a single computational pass."
+}

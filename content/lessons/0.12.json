@@ -1,0 +1,20 @@
+{
+  "id": "0.12",
+  "trackId": "0",
+  "trackName": "Before any code",
+  "title": "What happens between typing a URL and seeing a page",
+  "status": "unsourced",
+  "story": "The classic software engineering interview question asks: 'When you type google.com into your browser address bar and press Enter, what happens?' Most junior engineers answer: 'The browser asks the server for the page and renders the HTML.' That answer misses ten layers of networking and hardware engineering.\n\nIn reality, a symphony occurs: 1) The browser parses the URL, checks its HSTS preload list for HTTPS enforcement, and queries local, OS, and recursive DNS caches to resolve the hostname to an IP address. 2) The OS opens a TCP socket, executing the three-way handshake (SYN, SYN-ACK, ACK). 3) A TLS 1.3 cryptographic handshake negotiates cipher suites and exchanges ephemeral Diffie-Hellman keys. 4) The browser sends an encrypted HTTP/2 GET request over TLS. 5) Border routers route packets across BGP autonomous systems. 6) The destination load balancer terminates TLS and forwards the request to an application worker. 7) The server streams back HTML chunks. 8) The browser engine parses tokens, builds the DOM tree, requests CSS/JS in parallel, computes CSSOM layout, and paints pixels via the GPU.\n\nUnderstanding this entire pipeline is what allows staff engineers to diagnose latency spikes: is the delay in DNS resolution, TCP handshake round-trips, TTFB (Time to First Byte) backend database latency, or main-thread JavaScript execution blocking DOM rendering?",
+  "beats": {
+    "broke": "Before standard networking stacks, proprietary protocols (AppleTalk, IPX/SPX) could not interoperate, and developers had no mental model for where latency and data loss occurred across distributed machines.",
+    "fix": "The OSI model, TCP/IP standardisation (Cerf & Kahn 1974), and the World Wide Web architecture (Berners-Lee 1989) unified naming, routing, transport, and document presentation into a layered protocol stack.",
+    "cost": "Each abstraction layer adds latency tax: DNS lookups, TCP handshakes, TLS crypto handshakes, HTTP header bloat, and browser render-blocking scripts all compound to degrade Core Web Vitals.",
+    "interview": {
+      "q": "Trace the latency budget: which steps in the URL-to-page lifecycle require network round trips (RTTs), and how does HTTP/3 (QUIC) optimize them?",
+      "trap": "Omitting TLS or DNS round-trips when estimating connection setup latency.",
+      "answer": "In HTTP/1.1 and HTTP/2 over TCP: DNS lookup takes 1+ RTT, TCP handshake takes 1 RTT, TLS 1.3 handshake takes 1 RTT, and the initial HTTP request takes 1 RTT—requiring 3 to 4 network round-trips before receiving a single byte of HTML. HTTP/3 runs over QUIC (UDP) and combines the transport and cryptographic handshakes into a 0-RTT or 1-RTT connection setup, dramatically accelerating page loads on mobile networks."
+    }
+  },
+  "blueprint": "/* The Connection Setup Pipeline: */\nStep 1: DNS Resolve (Local -> Resolver -> Authoritative) [~20-50ms]\nStep 2: TCP 3-Way Handshake (SYN -> SYN-ACK -> ACK)      [1 RTT]\nStep 3: TLS 1.3 Handshake (ClientHello -> ServerHello)    [1 RTT]\nStep 4: HTTP Request Sent (GET / HTTP/2)                  [0.5 RTT]\nStep 5: TTFB (Server processing & database query)         [~50-200ms]\nStep 6: Streaming HTML parse -> DOM/CSSOM -> Paint       [Local GPU]",
+  "takeaway": "Typing a URL exercises the entire history of computing: DNS, routing, cryptography, TCP, and graphics rasterisation."
+}

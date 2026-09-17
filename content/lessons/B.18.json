@@ -1,0 +1,20 @@
+{
+  "id": "B.18",
+  "trackId": "B",
+  "trackName": "System design",
+  "title": "Transactions: what ACID actually means in practice",
+  "status": "unsourced",
+  "story": "In 1981, Jim Gray published 'The Transaction Concept: Virtues and Limitations', formalizing ACID transactions (for which he won the Turing Award). The acronym ACID represents the gold standard of data reliability: Atomicity, Consistency, Isolation, and Durability.\n\nJunior developers recite the acronym, but senior engineers understand the physical mechanisms. Atomicity is implemented via the Write-Ahead Log (WAL): before any table row is modified in memory, an append-only log record of the old and new bytes is flushed to disk. If the server loses power midway through transferring $500 from Account A to Account B, the database reboots, reads the WAL, and rolls back the half-finished write so money never vanishes.\n\nDurability means when a transaction commits, data is guaranteed to survive even if someone kicks the power cord out of the server 1 millisecond later (requiring an explicit `fsync` to physical disk platters/NAND flash). Isolation prevents concurrent users from stepping on each other's toes—and as Gray showed, true serializability requires expensive locks, which is why real databases provide isolation levels like Read Committed, Repeatable Read, and Snapshot Isolation.",
+  "beats": {
+    "broke": "Power failures and software crashes midway through multi-step database updates corrupted business ledgers and left systems in half-completed, irrecoverable states.",
+    "fix": "Jim Gray (1981) formalized ACID transactions using Write-Ahead Logging (WAL), two-phase locking, and atomic commit protocols.",
+    "cost": "ACID guarantees require synchronous disk fsyncs and concurrency locks that severely limit horizontal write scaling across multiple distributed machines.",
+    "interview": {
+      "q": "What is the difference between Read Committed and Repeatable Read isolation levels, and what anomaly does Repeatable Read prevent?",
+      "trap": "Assuming Read Committed prevents phantom reads or non-repeatable reads.",
+      "answer": "In Read Committed, a transaction only reads data committed by other transactions, but reading the same row twice might return different values if another transaction commits an update in between (Non-Repeatable Read anomaly). Repeatable Read guarantees that any row read during the transaction remains identical across multiple reads, typically using Multi-Version Concurrency Control (MVCC) snapshots."
+    }
+  },
+  "blueprint": "-- Classic Bank Transfer in an ACID Transaction\nBEGIN;\nUPDATE accounts SET balance = balance - 500 WHERE id = 'alice';\nUPDATE accounts SET balance = balance + 500 WHERE id = 'bob';\n-- If power cuts here, WAL rolls back alice's balance on reboot\nCOMMIT; -- fsync writes WAL record to non-volatile disk",
+  "takeaway": "Atomicity is not magic; it is an append-only log written to disk before memory is touched."
+}

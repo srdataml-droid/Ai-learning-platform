@@ -1,0 +1,20 @@
+{
+  "id": "M.4",
+  "trackId": "M",
+  "trackName": "Math for machines",
+  "title": "Dot product as similarity: this is what embeddings are",
+  "status": "unsourced",
+  "story": "In classical relational databases, comparing whether two records match is a binary equality check: either user_id = 42 or it does not. But human thoughts, words, and images do not match with binary equality. How can a computer calculate whether 'king' is related to 'queen', or whether a customer support ticket matches a refund policy?\n\nThe dot product of two vectors a and b is algebraically the sum of their element-wise products: sum(a_i * b_i). Geometrically, it equals ||a|| * ||b|| * cos(theta), where theta is the angle between the two arrows in multi-dimensional space. If two vectors point in the exact same direction, cos(0) = 1. If they are orthogonal (unrelated), cos(90 deg) = 0. If they point in opposite directions, cos(180 deg) = -1.\n\nEvery modern AI embedding model (BERT, text-embedding-3, CLIP) maps text or images into high-dimensional vector coordinates (e.g., 1536 floating point numbers). When you normalize these vectors to unit length (||a|| = 1), their cosine similarity is literally just their dot product. Semantic search, vector databases, and transformer attention scores are all billions of dot products executed per second on GPU silicon.",
+  "beats": {
+    "broke": "Traditional software could only search via exact string matching or rigid keyword inverted indexes, completely unable to discern conceptual synonymy or nuance.",
+    "fix": "Vector embeddings project concepts into high-dimensional geometric spaces, where cosine similarity via vector dot product measures semantic relatedness.",
+    "cost": "High-dimensional vector search does not fit in traditional B-tree indexes, requiring approximate nearest neighbor (ANN) graphs (HNSW) that trade precision for speed.",
+    "interview": {
+      "q": "What is the mathematical relationship between the dot product and cosine similarity, and why are embedding vectors often pre-normalized?",
+      "trap": "Confusing dot product magnitude with directional alignment.",
+      "answer": "Cosine similarity is defined as (a . b) / (||a|| * ||b||). The raw dot product combines both directional alignment and vector magnitudes. By pre-normalizing embedding vectors to unit length (||a|| = 1, ||b|| = 1) at generation time, cosine similarity simplifies directly to the pure dot product (a . b), saving expensive square root and division operations during large-scale vector similarity searches."
+    }
+  },
+  "blueprint": "import numpy as np\n\ndef cosine_similarity(v1, v2):\n    # Normalize vectors to unit length\n    u1 = v1 / np.linalg.norm(v1)\n    u2 = v2 / np.linalg.norm(v2)\n    # Dot product of unit vectors IS cosine similarity\n    return np.dot(u1, u2)",
+  "takeaway": "An embedding is geometry as meaning. The dot product is the ruler that measures semantic distance."
+}

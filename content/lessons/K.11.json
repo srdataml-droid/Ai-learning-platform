@@ -1,0 +1,20 @@
+{
+  "id": "K.11",
+  "trackId": "K",
+  "trackName": "Neural networks",
+  "title": "AlexNet, 2012: what actually changed was GPUs and ImageNet",
+  "status": "unsourced",
+  "story": "For fifteen years following Yann LeCun's 1998 work on convolutional networks reading bank cheques, the machine learning establishment sidelined deep neural networks. Support Vector Machines (SVMs) and Random Forests dominated academic conferences because they had provable convex optimization bounds and didn't require weeks of mysterious hyperparameter tuning.\n\nOn September 30, 2012, the ImageNet Large Scale Visual Recognition Challenge results were published. The competition tested models on 1.2 million high-resolution images across 1,000 classes. Traditional computer vision algorithms handcrafted by leading labs achieved error rates around 26%. Alex Krizhevsky, Ilya Sutskever, and Geoffrey Hinton submitted 'AlexNet', achieving an error rate of 15.3%—obliterating the second-place entry by more than 10 percentage points.\n\nWhat changed was not new math: convolutional networks, ReLU, dropout, and backpropagation had all existed for years. What changed was scale: Fei-Fei Li's ImageNet dataset provided millions of labeled examples, and Alex Krizhevsky wrote custom CUDA kernels to train the 60-million-parameter network across two gaming-grade NVIDIA GeForce GTX 580 GPUs. Overnight, the entire field of computer science abandoned manual feature engineering.",
+  "beats": {
+    "broke": "Computer vision relied on handcrafted manual feature descriptors (SIFT, HOG) that plateaued at unacceptable error rates on real-world imagery.",
+    "fix": "Alex Krizhevsky, Ilya Sutskever, and Geoffrey Hinton (2012) trained AlexNet using NVIDIA CUDA on ImageNet, cutting benchmark error rates nearly in half in a single competition.",
+    "cost": "Model training demanded massive power, specialized GPU hardware clusters, and opaque empirical heuristics replacing classical mathematical guarantees.",
+    "interview": {
+      "q": "Why did AlexNet succeed in 2012 when the underlying convolutional architecture had already been demonstrated by Yann LeCun in 1998?",
+      "trap": "Attributing the victory purely to novel deep learning algorithms or architectural breakthroughs.",
+      "answer": "LeNet-5 in 1998 processed 32x32 pixel grayscale digits with 60,000 parameters because larger datasets and compute did not exist. AlexNet succeeded due to the convergence of three factors: 1) Massive labeled data (Fei-Fei Li's ImageNet with 1.2 million images), 2) Hardware parallel compute (custom CUDA kernels on NVIDIA GPUs performing trillions of matrix operations), and 3) Practical training tricks (ReLU preventing vanishing gradients, Dropout mitigating severe overfitting)."
+    }
+  },
+  "blueprint": "/* The Triad of Modern AI (2012 Convergence): */\n1. Algorithms: Convolutional layers + ReLU + Dropout (Rumelhart, LeCun, Hinton)\n2. Data:       ImageNet (1.2M images, 1,000 classes) (Fei-Fei Li)\n3. Compute:    NVIDIA GPUs + CUDA parallel matrix math (Krizhevsky)",
+  "takeaway": "The breakthrough of 2012 was not a new theory; it was the collision of enough data with enough parallel GPU matrix silicon."
+}

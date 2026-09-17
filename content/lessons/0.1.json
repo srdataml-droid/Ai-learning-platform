@@ -1,0 +1,20 @@
+{
+  "id": "0.1",
+  "trackId": "0",
+  "trackName": "Before any code",
+  "title": "What a file is, what a folder is",
+  "status": "unsourced",
+  "story": "In the earliest electromechanical and magnetic drum systems, data had no names. If you wanted to read data, you had to know the physical cylinder, track, and sector on the drum. When multiple programs began sharing storage, operators wrote down sector numbers on clipboards. If two programs wrote to track 4, one silently obliterated the other.\n\nIn 1965, the Multics operating system project introduced the hierarchical file system: a tree structure where a directory was simply a special file containing a list of names and pointers to other storage blocks. This abstraction meant programmers never again had to think about magnetic platter geometry. A file became an ordered sequence of bytes with a human-readable name, and a folder became a namespace.\n\nUnderstanding that a folder is just an index table mapping string names to inode pointers strips away the illusion of GUI desktops. Folders don't \"contain\" files like physical cardboard boxes; they simply hold references in an allocation table. When you delete a file, you are usually just removing the directory entry, leaving the raw bits on disk until overwritten.",
+  "beats": {
+    "broke": "Data was tied to physical platter tracks and sector addresses. Two programs sharing a disk easily overwrote each other because there was no unified namespace or separation between logical data and physical hardware.",
+    "fix": "Multics (1965) and Unix (1971, Ken Thompson and Dennis Ritchie) created the hierarchical filesystem where directories are simply index files mapping string names to inode pointers.",
+    "cost": "File path traversal requires tree lookups that turn single reads into multiple disk seeks. File locking, race conditions during renames, and dangling pointers (orphaned inodes) became permanent operating system challenges.",
+    "interview": {
+      "q": "What actually happens on the filesystem when you execute 'mv fileA fileB' within the same partition versus across partitions?",
+      "trap": "Thinking that data bytes are copied in both cases.",
+      "answer": "Within the same filesystem partition, 'mv' is an O(1) pointer swap: the OS updates directory entry records to point to the existing inode and increments/decrements link counts without moving any content bytes. Across partitions, the OS must allocate a new inode, physically copy every byte over the bus, and unlink the original."
+    }
+  },
+  "blueprint": "# Check inode number of a file\n$ ls -i notes.txt\n14298132 notes.txt\n\n# Creating a hard link shares the exact same inode\n$ ln notes.txt link.txt\n$ ls -i link.txt\n14298132 link.txt",
+  "takeaway": "A folder does not contain files; it is merely an index mapping names to addresses."
+}

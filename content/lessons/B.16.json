@@ -1,0 +1,20 @@
+{
+  "id": "B.16",
+  "trackId": "B",
+  "trackName": "System design",
+  "title": "Transactions: the money must not vanish rule (ACID)",
+  "status": "unsourced",
+  "story": "In the early days of banking software, transferring $100 from Alice to Bob required two operations: 1) Subtract $100 from Alice's account, and 2) Add $100 to Bob's account. If the database server lost power, crashed, or ran out of disk space between step 1 and step 2, Alice's money vanished into the ether.\n\nIn 1981, Jim Gray published 'The Transaction Concept: Virtues and Limitations', formalizing ACID properties: Atomicity (all or nothing), Consistency (preserves schema constraints), Isolation (concurrent transactions cannot interfere with each other), and Durability (once committed, survived power loss via Write-Ahead Logging).\n\nGray's Write-Ahead Log (WAL) was the core mechanical breakthrough: before updating any memory page or table file on disk, the database appends the intended modification to an append-only sequential log on disk and calls fsync(). If the power cuts mid-flight, on reboot the database reads the WAL, rolls back uncommitted transactions, and rolls forward committed ones. Jim Gray was awarded the Turing Award in 1998 for this fundamental contribution.",
+  "beats": {
+    "broke": "System crashes and power failures mid-operation routinely corrupted financial and inventory databases, leaving balances inconsistent.",
+    "fix": "Jim Gray (1981) codified ACID transactions and Write-Ahead Logging (WAL), guaranteeing atomicity and crash recovery.",
+    "cost": "Strict serializable isolation requires expensive row/table locking or multiversion concurrency control (MVCC), limiting write concurrency.",
+    "interview": {
+      "q": "What does the Write-Ahead Log (WAL) do, and how does it guarantee durability even if a database crashes during a write?",
+      "trap": "Believing the database writes rows directly to table files on disk before confirming a transaction.",
+      "answer": "A database does not immediately write modified table data to disk because random writes are slow. Instead, it appends the transaction delta sequentially to the append-only Write-Ahead Log on disk and flushes it via fsync(). Only after the log is securely written is the transaction marked committed. If power is lost before the table pages are written, the database replays the WAL on reboot to reconstruct the verified state."
+    }
+  },
+  "blueprint": "-- Standard SQL ACID Transaction Block:\nBEGIN TRANSACTION;\n  UPDATE accounts SET balance = balance - 100 WHERE user_id = 'Alice';\n  UPDATE accounts SET balance = balance + 100 WHERE user_id = 'Bob';\n  -- If anything fails or server crashes, ROLLBACK is automatic.\nCOMMIT;",
+  "takeaway": "The Write-Ahead Log is the heart of durability. You don't write the data; you write the log of the promise first."
+}

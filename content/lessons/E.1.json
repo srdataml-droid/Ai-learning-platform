@@ -1,0 +1,20 @@
+{
+  "id": "E.1",
+  "trackId": "E",
+  "trackName": "Data structures and algorithms",
+  "title": "Why algorithms matter: Knuth 1968, Dijkstra in a cafe 1956",
+  "status": "unsourced",
+  "story": "In 1956, Edsger W. Dijkstra was sitting with his fiancée on a shopping terrace in Amsterdam having coffee. He was working at the Mathematical Centre, and the lab wanted to demonstrate their new ARMAC computer at a conference. They asked Dijkstra for a problem that non-mathematicians could understand: finding the shortest driving route between any two cities in the Netherlands.\n\nWithout pen and paper, Dijkstra thought for twenty minutes and conceived what is now known as Dijkstra's Shortest Path Algorithm. A few years later in 1968, Donald Knuth published the first volume of 'The Art of Computer Programming', proving that software was not just an ad-hoc collection of machine instructions, but a formal mathematical discipline where the efficiency of algorithms can be rigorously analyzed.\n\nWhy do algorithms matter? Because no amount of hardware upgrade can overcome algorithmic inefficiency. If algorithm A runs in O(n^2) time and algorithm B runs in O(n log n) time, for n = 1,000,000 items, algorithm A requires 1,000,000,000,000 operations (running for hours or melting the CPU), while algorithm B completes in 20,000,000 operations (finishing in milliseconds on a cheap smartphone).",
+  "beats": {
+    "broke": "Early programmers wrote ad-hoc loops that worked on ten test items but froze or ran for days when presented with real-world enterprise dataset sizes.",
+    "fix": "Edsger Dijkstra (1956) and Donald Knuth (1968) formalized algorithms as provable mathematical methods with measurable computational complexity.",
+    "cost": "Clever algorithmic optimizations often introduce higher implementation complexity, trickier edge cases, and worse constant-factor overhead on small inputs.",
+    "interview": {
+      "q": "When would an O(n^2) sorting algorithm like Insertion Sort outperform an O(n log n) algorithm like QuickSort in the real world?",
+      "trap": "Claiming O(n log n) is always strictly faster under all conditions.",
+      "answer": "Insertion Sort outperforms QuickSort when n is very small (typically n < 16 to 32) or when the input array is already nearly sorted. This is because Insertion Sort has tiny constant factors, zero recursion stack overhead, and excellent CPU cache locality. Real-world production sorting algorithms (like Timsort in Python and Java) use hybrid strategies: QuickSort/MergeSort for large partitions, switching to Insertion Sort for small slices."
+    }
+  },
+  "blueprint": "// Dijkstra's Core Invariant: Greedy exploration of minimum distance\nfunction dijkstra(graph, start) {\n  const dist = { [start]: 0 };\n  const pq = new PriorityQueue(); // O(log V) extract min\n  pq.push(start, 0);\n  while (!pq.isEmpty()) {\n    const u = pq.pop();\n    for (const [v, weight] of graph.neighbors(u)) {\n      if (dist[u] + weight < (dist[v] ?? Infinity)) {\n        dist[v] = dist[u] + weight;\n        pq.push(v, dist[v]);\n      }\n    }\n  }\n  return dist;\n}",
+  "takeaway": "Hardware gives you constant factors; algorithms give you scalability. O(n log n) always beats O(n^2) at scale."
+}

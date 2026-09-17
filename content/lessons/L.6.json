@@ -1,0 +1,20 @@
+{
+  "id": "L.6",
+  "trackId": "L",
+  "trackName": "AI engineering",
+  "title": "Retrieval: keyword, vector, hybrid",
+  "status": "unsourced",
+  "story": "When developers began building Retrieval-Augmented Generation (RAG) systems in 2023, the industry fell in love with vector search. You chunk text, run it through an embedding model (like text-embedding-ada-002), store high-dimensional floats in a vector database (Pinecone, Chroma, pgvector), and retrieve nearest neighbors using cosine similarity.\n\nThen production happened. A customer searched for an exact SKU number like 'XJ-9000-V2' or a legal statute 'Section 409A'. The vector embedding projected the query into a fuzzy conceptual neighborhood and returned manuals for generic valves or tax overviews, missing the exact document entirely.\n\nDense vector retrieval understands synonyms and semantics ('red fruit' matches 'apple'), but is terrible at exact keywords, acronyms, product codes, and rare terms. BM25 (sparse keyword search) understands exact string tokens, but is blind to conceptual meaning. Production AI systems use Hybrid Search: execute both BM25 and vector queries, normalize their scores, and combine them using Reciprocal Rank Fusion (RRF) before feeding results into a cross-encoder reranker.",
+  "beats": {
+    "broke": "Vector-only search failed in production on exact acronyms, SKUs, error codes, and legal terms, while keyword-only search failed on natural conversational questions.",
+    "fix": "Hybrid search architectures combine sparse lexical retrieval (BM25) with dense semantic embeddings, merging ranked lists using Reciprocal Rank Fusion (RRF).",
+    "cost": "Double storage index footprint (inverted index + vector index), dual query execution overhead, and the complexity of tuning fusion weights across disparate modalities.",
+    "interview": {
+      "q": "How does Reciprocal Rank Fusion (RRF) work, and why is it preferred over raw score combination in hybrid search?",
+      "trap": "Trying to linearly add cosine similarity floats to BM25 scores directly.",
+      "answer": "Cosine similarity values (bounded 0 to 1) and BM25 scores (unbounded positive floats) have fundamentally different distributions and scales. RRF bypasses score calibration by using only the ranking positions: RRF_score(d) = sum(1 / (k + rank_i(d))) where k is a smoothing constant (typically 60). This provides robust, outlier-resistant rank merging without fragile score normalization."
+    }
+  },
+  "blueprint": "# Reciprocal Rank Fusion (RRF) algorithm:\ndef rrf(vector_ranks, bm25_ranks, k=60):\n    scores = {}\n    for doc_id, rank in vector_ranks.items():\n        scores[doc_id] = scores.get(doc_id, 0) + (1.0 / (k + rank))\n    for doc_id, rank in bm25_ranks.items():\n        scores[doc_id] = scores.get(doc_id, 0) + (1.0 / (k + rank))\n    return sorted(scores.items(), key=lambda x: x[1], reverse=True)",
+  "takeaway": "Vector search understands concepts; keyword search finds serial numbers. Production RAG requires both."
+}
