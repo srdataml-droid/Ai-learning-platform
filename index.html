@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Curriculum — Zero to AI Engineer</title>
-  <meta name="description" content="Seventeen tracks, roughly 330 tasks. A rigorous curriculum mapped from computer fundamentals to production AI engineering.">
+  <meta name="description" content="A rigorous curriculum in seventeen tracks, mapped from computer fundamentals to production AI engineering.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..900&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&display=swap" rel="stylesheet">
@@ -35,7 +35,7 @@
     <section class="inverted-band" aria-labelledby="hero-heading">
       <span class="track-card-letter" style="color: var(--inv-signal); font-size: var(--t-0); display: block; margin-bottom: 0.5rem;">COMPREHENSIVE MAP</span>
       <h1 id="hero-heading">Zero to AI Engineer</h1>
-      <p style="max-inline-size: 68ch; margin-bottom: 1.25rem;">Seventeen tracks. Roughly 330 tasks. Structured into four progressive stages, with five fundamental engineering habits active throughout the entire journey.</p>
+      <p style="max-inline-size: 68ch; margin-bottom: 1.25rem;">Seventeen tracks, structured into four progressive stages, with five fundamental engineering habits active throughout the entire journey. <span id="hero-task-count">Counting tasks&hellip;</span></p>
       
       <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(239, 235, 227, 0.15); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem;">
         <p id="total-summary-line" class="signal-text" style="font-family: var(--font-display); font-weight: 800; font-size: var(--t-0); margin-bottom: 0;">Loading curriculum scope...</p>
@@ -194,6 +194,12 @@
         const footerEl = document.getElementById('footer-stats-line');
         if (footerEl) {
           footerEl.textContent = `${totalStats.completed} / ${totalStats.total} tasks completed (${totalStats.percent}%)`;
+        }
+        // Counted, never asserted: the hero used to claim 330 beside this
+        // very counter reading 313.
+        const heroCountEl = document.getElementById('hero-task-count');
+        if (heroCountEl) {
+          heroCountEl.textContent = `${totalStats.total} tasks in total.`;
         }
       }
       updateSummaryStats();
