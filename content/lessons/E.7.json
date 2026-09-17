@@ -1,0 +1,47 @@
+{
+  "id": "E.7",
+  "trackId": "E",
+  "trackName": "Data structures and algorithms",
+  "title": "Sliding window",
+  "status": "unsourced",
+  "story": "Questions about contiguous stretches of an array — the longest substring without repeats, the smallest subarray summing to at least a target — have an obvious solution that generates every stretch and checks it, which is quadratic before you have even looked at the contents.\n\nThe window is the observation that consecutive stretches overlap almost entirely. Moving from one to the next changes two elements, so recomputing the whole thing discards nearly all the work you just did. Instead keep a running answer, add what enters on the right, subtract what leaves on the left, and each element is handled a constant number of times.\n\nThe correctness argument is more delicate than the mechanics, and it is where the technique is usually misapplied. Growing the window must move the tracked quantity in one direction and shrinking must move it in the other. That is what lets you decide, from the current state alone, whether to extend or contract. Introduce negative numbers into a sum-based window and this collapses immediately: extending can now reduce the sum, so a window that is too large is no longer evidence that you should shrink, and a shrinking rule based on that evidence starts skipping valid answers while continuing to produce plausible output.",
+  "problem": {
+    "name": "Contiguous subarray optimisation",
+    "aka": [
+      "the sliding window technique",
+      "caterpillar method"
+    ],
+    "shape": "Find the best contiguous stretch of a sequence satisfying a condition — longest, shortest, or a count of qualifying stretches.",
+    "tell": [
+      "the words subarray, substring or contiguous appear, and order matters",
+      "you are asked for longest, shortest, or how many",
+      "the condition can be maintained incrementally as elements enter and leave"
+    ],
+    "move": "Hold two boundaries. Extend the right edge to admit elements; when the window violates the condition, advance the left edge until it is valid again. Record the best valid window seen.",
+    "invariant": "The window is in a valid state whenever you measure it, and every window you never explicitly formed was covered by the monotonicity argument rather than skipped.",
+    "breaks": "Anything that destroys monotonicity — most commonly negative numbers in a sum-based window, where extending can now decrease the sum and shrinking is no longer the right response.",
+    "cost": {
+      "time": "O(n); each element enters once and leaves once",
+      "space": "O(1), or O(k) for the auxiliary counts",
+      "beats": "O(n^2) enumeration of every subarray"
+    },
+    "worked": {
+      "problem": "Longest substring with no repeated character, in 'abcabcbb'.",
+      "reasoning": "Extend right while characters are new: a, ab, abc, length 3. The next 'a' repeats, so advance left past the previous 'a', giving 'bca'. Continue: each character enters exactly once and leaves at most once, so the total movement of both boundaries is bounded by twice the length. The answer is 3. Note that the left boundary never moves backwards — that is what makes it linear, and it is only sound because a window valid at one point stays valid when you remove from the left.",
+      "code": "last = {}\nleft = best = 0\nfor right, ch in enumerate(s):\n    if ch in last and last[ch] >= left:\n        left = last[ch] + 1     # jump left past the previous copy\n    last[ch] = right\n    best = max(best, right - left + 1)"
+    },
+    "practice": "Write the shortest-subarray-with-sum-at-least-k version, then add a single negative number to the input and find the answer it now misses."
+  },
+  "beats": {
+    "broke": "Questions about contiguous stretches invite generating every stretch, which is quadratic in the length before the contents are even inspected. Nearly all of that work is redundant, because consecutive stretches share almost all their elements.",
+    "fix": "Keep one window and a running summary of it. Add the element entering on the right, remove the one leaving on the left, and let the summary be maintained rather than recomputed, so each element is processed a constant number of times.",
+    "cost": "It needs the tracked quantity to move monotonically as the window grows and shrinks, which is a real restriction rather than a technicality. It also needs auxiliary state such as a count of characters in the window, so the space saving over the naive version is smaller than it first appears.",
+    "interview": {
+      "q": "Why does a sliding window for 'smallest subarray with sum at least k' break when the array can contain negative numbers?",
+      "trap": "Answering that the sum could go negative. The sum's sign is not the problem; the loss of monotonicity is.",
+      "answer": "Because the shrink rule depends on growth and shrinkage moving the sum in opposite directions. With only non-negative values, extending the window cannot decrease the sum, so once the sum is at least k you know shrinking is the only way to find a smaller qualifying window. Allow negatives and extending can reduce the sum, so a window that currently falls short might qualify after adding a negative and then several positives. The evidence you were shrinking on is no longer evidence, and the window silently misses valid answers. That variant needs prefix sums with a monotonic deque, or a different formulation entirely."
+    }
+  },
+  "blueprint": "  a b c a b c b b\n  [-----]           abc, all distinct, best = 3\n    [-----]         'a' repeated -> left jumps past old 'a'\n      [-----]\n\n  left never moves BACKWARDS. that is the linearity.\n\nWhy it is sound, and where it dies:\n  non-negative sums:  grow -> sum rises, shrink -> sum falls\n                      so \"too big\" PROVES you should shrink\n  with a negative:    grow can LOWER the sum\n                      \"too small\" no longer proves you\n                      should grow -- and the window quietly\n                      skips valid answers while still\n                      returning something plausible",
+  "takeaway": "Consecutive stretches overlap, so maintain the answer instead of recomputing it — sound only while growing and shrinking move the quantity in opposite directions."
+}

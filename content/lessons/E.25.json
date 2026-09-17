@@ -1,0 +1,47 @@
+{
+  "id": "E.25",
+  "trackId": "E",
+  "trackName": "Data structures and algorithms",
+  "title": "Sorting: what your language actually uses, and why",
+  "status": "traced",
+  "seed": "E.25",
+  "story": "Nobody writes a sort. Everyone calls one, and almost nobody can say what it does, which matters because the answer is not one algorithm and the choice leaks into behaviour you depend on.\n\nThe reason is that no single algorithm wins everywhere. Quicksort is excellent on random data and has a quadratic worst case an adversary can trigger deliberately. Merge sort guarantees its bound and needs extra memory. Insertion sort is unbeatable on tiny or nearly-ordered inputs and hopeless beyond them. Real implementations therefore detect the case at runtime and switch.\n\nTimsort, implemented by Tim Peters in 2002 and drawing on McIlroy's 1993 work, takes the view that real data is rarely random: it finds runs that are already ordered, extends short ones with insertion sort, and merges. That made it Python's sort from 2.3, and the detail most people have not caught up with is that Python moved off it — from 3.11 the sort is Powersort, by Munro and Wild, which chooses a better merge order. Timsort is still Java's sort for object arrays, with modifications by Josh Bloch, from JDK 7.\n\nThe other lineage descends from Musser's introsort in 1997: run quicksort, but count the recursion depth, and once it exceeds a bound conclude you are in the bad case and finish with heapsort. That buys quicksort's speed with a guaranteed bound, which is what the C++ standard demands of std::sort without naming an algorithm. Its successor, pattern-defeating quicksort by Orson Peters, handles patterned input better and is what Rust uses for its unstable sort and Go has used since 1.19.\n\nThe consequence worth carrying is stability. Java's split is the tell: object arrays get a stable sort because you may be sorting by one field having already sorted by another, and primitives get an unstable one because two equal integers are indistinguishable so the question cannot arise.",
+  "problem": {
+    "name": "Comparison sorting",
+    "aka": [
+      "the sorting problem"
+    ],
+    "shape": "Put n elements into order using only pairwise comparisons, with no assumptions about the values themselves.",
+    "tell": [
+      "you need an ordering and can only compare two elements at a time",
+      "the data has no exploitable structure such as a small fixed integer range",
+      "in practice: you are about to call sort() and care what it guarantees"
+    ],
+    "move": "Hybridise. Detect the shape of the input at runtime and switch algorithm: exploit existing runs, use insertion sort on small pieces, and fall back to a guaranteed-bound algorithm when the fast one is going badly.",
+    "invariant": "Any comparison sort needs at least n log n comparisons in the worst case, because n! orderings need that many yes/no answers to distinguish. No hybrid escapes it; they only avoid the bad constants and the quadratic collapse.",
+    "breaks": "The lower bound assumes comparisons are all you have. If the values are bounded small integers, counting or radix sort beat it outright by not comparing at all.",
+    "cost": {
+      "time": "O(n log n), and O(n) for Timsort on already-ordered input",
+      "space": "O(n) for Timsort, O(log n) for introsort",
+      "beats": "a quadratic worst case an adversary can trigger"
+    },
+    "worked": {
+      "problem": "You sort a list of records by name, then sort the result by department, and expect names to stay ordered within each department. When is that safe?",
+      "reasoning": "Only when the second sort is stable, meaning equal elements keep their previous relative order. In Python this is guaranteed and always has been, across both Timsort and Powersort. In Java it holds for an array of objects and not for an array of primitives. In C++ std::sort is not stable and std::stable_sort is a different function. So the technique is correct in one language, type-dependent in another, and requires a deliberately different call in a third.",
+      "code": "# stable: a documented guarantee, so this composes\nrows.sort(key=lambda r: r.name)\nrows.sort(key=lambda r: r.department)\n\n# same intent, without relying on stability\nrows.sort(key=lambda r: (r.department, r.name))"
+    },
+    "practice": "Find out what your main language sorts with today, and whether it promises stability. Then check whether the answer changes for primitives."
+  },
+  "beats": {
+    "broke": "No single algorithm is best across random data, nearly-ordered data and adversarial data. Quicksort has a quadratic worst case that can be triggered on purpose; merge sort pays memory for its guarantee; insertion sort wins only while inputs are tiny or nearly ordered.",
+    "fix": "Hybrids that detect the case at runtime. Timsort, by Tim Peters in 2002, exploits existing runs in real data. Introsort, by David Musser in 1997, runs quicksort and falls back to heapsort once recursion depth suggests the bad case.",
+    "cost": "Considerable implementation complexity, and a stability guarantee that now varies by language and even by type within a language. It also makes performance harder to reason about, since the algorithm actually executed depends on the shape of your data.",
+    "interview": {
+      "q": "Why does Java sort arrays of primitives with a different algorithm than arrays of objects?",
+      "trap": "Answering that objects are larger or more expensive to compare. Both are true and neither is the reason.",
+      "answer": "Stability. Two equal objects are distinguishable, so the order in which equal elements come out is observable and matters — you may have sorted by one field and then be sorting by another, expecting the first to survive as a tiebreak. Object arrays therefore use Timsort, which is stable. Two equal primitives are indistinguishable, so stability is unobservable and cannot be depended on, which frees the implementation to use a dual-pivot quicksort that is faster and not stable."
+    }
+  },
+  "blueprint": "What actually runs when you call sort():\n\n  Python   <= 3.10  Timsort        stable (guaranteed)\n           >= 3.11  Powersort      stable (guaranteed)\n  Java     objects  Timsort        stable\n           primitives  dual-pivot quicksort   NOT stable\n  C++      std::sort     introsort-family     NOT stable\n           std::stable_sort                   stable\n  Rust     sort()        stable\n           sort_unstable()  pattern-defeating quicksort\n  Go       sort.Sort     pattern-defeating quicksort (1.19+)\n\nJava's split is the tell: equal OBJECTS are distinguishable,\nso their order is observable and must be preserved.\nEqual PRIMITIVES are not, so it cannot matter -- which frees\nthe implementation to be faster.",
+  "takeaway": "No algorithm wins everywhere, so real sorts detect and switch. What you must actually know is whether yours is stable, and Java's answer differs by type."
+}

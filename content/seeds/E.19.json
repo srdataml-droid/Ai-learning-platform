@@ -1,0 +1,103 @@
+{
+  "taskId": "E.19",
+  "title": "Shortest path: Dijkstra, 1956, published 1959",
+  "researchedAt": "2026-09-17",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Dijkstra published 'A note on two problems in connexion with graphs' in Numerische Mathematik volume 1, pages 269 to 271, in 1959.",
+      "type": "date",
+      "tokens": [
+        "Dijkstra",
+        "1959",
+        "Numerische Mathematik"
+      ],
+      "source": {
+        "title": "Dijkstra, E. W., A note on two problems in connexion with graphs, Numerische Mathematik 1:269-271, 1959, DOI 10.1007/BF01386390",
+        "url": "https://link.springer.com/article/10.1007/BF01386390",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The paper presents two problems. Problem 1 is the minimum spanning tree; Problem 2 is the shortest path between two nodes. The shortest path algorithm is the second of the two.",
+      "type": "event",
+      "tokens": [
+        "Problem"
+      ],
+      "source": {
+        "title": "Dijkstra 1959, original text, CWI institutional repository scan",
+        "url": "https://ir.cwi.nl/pub/9256/9256D.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Dijkstra's affiliation on the paper is Mathematisch Centrum, Amsterdam.",
+      "type": "person",
+      "tokens": [
+        "Mathematisch Centrum",
+        "Amsterdam"
+      ],
+      "source": {
+        "title": "Dijkstra 1959, author affiliation as printed",
+        "url": "https://link.springer.com/article/10.1007/BF01386390",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "Dijkstra later recalled devising the algorithm in about twenty minutes in 1956, at a cafe terrace in Amsterdam, as a demonstration problem for the ARMAC computer, and publishing it three years afterwards. This is his own recollection given decades later, not a contemporaneous record.",
+      "type": "date",
+      "tokens": [
+        "1956",
+        "ARMAC",
+        "Amsterdam"
+      ],
+      "source": {
+        "title": "Dijkstra's own later recollection of the ARMAC demonstration; self-reported, recorded long after the event",
+        "url": "https://ir.cwi.nl/pub/9256/9256D.pdf",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "The Bellman-Ford algorithm relaxes every edge repeatedly rather than settling nodes, and unlike Dijkstra it tolerates negative edge weights. The name comes from Richard Bellman's 'On A Routing Problem', Quarterly of Applied Mathematics 16.1 (1958), pages 87 to 90, and L. R. Ford Jr's RAND technical report P-923, 'Network Flow Theory', 1956.",
+      "type": "event",
+      "tokens": [
+        "Bellman-Ford",
+        "Bellman",
+        "Ford",
+        "1958",
+        "1956",
+        "RAND",
+        "Quarterly",
+        "Applied Mathematics"
+      ],
+      "source": {
+        "title": "Bellman, R., On A Routing Problem, Quarterly of Applied Mathematics 16.1:87-90, 1958; Ford, L. R. Jr., Network Flow Theory, RAND Technical Report P-923, 1956",
+        "url": "https://www.rand.org/pubs/papers/P923.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c6",
+      "text": "If a negative cycle is reachable from the source, the distance to some vertices is effectively negative infinity, and finding shortest simple paths in that setting is NP-hard. Implementations therefore report that a negative cycle exists rather than attempting to route around it.",
+      "type": "event",
+      "tokens": [
+        "NP"
+      ],
+      "source": {
+        "title": "Cherkassky, B. V. and Goldberg, A. V., Negative-cycle detection algorithms, Mathematical Programming 85(2):277-311, 1999",
+        "url": "https://link.springer.com/article/10.1007/s101070050058",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "no systematic way to find a cheapest route; search the paths and the count explodes",
+    "fix": "Dijkstra 1956, published 1959: settle the nearest unsettled node, repeatedly",
+    "cost": "requires non-negative weights; a priority queue; explores outward in all directions",
+    "interview": "why negative edges break it, and what you use instead"
+  }
+}

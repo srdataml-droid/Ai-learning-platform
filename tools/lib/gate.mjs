@@ -24,10 +24,22 @@ const YEAR = /\b(?:1[89]|20)\d{2}\b/g;
 // number it is written beside, never to one on an earlier line.
 const FIGURE = /\b\d[\d,]*(?:\.\d+)?[ \t]?(?:%|x\b|ms\b|GB\b|MB\b|KB\b|TB\b|bits?\b|bytes?\b)|\$\d[\d,]*(?:\.\d+)?[KMB]?\b/gi;
 const ACRONYM = /\b[A-Z][A-Z0-9]{1,}\b/g;
+// A name-word may be hyphenated: "Bellman-Ford" is one name, not two.
+// Splitting on the hyphen reported "Ford" as an unlicensed atom and left
+// "Bellman-Ford" impossible to license as itself.
+const NAME_WORD = String.raw`[A-Z][a-z]+(?:-[A-Z][a-z]+)*`;
+
 // Two or more capitalised words in a row: "Ken Thompson", "Bell Labs".
-const PROPER_NOUN = /\b[A-Z][a-z]+(?:\s+(?:of|the|and)\s+)?(?:\s[A-Z][a-z]+)+\b/g;
+// The lookbehind excludes a sentence-initial word from STARTING a name.
+// Without it, "Use Bellman-Ford instead." yielded the atom "Use Bellman",
+// which no claim could ever license and no author could fix.
+const PROPER_NOUN = new RegExp(
+  String.raw`(?<![.!?]\s)(?<!^)\b${NAME_WORD}(?:\s+(?:of|the|and)\s+)?(?:\s${NAME_WORD})+\b`,
+  'gm',
+);
+
 // A lone capitalised word is only an atom when it is not sentence-initial.
-const MID_SENTENCE_NAME = /(?<![.!?]\s)(?<!^)\b[A-Z][a-z]{2,}\b/gm;
+const MID_SENTENCE_NAME = new RegExp(String.raw`(?<![.!?]\s)(?<!^)\b[A-Z][a-z]{2,}(?:-[A-Z][a-z]+)*\b`, 'gm');
 
 /**
  * Every checkable atom in a piece of prose, in order of first appearance.

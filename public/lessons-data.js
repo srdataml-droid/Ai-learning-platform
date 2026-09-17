@@ -770,6 +770,196 @@
     "blueprint": "// Dijkstra's Core Invariant: Greedy exploration of minimum distance\nfunction dijkstra(graph, start) {\n  const dist = { [start]: 0 };\n  const pq = new PriorityQueue(); // O(log V) extract min\n  pq.push(start, 0);\n  while (!pq.isEmpty()) {\n    const u = pq.pop();\n    for (const [v, weight] of graph.neighbors(u)) {\n      if (dist[u] + weight < (dist[v] ?? Infinity)) {\n        dist[v] = dist[u] + weight;\n        pq.push(v, dist[v]);\n      }\n    }\n  }\n  return dist;\n}",
     "takeaway": "Hardware gives you constant factors; algorithms give you scalability. O(n log n) always beats O(n^2) at scale."
   },
+  "E.19": {
+    "id": "E.19",
+    "trackId": "E",
+    "trackName": "Data structures and algorithms",
+    "title": "Shortest path: Dijkstra, 1956, published 1959",
+    "status": "traced",
+    "seed": "E.19",
+    "story": "The obvious approach to finding a cheapest route is to consider the routes, and that approach dies immediately: the number of paths through a graph grows explosively, so enumerating them is not slow, it is impossible at any interesting size.\n\nDijkstra published the escape in Numerische Mathematik in 1959, in a three-page note that actually contains two algorithms — the shortest path one is the second of them. He recalled much later devising it in about twenty minutes in 1956, at a cafe terrace in Amsterdam, as a demonstration problem for the ARMAC machine, and only writing it up three years afterwards. That origin story is his own recollection given decades after the fact rather than a contemporaneous record, and it is worth holding a little more loosely than the publication date.\n\nThe idea is a refusal to guess. Keep a tentative distance for every node, then repeatedly take the unsettled node with the smallest tentative distance and declare it final. The claim that makes it work is that this node's distance cannot improve later, because any route that improved it would have to pass through some other unsettled node, and every one of those is already at least as far away. Adding more edges cannot reduce a total when no edge reduces anything.\n\nWhich is exactly where it fails. That argument rests entirely on edges never being negative. Allow a negative edge and a longer-looking route can become cheaper by traversing it, so a node declared final can turn out not to be, and the algorithm does not revisit it. This is not an implementation detail to work around; it is the invariant collapsing, and the correct response is a different algorithm rather than a patch.",
+    "problem": {
+      "name": "Single-source shortest path",
+      "aka": [
+        "SSSP"
+      ],
+      "shape": "Given a weighted graph and one starting node, find the cheapest route from it to every other node.",
+      "tell": [
+        "a graph with weighted edges, where the weights mean cost, time or distance",
+        "the question asks for cheapest or fastest rather than fewest steps",
+        "one fixed origin, many destinations"
+      ],
+      "move": "Keep a tentative distance for every node. Repeatedly take the unsettled node with the smallest tentative distance, declare it final, and relax its outgoing edges.",
+      "invariant": "When a node is settled, its distance is final. This holds because any improvement would have to route through another unsettled node, and all of those are already at least as far away.",
+      "breaks": "A negative edge weight. It makes a longer-looking route improvable later, so a settled node can be wrong, and the algorithm never revisits it. The alternative there is Bellman-Ford, which relaxes repeatedly rather than settling.",
+      "cost": {
+        "time": "O((V+E) log V) with a binary heap",
+        "space": "O(V)",
+        "beats": "enumerating paths, which grows explosively"
+      },
+      "worked": {
+        "problem": "Four nodes. A to B costs 1, A to C costs 4, B to C costs 2, C to D costs 1. Cheapest from A to every node?",
+        "reasoning": "Settle A at 0, relaxing to B=1 and C=4. The smallest unsettled is B at 1, so settle B and relax B to C, giving 1+2=3, which improves C from 4. Smallest unsettled is now C at 3, settle it, relax to D=4. Settle D at 4. Note that C's first value was wrong and was corrected before C was settled, never after. That is the invariant doing its work.",
+        "code": "dist = {start: 0}\npq = [(0, start)]\nsettled = set()\n\nwhile pq:\n    d, u = heappop(pq)\n    if u in settled:       # a stale entry; a better one already settled it\n        continue\n    settled.add(u)         # <- from here, d is final\n    for v, w in graph[u]:\n        if d + w < dist.get(v, INF):\n            dist[v] = d + w\n            heappush(pq, (dist[v], v))"
+      },
+      "practice": "Run it on a graph where one edge is -3 and find the node it settles wrongly. Then work out why adding 3 to every edge does not rescue it."
+    },
+    "beats": {
+      "broke": "Finding a cheapest route by examining routes fails, because the number of paths through a graph grows explosively with its size. There was no systematic method that avoided the enumeration.",
+      "fix": "Dijkstra, conceived in 1956 by his own account and published in 1959. Hold a tentative distance for every node and repeatedly settle the nearest unsettled one as final, because nothing still unsettled is close enough to improve it.",
+      "cost": "It requires that no edge is negative, since the settling argument depends on extra edges never reducing a total. It also explores outward in every direction, so on a large graph it can settle a great many nodes that lead nowhere near the destination.",
+      "interview": {
+        "q": "Why does a negative edge weight break this, and what do you use instead?",
+        "trap": "Proposing to add a constant to every edge to make them all non-negative. That changes the answer, because it penalises routes by the number of edges they use rather than uniformly.",
+        "answer": "Because settling depends on a node's distance being final once it is the nearest unsettled one, and that argument only holds if adding an edge can never reduce a total. With a negative edge available, a route that currently looks longer can become cheaper later, so a settled node can turn out to be wrong, and it is never revisited. Adding a constant to all weights does not fix it: it adds the constant once per edge, so it penalises many-hop routes and changes which route is cheapest. The alternative is Bellman-Ford, which relaxes every edge repeatedly instead of settling and tolerates negative weights, at a higher cost. Worth knowing why it only reports a negative cycle rather than handling one: if such a cycle is reachable, some distances are effectively negative infinity, and asking for shortest simple paths instead turns the problem NP-hard."
+      }
+    },
+    "blueprint": "The settling argument, which is the whole algorithm:\n\n  settled: A=0  B=1          unsettled: C=3  D=inf\n                                        ^\n  C is the nearest unsettled. Could anything improve it?\n  Any improving route must pass through an unsettled node.\n  Every unsettled node is >= 3 away.\n  Every edge is >= 0, so passing through one cannot reduce a total.\n  Therefore nothing can beat 3.  -> settle C.\n\nNow make one edge -5. The final line is false. The whole\nproof collapses -- not the implementation, the PROOF.",
+    "takeaway": "It settles the nearest unsettled node because nothing further away can improve it — an argument that is true only while every edge is non-negative."
+  },
+  "E.22": {
+    "id": "E.22",
+    "trackId": "E",
+    "trackName": "Data structures and algorithms",
+    "title": "Greedy algorithms, and when greedy is provably wrong",
+    "status": "unsourced",
+    "story": "A greedy algorithm takes the best-looking option at each step and never reconsiders. It is the first thing anyone tries, it is often right, and when it is wrong it is wrong silently — producing a valid, plausible, suboptimal answer with no indication that a better one existed.\n\nCoin change is the standard demonstration. With coins of 1, 5, 10 and 25, taking the largest coin that fits at each step is optimal, and the habit of trusting it forms. Introduce coins of 1, 3 and 4 and ask for 6: greedy takes 4, then 1, then 1, giving three coins, while two threes do it in two. Nothing detected the error. The algorithm ran correctly and returned a worse answer.\n\nSo greedy demands justification rather than testing, which is the uncomfortable part. Passing examples establish nothing, because a counterexample can be arbitrarily rare. What is needed is an argument that a locally best choice is always compatible with some optimal solution — typically an exchange argument, showing that any optimal solution not containing your choice can be rewritten to contain it without getting worse. Where you can construct that argument, greedy is correct and fast. Where you cannot, the honest conclusion is usually dynamic programming, which considers the combinations greedy discards.",
+    "problem": {
+      "name": "Greedy choice and the exchange argument",
+      "aka": [
+        "greedy algorithms",
+        "matroid-structured optimisation"
+      ],
+      "shape": "Build an optimal solution by repeatedly taking the locally best option, without ever reconsidering a choice.",
+      "tell": [
+        "an optimisation problem: maximise, minimise, fewest, most",
+        "a natural ordering suggests an obvious best next step",
+        "and critically: you can argue an optimal solution exists that contains that step"
+      ],
+      "move": "Sort or order by the greedy criterion, take the best remaining option that stays feasible, commit to it, and repeat.",
+      "invariant": "After every choice, some optimal solution still contains all choices made so far. This is what the exchange argument establishes, and it is the entire justification.",
+      "breaks": "Any problem where a locally best choice can foreclose a better combination. It does not fail loudly — it returns a valid, plausible, worse answer, which no amount of example testing reliably catches.",
+      "cost": {
+        "time": "O(n log n), usually dominated by the sort",
+        "space": "O(1) beyond the input",
+        "beats": "exponential enumeration of every combination"
+      },
+      "worked": {
+        "problem": "Coins of 1, 3 and 4. Make 6 with the fewest coins.",
+        "reasoning": "Greedy takes the largest coin that fits: 4, leaving 2, then 1 and 1. Three coins. The optimum is 3 and 3, which is two. The exchange argument fails here and you can see exactly where: an optimal solution contains no 4, and swapping a 4 in forces the remainder to 2, which the available coins cover only with two more coins. So taking 4 is not compatible with optimality, the greedy choice property does not hold, and the problem needs dynamic programming. Compare 1, 5, 10, 25, where the exchange does go through and greedy is genuinely optimal.",
+        "code": "# greedy -- correct ONLY when the exchange argument holds\ndef greedy(coins, target):\n    n = 0\n    for c in sorted(coins, reverse=True):\n        take = target // c\n        n += take\n        target -= take * c\n    return n if target == 0 else None\n\n# dp -- correct for ANY coin system, because it keeps the\n# combinations greedy discards\ndef dp(coins, target):\n    best = [0] + [INF] * target\n    for t in range(1, target + 1):\n        best[t] = min((best[t - c] + 1 for c in coins if c <= t), default=INF)\n    return best[target]"
+      },
+      "practice": "Find a coin system where greedy fails for some target but succeeds for every target below it — then explain why testing small inputs was never going to be enough."
+    },
+    "beats": {
+      "broke": "Exploring every combination of choices costs exponential time, so for many optimisation problems exhaustive search is impossible at useful sizes.",
+      "fix": "Take the locally best option at each step and never revisit it, reducing an exponential search to a single pass. Where the problem has the right structure this yields a provably optimal answer.",
+      "cost": "It fails silently. A greedy algorithm on an unsuitable problem returns a valid, plausible, suboptimal result with nothing to indicate a better answer was available, and tests built from examples will not reveal it.",
+      "interview": {
+        "q": "How do you establish that a greedy algorithm is correct for a problem?",
+        "trap": "Testing it on many inputs, including edge cases. Testing can only ever fail to find a counterexample, and counterexamples can be vanishingly rare.",
+        "answer": "With an exchange argument, not with tests. You show that any optimal solution can be transformed into one containing your greedy choice without becoming worse: take an optimal solution that does not include the choice, swap your choice in, and demonstrate the result is still valid and no worse. Repeating that argument shows a greedy solution is optimal. If you cannot construct the exchange, you have not shown it works, and the usual correct move is dynamic programming, which keeps the combinations greedy throws away. Coin change is the standard warning: greedy is optimal for 1, 5, 10, 25 and wrong for 1, 3, 4 at target 6, and nothing in the run signals the difference."
+      }
+    },
+    "blueprint": "coins 1, 5, 10, 25 -> greedy is OPTIMAL (exchange holds)\ncoins 1, 3, 4      -> greedy is WRONG, silently\n\n  target 6\n  greedy:  4 + 1 + 1   = 3 coins   <- valid. plausible. worse.\n  optimal: 3 + 3       = 2 coins\n  nothing reported an error. it simply returned the wrong one.\n\nThe proof obligation (exchange argument):\n  take any optimal solution WITHOUT your greedy choice\n  swap your choice in\n  show the result is still valid and no worse\n  -> if you can, greedy is optimal\n  -> if you cannot, you have proved nothing. use DP.\n\nTests can only fail to find a counterexample.",
+    "takeaway": "Greedy fails by returning a plausible worse answer, so tests cannot validate it. Either you have the exchange argument or you have dynamic programming."
+  },
+  "E.24": {
+    "id": "E.24",
+    "trackId": "E",
+    "trackName": "Data structures and algorithms",
+    "title": "Binary search, including on the answer rather than the array",
+    "status": "unsourced",
+    "story": "Binary search over a sorted array is the familiar half. The part that changes what you can do is that the array is incidental. What the technique actually needs is a yes/no question whose answer flips exactly once across a range, and then it finds the flip in logarithmic time.\n\nThat reframing unlocks problems with no array in them at all. Asked for the minimum ship capacity that delivers all packages within d days, you are not searching a list; you are searching the space of capacities. The question 'does capacity c suffice' is monotone — if c works then c+1 works — so the space has exactly one boundary between failing and succeeding, and binary search finds it while a feasibility check does the actual work. This is usually called binary search on the answer, and recognising when a problem has this shape is worth more than any implementation detail.\n\nIt is also famously easy to get wrong in ways that pass casual testing. Off-by-one errors in the boundary update produce infinite loops or answers one position out, and the midpoint computed as (low + high) / 2 can overflow in fixed-width integer types — a defect that survived in widely used library code for years. Writing it from the invariant rather than from memory is the reliable defence: state what the range means, and make every update preserve that meaning.",
+    "problem": {
+      "name": "Searching a monotone predicate",
+      "aka": [
+        "binary search",
+        "binary search on the answer",
+        "bisection"
+      ],
+      "shape": "Locate the single boundary in an ordered space where a yes/no condition changes from false to true.",
+      "tell": [
+        "the space is ordered and the condition, once true, stays true",
+        "you are asked for a minimum that works or a maximum that still works",
+        "the space of candidate answers is huge but checking one candidate is cheap",
+        "the naive solution tries every candidate in order"
+      ],
+      "move": "Maintain a range known to contain the boundary. Test the midpoint, discard the half that cannot contain it, and repeat until the range is one element.",
+      "invariant": "The boundary is always inside the current range. Every update must preserve that, which is why the loop condition and the two updates have to be derived together rather than remembered.",
+      "breaks": "A non-monotone predicate. If the condition flips on and off across the space there is no single boundary, and the search converges confidently on one of several, with no indication anything is wrong.",
+      "cost": {
+        "time": "O(log n) tests, each costing whatever the feasibility check costs",
+        "space": "O(1)",
+        "beats": "O(n) linear scanning of every candidate"
+      },
+      "worked": {
+        "problem": "Packages must ship within d days. Find the smallest daily capacity that achieves it.",
+        "reasoning": "There is no array to search. The space is capacities, from the largest single package up to the sum of all of them. Feasibility — can capacity c ship everything in d days — is answered by a greedy pass, and it is monotone, because more capacity never makes it take longer. So there is exactly one boundary between capacities that fail and capacities that work, and binary search finds it in about twenty tests over a space of a million, with the greedy pass doing the real work each time.",
+        "code": "lo = max(weights)          # must fit the largest single item\nhi = sum(weights)          # trivially enough: one day\nwhile lo < hi:\n    mid = lo + (hi - lo) // 2   # not (lo+hi)//2: that can overflow\n                                # in fixed-width integer types\n    if days_needed(weights, mid) <= d:\n        hi = mid        # mid works; the answer is mid or smaller\n    else:\n        lo = mid + 1    # mid fails; the answer is strictly larger\nreturn lo"
+      },
+      "practice": "Find the minimum eating speed to finish n piles of bananas in h hours. Then state, in one sentence, why the feasibility check is monotone — if you cannot, the search is not justified."
+    },
+    "beats": {
+      "broke": "Finding a value, or a threshold, by scanning costs time proportional to the size of the space. At large sizes that is unusable, and it wastes the structure that is already present in the problem.",
+      "fix": "Halve the candidate space with each test. Applied to a sorted array this finds a value in logarithmic time; applied to a range of possible answers it finds the boundary where a monotone condition flips.",
+      "cost": "Correctness is fragile in the details: boundary updates are easy to get wrong in ways that loop forever or land one position out, and midpoint arithmetic can overflow in fixed-width integers. Establishing monotonicity is also a proof obligation that is frequently assumed rather than checked.",
+      "interview": {
+        "q": "What does binary search actually require, given that it works on problems with no array in them?",
+        "trap": "Answering that the data must be sorted. Sortedness is one way to obtain the requirement, not the requirement.",
+        "answer": "A predicate that is monotone over the search space: once it becomes true it stays true, so there is exactly one boundary between the failing region and the succeeding one. A sorted array is a special case, where the predicate is 'this element is at least the target'. Once you see it that way you can binary search over any ordered space of candidate answers — capacities, speeds, time budgets — provided you can test feasibility for a given candidate and that feasibility is monotone. The test itself does the work; binary search only decides which candidates to test."
+      }
+    },
+    "blueprint": "The array is incidental. This is what it needs:\n\n  predicate:  F F F F F T T T T T\n                        ^\n                        one boundary. find it in log time.\n\n  sorted array    -> predicate is \"element >= target\"\n  ship capacity   -> predicate is \"c delivers within d days\"\n  eating speed    -> predicate is \"speed k finishes in h hours\"\n\nNot monotone -> no single boundary -> it converges on ONE of\nseveral, confidently, with no sign anything is wrong:\n  F F T T F F T T   <- binary search is not justified here\n\n  mid = lo + (hi-lo)//2, never (lo+hi)//2 -- the latter\n  overflows in fixed-width ints, a bug that lived in shipped\n  library code for years.",
+    "takeaway": "It needs a monotone predicate, not an array. Once you see that, the search space can be capacities or speeds — anything ordered where the check is cheap."
+  },
+  "E.25": {
+    "id": "E.25",
+    "trackId": "E",
+    "trackName": "Data structures and algorithms",
+    "title": "Sorting: what your language actually uses, and why",
+    "status": "traced",
+    "seed": "E.25",
+    "story": "Nobody writes a sort. Everyone calls one, and almost nobody can say what it does, which matters because the answer is not one algorithm and the choice leaks into behaviour you depend on.\n\nThe reason is that no single algorithm wins everywhere. Quicksort is excellent on random data and has a quadratic worst case an adversary can trigger deliberately. Merge sort guarantees its bound and needs extra memory. Insertion sort is unbeatable on tiny or nearly-ordered inputs and hopeless beyond them. Real implementations therefore detect the case at runtime and switch.\n\nTimsort, implemented by Tim Peters in 2002 and drawing on McIlroy's 1993 work, takes the view that real data is rarely random: it finds runs that are already ordered, extends short ones with insertion sort, and merges. That made it Python's sort from 2.3, and the detail most people have not caught up with is that Python moved off it — from 3.11 the sort is Powersort, by Munro and Wild, which chooses a better merge order. Timsort is still Java's sort for object arrays, with modifications by Josh Bloch, from JDK 7.\n\nThe other lineage descends from Musser's introsort in 1997: run quicksort, but count the recursion depth, and once it exceeds a bound conclude you are in the bad case and finish with heapsort. That buys quicksort's speed with a guaranteed bound, which is what the C++ standard demands of std::sort without naming an algorithm. Its successor, pattern-defeating quicksort by Orson Peters, handles patterned input better and is what Rust uses for its unstable sort and Go has used since 1.19.\n\nThe consequence worth carrying is stability. Java's split is the tell: object arrays get a stable sort because you may be sorting by one field having already sorted by another, and primitives get an unstable one because two equal integers are indistinguishable so the question cannot arise.",
+    "problem": {
+      "name": "Comparison sorting",
+      "aka": [
+        "the sorting problem"
+      ],
+      "shape": "Put n elements into order using only pairwise comparisons, with no assumptions about the values themselves.",
+      "tell": [
+        "you need an ordering and can only compare two elements at a time",
+        "the data has no exploitable structure such as a small fixed integer range",
+        "in practice: you are about to call sort() and care what it guarantees"
+      ],
+      "move": "Hybridise. Detect the shape of the input at runtime and switch algorithm: exploit existing runs, use insertion sort on small pieces, and fall back to a guaranteed-bound algorithm when the fast one is going badly.",
+      "invariant": "Any comparison sort needs at least n log n comparisons in the worst case, because n! orderings need that many yes/no answers to distinguish. No hybrid escapes it; they only avoid the bad constants and the quadratic collapse.",
+      "breaks": "The lower bound assumes comparisons are all you have. If the values are bounded small integers, counting or radix sort beat it outright by not comparing at all.",
+      "cost": {
+        "time": "O(n log n), and O(n) for Timsort on already-ordered input",
+        "space": "O(n) for Timsort, O(log n) for introsort",
+        "beats": "a quadratic worst case an adversary can trigger"
+      },
+      "worked": {
+        "problem": "You sort a list of records by name, then sort the result by department, and expect names to stay ordered within each department. When is that safe?",
+        "reasoning": "Only when the second sort is stable, meaning equal elements keep their previous relative order. In Python this is guaranteed and always has been, across both Timsort and Powersort. In Java it holds for an array of objects and not for an array of primitives. In C++ std::sort is not stable and std::stable_sort is a different function. So the technique is correct in one language, type-dependent in another, and requires a deliberately different call in a third.",
+        "code": "# stable: a documented guarantee, so this composes\nrows.sort(key=lambda r: r.name)\nrows.sort(key=lambda r: r.department)\n\n# same intent, without relying on stability\nrows.sort(key=lambda r: (r.department, r.name))"
+      },
+      "practice": "Find out what your main language sorts with today, and whether it promises stability. Then check whether the answer changes for primitives."
+    },
+    "beats": {
+      "broke": "No single algorithm is best across random data, nearly-ordered data and adversarial data. Quicksort has a quadratic worst case that can be triggered on purpose; merge sort pays memory for its guarantee; insertion sort wins only while inputs are tiny or nearly ordered.",
+      "fix": "Hybrids that detect the case at runtime. Timsort, by Tim Peters in 2002, exploits existing runs in real data. Introsort, by David Musser in 1997, runs quicksort and falls back to heapsort once recursion depth suggests the bad case.",
+      "cost": "Considerable implementation complexity, and a stability guarantee that now varies by language and even by type within a language. It also makes performance harder to reason about, since the algorithm actually executed depends on the shape of your data.",
+      "interview": {
+        "q": "Why does Java sort arrays of primitives with a different algorithm than arrays of objects?",
+        "trap": "Answering that objects are larger or more expensive to compare. Both are true and neither is the reason.",
+        "answer": "Stability. Two equal objects are distinguishable, so the order in which equal elements come out is observable and matters — you may have sorted by one field and then be sorting by another, expecting the first to survive as a tiebreak. Object arrays therefore use Timsort, which is stable. Two equal primitives are indistinguishable, so stability is unobservable and cannot be depended on, which frees the implementation to use a dual-pivot quicksort that is faster and not stable."
+      }
+    },
+    "blueprint": "What actually runs when you call sort():\n\n  Python   <= 3.10  Timsort        stable (guaranteed)\n           >= 3.11  Powersort      stable (guaranteed)\n  Java     objects  Timsort        stable\n           primitives  dual-pivot quicksort   NOT stable\n  C++      std::sort     introsort-family     NOT stable\n           std::stable_sort                   stable\n  Rust     sort()        stable\n           sort_unstable()  pattern-defeating quicksort\n  Go       sort.Sort     pattern-defeating quicksort (1.19+)\n\nJava's split is the tell: equal OBJECTS are distinguishable,\nso their order is observable and must be preserved.\nEqual PRIMITIVES are not, so it cannot matter -- which frees\nthe implementation to be faster.",
+    "takeaway": "No algorithm wins everywhere, so real sorts detect and switch. What you must actually know is whether yours is stable, and Java's answer differs by type."
+  },
   "E.4": {
     "id": "E.4",
     "trackId": "E",
@@ -789,6 +979,100 @@
     },
     "blueprint": "# Conceptual hash table lookup:\ndef get(table, key):\n    bucket = hash(key) % len(table.buckets)\n    for k, v in table.buckets[bucket]: # O(1) if buckets are sparse\n        if k == key:\n            return v\n    return None",
     "takeaway": "A hash map buys O(1) speed by trading away memory and risking O(n) collapse if the hash function is compromised."
+  },
+  "E.6": {
+    "id": "E.6",
+    "trackId": "E",
+    "trackName": "Data structures and algorithms",
+    "title": "Two pointers",
+    "status": "unsourced",
+    "story": "A large family of array problems have an obvious solution that checks every pair, costing quadratic time, and a non-obvious one that walks two indices through the data once. The gap between them is not cleverness; it is one piece of information the naive version throws away.\n\nTake finding two numbers in a sorted array that sum to a target. Nested loops try every pair. But with the array sorted, comparing the sum at the two ends tells you something about all the pairs you have not examined: if the sum is too large, the largest element cannot participate in any solution, because even paired with the smallest element it overshoots. So it is eliminated — not tested and rejected, eliminated by argument. That is what collapses the work from quadratic to linear.\n\nThe prerequisite is therefore not 'the array is sorted' but the thing sortedness provides: a comparison at the current position must tell you which side to discard. Where that reasoning is unavailable, the two pointers still move, they just eliminate nothing, and you have written a confusing linear scan that happens to miss answers.",
+    "problem": {
+      "name": "Pair-finding on ordered data",
+      "aka": [
+        "the two-pointer technique",
+        "opposite-direction scan"
+      ],
+      "shape": "Find a pair, or a pair of boundaries, in ordered data satisfying some condition, without examining every combination.",
+      "tell": [
+        "the input is sorted, or can be sorted cheaply",
+        "the question is about a pair: two numbers summing to a target, a container between two walls, meeting in the middle",
+        "the naive solution is two nested loops over the same array"
+      ],
+      "move": "Place one index at each end. Compare, and move the pointer whose element cannot possibly participate in a solution given what the comparison told you.",
+      "invariant": "Every pair you never examined has already been ruled out by an argument, not skipped. Moving a pointer must eliminate all pairs involving the element you leave behind.",
+      "breaks": "Any input where a comparison does not license eliminating a side — unsorted data, or a condition that is not monotone in the ordering. The pointers still move and silently miss answers.",
+      "cost": {
+        "time": "O(n), or O(n log n) if you must sort first",
+        "space": "O(1)",
+        "beats": "O(n^2) nested loops over every pair"
+      },
+      "worked": {
+        "problem": "Sorted array [1, 3, 5, 8, 11], find two values summing to 13.",
+        "reasoning": "Start at 1 and 11, sum 12, too small. Moving the right pointer down only makes it smaller, so the left must rise: 1 is eliminated, because paired with the largest available element it still falls short. Now 3 and 11, sum 14, too big. By the same argument in reverse, 11 cannot appear in any solution, since even with the smallest remaining partner it overshoots. Now 3 and 8, sum 11, too small, so 3 goes. 5 and 8 is 13. Four comparisons instead of ten, and every discarded element was discarded by argument.",
+        "code": "lo, hi = 0, len(a) - 1\nwhile lo < hi:\n    s = a[lo] + a[hi]\n    if s == target:\n        return lo, hi\n    if s < target:\n        lo += 1     # a[lo] is too small even with the LARGEST partner\n    else:\n        hi -= 1     # a[hi] is too big even with the SMALLEST partner"
+      },
+      "practice": "Apply it to the container-with-most-water problem, where you move the pointer at the shorter wall. Work out why moving the taller one can never help."
+    },
+    "beats": {
+      "broke": "Pairwise questions over an array invite nested loops, which examine every combination and cost quadratic time. On a large array that is unusable, and most of the pairs examined were never plausible.",
+      "fix": "Walk two indices through the data, using an ordering property so that each comparison rules out an entire region rather than a single pair. Each step discards a candidate permanently, so one pass suffices.",
+      "cost": "It requires an ordering, so an unsorted input must be sorted first, which puts a log factor back. The reasoning is also easy to get subtly wrong, since a mistaken argument about which side to discard silently skips valid answers rather than failing.",
+      "interview": {
+        "q": "What property must hold for two pointers to be correct, beyond the array being sorted?",
+        "trap": "Answering 'it must be sorted'. Sortedness is how the property is usually obtained, not the property itself.",
+        "answer": "That a comparison at the current pair lets you eliminate one entire side from further consideration. Sortedness is the usual mechanism: if the sum of the two ends exceeds the target, the larger element cannot be in any solution, because it is already too big even with the smallest partner. What matters is that the comparison licenses discarding a whole region rather than a single pair. Where it does not — for instance if the values can be negative in a problem whose argument assumed they were not — the pointers still move and quietly skip valid answers."
+      }
+    },
+    "blueprint": "  [ 1,  3,  5,  8, 11 ]   target 13\n    ^              ^      12 -- too small\n    |              |      moving hi LEFT only shrinks it\n    +-> so 1 is impossible with ANY partner. eliminate it.\n\n  [ 1,  3,  5,  8, 11 ]\n         ^         ^      14 -- too big\n                          moving lo RIGHT only grows it\n         so 11 is impossible with any partner. eliminate.\n\n  [ 1,  3,  5,  8, 11 ]\n         ^     ^          11 -- too small, drop 3\n  [ 1,  3,  5,  8, 11 ]\n             ^  ^         13. found.\n\nEach move deletes a whole ROW of the pair table, not a cell.",
+    "takeaway": "Each move must eliminate every pair involving the element left behind. Sortedness is how you usually earn that argument, not the requirement itself."
+  },
+  "E.7": {
+    "id": "E.7",
+    "trackId": "E",
+    "trackName": "Data structures and algorithms",
+    "title": "Sliding window",
+    "status": "unsourced",
+    "story": "Questions about contiguous stretches of an array — the longest substring without repeats, the smallest subarray summing to at least a target — have an obvious solution that generates every stretch and checks it, which is quadratic before you have even looked at the contents.\n\nThe window is the observation that consecutive stretches overlap almost entirely. Moving from one to the next changes two elements, so recomputing the whole thing discards nearly all the work you just did. Instead keep a running answer, add what enters on the right, subtract what leaves on the left, and each element is handled a constant number of times.\n\nThe correctness argument is more delicate than the mechanics, and it is where the technique is usually misapplied. Growing the window must move the tracked quantity in one direction and shrinking must move it in the other. That is what lets you decide, from the current state alone, whether to extend or contract. Introduce negative numbers into a sum-based window and this collapses immediately: extending can now reduce the sum, so a window that is too large is no longer evidence that you should shrink, and a shrinking rule based on that evidence starts skipping valid answers while continuing to produce plausible output.",
+    "problem": {
+      "name": "Contiguous subarray optimisation",
+      "aka": [
+        "the sliding window technique",
+        "caterpillar method"
+      ],
+      "shape": "Find the best contiguous stretch of a sequence satisfying a condition — longest, shortest, or a count of qualifying stretches.",
+      "tell": [
+        "the words subarray, substring or contiguous appear, and order matters",
+        "you are asked for longest, shortest, or how many",
+        "the condition can be maintained incrementally as elements enter and leave"
+      ],
+      "move": "Hold two boundaries. Extend the right edge to admit elements; when the window violates the condition, advance the left edge until it is valid again. Record the best valid window seen.",
+      "invariant": "The window is in a valid state whenever you measure it, and every window you never explicitly formed was covered by the monotonicity argument rather than skipped.",
+      "breaks": "Anything that destroys monotonicity — most commonly negative numbers in a sum-based window, where extending can now decrease the sum and shrinking is no longer the right response.",
+      "cost": {
+        "time": "O(n); each element enters once and leaves once",
+        "space": "O(1), or O(k) for the auxiliary counts",
+        "beats": "O(n^2) enumeration of every subarray"
+      },
+      "worked": {
+        "problem": "Longest substring with no repeated character, in 'abcabcbb'.",
+        "reasoning": "Extend right while characters are new: a, ab, abc, length 3. The next 'a' repeats, so advance left past the previous 'a', giving 'bca'. Continue: each character enters exactly once and leaves at most once, so the total movement of both boundaries is bounded by twice the length. The answer is 3. Note that the left boundary never moves backwards — that is what makes it linear, and it is only sound because a window valid at one point stays valid when you remove from the left.",
+        "code": "last = {}\nleft = best = 0\nfor right, ch in enumerate(s):\n    if ch in last and last[ch] >= left:\n        left = last[ch] + 1     # jump left past the previous copy\n    last[ch] = right\n    best = max(best, right - left + 1)"
+      },
+      "practice": "Write the shortest-subarray-with-sum-at-least-k version, then add a single negative number to the input and find the answer it now misses."
+    },
+    "beats": {
+      "broke": "Questions about contiguous stretches invite generating every stretch, which is quadratic in the length before the contents are even inspected. Nearly all of that work is redundant, because consecutive stretches share almost all their elements.",
+      "fix": "Keep one window and a running summary of it. Add the element entering on the right, remove the one leaving on the left, and let the summary be maintained rather than recomputed, so each element is processed a constant number of times.",
+      "cost": "It needs the tracked quantity to move monotonically as the window grows and shrinks, which is a real restriction rather than a technicality. It also needs auxiliary state such as a count of characters in the window, so the space saving over the naive version is smaller than it first appears.",
+      "interview": {
+        "q": "Why does a sliding window for 'smallest subarray with sum at least k' break when the array can contain negative numbers?",
+        "trap": "Answering that the sum could go negative. The sum's sign is not the problem; the loss of monotonicity is.",
+        "answer": "Because the shrink rule depends on growth and shrinkage moving the sum in opposite directions. With only non-negative values, extending the window cannot decrease the sum, so once the sum is at least k you know shrinking is the only way to find a smaller qualifying window. Allow negatives and extending can reduce the sum, so a window that currently falls short might qualify after adding a negative and then several positives. The evidence you were shrinking on is no longer evidence, and the window silently misses valid answers. That variant needs prefix sums with a monotonic deque, or a different formulation entirely."
+      }
+    },
+    "blueprint": "  a b c a b c b b\n  [-----]           abc, all distinct, best = 3\n    [-----]         'a' repeated -> left jumps past old 'a'\n      [-----]\n\n  left never moves BACKWARDS. that is the linearity.\n\nWhy it is sound, and where it dies:\n  non-negative sums:  grow -> sum rises, shrink -> sum falls\n                      so \"too big\" PROVES you should shrink\n  with a negative:    grow can LOWER the sum\n                      \"too small\" no longer proves you\n                      should grow -- and the window quietly\n                      skips valid answers while still\n                      returning something plausible",
+    "takeaway": "Consecutive stretches overlap, so maintain the answer instead of recomputing it — sound only while growing and shrinking move the quantity in opposite directions."
   },
   "F.1": {
     "id": "F.1",

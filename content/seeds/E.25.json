@@ -1,0 +1,110 @@
+{
+  "taskId": "E.25",
+  "title": "Sorting: what your language actually uses, and why",
+  "researchedAt": "2026-09-17",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Timsort is a hybrid of merge sort and insertion sort, implemented by Tim Peters in 2002 for Python, and drawing on Peter McIlroy's 1993 paper 'Optimistic Sorting and Information Theoretic Complexity'. It was Python's default sort from version 2.3.",
+      "type": "event",
+      "tokens": [
+        "Timsort",
+        "Tim Peters",
+        "2002",
+        "Python",
+        "McIlroy",
+        "1993"
+      ],
+      "source": {
+        "title": "Timsort, overview of origin and design",
+        "url": "https://en.wikipedia.org/wiki/Timsort",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Python replaced Timsort with Powersort, by Munro and Wild, from version 3.11 onward. Timsort was the default from 2.3 through 3.10.",
+      "type": "event",
+      "tokens": [
+        "Powersort",
+        "Munro",
+        "Wild",
+        "Python",
+        "Timsort"
+      ],
+      "source": {
+        "title": "Timsort, adoption and succession by Powersort in CPython",
+        "url": "https://en.wikipedia.org/wiki/Timsort",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Java sorts arrays of non-primitive types with Timsort, with modifications by Josh Bloch, from JDK 7. Arrays of primitives use a dual-pivot quicksort by Vladimir Yaroslavskiy, which does not need to preserve stability.",
+      "type": "event",
+      "tokens": [
+        "Java",
+        "Timsort",
+        "Josh Bloch",
+        "Vladimir Yaroslavskiy"
+      ],
+      "source": {
+        "title": "Timsort, adoption in Java SE 7 and the primitive-array exception",
+        "url": "https://en.wikipedia.org/wiki/Timsort",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "Introsort was introduced by David Musser in 1997 in 'Introspective sorting and selection algorithms', Software: Practice and Experience 27(8):983-993. It runs quicksort and switches to heapsort once recursion depth exceeds a bound, and to insertion sort on small partitions, giving quicksort's average case with a worst case that is still linearithmic.",
+      "type": "event",
+      "tokens": [
+        "David Musser",
+        "1997",
+        "Software",
+        "Practice",
+        "Experience"
+      ],
+      "source": {
+        "title": "Musser, D. R., Introspective sorting and selection algorithms, Software: Practice and Experience 27(8):983-993, 1997",
+        "url": "https://en.wikipedia.org/wiki/Introsort",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "The C++ standard does not mandate an algorithm for std::sort but requires a worst case of n log n, which a pure quicksort cannot guarantee; libstdc++ implements Musser's introsort. Stability is not required, so std::stable_sort is provided separately.",
+      "type": "event",
+      "tokens": [
+        "libstdc++",
+        "Musser"
+      ],
+      "source": {
+        "title": "Introsort, use in C++ standard library implementations",
+        "url": "https://en.wikipedia.org/wiki/Introsort",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c6",
+      "text": "Pattern-defeating quicksort, by Orson Peters, extends introsort to perform better on inputs containing patterns such as already-sorted runs. Rust's sort_unstable uses it, and Go's sort.Sort has used it since Go 1.19.",
+      "type": "event",
+      "tokens": [
+        "Orson Peters",
+        "Rust",
+        "Go"
+      ],
+      "source": {
+        "title": "Introsort, successors: pattern-defeating quicksort adoption in Rust and Go",
+        "url": "https://en.wikipedia.org/wiki/Introsort",
+        "kind": "secondary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "one sort cannot be best on random data, nearly sorted data, and adversarial data at once",
+    "fix": "hybrids: detect the case at runtime and switch algorithm",
+    "cost": "complexity, and a stability guarantee that differs per language and per type",
+    "interview": "why Java sorts primitives and objects with different algorithms"
+  }
+}

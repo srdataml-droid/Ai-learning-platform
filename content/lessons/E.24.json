@@ -1,0 +1,49 @@
+{
+  "id": "E.24",
+  "trackId": "E",
+  "trackName": "Data structures and algorithms",
+  "title": "Binary search, including on the answer rather than the array",
+  "status": "unsourced",
+  "story": "Binary search over a sorted array is the familiar half. The part that changes what you can do is that the array is incidental. What the technique actually needs is a yes/no question whose answer flips exactly once across a range, and then it finds the flip in logarithmic time.\n\nThat reframing unlocks problems with no array in them at all. Asked for the minimum ship capacity that delivers all packages within d days, you are not searching a list; you are searching the space of capacities. The question 'does capacity c suffice' is monotone — if c works then c+1 works — so the space has exactly one boundary between failing and succeeding, and binary search finds it while a feasibility check does the actual work. This is usually called binary search on the answer, and recognising when a problem has this shape is worth more than any implementation detail.\n\nIt is also famously easy to get wrong in ways that pass casual testing. Off-by-one errors in the boundary update produce infinite loops or answers one position out, and the midpoint computed as (low + high) / 2 can overflow in fixed-width integer types — a defect that survived in widely used library code for years. Writing it from the invariant rather than from memory is the reliable defence: state what the range means, and make every update preserve that meaning.",
+  "problem": {
+    "name": "Searching a monotone predicate",
+    "aka": [
+      "binary search",
+      "binary search on the answer",
+      "bisection"
+    ],
+    "shape": "Locate the single boundary in an ordered space where a yes/no condition changes from false to true.",
+    "tell": [
+      "the space is ordered and the condition, once true, stays true",
+      "you are asked for a minimum that works or a maximum that still works",
+      "the space of candidate answers is huge but checking one candidate is cheap",
+      "the naive solution tries every candidate in order"
+    ],
+    "move": "Maintain a range known to contain the boundary. Test the midpoint, discard the half that cannot contain it, and repeat until the range is one element.",
+    "invariant": "The boundary is always inside the current range. Every update must preserve that, which is why the loop condition and the two updates have to be derived together rather than remembered.",
+    "breaks": "A non-monotone predicate. If the condition flips on and off across the space there is no single boundary, and the search converges confidently on one of several, with no indication anything is wrong.",
+    "cost": {
+      "time": "O(log n) tests, each costing whatever the feasibility check costs",
+      "space": "O(1)",
+      "beats": "O(n) linear scanning of every candidate"
+    },
+    "worked": {
+      "problem": "Packages must ship within d days. Find the smallest daily capacity that achieves it.",
+      "reasoning": "There is no array to search. The space is capacities, from the largest single package up to the sum of all of them. Feasibility — can capacity c ship everything in d days — is answered by a greedy pass, and it is monotone, because more capacity never makes it take longer. So there is exactly one boundary between capacities that fail and capacities that work, and binary search finds it in about twenty tests over a space of a million, with the greedy pass doing the real work each time.",
+      "code": "lo = max(weights)          # must fit the largest single item\nhi = sum(weights)          # trivially enough: one day\nwhile lo < hi:\n    mid = lo + (hi - lo) // 2   # not (lo+hi)//2: that can overflow\n                                # in fixed-width integer types\n    if days_needed(weights, mid) <= d:\n        hi = mid        # mid works; the answer is mid or smaller\n    else:\n        lo = mid + 1    # mid fails; the answer is strictly larger\nreturn lo"
+    },
+    "practice": "Find the minimum eating speed to finish n piles of bananas in h hours. Then state, in one sentence, why the feasibility check is monotone — if you cannot, the search is not justified."
+  },
+  "beats": {
+    "broke": "Finding a value, or a threshold, by scanning costs time proportional to the size of the space. At large sizes that is unusable, and it wastes the structure that is already present in the problem.",
+    "fix": "Halve the candidate space with each test. Applied to a sorted array this finds a value in logarithmic time; applied to a range of possible answers it finds the boundary where a monotone condition flips.",
+    "cost": "Correctness is fragile in the details: boundary updates are easy to get wrong in ways that loop forever or land one position out, and midpoint arithmetic can overflow in fixed-width integers. Establishing monotonicity is also a proof obligation that is frequently assumed rather than checked.",
+    "interview": {
+      "q": "What does binary search actually require, given that it works on problems with no array in them?",
+      "trap": "Answering that the data must be sorted. Sortedness is one way to obtain the requirement, not the requirement.",
+      "answer": "A predicate that is monotone over the search space: once it becomes true it stays true, so there is exactly one boundary between the failing region and the succeeding one. A sorted array is a special case, where the predicate is 'this element is at least the target'. Once you see it that way you can binary search over any ordered space of candidate answers — capacities, speeds, time budgets — provided you can test feasibility for a given candidate and that feasibility is monotone. The test itself does the work; binary search only decides which candidates to test."
+    }
+  },
+  "blueprint": "The array is incidental. This is what it needs:\n\n  predicate:  F F F F F T T T T T\n                        ^\n                        one boundary. find it in log time.\n\n  sorted array    -> predicate is \"element >= target\"\n  ship capacity   -> predicate is \"c delivers within d days\"\n  eating speed    -> predicate is \"speed k finishes in h hours\"\n\nNot monotone -> no single boundary -> it converges on ONE of\nseveral, confidently, with no sign anything is wrong:\n  F F T T F F T T   <- binary search is not justified here\n\n  mid = lo + (hi-lo)//2, never (lo+hi)//2 -- the latter\n  overflows in fixed-width ints, a bug that lived in shipped\n  library code for years.",
+  "takeaway": "It needs a monotone predicate, not an array. Once you see that, the search space can be capacities or speeds — anything ordered where the check is cheap."
+}

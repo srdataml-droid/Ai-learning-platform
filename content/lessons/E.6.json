@@ -1,0 +1,47 @@
+{
+  "id": "E.6",
+  "trackId": "E",
+  "trackName": "Data structures and algorithms",
+  "title": "Two pointers",
+  "status": "unsourced",
+  "story": "A large family of array problems have an obvious solution that checks every pair, costing quadratic time, and a non-obvious one that walks two indices through the data once. The gap between them is not cleverness; it is one piece of information the naive version throws away.\n\nTake finding two numbers in a sorted array that sum to a target. Nested loops try every pair. But with the array sorted, comparing the sum at the two ends tells you something about all the pairs you have not examined: if the sum is too large, the largest element cannot participate in any solution, because even paired with the smallest element it overshoots. So it is eliminated — not tested and rejected, eliminated by argument. That is what collapses the work from quadratic to linear.\n\nThe prerequisite is therefore not 'the array is sorted' but the thing sortedness provides: a comparison at the current position must tell you which side to discard. Where that reasoning is unavailable, the two pointers still move, they just eliminate nothing, and you have written a confusing linear scan that happens to miss answers.",
+  "problem": {
+    "name": "Pair-finding on ordered data",
+    "aka": [
+      "the two-pointer technique",
+      "opposite-direction scan"
+    ],
+    "shape": "Find a pair, or a pair of boundaries, in ordered data satisfying some condition, without examining every combination.",
+    "tell": [
+      "the input is sorted, or can be sorted cheaply",
+      "the question is about a pair: two numbers summing to a target, a container between two walls, meeting in the middle",
+      "the naive solution is two nested loops over the same array"
+    ],
+    "move": "Place one index at each end. Compare, and move the pointer whose element cannot possibly participate in a solution given what the comparison told you.",
+    "invariant": "Every pair you never examined has already been ruled out by an argument, not skipped. Moving a pointer must eliminate all pairs involving the element you leave behind.",
+    "breaks": "Any input where a comparison does not license eliminating a side — unsorted data, or a condition that is not monotone in the ordering. The pointers still move and silently miss answers.",
+    "cost": {
+      "time": "O(n), or O(n log n) if you must sort first",
+      "space": "O(1)",
+      "beats": "O(n^2) nested loops over every pair"
+    },
+    "worked": {
+      "problem": "Sorted array [1, 3, 5, 8, 11], find two values summing to 13.",
+      "reasoning": "Start at 1 and 11, sum 12, too small. Moving the right pointer down only makes it smaller, so the left must rise: 1 is eliminated, because paired with the largest available element it still falls short. Now 3 and 11, sum 14, too big. By the same argument in reverse, 11 cannot appear in any solution, since even with the smallest remaining partner it overshoots. Now 3 and 8, sum 11, too small, so 3 goes. 5 and 8 is 13. Four comparisons instead of ten, and every discarded element was discarded by argument.",
+      "code": "lo, hi = 0, len(a) - 1\nwhile lo < hi:\n    s = a[lo] + a[hi]\n    if s == target:\n        return lo, hi\n    if s < target:\n        lo += 1     # a[lo] is too small even with the LARGEST partner\n    else:\n        hi -= 1     # a[hi] is too big even with the SMALLEST partner"
+    },
+    "practice": "Apply it to the container-with-most-water problem, where you move the pointer at the shorter wall. Work out why moving the taller one can never help."
+  },
+  "beats": {
+    "broke": "Pairwise questions over an array invite nested loops, which examine every combination and cost quadratic time. On a large array that is unusable, and most of the pairs examined were never plausible.",
+    "fix": "Walk two indices through the data, using an ordering property so that each comparison rules out an entire region rather than a single pair. Each step discards a candidate permanently, so one pass suffices.",
+    "cost": "It requires an ordering, so an unsorted input must be sorted first, which puts a log factor back. The reasoning is also easy to get subtly wrong, since a mistaken argument about which side to discard silently skips valid answers rather than failing.",
+    "interview": {
+      "q": "What property must hold for two pointers to be correct, beyond the array being sorted?",
+      "trap": "Answering 'it must be sorted'. Sortedness is how the property is usually obtained, not the property itself.",
+      "answer": "That a comparison at the current pair lets you eliminate one entire side from further consideration. Sortedness is the usual mechanism: if the sum of the two ends exceeds the target, the larger element cannot be in any solution, because it is already too big even with the smallest partner. What matters is that the comparison licenses discarding a whole region rather than a single pair. Where it does not — for instance if the values can be negative in a problem whose argument assumed they were not — the pointers still move and quietly skip valid answers."
+    }
+  },
+  "blueprint": "  [ 1,  3,  5,  8, 11 ]   target 13\n    ^              ^      12 -- too small\n    |              |      moving hi LEFT only shrinks it\n    +-> so 1 is impossible with ANY partner. eliminate it.\n\n  [ 1,  3,  5,  8, 11 ]\n         ^         ^      14 -- too big\n                          moving lo RIGHT only grows it\n         so 11 is impossible with any partner. eliminate.\n\n  [ 1,  3,  5,  8, 11 ]\n         ^     ^          11 -- too small, drop 3\n  [ 1,  3,  5,  8, 11 ]\n             ^  ^         13. found.\n\nEach move deletes a whole ROW of the pair table, not a cell.",
+  "takeaway": "Each move must eliminate every pair involving the element left behind. Sortedness is how you usually earn that argument, not the requirement itself."
+}

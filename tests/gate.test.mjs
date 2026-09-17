@@ -95,3 +95,23 @@ test('a figure with a unit beside it is still caught', () => {
   assert.ok(extractAtoms('A 3x speedup.').includes('3x'));
   assert.ok(extractAtoms('Costing $2M a year.').includes('$2M'));
 });
+
+test('a hyphenated name is one atom, not two', () => {
+  // Regression: "Bellman-Ford" split into "Bellman" and "Ford", so the real
+  // name could never be licensed as itself and "Ford" appeared unlicensed.
+  const atoms = extractAtoms('The alternative there is Bellman-Ford, which relaxes repeatedly.');
+  assert.ok(atoms.includes('Bellman-Ford'), `expected the whole name: ${JSON.stringify(atoms)}`);
+  assert.ok(!atoms.includes('Ford'));
+});
+
+test('a sentence-initial word cannot start a proper noun', () => {
+  // Regression: "Use Bellman-Ford instead." yielded the atom "Use Bellman",
+  // which no claim could license and no rewording could obviously fix.
+  const atoms = extractAtoms('A settled node can be wrong. Use Bellman-Ford instead.');
+  assert.ok(!atoms.some((a) => a.startsWith('Use')), `"Use" must not begin a name: ${JSON.stringify(atoms)}`);
+  assert.ok(atoms.includes('Bellman-Ford'));
+});
+
+test('a real multi-word name mid-sentence is still caught', () => {
+  assert.ok(extractAtoms('It was written by Ken Thompson at Bell Labs.').includes('Ken Thompson'));
+});

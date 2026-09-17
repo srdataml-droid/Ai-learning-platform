@@ -1,0 +1,47 @@
+{
+  "id": "E.22",
+  "trackId": "E",
+  "trackName": "Data structures and algorithms",
+  "title": "Greedy algorithms, and when greedy is provably wrong",
+  "status": "unsourced",
+  "story": "A greedy algorithm takes the best-looking option at each step and never reconsiders. It is the first thing anyone tries, it is often right, and when it is wrong it is wrong silently — producing a valid, plausible, suboptimal answer with no indication that a better one existed.\n\nCoin change is the standard demonstration. With coins of 1, 5, 10 and 25, taking the largest coin that fits at each step is optimal, and the habit of trusting it forms. Introduce coins of 1, 3 and 4 and ask for 6: greedy takes 4, then 1, then 1, giving three coins, while two threes do it in two. Nothing detected the error. The algorithm ran correctly and returned a worse answer.\n\nSo greedy demands justification rather than testing, which is the uncomfortable part. Passing examples establish nothing, because a counterexample can be arbitrarily rare. What is needed is an argument that a locally best choice is always compatible with some optimal solution — typically an exchange argument, showing that any optimal solution not containing your choice can be rewritten to contain it without getting worse. Where you can construct that argument, greedy is correct and fast. Where you cannot, the honest conclusion is usually dynamic programming, which considers the combinations greedy discards.",
+  "problem": {
+    "name": "Greedy choice and the exchange argument",
+    "aka": [
+      "greedy algorithms",
+      "matroid-structured optimisation"
+    ],
+    "shape": "Build an optimal solution by repeatedly taking the locally best option, without ever reconsidering a choice.",
+    "tell": [
+      "an optimisation problem: maximise, minimise, fewest, most",
+      "a natural ordering suggests an obvious best next step",
+      "and critically: you can argue an optimal solution exists that contains that step"
+    ],
+    "move": "Sort or order by the greedy criterion, take the best remaining option that stays feasible, commit to it, and repeat.",
+    "invariant": "After every choice, some optimal solution still contains all choices made so far. This is what the exchange argument establishes, and it is the entire justification.",
+    "breaks": "Any problem where a locally best choice can foreclose a better combination. It does not fail loudly — it returns a valid, plausible, worse answer, which no amount of example testing reliably catches.",
+    "cost": {
+      "time": "O(n log n), usually dominated by the sort",
+      "space": "O(1) beyond the input",
+      "beats": "exponential enumeration of every combination"
+    },
+    "worked": {
+      "problem": "Coins of 1, 3 and 4. Make 6 with the fewest coins.",
+      "reasoning": "Greedy takes the largest coin that fits: 4, leaving 2, then 1 and 1. Three coins. The optimum is 3 and 3, which is two. The exchange argument fails here and you can see exactly where: an optimal solution contains no 4, and swapping a 4 in forces the remainder to 2, which the available coins cover only with two more coins. So taking 4 is not compatible with optimality, the greedy choice property does not hold, and the problem needs dynamic programming. Compare 1, 5, 10, 25, where the exchange does go through and greedy is genuinely optimal.",
+      "code": "# greedy -- correct ONLY when the exchange argument holds\ndef greedy(coins, target):\n    n = 0\n    for c in sorted(coins, reverse=True):\n        take = target // c\n        n += take\n        target -= take * c\n    return n if target == 0 else None\n\n# dp -- correct for ANY coin system, because it keeps the\n# combinations greedy discards\ndef dp(coins, target):\n    best = [0] + [INF] * target\n    for t in range(1, target + 1):\n        best[t] = min((best[t - c] + 1 for c in coins if c <= t), default=INF)\n    return best[target]"
+    },
+    "practice": "Find a coin system where greedy fails for some target but succeeds for every target below it — then explain why testing small inputs was never going to be enough."
+  },
+  "beats": {
+    "broke": "Exploring every combination of choices costs exponential time, so for many optimisation problems exhaustive search is impossible at useful sizes.",
+    "fix": "Take the locally best option at each step and never revisit it, reducing an exponential search to a single pass. Where the problem has the right structure this yields a provably optimal answer.",
+    "cost": "It fails silently. A greedy algorithm on an unsuitable problem returns a valid, plausible, suboptimal result with nothing to indicate a better answer was available, and tests built from examples will not reveal it.",
+    "interview": {
+      "q": "How do you establish that a greedy algorithm is correct for a problem?",
+      "trap": "Testing it on many inputs, including edge cases. Testing can only ever fail to find a counterexample, and counterexamples can be vanishingly rare.",
+      "answer": "With an exchange argument, not with tests. You show that any optimal solution can be transformed into one containing your greedy choice without becoming worse: take an optimal solution that does not include the choice, swap your choice in, and demonstrate the result is still valid and no worse. Repeating that argument shows a greedy solution is optimal. If you cannot construct the exchange, you have not shown it works, and the usual correct move is dynamic programming, which keeps the combinations greedy throws away. Coin change is the standard warning: greedy is optimal for 1, 5, 10, 25 and wrong for 1, 3, 4 at target 6, and nothing in the run signals the difference."
+    }
+  },
+  "blueprint": "coins 1, 5, 10, 25 -> greedy is OPTIMAL (exchange holds)\ncoins 1, 3, 4      -> greedy is WRONG, silently\n\n  target 6\n  greedy:  4 + 1 + 1   = 3 coins   <- valid. plausible. worse.\n  optimal: 3 + 3       = 2 coins\n  nothing reported an error. it simply returned the wrong one.\n\nThe proof obligation (exchange argument):\n  take any optimal solution WITHOUT your greedy choice\n  swap your choice in\n  show the result is still valid and no worse\n  -> if you can, greedy is optimal\n  -> if you cannot, you have proved nothing. use DP.\n\nTests can only fail to find a counterexample.",
+  "takeaway": "Greedy fails by returning a plausible worse answer, so tests cannot validate it. Either you have the exchange argument or you have dynamic programming."
+}

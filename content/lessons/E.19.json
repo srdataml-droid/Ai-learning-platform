@@ -1,0 +1,47 @@
+{
+  "id": "E.19",
+  "trackId": "E",
+  "trackName": "Data structures and algorithms",
+  "title": "Shortest path: Dijkstra, 1956, published 1959",
+  "status": "traced",
+  "seed": "E.19",
+  "story": "The obvious approach to finding a cheapest route is to consider the routes, and that approach dies immediately: the number of paths through a graph grows explosively, so enumerating them is not slow, it is impossible at any interesting size.\n\nDijkstra published the escape in Numerische Mathematik in 1959, in a three-page note that actually contains two algorithms — the shortest path one is the second of them. He recalled much later devising it in about twenty minutes in 1956, at a cafe terrace in Amsterdam, as a demonstration problem for the ARMAC machine, and only writing it up three years afterwards. That origin story is his own recollection given decades after the fact rather than a contemporaneous record, and it is worth holding a little more loosely than the publication date.\n\nThe idea is a refusal to guess. Keep a tentative distance for every node, then repeatedly take the unsettled node with the smallest tentative distance and declare it final. The claim that makes it work is that this node's distance cannot improve later, because any route that improved it would have to pass through some other unsettled node, and every one of those is already at least as far away. Adding more edges cannot reduce a total when no edge reduces anything.\n\nWhich is exactly where it fails. That argument rests entirely on edges never being negative. Allow a negative edge and a longer-looking route can become cheaper by traversing it, so a node declared final can turn out not to be, and the algorithm does not revisit it. This is not an implementation detail to work around; it is the invariant collapsing, and the correct response is a different algorithm rather than a patch.",
+  "problem": {
+    "name": "Single-source shortest path",
+    "aka": [
+      "SSSP"
+    ],
+    "shape": "Given a weighted graph and one starting node, find the cheapest route from it to every other node.",
+    "tell": [
+      "a graph with weighted edges, where the weights mean cost, time or distance",
+      "the question asks for cheapest or fastest rather than fewest steps",
+      "one fixed origin, many destinations"
+    ],
+    "move": "Keep a tentative distance for every node. Repeatedly take the unsettled node with the smallest tentative distance, declare it final, and relax its outgoing edges.",
+    "invariant": "When a node is settled, its distance is final. This holds because any improvement would have to route through another unsettled node, and all of those are already at least as far away.",
+    "breaks": "A negative edge weight. It makes a longer-looking route improvable later, so a settled node can be wrong, and the algorithm never revisits it. The alternative there is Bellman-Ford, which relaxes repeatedly rather than settling.",
+    "cost": {
+      "time": "O((V+E) log V) with a binary heap",
+      "space": "O(V)",
+      "beats": "enumerating paths, which grows explosively"
+    },
+    "worked": {
+      "problem": "Four nodes. A to B costs 1, A to C costs 4, B to C costs 2, C to D costs 1. Cheapest from A to every node?",
+      "reasoning": "Settle A at 0, relaxing to B=1 and C=4. The smallest unsettled is B at 1, so settle B and relax B to C, giving 1+2=3, which improves C from 4. Smallest unsettled is now C at 3, settle it, relax to D=4. Settle D at 4. Note that C's first value was wrong and was corrected before C was settled, never after. That is the invariant doing its work.",
+      "code": "dist = {start: 0}\npq = [(0, start)]\nsettled = set()\n\nwhile pq:\n    d, u = heappop(pq)\n    if u in settled:       # a stale entry; a better one already settled it\n        continue\n    settled.add(u)         # <- from here, d is final\n    for v, w in graph[u]:\n        if d + w < dist.get(v, INF):\n            dist[v] = d + w\n            heappush(pq, (dist[v], v))"
+    },
+    "practice": "Run it on a graph where one edge is -3 and find the node it settles wrongly. Then work out why adding 3 to every edge does not rescue it."
+  },
+  "beats": {
+    "broke": "Finding a cheapest route by examining routes fails, because the number of paths through a graph grows explosively with its size. There was no systematic method that avoided the enumeration.",
+    "fix": "Dijkstra, conceived in 1956 by his own account and published in 1959. Hold a tentative distance for every node and repeatedly settle the nearest unsettled one as final, because nothing still unsettled is close enough to improve it.",
+    "cost": "It requires that no edge is negative, since the settling argument depends on extra edges never reducing a total. It also explores outward in every direction, so on a large graph it can settle a great many nodes that lead nowhere near the destination.",
+    "interview": {
+      "q": "Why does a negative edge weight break this, and what do you use instead?",
+      "trap": "Proposing to add a constant to every edge to make them all non-negative. That changes the answer, because it penalises routes by the number of edges they use rather than uniformly.",
+      "answer": "Because settling depends on a node's distance being final once it is the nearest unsettled one, and that argument only holds if adding an edge can never reduce a total. With a negative edge available, a route that currently looks longer can become cheaper later, so a settled node can turn out to be wrong, and it is never revisited. Adding a constant to all weights does not fix it: it adds the constant once per edge, so it penalises many-hop routes and changes which route is cheapest. The alternative is Bellman-Ford, which relaxes every edge repeatedly instead of settling and tolerates negative weights, at a higher cost. Worth knowing why it only reports a negative cycle rather than handling one: if such a cycle is reachable, some distances are effectively negative infinity, and asking for shortest simple paths instead turns the problem NP-hard."
+    }
+  },
+  "blueprint": "The settling argument, which is the whole algorithm:\n\n  settled: A=0  B=1          unsettled: C=3  D=inf\n                                        ^\n  C is the nearest unsettled. Could anything improve it?\n  Any improving route must pass through an unsettled node.\n  Every unsettled node is >= 3 away.\n  Every edge is >= 0, so passing through one cannot reduce a total.\n  Therefore nothing can beat 3.  -> settle C.\n\nNow make one edge -5. The final line is false. The whole\nproof collapses -- not the implementation, the PROOF.",
+  "takeaway": "It settles the nearest unsettled node because nothing further away can improve it — an argument that is true only while every edge is non-negative."
+}
