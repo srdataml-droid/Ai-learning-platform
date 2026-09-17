@@ -1951,3 +1951,126 @@ p, .body-copy {
   color: var(--ink-2);
   max-inline-size: 66ch;
 }
+
+/* ── The problem it solves ─────────────────────────────────────────────────
+   The named term gets the most typographic weight on the page after the
+   title, because the name is the handle a reader searches on. */
+.problem-name-card {
+  padding: 1rem 1.15rem;
+  border: 1px solid var(--rule);
+  border-inline-start: 3px solid var(--signal);
+  background: var(--raise);
+  margin-block-end: 1.5rem;
+}
+
+.problem-name-label,
+.problem-pair-label,
+.problem-practice-label {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-size: 0.72rem;
+  color: var(--ink-2);
+  margin-block-end: 0.3rem;
+}
+
+.problem-name {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: var(--t-2);
+  line-height: 1.15;
+  margin: 0;
+}
+
+.problem-aka {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: var(--t--1);
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+
+.problem-shape {
+  margin: 0.5rem 0 0;
+  color: var(--ink-2);
+  max-inline-size: 68ch;
+}
+
+.problem-sub { margin-block-end: 1.5rem; }
+
+.problem-sub h3 {
+  font-size: var(--t-0);
+  margin: 0 0 0.5rem;
+}
+
+.problem-sub p { margin: 0; max-inline-size: 70ch; }
+
+.problem-tell {
+  margin: 0;
+  padding-inline-start: 1.1rem;
+  max-inline-size: 70ch;
+}
+
+.problem-tell li { margin-block-end: 0.3rem; }
+
+/* Two halves of one idea: what must hold, and what voids it. */
+.problem-pair {
+  display: grid;
+  gap: 1px;
+  grid-template-columns: repeat(auto-fit, minmax(22ch, 1fr));
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  margin-block-end: 1.25rem;
+}
+
+.problem-pair-half { padding: 0.9rem 1rem; background: var(--paper); }
+
+.problem-pair-half p { margin: 0; }
+
+.problem-holds { border-block-start: 3px solid #2b8a3e; }
+.problem-voids { border-block-start: 3px solid #a8641b; }
+.problem-holds .problem-pair-label { color: #2b8a3e; }
+.problem-voids .problem-pair-label { color: #a8641b; }
+
+[data-theme="dark"] .problem-holds { border-block-start-color: #5cb96e; }
+[data-theme="dark"] .problem-voids { border-block-start-color: #e0a563; }
+[data-theme="dark"] .problem-holds .problem-pair-label { color: #5cb96e; }
+[data-theme="dark"] .problem-voids .problem-pair-label { color: #e0a563; }
+
+.problem-cost {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  padding: 0.7rem 0;
+  border-block: 1px solid var(--rule-soft);
+  margin-block-end: 1.5rem;
+  font-size: var(--t--1);
+}
+
+.problem-cost-item strong {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.72rem;
+  color: var(--ink-2);
+  margin-inline-end: 0.35rem;
+}
+
+.problem-cost-item code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.problem-worked-q {
+  font-weight: 600;
+  margin-block-end: 0.5rem !important;
+}
+
+.problem-practice {
+  padding: 0.9rem 1.1rem;
+  border: 1px dashed var(--rule);
+  background: var(--raise);
+}
+
+.problem-practice p { margin: 0; max-inline-size: 70ch; }

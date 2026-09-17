@@ -178,6 +178,12 @@
           </div>
         </section>
 
+        <!-- Solving problems with it. Placed before the Beats on purpose:
+             what it is for, then how to recognise the situation, and only
+             then why it came to exist. That order makes the history mean
+             something instead of being trivia. -->
+        ${problemBlock(lesson)}
+
         <!-- The Four Beats Interactive Experience -->
         <section class="section-block" aria-labelledby="beats-heading">
           <div class="section-header">
@@ -434,6 +440,88 @@
             <span class="provenance-label">${state.label}</span>
             <span class="provenance-text">${state.text}</span>
           </div>
+        `;
+      }
+
+      /**
+       * The problem this solves, and what it is called.
+       *
+       * The name is given its own line because it is the handle you search
+       * on: a reader who knows this is the single-source shortest path
+       * problem can find fifty years of work on it, and a reader who only
+       * knows "find the cheapest route" cannot.
+       *
+       * invariant and breaks are paired visually because they are one idea
+       * seen from both sides — what must hold, and the condition that voids
+       * it. That pair is the difference between reciting a technique and
+       * choosing one.
+       */
+      function problemBlock(lesson) {
+        const p = lesson.problem;
+        if (!p) return '';
+
+        const aka = Array.isArray(p.aka) && p.aka.length
+          ? ` <span class="problem-aka">also: ${p.aka.map(escapeHtml).join(', ')}</span>` : '';
+
+        return `
+          <section class="section-block" aria-labelledby="problem-heading">
+            <div class="section-header">
+              <h2 id="problem-heading">The problem it solves</h2>
+              <span class="section-counter">Named &amp; recognised</span>
+            </div>
+
+            <div class="problem-name-card">
+              <span class="problem-name-label">The problem is called</span>
+              <p class="problem-name">${escapeHtml(p.name)}${aka}</p>
+              ${p.shape ? `<p class="problem-shape">${escapeHtml(p.shape)}</p>` : ''}
+            </div>
+
+            ${Array.isArray(p.tell) && p.tell.length ? `
+              <div class="problem-sub">
+                <h3>How you recognise it</h3>
+                <ul class="problem-tell">
+                  ${p.tell.map(t => `<li>${escapeHtml(t)}</li>`).join('')}
+                </ul>
+              </div>` : ''}
+
+            ${p.move ? `
+              <div class="problem-sub">
+                <h3>The move</h3>
+                <p>${escapeHtml(p.move)}</p>
+              </div>` : ''}
+
+            <div class="problem-pair">
+              <div class="problem-pair-half problem-holds">
+                <span class="problem-pair-label">What must stay true</span>
+                <p>${escapeHtml(p.invariant)}</p>
+              </div>
+              <div class="problem-pair-half problem-voids">
+                <span class="problem-pair-label">What voids it</span>
+                <p>${escapeHtml(p.breaks)}</p>
+              </div>
+            </div>
+
+            ${p.cost ? `
+              <div class="problem-cost">
+                <span class="problem-cost-item"><strong>Time</strong> <code>${escapeHtml(p.cost.time)}</code></span>
+                ${p.cost.space ? `<span class="problem-cost-item"><strong>Space</strong> <code>${escapeHtml(p.cost.space)}</code></span>` : ''}
+                ${p.cost.beats ? `<span class="problem-cost-item"><strong>Beats</strong> ${escapeHtml(p.cost.beats)}</span>` : ''}
+              </div>` : ''}
+
+            ${p.worked ? `
+              <div class="problem-sub problem-worked">
+                <h3>Worked through</h3>
+                ${p.worked.problem ? `<p class="problem-worked-q">${escapeHtml(p.worked.problem)}</p>` : ''}
+                ${p.worked.reasoning ? `<p>${escapeHtml(p.worked.reasoning)}</p>` : ''}
+                ${p.worked.code ? `<pre class="code-pre"><code>${escapeHtml(p.worked.code)}</code></pre>` : ''}
+              </div>` : ''}
+
+            ${p.practice ? `
+              <div class="problem-practice">
+                <span class="problem-practice-label">Now you</span>
+                <p>${escapeHtml(p.practice)}</p>
+              </div>` : ''}
+          </section>
         `;
       }
 

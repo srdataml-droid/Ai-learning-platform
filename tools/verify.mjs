@@ -20,24 +20,9 @@
 import { readdir, readFile } from 'node:fs/promises';
 import { checkTraceable } from './lib/gate.mjs';
 import { validateSeed, loadAllowlist } from './lib/seed-schema.mjs';
+import { validateLesson, proseOf } from './lib/lesson-schema.mjs';
 
 const GATED = ['traced', 'verified'];
-
-export function proseOf(lesson) {
-  const interview = lesson.beats?.interview ?? {};
-  return [
-    lesson.story,
-    lesson.beats?.broke,
-    lesson.beats?.fix,
-    lesson.beats?.cost,
-    interview.q,
-    interview.trap,
-    interview.answer,
-    lesson.takeaway,
-  ]
-    .filter(Boolean)
-    .join('\n\n');
-}
 
 export async function verifyAll(root = new URL('../content/', import.meta.url)) {
   const allowlist = await loadAllowlist(new URL('allowlist.json', root));
@@ -47,6 +32,9 @@ export async function verifyAll(root = new URL('../content/', import.meta.url)) 
 
   for (const file of files) {
     const lesson = JSON.parse(await readFile(new URL(file, lessonDir), 'utf8'));
+
+    // Shape is checked for every lesson. Traceability only for gated ones.
+    for (const fault of validateLesson(lesson)) problems.push(fault);
 
     if (!GATED.includes(lesson.status)) {
       if (lesson.seed) {
