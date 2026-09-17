@@ -65,13 +65,11 @@ Study order: the sequence first, then the five habits running underneath.
 
 ## Track E — Data structures and algorithms
 
-26 of 28 still missing.
+20 of 28 still missing.
 
 - [ ] `E.2` Arrays and dynamic arrays
 - [ ] `E.3` Strings and the operations that quietly cost O(n)
 - [ ] `E.5` Sets
-- [ ] `E.6` Two pointers
-- [ ] `E.7` Sliding window
 - [ ] `E.8` Stacks
 - [ ] `E.9` Queues and deques
 - [ ] `E.10` Linked lists
@@ -84,13 +82,9 @@ Study order: the sequence first, then the five habits running underneath.
 - [ ] `E.16` Breadth first search
 - [ ] `E.17` Depth first search
 - [ ] `E.18` Topological sort
-- [ ] `E.19` Shortest path: Dijkstra, 1956, published 1959
 - [ ] `E.20` Recursion, and converting recursion to iteration
 - [ ] `E.21` Backtracking
-- [ ] `E.22` Greedy algorithms, and when greedy is provably wrong
 - [ ] `E.23` Dynamic programming: memoisation then tabulation
-- [ ] `E.24` Binary search, including on the answer rather than the array
-- [ ] `E.25` Sorting: what your language actually uses, and why
 - [ ] `E.26` Bit manipulation basics
 - [ ] `E.27` The cadence: a small near daily block, medium difficulty, timed after month one
 - [ ] `E.28` A log of every pattern you miss, revisited a week later
@@ -305,7 +299,7 @@ Study order: the sequence first, then the five habits running underneath.
 
 ---
 
-**Total remaining: 211 of 313.**
+**Total remaining: 205 of 313.**
 
 Regenerate: `node tools/missing-lessons.mjs > docs/MISSING-LESSONS.md`
 
