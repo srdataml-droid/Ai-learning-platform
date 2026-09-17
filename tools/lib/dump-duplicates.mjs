@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { findDuplicateKeys } from './find-duplicate-keys.mjs';
 
-const source = await readFile(new URL('../../lessons-data.js', import.meta.url), 'utf8');
+const source = await readFile(new URL('../../public/lessons-data.js', import.meta.url), 'utf8');
 const lines = source.split('\n');
 const dupes = findDuplicateKeys(source, { depth: 2 });
 
