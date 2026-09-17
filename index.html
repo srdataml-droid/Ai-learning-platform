@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Curriculum — Zero to AI Engineer</title>
+  <meta name="description" content="Seventeen tracks, roughly 330 tasks. A rigorous curriculum mapped from computer fundamentals to production AI engineering.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..900&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to main content</a>
+  <div class="scroll-progress-line" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="./index.html" class="site-brand">
+        <span class="brand-symbol">0→L</span>
+        <span class="brand-name">Curriculum</span>
+      </a>
+      <nav class="site-nav" aria-label="Main Navigation">
+        <a href="./index.html" class="nav-link" aria-current="page">Curriculum Map</a>
+        <a href="./languages.html" class="nav-link">Language Chain</a>
+        <a href="./words.html" class="nav-link">Word Lists</a>
+        <a href="./progress.html" class="nav-link">Progress</a>
+        <button type="button" class="theme-toggle-btn" aria-label="Toggle visual theme">Dark</button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="main-wrapper page-entrance">
+    <!-- Hero Inverted Band -->
+    <section class="inverted-band" aria-labelledby="hero-heading">
+      <span class="track-card-letter" style="color: var(--inv-signal); font-size: var(--t-0); display: block; margin-bottom: 0.5rem;">COMPREHENSIVE MAP</span>
+      <h1 id="hero-heading">Zero to AI Engineer</h1>
+      <p style="max-inline-size: 68ch; margin-bottom: 1.25rem;">Seventeen tracks. Roughly 330 tasks. Structured into four progressive stages, with five fundamental engineering habits active throughout the entire journey.</p>
+      
+      <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(239, 235, 227, 0.15); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem;">
+        <p id="total-summary-line" class="signal-text" style="font-family: var(--font-display); font-weight: 800; font-size: var(--t-0); margin-bottom: 0;">Loading curriculum scope...</p>
+        <a href="./progress.html" class="btn" style="background: var(--inv-signal); color: var(--inv-bg); border: none; font-size: var(--t--1);">View Detailed Progress</a>
+      </div>
+    </section>
+
+    <!-- Four Beats Rule Card -->
+    <section class="four-beats-card" aria-labelledby="four-beats-heading">
+      <span class="section-counter">Pedagogical Framework</span>
+      <h2 id="four-beats-heading" style="font-size: var(--t-1); margin-top: 0.25rem; margin-bottom: 0.5rem;">The Four Beats Rule</h2>
+      <p style="font-size: var(--t-0); color: var(--ink-2); max-inline-size: 72ch;">Every lesson, when eventually taught, runs four beats in this order:</p>
+      <div class="four-beats-grid">
+        <div class="beat-item">
+          <span class="beat-item-num">BEAT 01</span>
+          <span class="beat-item-title">What Broke</span>
+          <span class="beat-item-desc">What broke before it existed, and why previous tools failed.</span>
+        </div>
+        <div class="beat-item">
+          <span class="beat-item-num">BEAT 02</span>
+          <span class="beat-item-title">The Fix</span>
+          <span class="beat-item-desc">The precise fix, with year, people, and engineering context.</span>
+        </div>
+        <div class="beat-item">
+          <span class="beat-item-num">BEAT 03</span>
+          <span class="beat-item-title">What It Cost</span>
+          <span class="beat-item-desc">The tradeoffs created, because every fix creates the next problem.</span>
+        </div>
+        <div class="beat-item">
+          <span class="beat-item-num">BEAT 04</span>
+          <span class="beat-item-title">Interview Question</span>
+          <span class="beat-item-desc">The exact question an interviewer asks about this concept.</span>
+        </div>
+      </div>
+
+      <div style="margin-top: 1.5rem; padding: 1.25rem; background-color: var(--raise); border: 1px solid var(--rule-soft);">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.75rem;">
+          <strong style="font-family: var(--font-display); font-size: var(--t-0);">Curriculum Lesson Stories:</strong>
+          <span style="font-size: var(--t--1); color: var(--ink-2);">Every task has a dedicated historical story and Four Beats analysis.</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+          <a href="./lesson.html?id=0.6" class="lesson-link-btn">0.6: Float Arithmetic &amp; 0.1+0.2 →</a>
+          <a href="./lesson.html?id=B.16" class="lesson-link-btn">B.16: ACID Transactions &amp; WAL →</a>
+          <a href="./lesson.html?id=B.32" class="lesson-link-btn">B.32: Consistency &amp; CAP Theorem →</a>
+          <a href="./lesson.html?id=E.4" class="lesson-link-btn">E.4: Hash Map Collisions &amp; DoS →</a>
+          <a href="./lesson.html?id=F.8" class="lesson-link-btn">F.8: Three-Valued SQL Logic →</a>
+          <a href="./lesson.html?id=M.4" class="lesson-link-btn">M.4: Embeddings &amp; Dot Product →</a>
+          <a href="./lesson.html?id=K.2" class="lesson-link-btn">K.2: AlexNet &amp; The GPU Shift →</a>
+          <a href="./lesson.html?id=L.3" class="lesson-link-btn">L.3: RAG vs Fine-Tuning →</a>
+          <a href="./lesson.html?id=P.3" class="lesson-link-btn">P.3: SQL Injection &amp; ASTs →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Primary Progression Pipeline -->
+    <section class="section-block" aria-labelledby="pipeline-heading">
+      <div class="section-header">
+        <h2 id="pipeline-heading">The Sequence Path</h2>
+        <span class="section-counter">Primary Journey (12 Steps)</span>
+      </div>
+      <p style="margin-bottom: 1.25rem;">Follow the sequence from hardware foundations to modern AI engineering. Notice that Track E (Data structures) and Track F (Logic) run concurrently.</p>
+      
+      <div class="sequence-container">
+        <div class="sequence-flow" id="main-sequence-flow" aria-label="Primary Progression Flow">
+          <!-- Rendered by JavaScript -->
+        </div>
+
+        <div class="underneath-tray" aria-label="Foundational Undercurrent">
+          <span class="underneath-label">Running underneath the whole way:</span>
+          <div class="underneath-items" id="underneath-sequence-items">
+            <!-- Rendered by JavaScript -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- The Complete Curriculum Map (Grouped by Stages) -->
+    <section class="section-block" aria-labelledby="map-heading">
+      <div class="section-header">
+        <h2 id="map-heading">Curriculum Map</h2>
+        <span class="section-counter" id="tracks-counter-badge">17 Tracks Mapped</span>
+      </div>
+
+      <!-- View Filter Controls -->
+      <div class="map-filter-strip" role="tablist" aria-label="Curriculum View Modes">
+        <button type="button" class="map-filter-btn active" data-filter="stages" role="tab" aria-selected="true">Grouped by Stages</button>
+        <button type="button" class="map-filter-btn" data-filter="sequence" role="tab" aria-selected="false">Sequence Order (12 Steps)</button>
+        <button type="button" class="map-filter-btn" data-filter="undercurrent" role="tab" aria-selected="false">Foundational Habits (5 Underneath)</button>
+        <button type="button" class="map-filter-btn" data-filter="all" role="tab" aria-selected="false">All 17 Tracks Flat</button>
+      </div>
+
+      <!-- Container where stages or tracks get rendered -->
+      <div id="curriculum-map-mount">
+        <!-- Rendered by JavaScript -->
+      </div>
+    </section>
+
+    <!-- Cadence Section -->
+    <section class="section-block" aria-labelledby="cadence-heading">
+      <div class="section-header">
+        <h2 id="cadence-heading">Cadence &amp; Pacing</h2>
+        <span class="section-counter">Retention Framework</span>
+      </div>
+      <p style="margin-bottom: 1.5rem;">Pacing is calibrated to cognitive load and how fast different skills decay without active contact.</p>
+      <div class="cadence-grid" id="cadence-container">
+        <!-- Rendered by JavaScript -->
+      </div>
+    </section>
+
+    <!-- Accuracy Note -->
+    <section class="section-block" aria-labelledby="accuracy-heading">
+      <div class="section-header">
+        <h2 id="accuracy-heading">Accuracy Note</h2>
+        <span class="section-counter">Verification Policy</span>
+      </div>
+      <p id="accuracy-note-text" class="text-muted" style="max-inline-size: 72ch;"></p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span class="footer-copy">Curriculum — Zero to AI Engineer</span>
+      <span class="footer-meta" id="footer-stats-line">0 tasks completed</span>
+    </div>
+  </footer>
+
+  <script src="./data.js"></script>
+  <script src="./lessons-data.js"></script>
+  <script src="./app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!window.CURRICULUM) return;
+
+      const sequenceStepMap = {
+        "0": "Step 1 of 12",
+        "C": "Step 2 of 12",
+        "D": "Step 3 of 12",
+        "E": "Step 4 of 12 (with F)",
+        "F": "Step 4 of 12 (with E)",
+        "B": "Step 5 of 12",
+        "P": "Step 6 of 12",
+        "M": "Step 7 of 12",
+        "N": "Step 8 of 12",
+        "O": "Step 9 of 12",
+        "K": "Step 10 of 12",
+        "L": "Step 11 of 12"
+      };
+
+      // 1. Render Summary Line
+      function updateSummaryStats() {
+        const totalStats = window.CurriculumApp.getTotalStats();
+        const totalSummaryEl = document.getElementById('total-summary-line');
+        if (totalSummaryEl) {
+          totalSummaryEl.textContent = `${window.CURRICULUM.tracks.length} tracks. ${totalStats.total} total tasks. ${totalStats.completed} completed (${totalStats.percent}%).`;
+        }
+        const footerEl = document.getElementById('footer-stats-line');
+        if (footerEl) {
+          footerEl.textContent = `${totalStats.completed} / ${totalStats.total} tasks completed (${totalStats.percent}%)`;
+        }
+      }
+      updateSummaryStats();
+
+      // 2. Render Sequence Flow
+      const seqFlowEl = document.getElementById('main-sequence-flow');
+      if (seqFlowEl) {
+        seqFlowEl.innerHTML = '';
+        const sequenceDisplay = [
+          { ids: ["0"], label: "0 — Before Code" },
+          { ids: ["C"], label: "C — Languages" },
+          { ids: ["D"], label: "D — Craft" },
+          { ids: ["E", "F"], label: "E & F — DSA / Logic" },
+          { ids: ["B"], label: "B — System Design" },
+          { ids: ["P"], label: "P — Security" },
+          { ids: ["M"], label: "M — Math" },
+          { ids: ["N"], label: "N — Data Work" },
+          { ids: ["O"], label: "O — Classical ML" },
+          { ids: ["K"], label: "K — Neural Nets" },
+          { ids: ["L"], label: "L — AI Engineering" }
+        ];
+
+        sequenceDisplay.forEach((item, index) => {
+          const node = document.createElement('a');
+          node.className = 'sequence-node';
+          node.href = `./track.html?id=${item.ids[0]}`;
+          node.textContent = item.label;
+          seqFlowEl.appendChild(node);
+
+          if (index < sequenceDisplay.length - 1) {
+            const arrow = document.createElement('span');
+            arrow.className = 'sequence-arrow';
+            arrow.textContent = '→';
+            arrow.setAttribute('aria-hidden', 'true');
+            seqFlowEl.appendChild(arrow);
+          }
+        });
+      }
+
+      // 3. Render Underneath Flow
+      const underneathEl = document.getElementById('underneath-sequence-items');
+      if (underneathEl) {
+        underneathEl.innerHTML = '';
+        window.CURRICULUM.underneath.forEach((id) => {
+          const track = window.CURRICULUM.tracks.find(t => t.id === id);
+          const node = document.createElement('a');
+          node.className = 'sequence-node';
+          node.href = `./track.html?id=${id}`;
+          node.textContent = `Track ${id}: ${track ? track.name : ''}`;
+          underneathEl.appendChild(node);
+        });
+      }
+
+      // 4. Track Card Generator Helper
+      function createTrackCard(track) {
+        const stats = window.CurriculumApp.getTrackStats(track.id);
+        const card = document.createElement('a');
+        card.className = 'track-card interactive-item';
+        card.href = `./track.html?id=${track.id}`;
+
+        const isUnderneath = window.CURRICULUM.underneath.includes(track.id);
+        const stepBadgeText = isUnderneath ? "FOUNDATIONAL HABIT" : (sequenceStepMap[track.id] || `TRACK ${track.id}`);
+
+        card.innerHTML = `
+          <div>
+            <div class="track-stage-meta">
+              <span class="track-badge-seq">${stepBadgeText}</span>
+              ${track.cadence ? `<span class="track-cadence-pill">${track.cadence}</span>` : ''}
+            </div>
+            <div class="track-card-header">
+              <span class="track-card-letter">Track ${track.id}</span>
+              <span class="track-card-count">${track.tasks.length} tasks</span>
+            </div>
+            <h3 class="track-card-title">${track.name}</h3>
+            ${track.blurb ? `<p class="track-card-blurb">${track.blurb}</p>` : ''}
+          </div>
+          <div class="track-card-progress">
+            <span>${stats.completed} of ${stats.total} done</span>
+            <div class="progress-mini-bar" aria-hidden="true">
+              <div class="progress-mini-fill" style="width: ${stats.percent}%;"></div>
+            </div>
+            <span>${stats.percent}%</span>
+          </div>
+        `;
+        return card;
+      }
+
+      // 5. Render Functions for Different Views
+      const mountEl = document.getElementById('curriculum-map-mount');
+
+      let currentFilter = 'stages';
+
+      function renderMapView() {
+        if (!mountEl) return;
+        mountEl.innerHTML = '';
+
+        if (currentFilter === 'stages') {
+          // Render grouped by stages
+          window.CURRICULUM.stages.forEach(stage => {
+            const block = document.createElement('div');
+            block.className = 'stage-block';
+
+            block.innerHTML = `
+              <div class="stage-header-wrap">
+                <div class="stage-badge-row">
+                  <span class="stage-number-pill">${stage.number === '—' ? 'FOUNDATIONAL' : `STAGE ${stage.number}`}</span>
+                  <span class="section-counter">${stage.trackIds.length} Tracks</span>
+                </div>
+                <h3 class="stage-name-title">${stage.name}</h3>
+                <p class="stage-blurb-text">${stage.blurb}</p>
+              </div>
+              <div class="tracks-grid" id="grid-${stage.id}"></div>
+            `;
+
+            mountEl.appendChild(block);
+
+            const grid = block.querySelector(`#grid-${stage.id}`);
+            stage.trackIds.forEach(id => {
+              const track = window.CURRICULUM.tracks.find(t => t.id === id);
+              if (track) {
+                grid.appendChild(createTrackCard(track));
+              }
+            });
+          });
+        } else if (currentFilter === 'sequence') {
+          // Render sequence tracks in chronological order
+          const seqTracks = window.CURRICULUM.sequence.map(id => window.CURRICULUM.tracks.find(t => t.id === id)).filter(Boolean);
+          const grid = document.createElement('div');
+          grid.className = 'tracks-grid';
+          seqTracks.forEach(track => {
+            grid.appendChild(createTrackCard(track));
+          });
+          mountEl.appendChild(grid);
+        } else if (currentFilter === 'undercurrent') {
+          // Render foundational underneath tracks
+          const underTracks = window.CURRICULUM.underneath.map(id => window.CURRICULUM.tracks.find(t => t.id === id)).filter(Boolean);
+          const grid = document.createElement('div');
+          grid.className = 'tracks-grid';
+          underTracks.forEach(track => {
+            grid.appendChild(createTrackCard(track));
+          });
+          mountEl.appendChild(grid);
+        } else {
+          // All tracks in data order
+          const grid = document.createElement('div');
+          grid.className = 'tracks-grid';
+          window.CURRICULUM.tracks.forEach(track => {
+            grid.appendChild(createTrackCard(track));
+          });
+          mountEl.appendChild(grid);
+        }
+      }
+
+      renderMapView();
+
+      // Handle filter tab clicks
+      const filterBtns = document.querySelectorAll('.map-filter-btn');
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          filterBtns.forEach(b => {
+            b.classList.remove('active');
+            b.setAttribute('aria-selected', 'false');
+          });
+          btn.classList.add('active');
+          btn.setAttribute('aria-selected', 'true');
+          currentFilter = btn.getAttribute('data-filter');
+          renderMapView();
+        });
+      });
+
+      // 6. Render Cadence
+      const cadenceContainer = document.getElementById('cadence-container');
+      if (cadenceContainer && window.CURRICULUM.cadence) {
+        cadenceContainer.innerHTML = '';
+        window.CURRICULUM.cadence.forEach(c => {
+          const item = document.createElement('div');
+          item.className = 'cadence-item';
+          item.innerHTML = `
+            <div class="cadence-freq">${c.freq}</div>
+            <div class="cadence-track">${c.track}</div>
+            <p class="cadence-desc">${c.desc}</p>
+          `;
+          cadenceContainer.appendChild(item);
+        });
+      }
+
+      // 7. Accuracy Note
+      const accuracyEl = document.getElementById('accuracy-note-text');
+      if (accuracyEl && window.CURRICULUM.accuracyNote) {
+        accuracyEl.textContent = window.CURRICULUM.accuracyNote;
+      }
+
+      // Listen for progress updates
+      window.addEventListener('curriculum-progress-updated', () => {
+        renderMapView();
+        updateSummaryStats();
+      });
+    });
+  </script>
+</body>
+</html>

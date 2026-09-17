@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Track View — Curriculum</title>
+  <meta name="description" content="Detailed curriculum track view with tasks, parts, notes, and progress tracking.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..900&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to main content</a>
+  <div class="scroll-progress-line" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="./index.html" class="site-brand">
+        <span class="brand-symbol">0→L</span>
+        <span class="brand-name">Curriculum</span>
+      </a>
+      <nav class="site-nav" aria-label="Main Navigation">
+        <a href="./index.html" class="nav-link">Curriculum Map</a>
+        <a href="./languages.html" class="nav-link">Language Chain</a>
+        <a href="./words.html" class="nav-link">Word Lists</a>
+        <a href="./progress.html" class="nav-link">Progress</a>
+        <button type="button" class="theme-toggle-btn" aria-label="Toggle visual theme">Dark</button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="main-wrapper page-entrance">
+    <div id="track-content-mount">
+      <!-- Populated by JavaScript -->
+    </div>
+
+    <!-- Navigation between tracks -->
+    <nav class="track-navigation" id="track-nav" aria-label="Track sequence navigation">
+      <!-- Populated by JavaScript -->
+    </nav>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span class="footer-copy">Curriculum — Zero to AI Engineer</span>
+      <span class="footer-meta" id="footer-stats-line">0 tasks completed</span>
+    </div>
+  </footer>
+
+  <script src="./data.js"></script>
+  <script src="./lessons-data.js"></script>
+  <script src="./app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!window.CURRICULUM) return;
+
+      const params = new URLSearchParams(window.location.search);
+      const trackId = params.get('id');
+
+      const contentEl = document.getElementById('track-content-mount');
+      const navEl = document.getElementById('track-nav');
+
+      if (!trackId) {
+        contentEl.innerHTML = `
+          <div class="inverted-band">
+            <h1>No Track Specified</h1>
+            <p>Please select a track from the curriculum map.</p>
+            <a href="./index.html" class="btn" style="margin-top: 1rem; background: var(--inv-signal); color: var(--inv-bg);">Return to Curriculum Map</a>
+          </div>
+        `;
+        return;
+      }
+
+      const track = window.CURRICULUM.tracks.find(t => t.id.toLowerCase() === trackId.toLowerCase());
+
+      if (!track) {
+        contentEl.innerHTML = `
+          <div class="inverted-band">
+            <h1>Track Not Found</h1>
+            <p>Track "${trackId}" does not exist in this curriculum.</p>
+            <a href="./index.html" class="btn" style="margin-top: 1rem; background: var(--inv-signal); color: var(--inv-bg);">Return to Curriculum Map</a>
+          </div>
+        `;
+        return;
+      }
+
+      // Valid Track Found
+      document.title = `Track ${track.id}: ${track.name} — Curriculum`;
+
+      const sequenceStepMap = {
+        "0": "Step 1 of 12",
+        "C": "Step 2 of 12",
+        "D": "Step 3 of 12",
+        "E": "Step 4 of 12 (Parallel with F)",
+        "F": "Step 4 of 12 (Parallel with E)",
+        "B": "Step 5 of 12",
+        "P": "Step 6 of 12",
+        "M": "Step 7 of 12",
+        "N": "Step 8 of 12",
+        "O": "Step 9 of 12",
+        "K": "Step 10 of 12",
+        "L": "Step 11 of 12"
+      };
+
+      const isUnderneath = window.CURRICULUM.underneath.includes(track.id);
+      const sequenceBadgeText = isUnderneath ? "Foundational Habit (Running Underneath)" : (sequenceStepMap[track.id] || `Sequence Track ${track.id}`);
+
+      function renderTrackView() {
+        const stats = window.CurriculumApp.getTrackStats(track.id);
+        let html = `
+          <div class="inverted-band" aria-labelledby="track-heading">
+            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-bottom: 0.75rem;">
+              <span style="font-family: var(--font-display); font-weight: 800; font-size: var(--t--1); color: var(--inv-signal); background: rgba(143, 178, 255, 0.15); border: 1px solid rgba(143, 178, 255, 0.3); padding: 0.2rem 0.6rem;">
+                ${sequenceBadgeText}
+              </span>
+              ${track.stage ? `
+                <span style="font-family: var(--font-display); font-weight: 800; font-size: var(--t--1); color: var(--inv-ink); opacity: 0.85;">
+                  ${track.stage}
+                </span>
+              ` : ''}
+              ${track.cadence ? `
+                <span style="font-family: var(--font-display); font-weight: 800; font-size: var(--t--1); color: var(--inv-ink); opacity: 0.75; border-left: 1px solid rgba(239, 235, 227, 0.3); padding-left: 0.5rem;">
+                  Cadence: ${track.cadence}
+                </span>
+              ` : ''}
+            </div>
+
+            <div class="track-card-header" style="margin-bottom: 0.5rem;">
+              <span class="track-card-letter" style="color: var(--inv-signal);">TRACK ${track.id}</span>
+              <span class="track-card-count" id="track-stat-ratio" style="color: var(--inv-ink); font-size: var(--t-0);">${stats.completed} / ${stats.total} done (${stats.percent}%)</span>
+            </div>
+            <h1 id="track-heading" style="margin-bottom: 0.75rem;">${track.name}</h1>
+            ${track.blurb ? `<p style="max-inline-size: 70ch; line-height: 1.6;">${track.blurb}</p>` : ''}
+            
+            <div class="progress-mini-bar" style="background-color: rgba(239, 235, 227, 0.2); height: 6px; margin-top: 1.5rem;">
+              <div class="progress-mini-fill" id="track-bar-fill" style="width: ${stats.percent}%; background-color: var(--inv-signal);"></div>
+            </div>
+
+            ${track.id === 'C' ? `
+              <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid rgba(239, 235, 227, 0.2);">
+                <a href="./languages.html" class="btn" style="background: var(--inv-signal); color: var(--inv-bg); border: none;">
+                  Explore The Complete Chain of Walls (C.1 → C.26) →
+                </a>
+              </div>
+            ` : ''}
+          </div>
+
+          <!-- The Four Beats Reminder -->
+          <div class="four-beats-card" style="margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.5rem;">
+              <span class="section-counter">Instructional Standard</span>
+              <span style="font-family: var(--font-display); font-weight: 800; font-size: var(--t--1); color: var(--ink-2);">Four Beats of Mastery</span>
+            </div>
+            <p style="font-size: var(--t--1); color: var(--ink-2); margin-top: 0.25rem;">
+              ${window.CURRICULUM.fourBeats}
+            </p>
+          </div>
+
+          <section class="section-block" aria-labelledby="tasks-heading">
+            <div class="section-header">
+              <h2 id="tasks-heading">Curriculum Tasks</h2>
+              <span class="section-counter">${track.tasks.length} Tasks in Track ${track.id}</span>
+            </div>
+            <div class="task-list" id="task-list-items">
+        `;
+
+        let currentPart = null;
+        track.tasks.forEach((task) => {
+          if (task.part && task.part !== currentPart) {
+            currentPart = task.part;
+            html += `<h3 class="task-part-header">${currentPart}</h3>`;
+          }
+
+          const isCompleted = window.CurriculumApp.isTaskCompleted(task.id);
+          html += `
+            <div class="task-row interactive-item" id="row-${task.id}">
+              <div class="task-checkbox-col">
+                <input 
+                  type="checkbox" 
+                  id="task-cb-${task.id}" 
+                  class="task-checkbox" 
+                  data-task-id="${task.id}"
+                  ${isCompleted ? 'checked' : ''}
+                  aria-label="Mark task ${task.id} as completed"
+                >
+              </div>
+              <span class="task-id">${task.id}</span>
+              <div class="task-body">
+                <label for="task-cb-${task.id}" class="task-label">${task.text}</label>
+                ${task.note ? `<span class="note-text">${task.note}</span>` : ''}
+                <div class="task-actions">
+                  <a href="./lesson.html?id=${task.id}" class="lesson-link-btn" title="Read historical lesson story and four beats analysis for ${task.id}">
+                    <span>Read Lesson Story (Four Beats) →</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+
+        html += `
+            </div>
+          </section>
+        `;
+
+        contentEl.innerHTML = html;
+
+        // Attach event listeners to checkboxes
+        const checkboxes = contentEl.querySelectorAll('.task-checkbox');
+        checkboxes.forEach((cb) => {
+          cb.addEventListener('change', (e) => {
+            const taskId = e.target.getAttribute('data-task-id');
+            window.CurriculumApp.setTaskCompleted(taskId, e.target.checked);
+            updateTrackStatsHeader();
+          });
+        });
+      }
+
+      function updateTrackStatsHeader() {
+        const stats = window.CurriculumApp.getTrackStats(track.id);
+        const ratioEl = document.getElementById('track-stat-ratio');
+        const fillEl = document.getElementById('track-bar-fill');
+        if (ratioEl) ratioEl.textContent = `${stats.completed} / ${stats.total} done (${stats.percent}%)`;
+        if (fillEl) fillEl.style.width = `${stats.percent}%`;
+        updateFooterStats();
+      }
+
+      function updateFooterStats() {
+        const stats = window.CurriculumApp.getTotalStats();
+        const footerEl = document.getElementById('footer-stats-line');
+        if (footerEl) {
+          footerEl.textContent = `${stats.completed} / ${stats.total} tasks completed (${stats.percent}%)`;
+        }
+      }
+
+      // Render Prev / Next Navigation following the sequence order
+      function renderNavigation() {
+        const sequenceOrder = [...window.CURRICULUM.sequence, ...window.CURRICULUM.underneath];
+        const currentIndex = sequenceOrder.indexOf(track.id);
+
+        let prevId = null;
+        let nextId = null;
+
+        if (currentIndex > 0) {
+          prevId = sequenceOrder[currentIndex - 1];
+        }
+        if (currentIndex !== -1 && currentIndex < sequenceOrder.length - 1) {
+          nextId = sequenceOrder[currentIndex + 1];
+        }
+
+        const prevTrack = prevId ? window.CURRICULUM.tracks.find(t => t.id === prevId) : null;
+        const nextTrack = nextId ? window.CURRICULUM.tracks.find(t => t.id === nextId) : null;
+
+        navEl.innerHTML = `
+          <div>
+            ${prevTrack ? `<a href="./track.html?id=${prevTrack.id}" class="btn" aria-label="Previous Track ${prevTrack.id}">← Track ${prevTrack.id}: ${prevTrack.name}</a>` : '<a href="./index.html" class="btn">← Curriculum Map</a>'}
+          </div>
+          <div>
+            <a href="./index.html" class="btn" style="border: none;">All Tracks Overview</a>
+          </div>
+          <div>
+            ${nextTrack ? `<a href="./track.html?id=${nextTrack.id}" class="btn" aria-label="Next Track ${nextTrack.id}">Track ${nextTrack.id}: ${nextTrack.name} →</a>` : '<a href="./progress.html" class="btn btn-primary">Review Overall Progress →</a>'}
+          </div>
+        `;
+      }
+
+      renderTrackView();
+      renderNavigation();
+      updateFooterStats();
+
+      // Re-render when progress changes elsewhere
+      window.addEventListener('curriculum-progress-updated', () => {
+        const checkboxes = contentEl.querySelectorAll('.task-checkbox');
+        checkboxes.forEach((cb) => {
+          const taskId = cb.getAttribute('data-task-id');
+          cb.checked = window.CurriculumApp.isTaskCompleted(taskId);
+        });
+        updateTrackStatsHeader();
+      });
+    });
+  </script>
+</body>
+</html>

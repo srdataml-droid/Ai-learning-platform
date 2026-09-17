@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson — Curriculum: Zero to AI Engineer</title>
+  <meta name="description" content="Four Beats curriculum lesson: What broke, the fix, what it cost, and the interview question.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..900&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to main content</a>
+  <div class="scroll-progress-line" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="./index.html" class="site-brand">
+        <span class="brand-symbol">0→L</span>
+        <span class="brand-name">Curriculum</span>
+      </a>
+      <nav class="site-nav" aria-label="Main Navigation">
+        <a href="./index.html" class="nav-link">Curriculum Map</a>
+        <a href="./languages.html" class="nav-link">Language Chain</a>
+        <a href="./words.html" class="nav-link">Word Lists</a>
+        <a href="./progress.html" class="nav-link">Progress</a>
+        <button type="button" class="theme-toggle-btn" aria-label="Toggle visual theme">Dark</button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="main-wrapper page-entrance">
+    <div id="lesson-content-mount">
+      <!-- Populated by JavaScript -->
+      <div class="inverted-band">
+        <p class="signal-text">Loading lesson story...</p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span class="footer-copy">Curriculum — Zero to AI Engineer</span>
+      <span class="footer-meta" id="footer-stats-line">0 tasks completed</span>
+    </div>
+  </footer>
+
+  <script src="./data.js"></script>
+  <script src="./lessons-data.js"></script>
+  <script src="./app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!window.CURRICULUM || !window.CurriculumLessons) return;
+
+      const params = new URLSearchParams(window.location.search);
+      const taskId = params.get('id') || '0.6';
+
+      const contentEl = document.getElementById('lesson-content-mount');
+
+      const lesson = window.CurriculumLessons.getLesson(taskId);
+      if (!lesson) {
+        contentEl.innerHTML = `
+          <div class="inverted-band">
+            <h1>Lesson Not Found</h1>
+            <p>We could not find a curriculum lesson matching ID "${taskId}".</p>
+            <a href="./index.html" class="btn" style="margin-top: 1rem; background: var(--inv-signal); color: var(--inv-bg);">Return to Curriculum Map</a>
+          </div>
+        `;
+        return;
+      }
+
+      // Update page title
+      document.title = `${lesson.id}: ${lesson.title} — Four Beats Lesson`;
+
+      // Find track
+      const track = window.CURRICULUM.tracks.find(t => t.id === lesson.trackId);
+      const trackName = track ? track.name : (lesson.trackName || "Track " + lesson.trackId);
+      const isCompleted = window.CurriculumApp.isTaskCompleted(lesson.id);
+
+      // Adjacent lessons
+      const adjacent = window.CurriculumLessons.getAdjacentLessons(lesson.id);
+      const prevLesson = adjacent.prev ? window.CurriculumLessons.getLesson(adjacent.prev) : null;
+      const nextLesson = adjacent.next ? window.CurriculumLessons.getLesson(adjacent.next) : null;
+
+      // Format story into paragraphs if it's a long string
+      const storyParagraphs = lesson.story
+        .split('\n\n')
+        .map(p => p.trim())
+        .filter(Boolean)
+        .map(p => `<p>${p}</p>`)
+        .join('');
+
+      let html = `
+        <div class="lesson-meta-bar">
+          <div class="lesson-breadcrumbs">
+            <a href="./index.html">Curriculum Map</a>
+            <span>/</span>
+            <a href="./track.html?id=${lesson.trackId}">Track ${lesson.trackId}: ${trackName}</a>
+            <span>/</span>
+            <span>Task ${lesson.id}</span>
+          </div>
+
+          <div>
+            <span class="track-card-count" id="completion-status-pill" style="color: ${isCompleted ? '#2b8a3e' : 'var(--ink-2)'}; font-weight: 800;">
+              ${isCompleted ? '✓ Completed' : '○ Not yet completed'}
+            </span>
+          </div>
+        </div>
+
+        <section class="inverted-band lesson-header-card" aria-labelledby="lesson-main-heading">
+          <span class="lesson-number-badge">TRACK ${lesson.trackId} · LESSON ${lesson.id}</span>
+          <h1 id="lesson-main-heading" class="lesson-main-title">${lesson.title}</h1>
+          <p style="color: var(--inv-ink); opacity: 0.85; max-inline-size: 65ch; margin-bottom: 0.5rem;">
+            Part of <strong>${trackName}</strong>. Taught strictly through the Four Beats pedagogical rule: what broke, the fix, what it cost, and the interview question.
+          </p>
+        </section>
+
+        <!-- Core Takeaway Banner -->
+        ${lesson.takeaway ? `
+          <div class="lesson-takeaway-banner" role="note" aria-label="Core Engineering Invariant">
+            <strong>Core Invariant:</strong> "${lesson.takeaway}"
+          </div>
+        ` : ''}
+
+        <!-- The Historical & Architectural Narrative -->
+        <section class="section-block lesson-story-block" aria-labelledby="story-heading">
+          <div class="section-header">
+            <h2 id="story-heading">The Story & Engineering Reality</h2>
+            <span class="section-counter">Historical Context</span>
+          </div>
+          <div class="lesson-story-text">
+            ${storyParagraphs}
+          </div>
+        </section>
+
+        <!-- The Four Beats Interactive Experience -->
+        <section class="section-block" aria-labelledby="beats-heading">
+          <div class="section-header">
+            <h2 id="beats-heading">The Four Beats of Mastery</h2>
+            <span class="section-counter">Instructional Sequence</span>
+          </div>
+
+          <div class="lesson-beats-stack">
+            <!-- Beat 1: What Broke -->
+            <article class="beat-card" id="beat-1">
+              <div class="beat-card-header">
+                <span class="beat-card-badge badge-beat1">BEAT 01</span>
+                <span style="font-family: var(--font-display); font-weight: 800; font-size: var(--t-0); color: #c92a2a;">What Broke</span>
+              </div>
+              <p class="beat-card-content">${lesson.beat1}</p>
+            </article>
+
+            <!-- Beat 2: The Fix -->
+            <article class="beat-card" id="beat-2">
+              <div class="beat-card-header">
+                <span class="beat-card-badge badge-beat2">BEAT 02</span>
+                <span style="font-family: var(--font-display); font-weight: 800; font-size: var(--t-0); color: var(--signal);">The Fix</span>
+              </div>
+              <p class="beat-card-content">${lesson.beat2}</p>
+            </article>
+
+            <!-- Beat 3: What It Cost -->
+            <article class="beat-card" id="beat-3">
+              <div class="beat-card-header">
+                <span class="beat-card-badge badge-beat3">BEAT 03</span>
+                <span style="font-family: var(--font-display); font-weight: 800; font-size: var(--t-0); color: #c07700;">What It Cost</span>
+              </div>
+              <p class="beat-card-content">${lesson.beat3}</p>
+            </article>
+
+            <!-- Beat 4: Interview Question -->
+            <article class="beat-card" id="beat-4">
+              <div class="beat-card-header">
+                <span class="beat-card-badge badge-beat4">BEAT 04</span>
+                <span style="font-family: var(--font-display); font-weight: 800; font-size: var(--t-0); color: #2b8a3e;">The Interview Question</span>
+              </div>
+              <div class="beat-card-content">
+                <p style="font-weight: 600; margin-bottom: 0.5rem; font-size: var(--t-0);">
+                  "${typeof lesson.beat4 === 'object' ? lesson.beat4.q : lesson.beat4}"
+                </p>
+
+                ${typeof lesson.beat4 === 'object' && lesson.beat4.trap ? `
+                  <div class="interview-trap-box">
+                    <span class="interview-trap-title">⚠️ Common Candidate Trap:</span>
+                    <span>${lesson.beat4.trap}</span>
+                  </div>
+                ` : ''}
+
+                ${typeof lesson.beat4 === 'object' && lesson.beat4.answer ? `
+                  <button type="button" class="interview-answer-reveal-btn" id="reveal-answer-btn" aria-expanded="false" aria-controls="answer-panel">
+                    <span>Reveal Senior Engineer Answer ↓</span>
+                  </button>
+                  <div class="interview-answer-panel" id="answer-panel" role="region" aria-label="Model Answer">
+                    <strong style="font-family: var(--font-display); display: block; margin-bottom: 0.5rem; color: #2b8a3e;">Model Answer:</strong>
+                    <p style="margin-bottom: 0;">${lesson.beat4.answer}</p>
+                  </div>
+                ` : ''}
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- The Code / Architectural Blueprint -->
+        ${lesson.blueprint ? `
+          <section class="section-block" aria-labelledby="blueprint-heading">
+            <div class="section-header">
+              <h2 id="blueprint-heading">The Code / Concrete Blueprint</h2>
+              <span class="section-counter">Implementation Pattern</span>
+            </div>
+            <div class="blueprint-card">
+              <p style="font-size: var(--t--1); color: var(--ink-2); margin-bottom: 0.5rem;">
+                The concrete code invariant, verification, or syntax in production:
+              </p>
+              <pre class="code-pre"><code>${escapeHtml(lesson.blueprint)}</code></pre>
+            </div>
+          </section>
+        ` : ''}
+
+        <!-- Interactive Completion Toggle -->
+        <div class="lesson-completion-bar" role="region" aria-label="Task Completion Toggle">
+          <div>
+            <strong style="font-family: var(--font-display); font-size: var(--t-0); display: block;">Track Progress</strong>
+            <span style="font-size: var(--t--1); color: var(--ink-2);">Mark this task as mastered to update your global curriculum dashboard.</span>
+          </div>
+          <button type="button" class="lesson-toggle-btn ${isCompleted ? 'completed' : ''}" id="lesson-toggle-complete-btn" aria-pressed="${isCompleted}">
+            <span id="lesson-toggle-icon">${isCompleted ? '✓' : '○'}</span>
+            <span id="lesson-toggle-text">${isCompleted ? 'Completed (Click to undo)' : 'Mark Task as Completed'}</span>
+          </button>
+        </div>
+
+        <!-- Sequence Pagination Navigation -->
+        <nav class="lesson-nav-bar" aria-label="Lesson sequence pagination">
+          <div>
+            ${prevLesson ? `
+              <a href="./lesson.html?id=${prevLesson.id}" class="btn" style="text-align: left; width: 100%;">
+                ← ${prevLesson.id}: ${truncate(prevLesson.title, 32)}
+              </a>
+            ` : `
+              <a href="./track.html?id=${lesson.trackId}" class="btn" style="text-align: left; width: 100%;">
+                ← Track ${lesson.trackId} Overview
+              </a>
+            `}
+          </div>
+
+          <div style="text-align: center;">
+            <a href="./track.html?id=${lesson.trackId}" class="btn" style="border: none; font-weight: 800;">
+              All Tasks in Track ${lesson.trackId}
+            </a>
+          </div>
+
+          <div style="text-align: right;">
+            ${nextLesson ? `
+              <a href="./lesson.html?id=${nextLesson.id}" class="btn btn-primary" style="text-align: right; width: 100%;">
+                ${nextLesson.id}: ${truncate(nextLesson.title, 32)} →
+              </a>
+            ` : `
+              <a href="./progress.html" class="btn btn-primary" style="text-align: right; width: 100%;">
+                View Progress Overview →
+              </a>
+            `}
+          </div>
+        </nav>
+
+        <!-- Quick Track Tasks List Drawer -->
+        ${track && track.tasks ? `
+          <section class="section-block" style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--rule);" aria-labelledby="track-tasks-heading">
+            <div class="section-header">
+              <h2 id="track-tasks-heading">Other Lessons in Track ${track.id}</h2>
+              <span class="section-counter">${track.tasks.length} Total</span>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr)); gap: 0.75rem;">
+              ${track.tasks.map(t => {
+                const isThisOne = t.id === lesson.id;
+                const isTaskDone = window.CurriculumApp.isTaskCompleted(t.id);
+                return `
+                  <a href="./lesson.html?id=${t.id}" class="interactive-item" style="display: flex; align-items: baseline; gap: 0.5rem; padding: 0.75rem 1rem; border: 1px solid ${isThisOne ? 'var(--signal)' : 'var(--rule-soft)'}; background-color: ${isThisOne ? 'var(--raise)' : 'transparent'}; text-decoration: none; color: var(--ink);">
+                    <span style="font-family: var(--font-display); font-weight: 800; font-size: var(--t--1); color: ${isThisOne ? 'var(--signal)' : 'var(--ink-2)'}; min-width: 2.5rem;">${t.id}</span>
+                    <span style="font-size: var(--t--1); line-height: 1.4; flex: 1; ${isTaskDone ? 'text-decoration: line-through; opacity: 0.7;' : ''}">${truncate(t.text, 45)}</span>
+                    ${isTaskDone ? '<span style="color: #2b8a3e; font-weight: bold; font-size: 0.8rem;">✓</span>' : ''}
+                  </a>
+                `;
+              }).join('')}
+            </div>
+          </section>
+        ` : ''}
+      `;
+
+      contentEl.innerHTML = html;
+
+      // Event listener: Reveal Interview Answer
+      const revealBtn = document.getElementById('reveal-answer-btn');
+      const answerPanel = document.getElementById('answer-panel');
+      if (revealBtn && answerPanel) {
+        revealBtn.addEventListener('click', () => {
+          const isRevealed = answerPanel.classList.toggle('revealed');
+          revealBtn.setAttribute('aria-expanded', isRevealed);
+          revealBtn.innerHTML = isRevealed ? 'Hide Answer ↑' : 'Reveal Senior Engineer Answer ↓';
+        });
+      }
+
+      // Event listener: Toggle Complete Button
+      const toggleBtn = document.getElementById('lesson-toggle-complete-btn');
+      const toggleText = document.getElementById('lesson-toggle-text');
+      const toggleIcon = document.getElementById('lesson-toggle-icon');
+      const statusPill = document.getElementById('completion-status-pill');
+
+      if (toggleBtn) {
+        toggleBtn.addEventListener('click', () => {
+          const currentlyDone = window.CurriculumApp.isTaskCompleted(lesson.id);
+          const newDone = !currentlyDone;
+          window.CurriculumApp.setTaskCompleted(lesson.id, newDone);
+
+          toggleBtn.classList.toggle('completed', newDone);
+          toggleBtn.setAttribute('aria-pressed', newDone);
+          if (toggleIcon) toggleIcon.textContent = newDone ? '✓' : '○';
+          if (toggleText) toggleText.textContent = newDone ? 'Completed (Click to undo)' : 'Mark Task as Completed';
+          if (statusPill) {
+            statusPill.textContent = newDone ? '✓ Completed' : '○ Not yet completed';
+            statusPill.style.color = newDone ? '#2b8a3e' : 'var(--ink-2)';
+          }
+          updateFooterStats();
+        });
+      }
+
+      function updateFooterStats() {
+        const stats = window.CurriculumApp.getTotalStats();
+        const footerEl = document.getElementById('footer-stats-line');
+        if (footerEl) {
+          footerEl.textContent = `${stats.completed} / ${stats.total} tasks completed (${stats.percent}%)`;
+        }
+      }
+
+      updateFooterStats();
+
+      // Listen for progress updates from other tabs
+      window.addEventListener('curriculum-progress-updated', () => {
+        const nowDone = window.CurriculumApp.isTaskCompleted(lesson.id);
+        if (toggleBtn) {
+          toggleBtn.classList.toggle('completed', nowDone);
+          toggleBtn.setAttribute('aria-pressed', nowDone);
+        }
+        if (toggleIcon) toggleIcon.textContent = nowDone ? '✓' : '○';
+        if (toggleText) toggleText.textContent = nowDone ? 'Completed (Click to undo)' : 'Mark Task as Completed';
+        if (statusPill) {
+          statusPill.textContent = nowDone ? '✓ Completed' : '○ Not yet completed';
+          statusPill.style.color = nowDone ? '#2b8a3e' : 'var(--ink-2)';
+        }
+        updateFooterStats();
+      });
+
+      function truncate(str, max) {
+        if (!str) return '';
+        return str.length > max ? str.substring(0, max - 1) + '…' : str;
+      }
+
+      function escapeHtml(text) {
+        if (!text) return '';
+        return text
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+    });
+  </script>
+</body>
+</html>

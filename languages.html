@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Languages: The Chain of Walls — Curriculum</title>
+  <meta name="description" content="Every language was invented by someone who hit a wall in the one before it. The complete historical chain from C.1 through C.27.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..900&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to main content</a>
+  <div class="scroll-progress-line" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="./index.html" class="site-brand">
+        <span class="brand-symbol">0→L</span>
+        <span class="brand-name">Curriculum</span>
+      </a>
+      <nav class="site-nav" aria-label="Main Navigation">
+        <a href="./index.html" class="nav-link">Curriculum</a>
+        <a href="./languages.html" class="nav-link" aria-current="page">Languages</a>
+        <a href="./words.html" class="nav-link">Word Lists</a>
+        <a href="./progress.html" class="nav-link">Progress</a>
+        <button type="button" class="theme-toggle-btn" aria-label="Toggle visual theme">Dark</button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="main-wrapper page-entrance">
+    <!-- Intro Band -->
+    <section class="inverted-band" aria-labelledby="languages-heading">
+      <h1 id="languages-heading">Languages: The Chain of Walls</h1>
+      <p>The rule of this track: every language was invented by someone who hit a wall in the one before it. Teach it as one continuous chain, never as a comparison table. Each entry has four parts: <em>the wall it answered</em>, <em>what it solved</em>, <em>the blueprint</em> (what you actually type), and <em>the wall it hit</em>, which is the reason the next one exists.</p>
+    </section>
+
+    <!-- Language Chain Stream -->
+    <section class="section-block" aria-labelledby="chain-stream-heading">
+      <div class="section-header">
+        <h2 id="chain-stream-heading">The Continuous Chain</h2>
+        <span class="section-counter">C.1 to C.26</span>
+      </div>
+      <div class="chain-wrapper" id="chain-container">
+        <!-- Rendered by JavaScript from window.CURRICULUM.languages -->
+      </div>
+    </section>
+
+    <!-- C.27 Cross Cutting Tasks -->
+    <section class="section-block" aria-labelledby="c27-heading">
+      <div class="section-header">
+        <h2 id="c27-heading">C.27 — Cross Cutting Tasks</h2>
+        <span class="section-counter">Synthesis &amp; Mastery</span>
+      </div>
+      <p>Synthesize the chain through direct recall, comparative implementations, and system-level trade-offs.</p>
+      <div class="task-list" id="c27-task-list">
+        <!-- Rendered by JavaScript -->
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span class="footer-copy">Curriculum — Software &amp; AI Engineering</span>
+      <span class="footer-meta" id="footer-stats-line">0 tasks completed</span>
+    </div>
+  </footer>
+
+  <script src="./data.js"></script>
+  <script src="./lessons-data.js"></script>
+  <script src="./app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!window.CURRICULUM) return;
+
+      const chainContainer = document.getElementById('chain-container');
+      const languages = window.CURRICULUM.languages || [];
+
+      let html = '';
+      languages.forEach((lang, index) => {
+        html += `
+          <article class="chain-item interactive-item" id="lang-${lang.id}">
+            <div class="chain-header">
+              <div class="chain-title-wrap">
+                <span class="chain-id">${lang.id}</span>
+                <span class="year-tag">${lang.year}</span>
+                <h3 class="chain-name">${lang.name}</h3>
+              </div>
+              <span class="chain-who">${lang.who}</span>
+            </div>
+
+            <div class="chain-beats">
+              <div class="beat-box">
+                <span class="beat-label">The Wall It Answered</span>
+                <p class="beat-content">${lang.answered}</p>
+              </div>
+              <div class="beat-box">
+                <span class="beat-label">What It Solved</span>
+                <p class="beat-content">${lang.solved}</p>
+              </div>
+              <div class="beat-box">
+                <span class="beat-label">The Blueprint</span>
+                <p class="beat-content">${lang.blueprint}</p>
+              </div>
+              <div class="beat-box">
+                <span class="beat-label">The Wall It Hit</span>
+                <p class="beat-content">${lang.wall}</p>
+              </div>
+            </div>
+
+            <div style="margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid var(--rule-soft); display: flex; justify-content: flex-end;">
+              <a href="./lesson.html?id=${lang.id}" class="lesson-link-btn" title="Read historical lesson story and four beats analysis for ${lang.name}">
+                <span>Read Four Beats Lesson Story (${lang.id}) →</span>
+              </a>
+            </div>
+          </article>
+        `;
+
+        // Render visible connector if leadsTo exists
+        if (lang.leadsTo) {
+          const target = languages.find(l => l.id === lang.leadsTo);
+          const targetName = target ? target.name : lang.leadsTo;
+          const reason = lang.leadsToReason ? lang.leadsToReason : `makes ${targetName}`;
+          html += `
+            <div class="chain-connector" aria-label="Transition: this wall caused ${targetName}">
+              <span class="connector-line"></span>
+              <span>This wall ${reason} (<a href="#lang-${lang.leadsTo}" class="connector-target" style="text-decoration: underline; color: var(--signal);">${lang.leadsTo}: ${targetName}</a>)</span>
+            </div>
+          `;
+        }
+      });
+
+      chainContainer.innerHTML = html;
+
+      // Render C.27 Cross Cutting Tasks
+      const trackC = window.CURRICULUM.tracks.find(t => t.id === 'C');
+      const c27Tasks = trackC ? trackC.tasks.filter(t => t.id.startsWith('C.27')) : [];
+      const c27Container = document.getElementById('c27-task-list');
+
+      if (c27Container && c27Tasks.length > 0) {
+        let tasksHtml = '';
+        c27Tasks.forEach(task => {
+          const isCompleted = window.CurriculumApp.isTaskCompleted(task.id);
+          tasksHtml += `
+            <div class="task-row interactive-item" id="row-${task.id}">
+              <div class="task-checkbox-col">
+                <input 
+                  type="checkbox" 
+                  id="cb-${task.id}" 
+                  class="task-checkbox" 
+                  data-task-id="${task.id}"
+                  ${isCompleted ? 'checked' : ''}
+                  aria-label="Mark task ${task.id} as completed"
+                >
+              </div>
+              <span class="task-id">${task.id}</span>
+              <div class="task-body">
+                <label for="cb-${task.id}" class="task-label">${task.text}</label>
+                ${task.note ? `<span class="note-text">${task.note}</span>` : ''}
+                <div class="task-actions">
+                  <a href="./lesson.html?id=${task.id}" class="lesson-link-btn" title="Read lesson story for ${task.id}">
+                    <span>Read Lesson Story →</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+        c27Container.innerHTML = tasksHtml;
+
+        c27Container.querySelectorAll('.task-checkbox').forEach(cb => {
+          cb.addEventListener('change', (e) => {
+            const id = e.target.getAttribute('data-task-id');
+            window.CurriculumApp.setTaskCompleted(id, e.target.checked);
+            updateFooterStats();
+          });
+        });
+      }
+
+      function updateFooterStats() {
+        const stats = window.CurriculumApp.getTotalStats();
+        const footerEl = document.getElementById('footer-stats-line');
+        if (footerEl) {
+          footerEl.textContent = `${stats.completed} / ${stats.total} tasks completed (${stats.percent}%)`;
+        }
+      }
+      updateFooterStats();
+
+      window.addEventListener('curriculum-progress-updated', () => {
+        if (c27Container) {
+          c27Container.querySelectorAll('.task-checkbox').forEach(cb => {
+            const id = cb.getAttribute('data-task-id');
+            cb.checked = window.CurriculumApp.isTaskCompleted(id);
+          });
+        }
+        updateFooterStats();
+      });
+    });
+  </script>
+</body>
+</html>

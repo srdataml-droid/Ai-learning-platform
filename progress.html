@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Progress Tracking — Curriculum</title>
+  <meta name="description" content="Detailed curriculum task completion stats mapped across all stages and seventeen tracks with local persistence.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..900&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to main content</a>
+  <div class="scroll-progress-line" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="./index.html" class="site-brand">
+        <span class="brand-symbol">0→L</span>
+        <span class="brand-name">Curriculum</span>
+      </a>
+      <nav class="site-nav" aria-label="Main Navigation">
+        <a href="./index.html" class="nav-link">Curriculum Map</a>
+        <a href="./languages.html" class="nav-link">Language Chain</a>
+        <a href="./words.html" class="nav-link">Word Lists</a>
+        <a href="./progress.html" class="nav-link" aria-current="page">Progress</a>
+        <button type="button" class="theme-toggle-btn" aria-label="Toggle visual theme">Dark</button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="main-wrapper page-entrance">
+    <!-- Intro Band -->
+    <section class="inverted-band" aria-labelledby="progress-heading">
+      <span class="track-card-letter" style="color: var(--inv-signal); font-size: var(--t-0); display: block; margin-bottom: 0.5rem;">COMPLETION DASHBOARD</span>
+      <h1 id="progress-heading">Progress Overview</h1>
+      <p style="max-inline-size: 68ch;">Your checklist status is stored locally on this machine. Track your pace across all seventeen tracks from fundamentals to modern production AI engineering.</p>
+    </section>
+
+    <!-- Top Stats Summary Cards -->
+    <div class="stats-summary" id="stats-summary">
+      <div class="stat-box">
+        <div class="stat-number" id="stat-completed">0</div>
+        <div class="stat-label">Tasks Completed</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-number" id="stat-total">0</div>
+        <div class="stat-label">Total Curriculum Tasks</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-number" id="stat-remaining">0</div>
+        <div class="stat-label">Tasks Remaining</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-number" id="stat-percent">0%</div>
+        <div class="stat-label">Completion Rate</div>
+      </div>
+    </div>
+
+    <!-- Tracks Progress Breakdown Grouped by Stages -->
+    <section class="section-block" aria-labelledby="track-progress-heading">
+      <div class="section-header">
+        <h2 id="track-progress-heading">Progress by Stage</h2>
+        <span class="section-counter">Mapped Across 4 Stages + Foundational Habits</span>
+      </div>
+      <div id="tracks-progress-list">
+        <!-- Rendered by JavaScript -->
+      </div>
+    </section>
+
+    <!-- Reset Action Block -->
+    <section class="section-block" aria-labelledby="reset-section-heading">
+      <div class="section-header">
+        <h2 id="reset-section-heading">Manage Stored Data</h2>
+        <span class="section-counter">Local Persistence</span>
+      </div>
+      <p style="margin-bottom: 1rem;">Resetting will clear all your checked task progress stored in this browser session.</p>
+      <button type="button" class="btn btn-danger" id="open-reset-modal-btn">Reset All Progress</button>
+    </section>
+  </main>
+
+  <!-- Modal Confirmation Dialog -->
+  <div class="modal-backdrop" id="reset-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-hidden="true">
+    <div class="modal-dialog">
+      <h3 id="modal-title">Reset All Progress?</h3>
+      <p>This action will clear all completed checkboxes across all seventeen tracks. This cannot be undone.</p>
+      <div class="modal-actions">
+        <button type="button" class="btn" id="cancel-reset-btn">Cancel</button>
+        <button type="button" class="btn btn-danger" id="confirm-reset-btn">Yes, Clear All Progress</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span class="footer-copy">Curriculum — Zero to AI Engineer</span>
+      <span class="footer-meta" id="footer-stats-line">0 tasks completed</span>
+    </div>
+  </footer>
+
+  <script src="./data.js"></script>
+  <script src="./lessons-data.js"></script>
+  <script src="./app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!window.CURRICULUM) return;
+
+      const statCompletedEl = document.getElementById('stat-completed');
+      const statTotalEl = document.getElementById('stat-total');
+      const statRemainingEl = document.getElementById('stat-remaining');
+      const statPercentEl = document.getElementById('stat-percent');
+      const tracksListEl = document.getElementById('tracks-progress-list');
+
+      function renderProgress() {
+        const totalStats = window.CurriculumApp.getTotalStats();
+        if (statCompletedEl) statCompletedEl.textContent = totalStats.completed;
+        if (statTotalEl) statTotalEl.textContent = totalStats.total;
+        if (statRemainingEl) statRemainingEl.textContent = totalStats.total - totalStats.completed;
+        if (statPercentEl) statPercentEl.textContent = `${totalStats.percent}%`;
+
+        // Render each stage and its tracks
+        let listHtml = '';
+        window.CURRICULUM.stages.forEach(stage => {
+          let stageCompleted = 0;
+          let stageTotal = 0;
+
+          const stageTracksHtml = stage.trackIds.map(id => {
+            const track = window.CURRICULUM.tracks.find(t => t.id === id);
+            if (!track) return '';
+            const stats = window.CurriculumApp.getTrackStats(track.id);
+            stageCompleted += stats.completed;
+            stageTotal += stats.total;
+
+            return `
+              <a href="./track.html?id=${track.id}" class="progress-track-row interactive-item" aria-label="Track ${track.id}: ${track.name}, ${stats.completed} of ${stats.total} completed">
+                <div class="progress-row-header">
+                  <span class="progress-track-name">Track ${track.id}: ${track.name}</span>
+                  <span class="progress-track-ratio">${stats.completed} / ${stats.total} (${stats.percent}%)</span>
+                </div>
+                <div class="progress-bar-large" aria-hidden="true">
+                  <div class="progress-bar-large-fill" style="width: ${stats.percent}%;"></div>
+                </div>
+              </a>
+            `;
+          }).join('');
+
+          const stagePercent = stageTotal > 0 ? Math.round((stageCompleted / stageTotal) * 100) : 0;
+
+          listHtml += `
+            <div style="margin-bottom: 2.5rem;">
+              <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem; padding-bottom: 0.4rem; border-bottom: 1px solid var(--rule-soft);">
+                <div style="display: flex; align-items: baseline; gap: 0.75rem;">
+                  <span class="stage-number-pill">${stage.number === '—' ? 'HABITS' : `STAGE ${stage.number}`}</span>
+                  <h3 style="font-size: var(--t-1); margin-bottom: 0;">${stage.name}</h3>
+                </div>
+                <span style="font-family: var(--font-display); font-weight: 800; font-size: var(--t--1); color: var(--ink-2);">
+                  ${stageCompleted} / ${stageTotal} done (${stagePercent}%)
+                </span>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                ${stageTracksHtml}
+              </div>
+            </div>
+          `;
+        });
+
+        tracksListEl.innerHTML = listHtml;
+
+        const footerEl = document.getElementById('footer-stats-line');
+        if (footerEl) {
+          footerEl.textContent = `${totalStats.completed} / ${totalStats.total} tasks completed (${totalStats.percent}%)`;
+        }
+      }
+
+      renderProgress();
+
+      // Setup Modal Accessibility & Reset Logic
+      const modalControls = window.setupModalAccessibility(
+        'reset-modal',
+        'open-reset-modal-btn',
+        'cancel-reset-btn'
+      );
+
+      const confirmBtn = document.getElementById('confirm-reset-btn');
+      if (confirmBtn) {
+        confirmBtn.addEventListener('click', () => {
+          window.CurriculumApp.resetAllProgress();
+          if (modalControls && modalControls.close) {
+            modalControls.close();
+          }
+          renderProgress();
+        });
+      }
+
+      // Re-render when progress changes elsewhere
+      window.addEventListener('curriculum-progress-updated', renderProgress);
+    });
+  </script>
+</body>
+</html>

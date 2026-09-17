@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Word Lists — Curriculum</title>
+  <meta name="description" content="Keyword and syntax translation tables. The symbol or keyword on the left, plain English on the right.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..900&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to main content</a>
+  <div class="scroll-progress-line" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="./index.html" class="site-brand">
+        <span class="brand-symbol">0→L</span>
+        <span class="brand-name">Curriculum</span>
+      </a>
+      <nav class="site-nav" aria-label="Main Navigation">
+        <a href="./index.html" class="nav-link">Curriculum</a>
+        <a href="./languages.html" class="nav-link">Languages</a>
+        <a href="./words.html" class="nav-link" aria-current="page">Word Lists</a>
+        <a href="./progress.html" class="nav-link">Progress</a>
+        <button type="button" class="theme-toggle-btn" aria-label="Toggle visual theme">Dark</button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="main-wrapper page-entrance">
+    <!-- Intro Band -->
+    <section class="inverted-band" aria-labelledby="words-heading">
+      <h1 id="words-heading">Language Cheat Sheets &amp; Word Lists</h1>
+      <p>The code or symbol on the left, plain English concept in the center, and operational mechanics with real-world examples on the right. 21 languages, 430+ essential functions, constructs, and patterns.</p>
+    </section>
+
+    <!-- Search & Filter Controls -->
+    <section class="words-search-wrap" aria-label="Search and Filter Keywords">
+      <div style="display: flex; gap: 0.75rem; align-items: center; width: 100%;">
+        <input 
+          type="search" 
+          id="words-search-input" 
+          class="words-search-input" 
+          placeholder="Search keywords, syntax, functions, or concepts across all 21 languages (e.g. 'flex', 'null', 'pointer', 'async', 'slice')..." 
+          aria-label="Search keywords and functions"
+        >
+      </div>
+
+      <div class="words-category-strip" id="category-strip" role="tablist" aria-label="Language Category Filter">
+        <button type="button" class="words-category-pill active" data-category="all" role="tab" aria-selected="true">All Categories</button>
+        <button type="button" class="words-category-pill" data-category="Web &amp; Frontend" role="tab" aria-selected="false">Web &amp; Frontend</button>
+        <button type="button" class="words-category-pill" data-category="Systems &amp; Hardware" role="tab" aria-selected="false">Systems &amp; Hardware</button>
+        <button type="button" class="words-category-pill" data-category="Backend &amp; Enterprise" role="tab" aria-selected="false">Backend &amp; Enterprise</button>
+        <button type="button" class="words-category-pill" data-category="Mobile &amp; Multiplatform" role="tab" aria-selected="false">Mobile &amp; Multiplatform</button>
+        <button type="button" class="words-category-pill" data-category="Data &amp; Storage" role="tab" aria-selected="false">Data &amp; Storage</button>
+        <button type="button" class="words-category-pill" data-category="AI &amp; High Performance" role="tab" aria-selected="false">AI &amp; High Performance</button>
+      </div>
+
+      <div class="words-search-meta">
+        <span id="words-count-status">Showing all 21 languages and 432 definitions</span>
+        <span style="font-size: var(--t--2); color: var(--ink-2);">Tip: Click 'Copy' to grab exact syntax</span>
+      </div>
+    </section>
+
+    <!-- Language Filter Strip -->
+    <nav class="words-filter-strip" id="filter-strip" aria-label="Language Quick Navigation">
+      <!-- Injected by JavaScript -->
+    </nav>
+
+    <!-- Word Tables Section -->
+    <div id="word-tables-container">
+      <!-- Injected by JavaScript from window.CURRICULUM.words -->
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span class="footer-copy">Curriculum — Software &amp; AI Engineering</span>
+      <span class="footer-meta" id="footer-stats-line">0 tasks completed</span>
+    </div>
+  </footer>
+
+  <script src="./data.js"></script>
+  <script src="./app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!window.CURRICULUM) return;
+
+      const wordsData = window.CURRICULUM.words || [];
+      const filterStrip = document.getElementById('filter-strip');
+      const tablesContainer = document.getElementById('word-tables-container');
+      const searchInput = document.getElementById('words-search-input');
+      const categoryStrip = document.getElementById('category-strip');
+      const countStatus = document.getElementById('words-count-status');
+
+      // Map language names to their corresponding Track C Lesson IDs
+      const lessonMap = {
+        'HTML': 'C.24',
+        'CSS': 'C.24',
+        'JavaScript': 'C.13',
+        'TypeScript': 'C.19',
+        'Python': 'C.11',
+        'C': 'C.7',
+        'C++': 'C.9',
+        'Java': 'C.12',
+        'C#': 'C.17',
+        'PHP': 'C.14',
+        'Ruby & Rails': 'C.15',
+        'Go': 'C.18',
+        'Rust': 'C.20',
+        'Kotlin': 'C.21',
+        'Swift': 'C.21',
+        'Elixir & Erlang': 'C.16',
+        'SQL': 'C.22',
+        'Bash': 'C.25',
+        'Regular Expressions': 'C.26',
+        'CUDA': 'C.23',
+        'Assembly': 'C.1'
+      };
+
+      let activeCategory = 'all';
+      let searchQuery = '';
+
+      // 1. Render Filter Navigation Chips
+      function renderFilterChips() {
+        filterStrip.innerHTML = '';
+        wordsData.forEach((w) => {
+          if (activeCategory !== 'all' && w.category !== activeCategory) {
+            return;
+          }
+          const slug = w.lang.toLowerCase().replace(/[^a-z0-9]/g, '-');
+          const chip = document.createElement('a');
+          chip.className = 'words-filter-chip';
+          chip.href = `#lang-table-${slug}`;
+          chip.innerHTML = `<span>${w.lang}</span> <span style="opacity: 0.6; font-size: 0.8em; margin-left: 0.25rem;">(${w.rows.length})</span>`;
+          chip.addEventListener('click', () => {
+            document.querySelectorAll('.words-filter-chip').forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+          });
+          filterStrip.appendChild(chip);
+        });
+      }
+
+      // 2. Render Word Tables
+      function renderTables() {
+        tablesContainer.innerHTML = '';
+        const normalizedQuery = searchQuery.trim().toLowerCase();
+        let totalVisibleDefinitions = 0;
+        let visibleLanguages = 0;
+
+        wordsData.forEach((w) => {
+          // Category filter
+          if (activeCategory !== 'all' && w.category !== activeCategory) {
+            return;
+          }
+
+          // Search filter: check language name, category, summary, or any row
+          const matchingRows = w.rows.filter(row => {
+            if (!normalizedQuery) return true;
+            const code = (row[0] || '').toLowerCase();
+            const concept = (row[1] || '').toLowerCase();
+            const detail = (row[2] || '').toLowerCase();
+            return code.includes(normalizedQuery) || concept.includes(normalizedQuery) || detail.includes(normalizedQuery);
+          });
+
+          if (normalizedQuery && matchingRows.length === 0) {
+            return;
+          }
+
+          visibleLanguages++;
+          totalVisibleDefinitions += matchingRows.length;
+
+          const slug = w.lang.toLowerCase().replace(/[^a-z0-9]/g, '-');
+          const section = document.createElement('section');
+          section.className = 'word-table-block section-block';
+          section.id = `lang-table-${slug}`;
+
+          let rowsHtml = '';
+          matchingRows.forEach(row => {
+            const codeText = row[0] || '';
+            const codeEscaped = codeText
+              .replace(/&/g, '&amp;')
+              .replace(/</g, '&lt;')
+              .replace(/>/g, '&gt;');
+
+            const conceptText = row[1] || '';
+            const detailText = row[2] || '';
+
+            rowsHtml += `
+              <tr class="interactive-item">
+                <td class="word-code-cell">
+                  <div class="code-copy-wrap">
+                    <code>${codeEscaped}</code>
+                    <button type="button" class="copy-code-btn" data-clipboard="${encodeURIComponent(codeText)}" title="Copy code to clipboard">Copy</button>
+                  </div>
+                </td>
+                <td class="word-meaning-cell">
+                  <div class="meaning-concept">${conceptText}</div>
+                  ${detailText ? `<div class="meaning-detail">${detailText}</div>` : ''}
+                </td>
+              </tr>
+            `;
+          });
+
+          const lessonId = lessonMap[w.lang];
+          const lessonLinkHtml = lessonId 
+            ? `<a href="./lesson.html?id=${lessonId}" class="lang-lesson-link" title="Read historical lesson story and four beats analysis for ${w.lang}">
+                 <span>Lesson ${lessonId} Story →</span>
+               </a>`
+            : '';
+
+          section.innerHTML = `
+            <div class="section-header" style="flex-direction: column; align-items: flex-start; gap: 0.35rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 0.5rem;">
+                <div style="display: flex; align-items: baseline; gap: 0.75rem;">
+                  <h2 style="margin: 0;">${w.lang}</h2>
+                  <span class="year-tag" style="font-size: var(--t--2);">${w.category || 'Core'}</span>
+                </div>
+                <div class="lang-header-meta">
+                  <span class="section-counter">${matchingRows.length} ${matchingRows.length === 1 ? 'Definition' : 'Definitions'}</span>
+                  ${lessonLinkHtml}
+                </div>
+              </div>
+              ${w.summary ? `<p class="lang-summary-text">${w.summary}</p>` : ''}
+            </div>
+            <table class="word-table" aria-label="${w.lang} Keyword &amp; Function Cheat Sheet">
+              <thead>
+                <tr>
+                  <th style="width: 38%;">Syntax / Function / Keyword</th>
+                  <th style="width: 62%;">Plain English Concept &amp; Operational Explanation</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rowsHtml}
+              </tbody>
+            </table>
+          `;
+          tablesContainer.appendChild(section);
+        });
+
+        // Update count status
+        if (normalizedQuery) {
+          countStatus.textContent = `Found ${totalVisibleDefinitions} matching ${totalVisibleDefinitions === 1 ? 'definition' : 'definitions'} across ${visibleLanguages} ${visibleLanguages === 1 ? 'language' : 'languages'} for "${searchQuery}"`;
+        } else if (activeCategory !== 'all') {
+          countStatus.textContent = `Showing ${visibleLanguages} languages and ${totalVisibleDefinitions} definitions in "${activeCategory}"`;
+        } else {
+          countStatus.textContent = `Showing all ${visibleLanguages} languages and ${totalVisibleDefinitions} definitions`;
+        }
+
+        // Bind copy buttons
+        document.querySelectorAll('.copy-code-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const rawCode = decodeURIComponent(btn.getAttribute('data-clipboard') || '');
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(rawCode).then(() => {
+                btn.textContent = 'Copied!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                  btn.textContent = 'Copy';
+                  btn.classList.remove('copied');
+                }, 1800);
+              }).catch(() => {
+                btn.textContent = 'Copied!';
+                setTimeout(() => { btn.textContent = 'Copy'; }, 1800);
+              });
+            }
+          });
+        });
+      }
+
+      // 3. Search & Filter Handlers
+      if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+          searchQuery = e.target.value;
+          renderTables();
+        });
+      }
+
+      if (categoryStrip) {
+        categoryStrip.querySelectorAll('.words-category-pill').forEach(pill => {
+          pill.addEventListener('click', () => {
+            categoryStrip.querySelectorAll('.words-category-pill').forEach(p => {
+              p.classList.remove('active');
+              p.setAttribute('aria-selected', 'false');
+            });
+            pill.classList.add('active');
+            pill.setAttribute('aria-selected', 'true');
+            activeCategory = pill.getAttribute('data-category') || 'all';
+            renderFilterChips();
+            renderTables();
+          });
+        });
+      }
+
+      // Initial Render
+      renderFilterChips();
+      renderTables();
+
+      function updateFooterStats() {
+        if (window.CurriculumApp && window.CurriculumApp.getTotalStats) {
+          const stats = window.CurriculumApp.getTotalStats();
+          const footerEl = document.getElementById('footer-stats-line');
+          if (footerEl) {
+            footerEl.textContent = `${stats.completed} / ${stats.total} tasks completed (${stats.percent}%)`;
+          }
+        }
+      }
+      updateFooterStats();
+
+      window.addEventListener('curriculum-progress-updated', updateFooterStats);
+    });
+  </script>
+</body>
+</html>
