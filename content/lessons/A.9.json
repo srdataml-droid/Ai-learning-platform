@@ -1,0 +1,20 @@
+{
+  "id": "A.9",
+  "trackId": "A",
+  "trackName": "Systems thinking",
+  "title": "Trace one request end to end through something you built",
+  "status": "unsourced",
+  "story": "Most understanding of a system you built is local: you know the parts you worked on recently and hold an assumption about the rest. Following one request the whole way through replaces the assumptions with observations, and it is usually uncomfortable.\n\nWhat tends to surface is the accumulated stuff nobody chose. The same data serialised and deserialised four times between the edge and the database. A validation performed at three different layers, each slightly differently, so that one of them is now the real one and nobody knows which. A synchronous call to a service that does not need to be waited for. A retry wrapping another retry. None of it was decided; it accreted, one reasonable change at a time, and it is invisible unless you follow a single request and refuse to skip anything.\n\nIt is also the fastest way to find the difference between the system as documented and the system as running. Diagrams describe intent and drift from the code within weeks. A traced request describes what actually happens today, including the path added in a hurry last quarter that appears in nobody's mental model and is now load-bearing.",
+  "beats": {
+    "broke": "Knowledge of a system is local to the parts each person worked on, with assumptions filling the rest. Nothing forces the assumptions to be checked, and the diagram that would correct them describes intent rather than current behaviour.",
+    "fix": "Follow one real request through every layer, skipping nothing, and record what actually happens. That produces a description of the system as it runs today rather than as it was designed.",
+    "cost": "It is slow, and it captures one path through a system that has many, so conclusions drawn from it may not generalise. The trace also goes stale quickly in an actively changing system, and tracing through asynchronous or event-driven paths is substantially harder than through synchronous ones.",
+    "interview": {
+      "q": "What do you usually find when you trace a single request end to end through a system you have worked on for a year?",
+      "trap": "Answering that you find a bug or a bottleneck. You often do, and the general finding is more structural.",
+      "answer": "Accretion that nobody decided. The same payload serialised and deserialised several times between layers; validation happening at three levels in slightly different ways, so one of them is effectively the real one and nobody knows which; a synchronous wait on something that did not need to be waited for; a retry wrapping another retry. Each was a reasonable change at the time and the aggregate is nobody's design. It also exposes the gap between the documented system and the running one, which is where the path added in a hurry last quarter turns out to be load-bearing."
+    }
+  },
+  "blueprint": "Follow ONE request. Skip nothing. Write down every hop.\n\n  browser -> CDN -> LB -> gateway -> auth -> api\n            -> validate (#1)\n            -> serialise -> queue -> worker -> deserialise\n            -> validate (#2, slightly differently)\n            -> serialise -> db driver -> deserialise\n            -> validate (#3, in a trigger nobody remembers)\n            -> write\n\nFound: 3 serialisation round trips, 3 validations of which\none is really in charge, and a synchronous call to the\nemail service that nothing needs to wait for.\n\nNobody designed this. It accreted, one reasonable PR\nat a time, and no diagram shows it.",
+  "takeaway": "Diagrams describe intent and drift within weeks. One traced request describes what runs today, including the hurried path that is now load-bearing."
+}

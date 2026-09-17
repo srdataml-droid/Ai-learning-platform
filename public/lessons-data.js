@@ -250,6 +250,66 @@
     "blueprint": "Your code                kernel               wherever\n  write(1, ...)  ---->   fd 1       ---->     terminal\n                                   or  ---->  a file      (> out.txt)\n                                   or  ---->  another proc ( | grep )\n\nSame call in your program. The shell decides the destination.\n\nBuffering, and why output vanishes:\n  fd 1 to a terminal  ->  line buffered   (you see it promptly)\n  fd 1 to a file/pipe ->  block buffered  (waits ~4-8KB)\n  fd 2                ->  unbuffered      (survives the crash)",
     "takeaway": "Everything readable or writable is reached the same way, which is why tools compose; buffering is the price, and it is why your last print did not appear."
   },
+  "A.1": {
+    "id": "A.1",
+    "trackId": "A",
+    "trackName": "Systems thinking",
+    "title": "Name the parts, flows and boundaries of any system",
+    "status": "unsourced",
+    "story": "Before a system can be reasoned about it has to be described, and most people skip straight to opinions about it. Three questions produce a usable description and they work on anything: what are the parts, what flows between them, and where are the boundaries.\n\nParts are the things with their own state and their own lifecycle. Flows are what moves between them — requests, records, events, money, messages — and naming a flow forces you to say what is actually being transferred, which is frequently vaguer than anyone assumed. Boundaries are where responsibility, trust or ownership changes, and they are the most informative of the three because almost everything interesting happens at one. A boundary is where data must be validated, where a failure must be handled rather than propagated, where a contract exists whether or not anyone wrote it down.\n\nThe description is also what makes the rest of this track possible. You cannot ask what happens if this doubles, or where the global optimum differs from the local one, until you can say what this is and what it is connected to. Doing it from memory, on paper, is the version that exposes what you do not know, because a diagram you cannot complete is showing you precisely where your understanding stops.",
+    "beats": {
+      "broke": "Systems get discussed before they are described, so people argue from incompatible mental models without discovering it. Nothing forces the vague parts to become explicit, and the vaguest parts are usually the important ones.",
+      "fix": "Three questions, applicable to anything: what are the parts, what flows between them, where are the boundaries. Boundaries carry the most information, since validation, failure handling and unwritten contracts all live where responsibility or trust changes.",
+      "cost": "Any description is a simplification and a diagram that feels complete can quietly omit the component that matters. Descriptions also age, and a stale one is more dangerous than none because it is trusted. Drawing can become an end in itself, producing a diagram nobody uses.",
+      "interview": {
+        "q": "Why do boundaries carry more information than the components in a system description?",
+        "trap": "Answering that they show the interfaces. True but incomplete; the question is why that matters more than the parts.",
+        "answer": "Because a boundary is where responsibility, trust or ownership changes, and that is where the obligations are. Data crossing one must be validated, since what was guaranteed on the other side no longer holds. Failures crossing one have to be handled rather than propagated, since the caller cannot see the context. And a contract exists at every boundary whether or not anyone wrote it down, which is why undocumented boundaries are where systems break during change. The components mostly do what their code says; the boundaries are where the assumptions live."
+      }
+    },
+    "blueprint": "Three questions. Any system.\n\n  PARTS       things with their own state and lifecycle\n              [browser] [api] [worker] [db] [payment provider]\n\n  FLOWS       what actually moves -- name it precisely\n              browser -> api   : a signed request\n              api -> worker    : a job id (NOT the payload)\n              worker -> provider: money, and it is irreversible\n\n  BOUNDARIES  where responsibility / trust / ownership changes\n              ||  <- validate here\n              ||  <- handle failure here, do not propagate\n              ||  <- a contract exists here whether or not\n                     anyone wrote it down\n\nDrawn from memory, the part you cannot finish is the part\nyou do not understand. That is the useful output.",
+    "takeaway": "Parts, flows, boundaries — and boundaries carry the most, because that is where validation, failure handling and unwritten contracts all live."
+  },
+  "A.10": {
+    "id": "A.10",
+    "trackId": "A",
+    "trackName": "Systems thinking",
+    "title": "Ask what happens if this doubles, of every component",
+    "status": "unsourced",
+    "story": "Doubling is the cheapest scaling question because it can be asked of anything in about a minute, and the answers sort components into three groups that behave completely differently.\n\nSome are linear: twice the load, twice the resource, nothing interesting. Some have a cliff: fine until a limit is reached and then a step change in behaviour, which is where connection pools, file descriptor limits, memory that no longer fits a cache, and anything with a fixed-size queue live. And some are superlinear, where doubling the input more than doubles the cost — an operation quadratic in the number of items, a join whose intermediate result grows with the product of both sides, a coordination protocol whose message count grows with the square of participants.\n\nThe cliffs are what makes the question worth asking routinely, because they are invisible in normal operation and undetectable by extrapolating from current metrics. A system at forty percent of a connection pool looks identical to one at four percent on every graph you have, right up until it is at a hundred percent and everything queues at once. Asking what doubles finds those before they are found for you, and asking it of every component rather than the one you suspect is what stops you finding nine and missing the tenth.",
+    "beats": {
+      "broke": "Scaling limits are discovered when they are reached, and they are invisible beforehand because current metrics extrapolate smoothly right up to a cliff edge that does not appear on any graph.",
+      "fix": "Ask of every component what happens at twice the load. The answers separate the linear from the ones with a hard limit and the ones that grow superlinearly, and the limits become known before they are hit.",
+      "cost": "It produces a long list of theoretical problems, most of which will never occur, and acting on all of them is premature optimisation at scale. Judging which are real requires knowing actual growth, and the exercise can generate anxiety and work disproportionate to the risk.",
+      "interview": {
+        "q": "Why is asking what happens at double the load more useful than extrapolating current metrics?",
+        "trap": "Answering that extrapolation is imprecise. The problem is not precision; it is that the shape is wrong.",
+        "answer": "Because the most dangerous limits are discontinuous, and extrapolation assumes continuity. A connection pool at forty percent utilisation looks exactly like one at four percent on every graph — utilisation, latency, error rate all appear healthy and linear — until it saturates, at which point requests queue, latency steps rather than slopes, and timeouts cascade. No amount of trend-fitting on the pre-cliff data predicts the cliff, because the cliff is a property of the configuration rather than of the trend. Asking the question directly surfaces the limit, which is a fact about the system rather than an inference from its history."
+      }
+    },
+    "blueprint": "Ask of EVERY component. Three answers:\n\n  LINEAR       2x load -> 2x resource. boring. fine.\n\n  CLIFF        fine, fine, fine, ... then everything at once\n               connection pools, fd limits, fixed queues,\n               a working set that stops fitting in cache\n               <- invisible on every graph until it is not\n\n  SUPERLINEAR  2x input -> 4x or worse cost\n               an O(n^2) loop, a join whose intermediate\n               result is the product of both sides,\n               coordination with O(n^2) messages\n\nYou cannot extrapolate a cliff from pre-cliff data. The\ncliff is a property of the CONFIG, not of the trend.",
+    "takeaway": "Extrapolation assumes continuity, and the dangerous limits are cliffs. A pool at 40% looks like one at 4% on every graph you have."
+  },
+  "A.11": {
+    "id": "A.11",
+    "trackId": "A",
+    "trackName": "Systems thinking",
+    "title": "Spot what is missing, not just what is wrong",
+    "status": "unsourced",
+    "story": "Reviewing anything — a design, a pull request, an incident, a plan — attention goes to what is present, because what is present is what there is to react to. Errors of omission produce nothing to react to, and they are consistently the more serious kind.\n\nA design document describes a system and the absence worth noticing is that it never says what happens when the third-party service is down. A code review examines the logic as written and the question nobody asks is what happens on the empty list, since no line raises the thought. An incident timeline covers what people did and omits what nobody noticed at the time, which is where the missing alert lives. In each case there is no sentence to object to, which is exactly why it survives review.\n\nMaking omissions visible needs a deliberate method, because attention will not find them unaided. A checklist works: the same questions asked every time regardless of content — what happens on failure, on empty, at limit, on retry, on partial completion, who is told. So does describing the thing as a set of cases and checking each is addressed, rather than reading through and reacting. Both amount to bringing your own structure, since the artefact in front of you cannot suggest what it left out.",
+    "beats": {
+      "broke": "Review is reactive: attention goes to what is written, and something absent generates no reaction. Errors of omission therefore pass review reliably, and they tend to be the more consequential kind.",
+      "fix": "Bring external structure rather than reading and reacting. A fixed checklist applied every time — failure, empty, limit, retry, partial completion, who is notified — or enumerating the cases and confirming each is addressed. The structure must come from you, since the artefact cannot indicate what it omits.",
+      "cost": "Checklists produce their own blindness: applied mechanically they catch only the omissions someone thought of when writing the list, and confer confidence out of proportion to their coverage. They also add time to every review, most of which finds nothing.",
+      "interview": {
+        "q": "Why do errors of omission survive code review so reliably?",
+        "trap": "Attributing it to reviewer inattention or time pressure. Careful reviewers with plenty of time miss them at similar rates.",
+        "answer": "Because review is driven by what is on the screen, and an omission puts nothing there to trigger a reaction. A wrong line can be read and objected to; a missing null check produces no line, so nothing prompts the thought. Attention is reactive by default and the diff is the stimulus, which means the review can only cover the space the author already considered. Escaping it requires structure imported from outside the artefact — a checklist applied identically every time, or enumerating the cases that ought to be handled and verifying each is — because the diff itself can never suggest what is not in it."
+      }
+    },
+    "blueprint": "What review reacts to      What it cannot react to\n  this line is wrong         there is no line for the\n  this name is unclear       empty-list case\n  this is O(n^2)             nothing says what happens\n                             when the vendor is down\n                             no alert exists for this\n                             failing silently\n\nBring your own structure. Ask EVERY time, regardless of\nwhat is in the diff:\n  [ ] empty?      zero rows, empty string, null\n  [ ] failure?    what if the dependency is down -- or SLOW\n  [ ] limit?      at 10x. at the pool size.\n  [ ] retry?      is it safe to run twice? (idempotent?)\n  [ ] partial?    half-done, then a crash\n  [ ] who knows?  does anything alert if this silently stops",
+    "takeaway": "Review is reactive and an omission supplies nothing to react to. Only structure you bring from outside can cover what the diff cannot suggest."
+  },
   "A.2": {
     "id": "A.2",
     "trackId": "A",
@@ -309,6 +369,106 @@
     },
     "blueprint": "/* Second-Order Analysis Matrix: */\nAction:             Introduce distributed cache (Redis)\nFirst-Order Effect: Read latency drops from 200ms to 1ms\nSecond-Order:       Cache invalidation bugs, stale data windows, memory costs\nThird-Order:        Database crashes during cache cold restart (Stampede)\nMitigation:         Cache stampede locks, probabilistic early expiration",
     "takeaway": "Every architectural fix is a mortgage: it pays for today's latency with tomorrow's consistency and operational debt."
+  },
+  "A.5": {
+    "id": "A.5",
+    "trackId": "A",
+    "trackName": "Systems thinking",
+    "title": "Constraints as the real design input, not the requirements",
+    "status": "unsourced",
+    "story": "Requirements describe what something should do, and almost every design satisfies them. They are rarely what determines the shape of a solution, which is why two teams given identical requirements produce entirely different systems.\n\nConstraints do the determining. How much latency is acceptable, what it may cost to run, how many people will maintain it, what must not be lost under any circumstances, what regulation applies, what the team already knows, what the network between the components is actually like. These narrow the space of possible designs sharply, and frequently to one or two candidates. A requirement to store user documents is satisfied by a hundred designs; a constraint that documents must survive a region failure and be retrievable within seconds eliminates most of them immediately.\n\nWhich is why asking about constraints early is the highest-leverage move in a design discussion. They are usually unstated because whoever holds them considers them obvious or has never articulated them, and they surface late as objections to a design that is already built. The question to ask is not what do you want it to do — everyone can answer that — but what must never happen, what does it have to survive, and who is going to run it at three in the morning.",
+    "beats": {
+      "broke": "Design is driven by requirements, which nearly every candidate design satisfies. The genuinely determining factors go unstated because whoever holds them assumes they are obvious, and they emerge late as objections to something already built.",
+      "fix": "Elicit constraints first: latency, cost, durability, team size and knowledge, regulation, what must never happen, who operates it. These eliminate most of the design space quickly, often leaving only a couple of viable candidates.",
+      "cost": "Constraints are frequently assumed rather than measured, and a design built around an imagined one is over-engineered for a situation that never arrives. They also change, and a system shaped tightly around a constraint that has been removed is expensive to unwind.",
+      "interview": {
+        "q": "Two teams are given the same requirements and produce very different systems. What explains the difference?",
+        "trap": "Attributing it to preference, experience or taste. Those matter and they are not the primary mechanism.",
+        "answer": "Different constraints, usually unstated. Requirements describe behaviour and almost every design satisfies them, so they do not discriminate. What narrows the space is the surrounding conditions: acceptable latency, what it may cost to run, how many people will maintain it, what must survive a failure, what the team already knows. A team with three engineers and a team with thirty will correctly produce different architectures from identical requirements. This is why the useful questions in a design discussion are about what must never happen and who operates it, not about what it should do."
+      }
+    },
+    "blueprint": "Requirement: \"users can upload documents\"\n  -> satisfied by ~100 designs. constrains nothing.\n\nConstraints:\n  must survive a region failure         -> replication\n  retrievable in < 2s                   -> not cold storage\n  2 engineers maintain it               -> managed, not\n                                           self-operated\n  must not exceed $400/mo at 1TB        -> rules out 3 of the\n                                           remaining options\n  legally must be deletable on request  -> no immutable store\n\n  -> one or two candidates left.\n\nAsk: what must NEVER happen? what must it survive?\n     who runs it at 3am? -- not \"what should it do?\"",
+    "takeaway": "Requirements are satisfied by nearly every design, so they do not discriminate. Constraints eliminate the space, and they are usually unstated because the holder thinks they are obvious."
+  },
+  "A.6": {
+    "id": "A.6",
+    "trackId": "A",
+    "trackName": "Systems thinking",
+    "title": "Local versus global optimum",
+    "status": "unsourced",
+    "story": "Every part of a system improved as far as it can go does not produce the best system, and the gap between those two statements accounts for a large share of organisational dysfunction in engineering.\n\nThe mechanism is that improving a component usually means shifting a cost onto something else. A service that caches aggressively is faster and is now serving stale data that another team has to reconcile. A team that ships quickly by skipping integration tests is faster and the breakages land on whoever owns the downstream system. A batch job made efficient by processing everything at once is optimal in isolation and saturates the database that four other services depend on. Each decision is correct from where it was made, and each is visible as an improvement locally and as a cost somewhere nobody is measuring.\n\nThis is why measurement boundaries matter so much. A team measured only on its own latency will optimise its own latency, including in ways that damage the whole, and they will be right to by the metric they were given. Detecting it requires looking at flows across boundaries rather than at components, and fixing it usually means changing what is measured rather than persuading anyone to behave differently.",
+    "beats": {
+      "broke": "Optimising each component independently does not optimise the system, because local improvements are frequently achieved by shifting cost across a boundary to something nobody is measuring.",
+      "fix": "Measure and reason about end-to-end flows rather than component metrics. Where a local optimisation exports a cost, the detection happens at the boundary, and the durable fix is usually to change what is being measured.",
+      "cost": "Global measurement is harder to attribute, so it gives weaker signals to the people making individual decisions, and it can remove useful local accountability. Optimising globally can also require a component to accept being worse, which is a difficult thing to ask of the team that owns it.",
+      "interview": {
+        "q": "Each team's service meets its latency target and end-to-end latency is still unacceptable. How is that possible?",
+        "trap": "Suspecting the measurements are wrong. They are usually all correct, which is the interesting part.",
+        "answer": "Because the targets are per-component and the experience is a sum, including the parts nobody owns: queueing between services, serialisation at each hop, retries, and the tail behaviour that averages hide. Every service can sit inside its own budget while the total is far outside any of them, especially since a request touching ten services meets ten p99s and is quite likely to hit at least one. The fix is a budget allocated from the end-to-end target downward, so each component's limit is derived from the whole rather than set locally, and tail latency rather than mean is what gets measured."
+      }
+    },
+    "blueprint": "Everyone meets their target. The system fails.\n\n  A p99 50ms | B p99 50ms | C p99 50ms | D p99 50ms\n  + queueing + serialisation + retries + tail overlap\n  = end-to-end p99 of 900ms\n\nLocal optimisations that export cost:\n  cache aggressively   -> stale data, someone else reconciles\n  skip integration     -> breakage lands downstream\n  batch everything     -> saturates the shared database\n\nEach is CORRECT by the metric that team was given.\nSo do not argue with the team. Change the measurement:\nallocate the budget from the end-to-end target downward.",
+    "takeaway": "Local improvements are usually paid for across a boundary by someone not measuring it. Arguing with the team fails; changing what is measured works."
+  },
+  "A.7": {
+    "id": "A.7",
+    "trackId": "A",
+    "trackName": "Systems thinking",
+    "title": "Failure as a system property, not a component property",
+    "status": "unsourced",
+    "story": "Components are made reliable one at a time, and a system assembled from reliable components fails anyway, in ways that none of them exhibit alone. The failures belong to the composition rather than to any part of it.\n\nRetry storms are the clearest example. A retry on failure is sensible in every component that implements it. Compose several layers each retrying and a brief slowdown becomes an exponential multiplication of load, which turns a recoverable blip into an outage. Nothing is misbehaving; each layer is doing the correct thing, and the correct things combine into a catastrophe. The same shape appears in cascading failures where a saturated dependency causes its callers to queue, which saturates them in turn, and in thundering herds where a cache expiry releases every waiting request simultaneously.\n\nThe consequence for design is that reliability cannot be achieved component by component. It requires reasoning about what the composition does under stress: whether feedback loops are reinforcing or balancing, whether failures are contained at boundaries or propagated, whether load shed somewhere reappears somewhere else. And it means testing has to include the system under degradation, because components tested individually and passing tells you almost nothing about how they behave together when one of them is slow.",
+    "beats": {
+      "broke": "Reliability is engineered per component, but a system of individually reliable parts exhibits failure modes none of them has alone. Those failures live in the interaction and are invisible to any amount of component-level testing.",
+      "fix": "Reason about the composition under stress: retry amplification, cascading saturation, synchronised herds. Contain failures at boundaries with timeouts, circuit breakers, bulkheads and backoff with jitter, and test the system with a dependency degraded rather than absent.",
+      "cost": "Containment mechanisms are themselves complex and can fail or misfire — a circuit breaker that opens unnecessarily is an outage it caused. Testing degraded behaviour requires deliberately breaking things, which is operationally expensive and organisationally uncomfortable.",
+      "interview": {
+        "q": "Every service retries failed requests three times, which each team considers good practice. What happens under a brief slowdown?",
+        "trap": "Answering that load increases threefold. The multiplication is across layers, not within one.",
+        "answer": "The retries multiply through the layers. With three layers each retrying three times, one user request can become twenty-seven at the bottom, so a brief slowdown that would have recovered on its own becomes a load spike large enough to cause the outage it was trying to survive. It is a reinforcing feedback loop: more load, more timeouts, more retries. Each team's decision is locally correct and the composition is catastrophic. Containing it needs retry budgets rather than fixed counts, exponential backoff with jitter so clients do not resynchronise, and circuit breakers that stop sending traffic at all once failure rates cross a threshold."
+      }
+    },
+    "blueprint": "Each layer retries 3x. All three teams are right.\n\n  user:        1 request\n  gateway:     3\n  service:     9\n  database:   27      <- from ONE user request\n\nA 2-second blip that would have recovered is now an outage.\nNothing misbehaved. The composition did.\n\nSame shape elsewhere:\n  cascading   saturated dep -> callers queue -> callers\n              saturate -> their callers queue\n  herd        cache expires -> every waiter fires at once\n\nContain at boundaries: retry BUDGETS not counts, backoff\nwith jitter, circuit breakers, bulkheads.\nAnd test with a dependency SLOW, not absent -- slow is worse.",
+    "takeaway": "Reliable components compose into unreliable systems. The failure lives in the interaction, so no amount of component testing can find it."
+  },
+  "A.8": {
+    "id": "A.8",
+    "trackId": "A",
+    "trackName": "Systems thinking",
+    "title": "Draw five systems you use daily, from memory, on paper",
+    "status": "unsourced",
+    "story": "The exercise sounds like busywork and is a diagnostic. Drawing something you use constantly, without looking anything up, reveals exactly where your understanding stops — and it stops much earlier than it feels like it does.\n\nFamiliarity is easily mistaken for comprehension. You use a version control system a hundred times a week; draw what happens when you push, and it becomes apparent whether you know what is transferred, what is computed locally, what the remote decides, and what happens if two people push at once. The gap is the point. A diagram you cannot complete is a precise statement about what you have been taking on faith, and it is far more useful than a feeling of vagueness because you can see the shape of the hole.\n\nFrom memory matters because the moment you look it up, you are copying rather than recalling, and copying feels like learning while producing nothing durable. On paper matters for a smaller reason: no autocomplete, no structure imposed by a tool, and no temptation to make it tidy. The version with arrows crossing each other and a box labelled with a question mark is the one that did its job.",
+    "beats": {
+      "broke": "Frequent use is mistaken for understanding. The gaps stay invisible because nothing ever requires the model to be made explicit, and a vague sense of not quite knowing gives you no idea what specifically is missing.",
+      "fix": "Draw it from memory, without reference, on paper. The points where the diagram cannot be completed identify precisely what has been taken on faith, which is a far more actionable output than a general feeling of uncertainty.",
+      "cost": "A drawing made from memory reproduces your misconceptions with the same confidence as your knowledge, so it can entrench an error unless checked against reality afterwards. It is also time spent on something with no immediate deliverable, which is easy to deprioritise indefinitely.",
+      "interview": {
+        "q": "What does drawing a familiar system from memory give you that reading its documentation does not?",
+        "trap": "Answering that it aids retention. That is true of many techniques; the specific value here is diagnostic.",
+        "answer": "A map of what you do not know. Reading documentation produces recognition, which feels like understanding and is not — you can follow every sentence and still be unable to reconstruct the system. Drawing it from memory forces recall, and the places you stall are a precise inventory of the gaps. That inventory is the output: it tells you what to go and read, rather than leaving you with a vague sense of not quite knowing, which gives no direction at all. The drawing being wrong is fine, provided you check it afterwards."
+      }
+    },
+    "blueprint": "Five to try, in rising difficulty:\n\n  1. what happens when you `git push`\n     (what is transferred? computed where? who decides\n      on a conflict? what if two people push at once?)\n  2. what happens when you type a URL and press enter\n  3. how your code gets from your laptop to production\n  4. how a message you send reaches someone's phone\n  5. how your bank card payment is authorised\n\nRules: from memory. on paper. no looking anything up.\n\nThe box you label \"??\" is the whole point.\nTHEN go and check it -- memory reproduces misconceptions\nwith exactly the same confidence as knowledge.",
+    "takeaway": "Reading gives recognition, which feels like understanding. Drawing from memory forces recall, and where you stall is an inventory of what to go and learn."
+  },
+  "A.9": {
+    "id": "A.9",
+    "trackId": "A",
+    "trackName": "Systems thinking",
+    "title": "Trace one request end to end through something you built",
+    "status": "unsourced",
+    "story": "Most understanding of a system you built is local: you know the parts you worked on recently and hold an assumption about the rest. Following one request the whole way through replaces the assumptions with observations, and it is usually uncomfortable.\n\nWhat tends to surface is the accumulated stuff nobody chose. The same data serialised and deserialised four times between the edge and the database. A validation performed at three different layers, each slightly differently, so that one of them is now the real one and nobody knows which. A synchronous call to a service that does not need to be waited for. A retry wrapping another retry. None of it was decided; it accreted, one reasonable change at a time, and it is invisible unless you follow a single request and refuse to skip anything.\n\nIt is also the fastest way to find the difference between the system as documented and the system as running. Diagrams describe intent and drift from the code within weeks. A traced request describes what actually happens today, including the path added in a hurry last quarter that appears in nobody's mental model and is now load-bearing.",
+    "beats": {
+      "broke": "Knowledge of a system is local to the parts each person worked on, with assumptions filling the rest. Nothing forces the assumptions to be checked, and the diagram that would correct them describes intent rather than current behaviour.",
+      "fix": "Follow one real request through every layer, skipping nothing, and record what actually happens. That produces a description of the system as it runs today rather than as it was designed.",
+      "cost": "It is slow, and it captures one path through a system that has many, so conclusions drawn from it may not generalise. The trace also goes stale quickly in an actively changing system, and tracing through asynchronous or event-driven paths is substantially harder than through synchronous ones.",
+      "interview": {
+        "q": "What do you usually find when you trace a single request end to end through a system you have worked on for a year?",
+        "trap": "Answering that you find a bug or a bottleneck. You often do, and the general finding is more structural.",
+        "answer": "Accretion that nobody decided. The same payload serialised and deserialised several times between layers; validation happening at three levels in slightly different ways, so one of them is effectively the real one and nobody knows which; a synchronous wait on something that did not need to be waited for; a retry wrapping another retry. Each was a reasonable change at the time and the aggregate is nobody's design. It also exposes the gap between the documented system and the running one, which is where the path added in a hurry last quarter turns out to be load-bearing."
+      }
+    },
+    "blueprint": "Follow ONE request. Skip nothing. Write down every hop.\n\n  browser -> CDN -> LB -> gateway -> auth -> api\n            -> validate (#1)\n            -> serialise -> queue -> worker -> deserialise\n            -> validate (#2, slightly differently)\n            -> serialise -> db driver -> deserialise\n            -> validate (#3, in a trigger nobody remembers)\n            -> write\n\nFound: 3 serialisation round trips, 3 validations of which\none is really in charge, and a synchronous call to the\nemail service that nothing needs to wait for.\n\nNobody designed this. It accreted, one reasonable PR\nat a time, and no diagram shows it.",
+    "takeaway": "Diagrams describe intent and drift within weeks. One traced request describes what runs today, including the hurried path that is now load-bearing."
   },
   "B.1": {
     "id": "B.1",

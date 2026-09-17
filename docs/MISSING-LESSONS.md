@@ -285,16 +285,7 @@ Study order: the sequence first, then the five habits running underneath.
 
 ## Track A — Systems thinking
 
-8 of 11 still missing.
-
-- [ ] `A.1` Name the parts, flows and boundaries of any system
-- [ ] `A.5` Constraints as the real design input, not the requirements
-- [ ] `A.6` Local versus global optimum
-- [ ] `A.7` Failure as a system property, not a component property
-- [ ] `A.8` Draw five systems you use daily, from memory, on paper
-- [ ] `A.9` Trace one request end to end through something you built
-- [ ] `A.10` Ask what happens if this doubles, of every component
-- [ ] `A.11` Spot what is missing, not just what is wrong
+**Complete.** All 11 written.
 
 ## Track G — Critical thinking
 
@@ -306,43 +297,15 @@ Study order: the sequence first, then the five habits running underneath.
 
 ## Track I — Planning
 
-10 of 10 still missing.
-
-- [ ] `I.1` Write down what this is not, before what it is
-- [ ] `I.2` Break work into pieces you can finish in one sitting
-- [ ] `I.3` Estimate, record the estimate, compare afterwards
-      <br>_note: do it twenty times and estimates become real_
-- [ ] `I.4` Map dependencies, including ones that depend on other people replying
-- [ ] `I.5` Identify the riskiest assumption and test it first
-- [ ] `I.6` Write a one page design doc before anything non trivial: problem, options, choice, why, failure modes
-- [ ] `I.7` Define done, in writing, before starting
-- [ ] `I.8` Cut scope deliberately rather than slipping deadlines accidentally
-- [ ] `I.9` Sequence for learning: do the thing that teaches you most, earliest
-- [ ] `I.10` Plan for the version where you have half the time you expected
+**Complete.** All 10 written.
 
 ## Track J — Debugging
 
-13 of 16 still missing.
-
-- [ ] `J.2` Reduce it: smallest input that still fails
-- [ ] `J.3` Form one hypothesis at a time, and write it down
-- [ ] `J.4` Change one thing per test
-- [ ] `J.6` Use a real debugger, not only print statements
-- [ ] `J.7` Know when print statements are genuinely faster
-- [ ] `J.8` Read the source of the library you are blaming
-      <br>_note: it is usually not the library_
-- [ ] `J.10` Debugging across a network: tracing, correlation IDs, timeouts
-- [ ] `J.11` Debugging concurrency: race conditions, deadlocks, ordering
-- [ ] `J.12` Debugging data: silent corruption, encoding, timezones, floats
-- [ ] `J.13` Debugging models: is it the data, the label, the metric or the code
-      <br>_note: label leakage looks like brilliance until production_
-- [ ] `J.14` Root cause versus symptom, and the five whys
-- [ ] `J.15` Write the postmortem: what happened, why, what prevents a repeat
-- [ ] `J.16` Add the test that would have caught it, before closing it
+**Complete.** All 16 written.
 
 ---
 
-**Total remaining: 242 of 313.**
+**Total remaining: 211 of 313.**
 
 Regenerate: `node tools/missing-lessons.mjs > docs/MISSING-LESSONS.md`
 

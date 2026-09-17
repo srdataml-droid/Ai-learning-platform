@@ -1,0 +1,20 @@
+{
+  "id": "A.11",
+  "trackId": "A",
+  "trackName": "Systems thinking",
+  "title": "Spot what is missing, not just what is wrong",
+  "status": "unsourced",
+  "story": "Reviewing anything — a design, a pull request, an incident, a plan — attention goes to what is present, because what is present is what there is to react to. Errors of omission produce nothing to react to, and they are consistently the more serious kind.\n\nA design document describes a system and the absence worth noticing is that it never says what happens when the third-party service is down. A code review examines the logic as written and the question nobody asks is what happens on the empty list, since no line raises the thought. An incident timeline covers what people did and omits what nobody noticed at the time, which is where the missing alert lives. In each case there is no sentence to object to, which is exactly why it survives review.\n\nMaking omissions visible needs a deliberate method, because attention will not find them unaided. A checklist works: the same questions asked every time regardless of content — what happens on failure, on empty, at limit, on retry, on partial completion, who is told. So does describing the thing as a set of cases and checking each is addressed, rather than reading through and reacting. Both amount to bringing your own structure, since the artefact in front of you cannot suggest what it left out.",
+  "beats": {
+    "broke": "Review is reactive: attention goes to what is written, and something absent generates no reaction. Errors of omission therefore pass review reliably, and they tend to be the more consequential kind.",
+    "fix": "Bring external structure rather than reading and reacting. A fixed checklist applied every time — failure, empty, limit, retry, partial completion, who is notified — or enumerating the cases and confirming each is addressed. The structure must come from you, since the artefact cannot indicate what it omits.",
+    "cost": "Checklists produce their own blindness: applied mechanically they catch only the omissions someone thought of when writing the list, and confer confidence out of proportion to their coverage. They also add time to every review, most of which finds nothing.",
+    "interview": {
+      "q": "Why do errors of omission survive code review so reliably?",
+      "trap": "Attributing it to reviewer inattention or time pressure. Careful reviewers with plenty of time miss them at similar rates.",
+      "answer": "Because review is driven by what is on the screen, and an omission puts nothing there to trigger a reaction. A wrong line can be read and objected to; a missing null check produces no line, so nothing prompts the thought. Attention is reactive by default and the diff is the stimulus, which means the review can only cover the space the author already considered. Escaping it requires structure imported from outside the artefact — a checklist applied identically every time, or enumerating the cases that ought to be handled and verifying each is — because the diff itself can never suggest what is not in it."
+    }
+  },
+  "blueprint": "What review reacts to      What it cannot react to\n  this line is wrong         there is no line for the\n  this name is unclear       empty-list case\n  this is O(n^2)             nothing says what happens\n                             when the vendor is down\n                             no alert exists for this\n                             failing silently\n\nBring your own structure. Ask EVERY time, regardless of\nwhat is in the diff:\n  [ ] empty?      zero rows, empty string, null\n  [ ] failure?    what if the dependency is down -- or SLOW\n  [ ] limit?      at 10x. at the pool size.\n  [ ] retry?      is it safe to run twice? (idempotent?)\n  [ ] partial?    half-done, then a crash\n  [ ] who knows?  does anything alert if this silently stops",
+  "takeaway": "Review is reactive and an omission supplies nothing to react to. Only structure you bring from outside can cover what the diff cannot suggest."
+}

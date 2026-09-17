@@ -1,0 +1,20 @@
+{
+  "id": "A.6",
+  "trackId": "A",
+  "trackName": "Systems thinking",
+  "title": "Local versus global optimum",
+  "status": "unsourced",
+  "story": "Every part of a system improved as far as it can go does not produce the best system, and the gap between those two statements accounts for a large share of organisational dysfunction in engineering.\n\nThe mechanism is that improving a component usually means shifting a cost onto something else. A service that caches aggressively is faster and is now serving stale data that another team has to reconcile. A team that ships quickly by skipping integration tests is faster and the breakages land on whoever owns the downstream system. A batch job made efficient by processing everything at once is optimal in isolation and saturates the database that four other services depend on. Each decision is correct from where it was made, and each is visible as an improvement locally and as a cost somewhere nobody is measuring.\n\nThis is why measurement boundaries matter so much. A team measured only on its own latency will optimise its own latency, including in ways that damage the whole, and they will be right to by the metric they were given. Detecting it requires looking at flows across boundaries rather than at components, and fixing it usually means changing what is measured rather than persuading anyone to behave differently.",
+  "beats": {
+    "broke": "Optimising each component independently does not optimise the system, because local improvements are frequently achieved by shifting cost across a boundary to something nobody is measuring.",
+    "fix": "Measure and reason about end-to-end flows rather than component metrics. Where a local optimisation exports a cost, the detection happens at the boundary, and the durable fix is usually to change what is being measured.",
+    "cost": "Global measurement is harder to attribute, so it gives weaker signals to the people making individual decisions, and it can remove useful local accountability. Optimising globally can also require a component to accept being worse, which is a difficult thing to ask of the team that owns it.",
+    "interview": {
+      "q": "Each team's service meets its latency target and end-to-end latency is still unacceptable. How is that possible?",
+      "trap": "Suspecting the measurements are wrong. They are usually all correct, which is the interesting part.",
+      "answer": "Because the targets are per-component and the experience is a sum, including the parts nobody owns: queueing between services, serialisation at each hop, retries, and the tail behaviour that averages hide. Every service can sit inside its own budget while the total is far outside any of them, especially since a request touching ten services meets ten p99s and is quite likely to hit at least one. The fix is a budget allocated from the end-to-end target downward, so each component's limit is derived from the whole rather than set locally, and tail latency rather than mean is what gets measured."
+    }
+  },
+  "blueprint": "Everyone meets their target. The system fails.\n\n  A p99 50ms | B p99 50ms | C p99 50ms | D p99 50ms\n  + queueing + serialisation + retries + tail overlap\n  = end-to-end p99 of 900ms\n\nLocal optimisations that export cost:\n  cache aggressively   -> stale data, someone else reconciles\n  skip integration     -> breakage lands downstream\n  batch everything     -> saturates the shared database\n\nEach is CORRECT by the metric that team was given.\nSo do not argue with the team. Change the measurement:\nallocate the budget from the end-to-end target downward.",
+  "takeaway": "Local improvements are usually paid for across a boundary by someone not measuring it. Arguing with the team fails; changing what is measured works."
+}

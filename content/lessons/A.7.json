@@ -1,0 +1,20 @@
+{
+  "id": "A.7",
+  "trackId": "A",
+  "trackName": "Systems thinking",
+  "title": "Failure as a system property, not a component property",
+  "status": "unsourced",
+  "story": "Components are made reliable one at a time, and a system assembled from reliable components fails anyway, in ways that none of them exhibit alone. The failures belong to the composition rather than to any part of it.\n\nRetry storms are the clearest example. A retry on failure is sensible in every component that implements it. Compose several layers each retrying and a brief slowdown becomes an exponential multiplication of load, which turns a recoverable blip into an outage. Nothing is misbehaving; each layer is doing the correct thing, and the correct things combine into a catastrophe. The same shape appears in cascading failures where a saturated dependency causes its callers to queue, which saturates them in turn, and in thundering herds where a cache expiry releases every waiting request simultaneously.\n\nThe consequence for design is that reliability cannot be achieved component by component. It requires reasoning about what the composition does under stress: whether feedback loops are reinforcing or balancing, whether failures are contained at boundaries or propagated, whether load shed somewhere reappears somewhere else. And it means testing has to include the system under degradation, because components tested individually and passing tells you almost nothing about how they behave together when one of them is slow.",
+  "beats": {
+    "broke": "Reliability is engineered per component, but a system of individually reliable parts exhibits failure modes none of them has alone. Those failures live in the interaction and are invisible to any amount of component-level testing.",
+    "fix": "Reason about the composition under stress: retry amplification, cascading saturation, synchronised herds. Contain failures at boundaries with timeouts, circuit breakers, bulkheads and backoff with jitter, and test the system with a dependency degraded rather than absent.",
+    "cost": "Containment mechanisms are themselves complex and can fail or misfire — a circuit breaker that opens unnecessarily is an outage it caused. Testing degraded behaviour requires deliberately breaking things, which is operationally expensive and organisationally uncomfortable.",
+    "interview": {
+      "q": "Every service retries failed requests three times, which each team considers good practice. What happens under a brief slowdown?",
+      "trap": "Answering that load increases threefold. The multiplication is across layers, not within one.",
+      "answer": "The retries multiply through the layers. With three layers each retrying three times, one user request can become twenty-seven at the bottom, so a brief slowdown that would have recovered on its own becomes a load spike large enough to cause the outage it was trying to survive. It is a reinforcing feedback loop: more load, more timeouts, more retries. Each team's decision is locally correct and the composition is catastrophic. Containing it needs retry budgets rather than fixed counts, exponential backoff with jitter so clients do not resynchronise, and circuit breakers that stop sending traffic at all once failure rates cross a threshold."
+    }
+  },
+  "blueprint": "Each layer retries 3x. All three teams are right.\n\n  user:        1 request\n  gateway:     3\n  service:     9\n  database:   27      <- from ONE user request\n\nA 2-second blip that would have recovered is now an outage.\nNothing misbehaved. The composition did.\n\nSame shape elsewhere:\n  cascading   saturated dep -> callers queue -> callers\n              saturate -> their callers queue\n  herd        cache expires -> every waiter fires at once\n\nContain at boundaries: retry BUDGETS not counts, backoff\nwith jitter, circuit breakers, bulkheads.\nAnd test with a dependency SLOW, not absent -- slow is worse.",
+  "takeaway": "Reliable components compose into unreliable systems. The failure lives in the interaction, so no amount of component testing can find it."
+}

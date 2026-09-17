@@ -1,0 +1,20 @@
+{
+  "id": "A.5",
+  "trackId": "A",
+  "trackName": "Systems thinking",
+  "title": "Constraints as the real design input, not the requirements",
+  "status": "unsourced",
+  "story": "Requirements describe what something should do, and almost every design satisfies them. They are rarely what determines the shape of a solution, which is why two teams given identical requirements produce entirely different systems.\n\nConstraints do the determining. How much latency is acceptable, what it may cost to run, how many people will maintain it, what must not be lost under any circumstances, what regulation applies, what the team already knows, what the network between the components is actually like. These narrow the space of possible designs sharply, and frequently to one or two candidates. A requirement to store user documents is satisfied by a hundred designs; a constraint that documents must survive a region failure and be retrievable within seconds eliminates most of them immediately.\n\nWhich is why asking about constraints early is the highest-leverage move in a design discussion. They are usually unstated because whoever holds them considers them obvious or has never articulated them, and they surface late as objections to a design that is already built. The question to ask is not what do you want it to do — everyone can answer that — but what must never happen, what does it have to survive, and who is going to run it at three in the morning.",
+  "beats": {
+    "broke": "Design is driven by requirements, which nearly every candidate design satisfies. The genuinely determining factors go unstated because whoever holds them assumes they are obvious, and they emerge late as objections to something already built.",
+    "fix": "Elicit constraints first: latency, cost, durability, team size and knowledge, regulation, what must never happen, who operates it. These eliminate most of the design space quickly, often leaving only a couple of viable candidates.",
+    "cost": "Constraints are frequently assumed rather than measured, and a design built around an imagined one is over-engineered for a situation that never arrives. They also change, and a system shaped tightly around a constraint that has been removed is expensive to unwind.",
+    "interview": {
+      "q": "Two teams are given the same requirements and produce very different systems. What explains the difference?",
+      "trap": "Attributing it to preference, experience or taste. Those matter and they are not the primary mechanism.",
+      "answer": "Different constraints, usually unstated. Requirements describe behaviour and almost every design satisfies them, so they do not discriminate. What narrows the space is the surrounding conditions: acceptable latency, what it may cost to run, how many people will maintain it, what must survive a failure, what the team already knows. A team with three engineers and a team with thirty will correctly produce different architectures from identical requirements. This is why the useful questions in a design discussion are about what must never happen and who operates it, not about what it should do."
+    }
+  },
+  "blueprint": "Requirement: \"users can upload documents\"\n  -> satisfied by ~100 designs. constrains nothing.\n\nConstraints:\n  must survive a region failure         -> replication\n  retrievable in < 2s                   -> not cold storage\n  2 engineers maintain it               -> managed, not\n                                           self-operated\n  must not exceed $400/mo at 1TB        -> rules out 3 of the\n                                           remaining options\n  legally must be deletable on request  -> no immutable store\n\n  -> one or two candidates left.\n\nAsk: what must NEVER happen? what must it survive?\n     who runs it at 3am? -- not \"what should it do?\"",
+  "takeaway": "Requirements are satisfied by nearly every design, so they do not discriminate. Constraints eliminate the space, and they are usually unstated because the holder thinks they are obvious."
+}

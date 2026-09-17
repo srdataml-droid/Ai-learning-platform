@@ -1,0 +1,20 @@
+{
+  "id": "A.8",
+  "trackId": "A",
+  "trackName": "Systems thinking",
+  "title": "Draw five systems you use daily, from memory, on paper",
+  "status": "unsourced",
+  "story": "The exercise sounds like busywork and is a diagnostic. Drawing something you use constantly, without looking anything up, reveals exactly where your understanding stops — and it stops much earlier than it feels like it does.\n\nFamiliarity is easily mistaken for comprehension. You use a version control system a hundred times a week; draw what happens when you push, and it becomes apparent whether you know what is transferred, what is computed locally, what the remote decides, and what happens if two people push at once. The gap is the point. A diagram you cannot complete is a precise statement about what you have been taking on faith, and it is far more useful than a feeling of vagueness because you can see the shape of the hole.\n\nFrom memory matters because the moment you look it up, you are copying rather than recalling, and copying feels like learning while producing nothing durable. On paper matters for a smaller reason: no autocomplete, no structure imposed by a tool, and no temptation to make it tidy. The version with arrows crossing each other and a box labelled with a question mark is the one that did its job.",
+  "beats": {
+    "broke": "Frequent use is mistaken for understanding. The gaps stay invisible because nothing ever requires the model to be made explicit, and a vague sense of not quite knowing gives you no idea what specifically is missing.",
+    "fix": "Draw it from memory, without reference, on paper. The points where the diagram cannot be completed identify precisely what has been taken on faith, which is a far more actionable output than a general feeling of uncertainty.",
+    "cost": "A drawing made from memory reproduces your misconceptions with the same confidence as your knowledge, so it can entrench an error unless checked against reality afterwards. It is also time spent on something with no immediate deliverable, which is easy to deprioritise indefinitely.",
+    "interview": {
+      "q": "What does drawing a familiar system from memory give you that reading its documentation does not?",
+      "trap": "Answering that it aids retention. That is true of many techniques; the specific value here is diagnostic.",
+      "answer": "A map of what you do not know. Reading documentation produces recognition, which feels like understanding and is not — you can follow every sentence and still be unable to reconstruct the system. Drawing it from memory forces recall, and the places you stall are a precise inventory of the gaps. That inventory is the output: it tells you what to go and read, rather than leaving you with a vague sense of not quite knowing, which gives no direction at all. The drawing being wrong is fine, provided you check it afterwards."
+    }
+  },
+  "blueprint": "Five to try, in rising difficulty:\n\n  1. what happens when you `git push`\n     (what is transferred? computed where? who decides\n      on a conflict? what if two people push at once?)\n  2. what happens when you type a URL and press enter\n  3. how your code gets from your laptop to production\n  4. how a message you send reaches someone's phone\n  5. how your bank card payment is authorised\n\nRules: from memory. on paper. no looking anything up.\n\nThe box you label \"??\" is the whole point.\nTHEN go and check it -- memory reproduces misconceptions\nwith exactly the same confidence as knowledge.",
+  "takeaway": "Reading gives recognition, which feels like understanding. Drawing from memory forces recall, and where you stall is an inventory of what to go and learn."
+}
