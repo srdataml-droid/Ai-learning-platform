@@ -1,0 +1,20 @@
+{
+  "id": "G.3",
+  "trackId": "G",
+  "trackName": "Critical thinking",
+  "title": "Base rates: how often does this actually happen",
+  "status": "unsourced",
+  "story": "A vivid story crowds out a frequency. Somebody describes an outage caused by a subtle bug in a networking library, it is memorable and technically interesting, and for a while afterwards networking libraries feel like a likely cause of things. What is missing from that feeling is the denominator: out of all the outages, how many were that, and how many were a bad config, an expired certificate, a full disk, or a deploy.\n\nIn debugging this shows up as time spent on exotic hypotheses before ordinary ones have been eliminated. Exotic explanations are more interesting to think about and easier to remember, which is exactly the bias, and the cost is measured in hours spent inspecting the clever theory while the credential that expired on Sunday sits unexamined.\n\nThe correction is available and cheap. Before investigating, ask what usually causes this class of symptom, and check those in order of how often they occur rather than how interesting they are. Your own incident history is the best source, which is a strong practical argument for writing postmortems: they are the only base rate specific to your system.",
+  "beats": {
+    "broke": "Judgment of likelihood is driven by how easily an example comes to mind, and memorability tracks how unusual and interesting something was rather than how often it happens. Rare, vivid causes are therefore systematically over-weighted.",
+    "fix": "Ask for the frequency before acting on the impression. What usually causes this symptom, in this system, according to the record. Investigate in order of base rate rather than in order of interest.",
+    "cost": "Base rates are frequently unavailable, and reaching for one can become a reason not to look at the unusual explanation at all. Sometimes it genuinely is the rare cause, and a team that only ever checks the common ones takes much longer on the day it is not.",
+    "interview": {
+      "q": "A service starts failing intermittently and a teammate immediately suspects a race condition. What is your response?",
+      "trap": "Debating whether a race condition is plausible. It is always plausible, which is why it is a poor place to start.",
+      "answer": "To ask what has actually caused intermittent failures in this system before, and check those first. Race conditions are memorable and genuinely hard, which makes them come to mind easily, but the base rate for intermittent failure is dominated by ordinary things: a bad instance in a pool, an expired credential, a dependency rate-limiting, a partial deploy leaving mixed versions running. Those are cheap to eliminate and frequently the answer. The race condition is still worth investigating, just not first, and not before the cheap checks are done."
+    }
+  },
+  "blueprint": "Symptom: intermittent 500s\n\nBy interest            By base rate (check in this order)\n  race condition         1. did anything deploy?  (most common)\n  memory corruption      2. is it ONE instance in the pool?\n  kernel bug             3. a credential/cert expiry?\n  clock skew             4. an upstream rate limit?\n                         5. disk / connection pool exhausted?\n                         ...\n                         9. race condition\n\nSteps 1-5 take minutes. Step 9 takes days.\nYour own postmortems are the only base rate that fits\nyour system, which is a reason to write them.",
+  "takeaway": "Likelihood feels like memorability. Ask what usually causes this, check in that order, and the cheap ordinary causes will pay for themselves."
+}

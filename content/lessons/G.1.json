@@ -1,0 +1,20 @@
+{
+  "id": "G.1",
+  "trackId": "G",
+  "trackName": "Critical thinking",
+  "title": "Separate the claim from the evidence for it",
+  "status": "unsourced",
+  "story": "Most disagreements in engineering are not disagreements about facts. They are two people holding claims of different strength, each believing the other is being unreasonable, because neither has said which part of what they are asserting is observed and which part is inferred.\n\n'The database is slow' is not one statement. It is an observation — requests are taking longer than they did — and a diagnosis attached to it, and the attachment happened so quickly that it does not feel like an inference. Separating them is mechanical: write what was measured, then write what you concluded, on different lines. The gap between the two lines is where the argument actually is, and it is usually much wider than it felt.\n\nThis is also the fastest way to make someone else's assertion useful. Asking what did you see, rather than disputing the conclusion, converts an unfalsifiable claim into evidence you can both work from. The person who says the cache is broken has usually seen something specific and real, and the specific real thing is frequently compatible with an entirely different explanation.",
+  "beats": {
+    "broke": "A claim and the evidence behind it arrive fused in one sentence, so the inference is never examined. Two people then argue about conclusions while the observations underneath them go unstated, and neither can tell whether they actually disagree.",
+    "fix": "Split them explicitly. State what was observed and separately what was concluded from it. The gap between the two is the inference, and once it is visible it can be examined, tested, or found to be several inferences stacked.",
+    "cost": "It is slow and it reads as pedantry, especially under pressure when someone wants a decision rather than an analysis. Done badly it becomes a way to avoid committing to any conclusion at all, which is its own failure.",
+    "interview": {
+      "q": "A colleague says the new caching layer made things worse. What is your first question?",
+      "trap": "Debating the caching layer, or asking them to prove it. Both accept the framing that the caching layer is what is under discussion.",
+      "answer": "What did you observe. The claim contains an observation and a diagnosis fused together, and only the observation is evidence. They may have seen p99 latency rise after a deploy that happened to include the cache, alongside three other changes, on a day traffic also rose. The observation is real and worth taking seriously; the attribution is an inference that has not been tested. Separating them turns an argument into a measurement."
+    }
+  },
+  "blueprint": "Fused:      \"the database is slow\"\n\nSplit:      OBSERVED   p99 on /checkout went 180ms -> 1.4s\n                       starting 14:20 yesterday\n            CONCLUDED  the database is the cause\n            ---------------------------------------\n            the inference lives in that gap.\n\n            what else changed at 14:20?\n            is the DB slow for ALL endpoints or one?\n            did DB metrics move, or only app metrics?",
+  "takeaway": "Every claim is an observation plus an inference fused into one sentence. Write them on separate lines and the disagreement moves to where it actually is."
+}

@@ -690,6 +690,226 @@
     "blueprint": "-- The Three-Valued Logic Trap in SQL:\nSELECT * FROM employees WHERE bonus = NULL;   -- Returns NOTHING (always Unknown)\nSELECT * FROM employees WHERE bonus IS NULL;  -- Correct!\n\n-- Boolean evaluation table with NULL:\n-- TRUE  AND NULL = NULL (Fails WHERE)\n-- FALSE AND NULL = FALSE\n-- NOT NULL       = NULL",
     "takeaway": "In SQL, NULL is not a value; it is the state of unknowability. NULL is never equal to NULL."
   },
+  "G.1": {
+    "id": "G.1",
+    "trackId": "G",
+    "trackName": "Critical thinking",
+    "title": "Separate the claim from the evidence for it",
+    "status": "unsourced",
+    "story": "Most disagreements in engineering are not disagreements about facts. They are two people holding claims of different strength, each believing the other is being unreasonable, because neither has said which part of what they are asserting is observed and which part is inferred.\n\n'The database is slow' is not one statement. It is an observation — requests are taking longer than they did — and a diagnosis attached to it, and the attachment happened so quickly that it does not feel like an inference. Separating them is mechanical: write what was measured, then write what you concluded, on different lines. The gap between the two lines is where the argument actually is, and it is usually much wider than it felt.\n\nThis is also the fastest way to make someone else's assertion useful. Asking what did you see, rather than disputing the conclusion, converts an unfalsifiable claim into evidence you can both work from. The person who says the cache is broken has usually seen something specific and real, and the specific real thing is frequently compatible with an entirely different explanation.",
+    "beats": {
+      "broke": "A claim and the evidence behind it arrive fused in one sentence, so the inference is never examined. Two people then argue about conclusions while the observations underneath them go unstated, and neither can tell whether they actually disagree.",
+      "fix": "Split them explicitly. State what was observed and separately what was concluded from it. The gap between the two is the inference, and once it is visible it can be examined, tested, or found to be several inferences stacked.",
+      "cost": "It is slow and it reads as pedantry, especially under pressure when someone wants a decision rather than an analysis. Done badly it becomes a way to avoid committing to any conclusion at all, which is its own failure.",
+      "interview": {
+        "q": "A colleague says the new caching layer made things worse. What is your first question?",
+        "trap": "Debating the caching layer, or asking them to prove it. Both accept the framing that the caching layer is what is under discussion.",
+        "answer": "What did you observe. The claim contains an observation and a diagnosis fused together, and only the observation is evidence. They may have seen p99 latency rise after a deploy that happened to include the cache, alongside three other changes, on a day traffic also rose. The observation is real and worth taking seriously; the attribution is an inference that has not been tested. Separating them turns an argument into a measurement."
+      }
+    },
+    "blueprint": "Fused:      \"the database is slow\"\n\nSplit:      OBSERVED   p99 on /checkout went 180ms -> 1.4s\n                       starting 14:20 yesterday\n            CONCLUDED  the database is the cause\n            ---------------------------------------\n            the inference lives in that gap.\n\n            what else changed at 14:20?\n            is the DB slow for ALL endpoints or one?\n            did DB metrics move, or only app metrics?",
+    "takeaway": "Every claim is an observation plus an inference fused into one sentence. Write them on separate lines and the disagreement moves to where it actually is."
+  },
+  "G.10": {
+    "id": "G.10",
+    "trackId": "G",
+    "trackName": "Critical thinking",
+    "title": "Evaluate a vendor pitch: what is the lock in, what is the exit cost",
+    "status": "unsourced",
+    "story": "A pitch is optimised for the decision to adopt and says nothing about the decision to leave, because leaving is not the outcome being sold. So the questions that matter most are the ones the material is not organised to answer.\n\nLock-in is rarely contractual and is mostly structural. Your data ends up in a proprietary format, or reachable only through their API. Their concepts spread into your code until your domain model is shaped around their abstractions. Operational knowledge accumulates in their tooling. None of these appear as a line item and together they make leaving progressively more expensive, which is the actual product strategy rather than a side effect.\n\nSo the question to ask early, while you still have leverage, is what leaving looks like concretely. Can I export everything, in a format something else can read, without their cooperation. How long would a migration take and who would do it. What happens to my data if they are acquired, change their pricing, or shut the product down. A vendor who answers those clearly is worth more than one who is merely cheaper, and the answers are much harder to obtain after you have signed.",
+    "beats": {
+      "broke": "Evaluation focuses on capability and price, both of which are easy to compare, while the cost of reversing the decision is never assessed. That cost is discovered years later, when the price rises or the product is discontinued and there is no alternative available.",
+      "fix": "Assess the exit before adopting. Can the data be exported completely, in a format something else can consume, without the vendor's help. How deeply will their concepts spread into your code. What is the concrete migration path away, and who would execute it.",
+      "cost": "It is slow, it makes you a difficult customer, and it can be taken too far: avoiding every managed service to prevent lock-in means building and operating everything yourself, which is the largest cost of all. Some lock-in is worth accepting deliberately in exchange for not doing the work.",
+      "interview": {
+        "q": "What is the most important question to ask a vendor before adopting their platform?",
+        "trap": "Asking about pricing, uptime guarantees or the roadmap. All negotiable or unenforceable, and all about the period while you are a customer.",
+        "answer": "What getting my data out looks like without their help. Specifically: is there a complete export, in a documented format another system can read, that I can run myself on demand. That single question exposes the real lock-in, which is structural rather than contractual, and it is the one question whose answer cannot be improved after signing. It also usefully separates vendors who expect to keep customers by being good from ones who expect to keep them by being difficult to leave."
+      }
+    },
+    "blueprint": "What the pitch covers      What decides the outcome\n  features                   can I export EVERYTHING, myself,\n  price                      in a format something else reads,\n  uptime SLA                 without asking them?\n  roadmap\n                             how far do their concepts spread\n                             into MY domain model?\n\n                             if they 3x the price / get acquired\n                             / sunset it -- what is my move,\n                             how long, and who does it?\n\nLock-in is structural, not contractual. And every one of\nthese is far easier to ask before you sign than after.",
+    "takeaway": "The pitch is built for the decision to join. Ask what leaving costs, in concrete steps, while you still have the leverage to get a straight answer."
+  },
+  "G.11": {
+    "id": "G.11",
+    "trackId": "G",
+    "trackName": "Critical thinking",
+    "title": "Notice when you want something to be true",
+    "status": "unsourced",
+    "story": "The most reliable distortion in technical judgment is not a shortage of information. It is a preference for one answer, held before the evidence is examined, quietly setting the standard of proof. Evidence for the preferred conclusion gets waved through; evidence against it gets scrutinised until a flaw is located, and there is always a flaw.\n\nWhat makes this hard is that it does not feel like bias from inside. It feels like being appropriately rigorous, and the asymmetry — rigour applied to one side only — is invisible because you never notice the scrutiny you did not apply. The only reliable signal is the wanting itself, and that is available if you look for it: the relief when a result supports you, the irritation when someone raises an objection, the speed with which a counter-argument gets dismissed.\n\nYou cannot eliminate it, so the practical move is to declare it. Saying aloud that you want this to work, before presenting the evidence, does two things. It warns others to weight your argument accordingly, and it makes the asymmetry visible to you, which is the only way it becomes correctable. The habit that follows is simple: when you notice the wanting, that is precisely when to apply the same scrutiny to your own side that you have been applying to the other.",
+    "beats": {
+      "broke": "A preference formed before the evidence quietly sets different standards of proof for different conclusions. From inside it feels like ordinary rigour, because the scrutiny you never applied to your own side leaves no trace.",
+      "fix": "Treat the wanting as the signal. Notice the relief at supporting evidence and the irritation at objections, and declare the preference aloud before making the case, so the asymmetry is visible to you and to everyone else.",
+      "cost": "Declaring it can be used as a shield, where naming a bias substitutes for correcting it. It can also be weaponised in the other direction, dismissing someone's argument because they have a preference, which everyone always does. And noticing the wanting does not remove it; it only makes correction possible.",
+      "interview": {
+        "q": "How do you guard against motivated reasoning when you have already proposed a technical direction?",
+        "trap": "Claiming to evaluate objectively. Anyone who has argued for something in public has a stake in it, and denying that is itself the failure mode.",
+        "answer": "By assuming it is present rather than hoping it is not, and making it visible. Say the preference out loud when presenting, so others can weight the argument. Then check the asymmetry directly: ask whether the evidence I accepted quickly would have survived the scrutiny I applied to the objections, and specifically ask someone who disagrees to state their strongest case. The useful signal is emotional rather than analytical — irritation at a counter-argument is reliable information that I have a stake, and that is the moment to slow down instead of respond."
+      }
+    },
+    "blueprint": "The tell is emotional, not analytical:\n\n  relief when a result supports you\n  irritation when someone objects\n  a counter-argument dismissed in under three seconds\n  \"yes but that benchmark is flawed because--\"\n    (applied to their evidence, never to yours)\n\nThe asymmetry test:\n  would the evidence I ACCEPTED quickly have survived\n  the scrutiny I applied to the evidence I REJECTED?\n\nYou cannot remove the wanting. Declare it out loud before\nyou present, and the asymmetry becomes visible -- which is\nthe only state in which it can be corrected.",
+    "takeaway": "Motivated reasoning feels like rigour, because you never see the scrutiny you failed to apply. The wanting is the signal; declare it and check the asymmetry."
+  },
+  "G.2": {
+    "id": "G.2",
+    "trackId": "G",
+    "trackName": "Critical thinking",
+    "title": "Ask what would have to be true for this to be false",
+    "status": "unsourced",
+    "story": "Left alone, the mind gathers support. Given a belief, it retrieves confirming instances effortlessly and disconfirming ones only with deliberate effort, and the effortlessness is itself mistaken for evidence — a theory that feels obviously right often feels that way because searching for objections was never attempted.\n\nThe question inverts the search. Rather than asking what supports this, ask what the world would have to look like for it to be wrong, and then go and check whether the world looks like that. It is a different cognitive operation, not a more sceptical version of the same one, and it retrieves entirely different information.\n\nIt also does something useful for a belief that survives: it tells you what your belief is actually resting on. A theory whose falsifying condition you can state is a theory you can test, and one whose falsifying condition you cannot state is not a theory but a preference. The most valuable outcome of the question is occasionally discovering that no observation would change your mind, which is worth knowing before you spend a week.",
+    "beats": {
+      "broke": "Searching for supporting evidence is the default and it always succeeds, because for almost any plausible claim some supporting instance can be found. Confidence therefore grows with time spent thinking, regardless of whether the claim is true.",
+      "fix": "Invert the search. Ask what would have to be true for this to be false, state that condition concretely, and then check for it. This retrieves the class of evidence that confirmation-seeking structurally cannot reach.",
+      "cost": "It is uncomfortable, and it is slow at the moment a decision is wanted. Applied without limit it becomes paralysis, since every belief has some falsifying condition that has not been checked, and at some point a decision has to be made on incomplete information.",
+      "interview": {
+        "q": "You are confident a memory leak is causing the nightly restarts. How do you test that belief rather than support it?",
+        "trap": "Gathering more memory graphs. More confirming evidence for a theory you already hold does not distinguish it from the alternatives.",
+        "answer": "By stating what would be true if it were false and looking for that. If it is a leak, memory grows monotonically with uptime regardless of traffic, and a restart resets it. If instead memory tracks request volume and returns to baseline during quiet periods, it is not a leak but a working set under load, and the restart is coincidental with the nightly batch. Those two predict different shapes, so the graph that distinguishes them is the one worth pulling, rather than another graph consistent with both."
+      }
+    },
+    "blueprint": "Confirming (always succeeds)   Falsifying (actually informative)\n  \"is there evidence of X?\"      \"what would I see if NOT X?\"\n  -> you will find some          -> go look for exactly that\n\nLeak            -> memory rises with UPTIME, ignores traffic\nWorking set     -> memory tracks TRAFFIC, falls when quiet\n                   different shapes. one graph separates them.\n\nIf no observation would change your mind,\nit is not a theory. It is a preference.",
+    "takeaway": "Looking for support always succeeds, so it proves nothing. Name the observation that would prove you wrong, then go and look for it."
+  },
+  "G.3": {
+    "id": "G.3",
+    "trackId": "G",
+    "trackName": "Critical thinking",
+    "title": "Base rates: how often does this actually happen",
+    "status": "unsourced",
+    "story": "A vivid story crowds out a frequency. Somebody describes an outage caused by a subtle bug in a networking library, it is memorable and technically interesting, and for a while afterwards networking libraries feel like a likely cause of things. What is missing from that feeling is the denominator: out of all the outages, how many were that, and how many were a bad config, an expired certificate, a full disk, or a deploy.\n\nIn debugging this shows up as time spent on exotic hypotheses before ordinary ones have been eliminated. Exotic explanations are more interesting to think about and easier to remember, which is exactly the bias, and the cost is measured in hours spent inspecting the clever theory while the credential that expired on Sunday sits unexamined.\n\nThe correction is available and cheap. Before investigating, ask what usually causes this class of symptom, and check those in order of how often they occur rather than how interesting they are. Your own incident history is the best source, which is a strong practical argument for writing postmortems: they are the only base rate specific to your system.",
+    "beats": {
+      "broke": "Judgment of likelihood is driven by how easily an example comes to mind, and memorability tracks how unusual and interesting something was rather than how often it happens. Rare, vivid causes are therefore systematically over-weighted.",
+      "fix": "Ask for the frequency before acting on the impression. What usually causes this symptom, in this system, according to the record. Investigate in order of base rate rather than in order of interest.",
+      "cost": "Base rates are frequently unavailable, and reaching for one can become a reason not to look at the unusual explanation at all. Sometimes it genuinely is the rare cause, and a team that only ever checks the common ones takes much longer on the day it is not.",
+      "interview": {
+        "q": "A service starts failing intermittently and a teammate immediately suspects a race condition. What is your response?",
+        "trap": "Debating whether a race condition is plausible. It is always plausible, which is why it is a poor place to start.",
+        "answer": "To ask what has actually caused intermittent failures in this system before, and check those first. Race conditions are memorable and genuinely hard, which makes them come to mind easily, but the base rate for intermittent failure is dominated by ordinary things: a bad instance in a pool, an expired credential, a dependency rate-limiting, a partial deploy leaving mixed versions running. Those are cheap to eliminate and frequently the answer. The race condition is still worth investigating, just not first, and not before the cheap checks are done."
+      }
+    },
+    "blueprint": "Symptom: intermittent 500s\n\nBy interest            By base rate (check in this order)\n  race condition         1. did anything deploy?  (most common)\n  memory corruption      2. is it ONE instance in the pool?\n  kernel bug             3. a credential/cert expiry?\n  clock skew             4. an upstream rate limit?\n                         5. disk / connection pool exhausted?\n                         ...\n                         9. race condition\n\nSteps 1-5 take minutes. Step 9 takes days.\nYour own postmortems are the only base rate that fits\nyour system, which is a reason to write them.",
+    "takeaway": "Likelihood feels like memorability. Ask what usually causes this, check in that order, and the cheap ordinary causes will pay for themselves."
+  },
+  "G.4": {
+    "id": "G.4",
+    "trackId": "G",
+    "trackName": "Critical thinking",
+    "title": "Correlation and causation, in performance work specifically",
+    "status": "unsourced",
+    "story": "The general warning is familiar enough to be background noise. In performance work it has a specific and repeated shape worth naming, because the trap is not subtle reasoning about statistics — it is that deploys bundle changes and traffic varies on its own.\n\nA release goes out containing six changes. Latency improves. One of those changes was the one you argued for, and it is now credited, and the credit is permanent because nobody re-measures. Meanwhile traffic happened to drop that afternoon, which on its own would have produced the same graph. Both stories fit the evidence exactly, and the evidence cannot distinguish them because the experiment had six variables and no control.\n\nWhat separates them is deliberately arranged: ship one change alone, or put it behind a flag and compare populations at the same moment under the same traffic, or turn it off again and see whether the improvement leaves. Reverting is the underrated one. If the gain persists after the change is removed, the change was not the cause, and that test takes minutes and settles the question permanently.",
+    "beats": {
+      "broke": "Deploys carry many changes at once and the environment moves on its own, so a metric improving after a release is consistent with every change in it, with none of them, and with a shift in traffic. The evidence cannot distinguish the explanations.",
+      "fix": "Arrange the comparison deliberately. Ship the change alone, or gate it so two populations run simultaneously under identical conditions, or remove it and check whether the effect goes with it. Same-moment comparison removes the environment as a variable.",
+      "cost": "Shipping one change at a time slows delivery, and flags add branching that has to be cleaned up later or becomes permanent complexity. Reverting to test costs a deploy cycle and is unappealing when the metric currently looks good, which is exactly when nobody wants to touch it.",
+      "interview": {
+        "q": "p99 latency dropped 30% after a release containing six changes. How do you establish which one was responsible?",
+        "trap": "Reasoning from the code about which change ought to have helped. That produces a plausible story, and a plausible story is what you already have.",
+        "answer": "By making a comparison that the environment cannot explain. The strongest cheap test is to revert the suspected change alone and see whether the improvement leaves with it. Better still is to have gated it, so both variants ran at the same time under the same traffic and the comparison never involved a before and after at all. Without one of those, the honest answer is that the evidence does not identify a cause: a traffic drop that afternoon produces exactly the same graph, and so does any of the other five changes."
+      }
+    },
+    "blueprint": "What you have                What distinguishes\n  before | after               same moment, two populations\n  6 changes at once            flag on / flag off\n  traffic also moved           -> environment is held constant\n\n  p99  ----\\                  Or the cheap test:\n            \\____              revert JUST that change.\n       deploy ^                gain stays -> not your change.\n       traffic also fell       gain goes  -> it was.\n       here, quietly\n\nBoth stories fit that graph perfectly. That is the problem.",
+    "takeaway": "A before-and-after across a multi-change deploy cannot identify a cause. Compare at the same moment, or revert and see whether the gain leaves with it."
+  },
+  "G.5": {
+    "id": "G.5",
+    "trackId": "G",
+    "trackName": "Critical thinking",
+    "title": "Survivorship bias",
+    "status": "unsourced",
+    "story": "The literature on technology decisions is written almost entirely by survivors. A team rewrites a service in a new language, it goes well, they write it up, it circulates. The team whose rewrite consumed a year and was quietly abandoned writes nothing, because there is no satisfying conclusion and describing it publicly is professionally unpleasant. The record you can read is therefore not a sample of what happens. It is a sample of what happens when it works.\n\nThis bends judgment in a consistent direction. Migrations look more successful than they are, rewrites look more tractable, ambitious architectural moves look like the sort of thing that generally pays off. Every individual account may be entirely honest and the aggregate still misleads, because the failures are not lying — they are absent.\n\nThe correction is to ask where the missing accounts are before updating on the ones you have. Who tried this and did not write about it, and how would I find out. A sentence in a postmortem, an abandoned branch, someone's offhand remark about the year they do not talk about. That evidence is much harder to gather, which is precisely why the bias is so durable.",
+    "beats": {
+      "broke": "Accounts of outcomes are produced voluntarily, and success is far more likely to be written up than failure. The visible record is a filtered sample, so reasoning from it estimates the success rate of a population that excludes everyone who failed.",
+      "fix": "Ask what is missing before updating on what is present. Who attempted this and produced no account, and what would their experience have looked like. Seek the abandoned attempt specifically, since it will not arrive on its own.",
+      "cost": "The missing data is missing, so the correction can only ever be partial and can slide into refusing to learn from experience altogether. It is also easy to use as a rhetorical device against any proposal, since every success story can be dismissed as a survivor.",
+      "interview": {
+        "q": "Your team cites four blog posts about companies that moved to a new runtime and saw large gains. What is wrong with that evidence?",
+        "trap": "Attacking the technical content of the posts. They may be accurate; the problem is which posts exist.",
+        "answer": "That the four posts are the ones that were written, and posts get written when the migration worked. Teams whose migration stalled, ran over, or was reverted generally publish nothing, so the sample contains no failures by construction and the observed success rate is close to meaningless. The useful questions are how many teams attempted this, what distinguished the ones who succeeded, and whether our situation resembles theirs. Absent that, four accounts tell you the thing is possible, which was never in doubt, and nothing about how likely it is."
+      }
+    },
+    "blueprint": "What you can read          What exists\n  4 posts: \"we rewrote        4 posts     succeeded, wrote it up\n   in X, it was great\"        ? attempts  succeeded, too busy\n                              ? attempts  stalled, no post\n  -> apparent success         ? attempts  abandoned at month 9,\n     rate: 100%                           nobody wants that on\n                                          their blog\n\nThe posts are not lying. The failures are just silent.\n\nAsk: who tried this and wrote nothing, and how would I know?",
+    "takeaway": "The accounts you can read are a sample of the attempts that worked. Every individual one can be honest and the aggregate still misleads."
+  },
+  "G.6": {
+    "id": "G.6",
+    "trackId": "G",
+    "trackName": "Critical thinking",
+    "title": "Steelman the option you rejected, out loud, before rejecting it",
+    "status": "unsourced",
+    "story": "A decision defended only against a weak version of its alternative has not been tested. The usual pattern is unconscious: the option you prefer gets described at its best, the option you do not gets described at its worst, and the comparison that follows is real reasoning applied to an unfair setup.\n\nSteelmanning is stating the rejected option in the strongest form its actual advocates would recognise, out loud, before saying no to it. Out loud matters, because a steelman constructed silently tends to remain conveniently weak. Said to another person it has to survive their reaction, and someone who genuinely prefers that option will correct you immediately if you have softened it.\n\nTwo things come out of this, and the second is the more useful. Sometimes the rejected option turns out to be better and the decision changes, which is the obvious payoff and the rarer one. More often the decision stands but you now know precisely what it costs, which means you know what to watch for, and when the cost arrives six months later nobody is surprised and nobody relitigates.",
+    "beats": {
+      "broke": "Comparison is done against the weakest form of the alternative, because the weak form is what comes to mind when you already prefer something else. The reasoning may be sound and the inputs are unfair, so the conclusion is unreliable in a way that is invisible from inside it.",
+      "fix": "State the rejected option at its strongest, in terms its advocates would accept, and say it aloud to someone before rejecting it. Speaking it exposes the version you built to correction by someone who holds it genuinely.",
+      "cost": "It takes time and it is emotionally awkward to argue well for something you intend to refuse. It can also be performed rather than done, producing a steelman that is a token before a decision that was never in question, which is worse than skipping it because it manufactures false confidence.",
+      "interview": {
+        "q": "What does steelmanning a rejected technical option get you when the decision does not change?",
+        "trap": "Answering that it makes the decision better justified, or improves team buy-in. Those are side effects rather than the point.",
+        "answer": "A precise statement of what the decision costs. Arguing the other option properly forces you to name the specific things it would have been better at, and those are exactly the problems your choice will have. That becomes a list of what to monitor and what the tripwires are for revisiting. It also means that when one of those costs materialises, it is a known consequence rather than a surprise, which prevents the decision being relitigated from scratch by whoever is annoyed by it that week."
+      }
+    },
+    "blueprint": "Weak version (what comes to mind naturally):\n  \"we could use Postgres, but it doesn't scale as well\"\n\nSteelman (what an advocate would actually say):\n  \"Postgres gives you transactions across these three tables,\n   which our invariant needs. It is operationally boring, the\n   team already knows it, and JSONB covers the schemaless part\n   we thought we needed a document store for. At our projected\n   volume for the next 3 years it is not close to a limit.\"\n\nNow reject it if you still want to -- and you have just\nwritten the list of what your choice will cost you.",
+    "takeaway": "A decision defended against a weak alternative is untested. Argue the other side properly and, win or lose, you end up holding the list of what your choice costs."
+  },
+  "G.7": {
+    "id": "G.7",
+    "trackId": "G",
+    "trackName": "Critical thinking",
+    "title": "Reversible versus irreversible decisions",
+    "status": "unsourced",
+    "story": "Treating every decision with the same weight is a way of spending the same deliberation on things that differ by orders of magnitude in consequence. The distinction that matters is not how important a choice feels but how expensive it is to undo.\n\nMost technology choices are cheaper to reverse than the discussion around them implies. Frameworks get replaced, libraries get swapped, a service gets rewritten in a different language over a quarter. Expensive and possible. What is genuinely hard to undo is anything that has spread: a data model that every consumer now depends on, an identifier exposed in URLs and stored in other people's systems, an authorisation boundary that a hundred call sites assume, an API contract that customers have integrated against. Those are hard to reverse not because of the code but because the code is not the only thing holding them.\n\nSo the practical rule is to spend deliberation in proportion to the cost of being wrong. Decide reversible things quickly and change them when evidence arrives, because the cost of deciding slowly exceeds the cost of deciding wrongly. Slow down hard on the ones that will be load-bearing for everything built afterwards, and ask specifically what it would take to undo this in a year.",
+    "beats": {
+      "broke": "Every decision gets similar deliberation, so trivially reversible choices consume weeks of debate while a schema or an authorisation boundary is settled in an afternoon and becomes permanent. Effort is allocated by how contentious something feels rather than by consequence.",
+      "fix": "Classify by the cost of reversal before deciding. Reversible choices are made quickly and revised on evidence; irreversible ones get real deliberation, a written rationale and an explicit look at what undoing them would require.",
+      "cost": "The classification is a judgment and can be wrong in both directions. Something labelled reversible accumulates dependents until it is not, which is how a temporary identifier format becomes permanent. And labelling things irreversible too freely reintroduces the paralysis the distinction was meant to remove.",
+      "interview": {
+        "q": "Which is harder to reverse: choosing the wrong web framework, or choosing the wrong primary key format?",
+        "trap": "Picking the framework because it touches more code. Volume of code is not what makes something hard to undo.",
+        "answer": "The key format, and by a wide margin. A framework is contained within your codebase: replacing it is expensive, tedious and entirely within your control, and it can be done incrementally. A primary key format leaks outward. It appears in URLs people have bookmarked, in other teams' foreign keys, in exported reports, in third-party systems that stored it, and in data you no longer control. Undoing it means coordinating with everyone who holds a copy, and some of them cannot be reached. The cost of reversal tracks how far the decision has spread, not how much code implements it."
+      }
+    },
+    "blueprint": "Cheap to reverse            Expensive to reverse\n  web framework               data model / schema\n  logging library             primary key format\n  CSS approach                public API contract\n  deploy tooling              authorisation boundary\n  code formatting             anything in a URL\n                              anything another party stored\n\nThe test is not \"how much code?\" but \"how far has it spread,\nand can I reach everyone holding a copy?\"\n\nReversible  -> decide fast, revise on evidence\nIrreversible-> slow down, write down why, ask what undoing\n               this in a year would actually require",
+    "takeaway": "Cost of reversal, not importance, decides how much deliberation something deserves — and reversal cost tracks how far a decision has spread outside your codebase."
+  },
+  "G.8": {
+    "id": "G.8",
+    "trackId": "G",
+    "trackName": "Critical thinking",
+    "title": "Read a benchmark critically: what was measured, on what hardware, by whom",
+    "status": "unsourced",
+    "story": "A benchmark is a measurement of one specific thing, on one specific machine, under one specific workload, by someone with a specific interest in the result. Reported as a single number it loses all four qualifications, and the number then travels much further than the conditions it was true under.\n\nFour questions recover most of what was lost. What exactly was measured — throughput and latency answer different questions, and an average hides the tail where users actually live. On what hardware, with what data volume, and was anything warmed up first. What was it compared against, and was the comparison configured by someone who knew how to configure it, because a default configuration against a tuned one is not a comparison. And who ran it, since a benchmark published by a vendor is not fraudulent but has been through a selection process where unflattering configurations were quietly not published.\n\nThe most common distortion is not dishonesty but workload mismatch. A system measured on a benchmark that resembles nothing you do can be entirely accurate and completely irrelevant, and the only defence is to measure on your own workload before believing anything about your own situation.",
+    "beats": {
+      "broke": "Results get compressed into a single comparative number, and the conditions that made it true — hardware, workload, data volume, configuration, who ran it — do not travel with it. The number then gets applied to situations resembling none of that.",
+      "fix": "Restore the conditions before using the number. Ask what was measured, on what hardware and workload, against what alternative, configured by whom, and published by whom. Then ask whether any of it resembles your situation.",
+      "cost": "Answering those questions takes real effort and the information is frequently not published, so the honest conclusion is often that the benchmark cannot be interpreted. That is unsatisfying when a decision is needed, and it pushes people back onto the number they were told not to trust.",
+      "interview": {
+        "q": "A vendor benchmark shows their database is four times faster than the one you use. What do you want to know before acting on it?",
+        "trap": "Assuming the numbers are fabricated. They are usually accurate measurements of something; the question is of what.",
+        "answer": "What the workload was and how it was configured, in that order. Four times on what: reads, writes, a mix, at what concurrency, against what data volume, with what indexes and what durability settings. Then whether the comparison system was tuned by someone who knew it, since a default configuration against a carefully tuned one is a common and entirely legal way to produce that ratio. Finally whether the shape of the workload resembles ours at all. The only result that settles it is a measurement on our own workload, which is why serious evaluations end in a proof of concept rather than a document."
+      }
+    },
+    "blueprint": "\"4x faster\"  -- four questions that recover the meaning:\n\n  WHAT   throughput or latency? mean or p99?\n         (mean hides the tail; users live in the tail)\n  WHERE  what hardware, what data volume, warmed up?\n         (a benchmark that fits in RAM measures RAM)\n  VS     was the other system tuned, or left on defaults\n         by someone who does not use it?\n  WHO    vendor-published? not fraud -- selection.\n         the unflattering configs were simply not published.\n\nMost distortion is workload mismatch, not dishonesty:\naccurate measurement of something you will never do.",
+    "takeaway": "A benchmark is one measurement, one machine, one workload, one interested party. The number travels; those four conditions do not."
+  },
+  "G.9": {
+    "id": "G.9",
+    "trackId": "G",
+    "trackName": "Critical thinking",
+    "title": "Read a research paper critically: claim, method, baseline, limitation",
+    "status": "unsourced",
+    "story": "A paper is an argument, not a report of a fact, and it is written to persuade reviewers that a contribution is real. Reading it as an announcement of truth skips the part where you evaluate the argument.\n\nFour things carry most of the weight. The claim, stated precisely and narrowly — papers usually claim something much more specific than the headline suggests, and the gap between the two is where most misreading happens. The method, particularly whether the evaluation could have distinguished the claim from the alternatives. The baseline, which is where results are most often manufactured: a genuine improvement over a weak or undertuned comparison is not a genuine improvement, and choosing a baseline is a choice the authors made. And the limitations, which in a good paper are stated by the authors themselves and are frequently the most informative paragraph in it.\n\nIn machine learning specifically there is a recurring one worth knowing: an evaluation set that overlaps the training data produces excellent numbers and tells you nothing, and the overlap is often indirect enough that nobody involved was being careless. Before believing a result, it is worth asking exactly what the model was measured on and how confident anyone is that it had not seen it.",
+    "beats": {
+      "broke": "Results are read as settled facts rather than as arguments, so a claim is adopted without examining whether the evaluation could have distinguished it from the alternatives, or what it was compared against.",
+      "fix": "Read for four things: the precise claim, the method and whether it discriminates, the baseline and how hard anyone tried to make it strong, and the stated limitations. In a good paper the authors name the limitations themselves and that paragraph is the most informative one.",
+      "cost": "Reading this way is slow and requires enough domain knowledge to judge whether a baseline was reasonable, which is often exactly what a newcomer lacks. It can also curdle into reflexive dismissal, where every result is rejected on methodological grounds and nothing is ever learned.",
+      "interview": {
+        "q": "A paper reports a large improvement on a benchmark. Which part do you examine first?",
+        "trap": "Going to the method or the architecture. The mechanism is interesting but it is not where results most often fail.",
+        "answer": "The baseline, and how much effort went into making it strong. An improvement is a difference, so it is as sensitive to a weak comparison as to a strong contribution, and an undertuned baseline is the cheapest way to produce a large number without anyone being dishonest. Immediately after that, what the evaluation set was and whether it could overlap the training data, since contamination produces excellent results that transfer to nothing. Only once those hold up is the mechanism worth studying."
+      }
+    },
+    "blueprint": "  CLAIM       state it narrowly. the headline and the actual\n              claim are rarely the same sentence.\n  METHOD      could this evaluation have come out differently\n              if the claim were false?\n  BASELINE    <- check first. an improvement is a DIFFERENCE.\n              a weak baseline manufactures one for free,\n              and choosing it was the authors' decision.\n  LIMITATIONS usually the most honest paragraph in the paper.\n              read it before the results.\n\nML-specific: what exactly was it evaluated on, and how sure\nis anyone that it never saw that data? contamination gives\nexcellent numbers that transfer to nothing.",
+    "takeaway": "A paper is an argument. Check the baseline before the mechanism, because an improvement is a difference and a weak comparison manufactures one for free."
+  },
   "H.1": {
     "id": "H.1",
     "trackId": "H",

@@ -1,0 +1,20 @@
+{
+  "id": "G.4",
+  "trackId": "G",
+  "trackName": "Critical thinking",
+  "title": "Correlation and causation, in performance work specifically",
+  "status": "unsourced",
+  "story": "The general warning is familiar enough to be background noise. In performance work it has a specific and repeated shape worth naming, because the trap is not subtle reasoning about statistics — it is that deploys bundle changes and traffic varies on its own.\n\nA release goes out containing six changes. Latency improves. One of those changes was the one you argued for, and it is now credited, and the credit is permanent because nobody re-measures. Meanwhile traffic happened to drop that afternoon, which on its own would have produced the same graph. Both stories fit the evidence exactly, and the evidence cannot distinguish them because the experiment had six variables and no control.\n\nWhat separates them is deliberately arranged: ship one change alone, or put it behind a flag and compare populations at the same moment under the same traffic, or turn it off again and see whether the improvement leaves. Reverting is the underrated one. If the gain persists after the change is removed, the change was not the cause, and that test takes minutes and settles the question permanently.",
+  "beats": {
+    "broke": "Deploys carry many changes at once and the environment moves on its own, so a metric improving after a release is consistent with every change in it, with none of them, and with a shift in traffic. The evidence cannot distinguish the explanations.",
+    "fix": "Arrange the comparison deliberately. Ship the change alone, or gate it so two populations run simultaneously under identical conditions, or remove it and check whether the effect goes with it. Same-moment comparison removes the environment as a variable.",
+    "cost": "Shipping one change at a time slows delivery, and flags add branching that has to be cleaned up later or becomes permanent complexity. Reverting to test costs a deploy cycle and is unappealing when the metric currently looks good, which is exactly when nobody wants to touch it.",
+    "interview": {
+      "q": "p99 latency dropped 30% after a release containing six changes. How do you establish which one was responsible?",
+      "trap": "Reasoning from the code about which change ought to have helped. That produces a plausible story, and a plausible story is what you already have.",
+      "answer": "By making a comparison that the environment cannot explain. The strongest cheap test is to revert the suspected change alone and see whether the improvement leaves with it. Better still is to have gated it, so both variants ran at the same time under the same traffic and the comparison never involved a before and after at all. Without one of those, the honest answer is that the evidence does not identify a cause: a traffic drop that afternoon produces exactly the same graph, and so does any of the other five changes."
+    }
+  },
+  "blueprint": "What you have                What distinguishes\n  before | after               same moment, two populations\n  6 changes at once            flag on / flag off\n  traffic also moved           -> environment is held constant\n\n  p99  ----\\                  Or the cheap test:\n            \\____              revert JUST that change.\n       deploy ^                gain stays -> not your change.\n       traffic also fell       gain goes  -> it was.\n       here, quietly\n\nBoth stories fit that graph perfectly. That is the problem.",
+  "takeaway": "A before-and-after across a multi-change deploy cannot identify a cause. Compare at the same moment, or revert and see whether the gain leaves with it."
+}

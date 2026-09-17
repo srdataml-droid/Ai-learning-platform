@@ -1,0 +1,20 @@
+{
+  "id": "G.9",
+  "trackId": "G",
+  "trackName": "Critical thinking",
+  "title": "Read a research paper critically: claim, method, baseline, limitation",
+  "status": "unsourced",
+  "story": "A paper is an argument, not a report of a fact, and it is written to persuade reviewers that a contribution is real. Reading it as an announcement of truth skips the part where you evaluate the argument.\n\nFour things carry most of the weight. The claim, stated precisely and narrowly — papers usually claim something much more specific than the headline suggests, and the gap between the two is where most misreading happens. The method, particularly whether the evaluation could have distinguished the claim from the alternatives. The baseline, which is where results are most often manufactured: a genuine improvement over a weak or undertuned comparison is not a genuine improvement, and choosing a baseline is a choice the authors made. And the limitations, which in a good paper are stated by the authors themselves and are frequently the most informative paragraph in it.\n\nIn machine learning specifically there is a recurring one worth knowing: an evaluation set that overlaps the training data produces excellent numbers and tells you nothing, and the overlap is often indirect enough that nobody involved was being careless. Before believing a result, it is worth asking exactly what the model was measured on and how confident anyone is that it had not seen it.",
+  "beats": {
+    "broke": "Results are read as settled facts rather than as arguments, so a claim is adopted without examining whether the evaluation could have distinguished it from the alternatives, or what it was compared against.",
+    "fix": "Read for four things: the precise claim, the method and whether it discriminates, the baseline and how hard anyone tried to make it strong, and the stated limitations. In a good paper the authors name the limitations themselves and that paragraph is the most informative one.",
+    "cost": "Reading this way is slow and requires enough domain knowledge to judge whether a baseline was reasonable, which is often exactly what a newcomer lacks. It can also curdle into reflexive dismissal, where every result is rejected on methodological grounds and nothing is ever learned.",
+    "interview": {
+      "q": "A paper reports a large improvement on a benchmark. Which part do you examine first?",
+      "trap": "Going to the method or the architecture. The mechanism is interesting but it is not where results most often fail.",
+      "answer": "The baseline, and how much effort went into making it strong. An improvement is a difference, so it is as sensitive to a weak comparison as to a strong contribution, and an undertuned baseline is the cheapest way to produce a large number without anyone being dishonest. Immediately after that, what the evaluation set was and whether it could overlap the training data, since contamination produces excellent results that transfer to nothing. Only once those hold up is the mechanism worth studying."
+    }
+  },
+  "blueprint": "  CLAIM       state it narrowly. the headline and the actual\n              claim are rarely the same sentence.\n  METHOD      could this evaluation have come out differently\n              if the claim were false?\n  BASELINE    <- check first. an improvement is a DIFFERENCE.\n              a weak baseline manufactures one for free,\n              and choosing it was the authors' decision.\n  LIMITATIONS usually the most honest paragraph in the paper.\n              read it before the results.\n\nML-specific: what exactly was it evaluated on, and how sure\nis anyone that it never saw that data? contamination gives\nexcellent numbers that transfer to nothing.",
+  "takeaway": "A paper is an argument. Check the baseline before the mechanism, because an improvement is a difference and a weak comparison manufactures one for free."
+}

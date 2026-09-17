@@ -1,0 +1,20 @@
+{
+  "id": "G.11",
+  "trackId": "G",
+  "trackName": "Critical thinking",
+  "title": "Notice when you want something to be true",
+  "status": "unsourced",
+  "story": "The most reliable distortion in technical judgment is not a shortage of information. It is a preference for one answer, held before the evidence is examined, quietly setting the standard of proof. Evidence for the preferred conclusion gets waved through; evidence against it gets scrutinised until a flaw is located, and there is always a flaw.\n\nWhat makes this hard is that it does not feel like bias from inside. It feels like being appropriately rigorous, and the asymmetry — rigour applied to one side only — is invisible because you never notice the scrutiny you did not apply. The only reliable signal is the wanting itself, and that is available if you look for it: the relief when a result supports you, the irritation when someone raises an objection, the speed with which a counter-argument gets dismissed.\n\nYou cannot eliminate it, so the practical move is to declare it. Saying aloud that you want this to work, before presenting the evidence, does two things. It warns others to weight your argument accordingly, and it makes the asymmetry visible to you, which is the only way it becomes correctable. The habit that follows is simple: when you notice the wanting, that is precisely when to apply the same scrutiny to your own side that you have been applying to the other.",
+  "beats": {
+    "broke": "A preference formed before the evidence quietly sets different standards of proof for different conclusions. From inside it feels like ordinary rigour, because the scrutiny you never applied to your own side leaves no trace.",
+    "fix": "Treat the wanting as the signal. Notice the relief at supporting evidence and the irritation at objections, and declare the preference aloud before making the case, so the asymmetry is visible to you and to everyone else.",
+    "cost": "Declaring it can be used as a shield, where naming a bias substitutes for correcting it. It can also be weaponised in the other direction, dismissing someone's argument because they have a preference, which everyone always does. And noticing the wanting does not remove it; it only makes correction possible.",
+    "interview": {
+      "q": "How do you guard against motivated reasoning when you have already proposed a technical direction?",
+      "trap": "Claiming to evaluate objectively. Anyone who has argued for something in public has a stake in it, and denying that is itself the failure mode.",
+      "answer": "By assuming it is present rather than hoping it is not, and making it visible. Say the preference out loud when presenting, so others can weight the argument. Then check the asymmetry directly: ask whether the evidence I accepted quickly would have survived the scrutiny I applied to the objections, and specifically ask someone who disagrees to state their strongest case. The useful signal is emotional rather than analytical — irritation at a counter-argument is reliable information that I have a stake, and that is the moment to slow down instead of respond."
+    }
+  },
+  "blueprint": "The tell is emotional, not analytical:\n\n  relief when a result supports you\n  irritation when someone objects\n  a counter-argument dismissed in under three seconds\n  \"yes but that benchmark is flawed because--\"\n    (applied to their evidence, never to yours)\n\nThe asymmetry test:\n  would the evidence I ACCEPTED quickly have survived\n  the scrutiny I applied to the evidence I REJECTED?\n\nYou cannot remove the wanting. Declare it out loud before\nyou present, and the asymmetry becomes visible -- which is\nthe only state in which it can be corrected.",
+  "takeaway": "Motivated reasoning feels like rigour, because you never see the scrutiny you failed to apply. The wanting is the signal; declare it and check the asymmetry."
+}

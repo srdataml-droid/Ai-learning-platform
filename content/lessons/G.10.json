@@ -1,0 +1,20 @@
+{
+  "id": "G.10",
+  "trackId": "G",
+  "trackName": "Critical thinking",
+  "title": "Evaluate a vendor pitch: what is the lock in, what is the exit cost",
+  "status": "unsourced",
+  "story": "A pitch is optimised for the decision to adopt and says nothing about the decision to leave, because leaving is not the outcome being sold. So the questions that matter most are the ones the material is not organised to answer.\n\nLock-in is rarely contractual and is mostly structural. Your data ends up in a proprietary format, or reachable only through their API. Their concepts spread into your code until your domain model is shaped around their abstractions. Operational knowledge accumulates in their tooling. None of these appear as a line item and together they make leaving progressively more expensive, which is the actual product strategy rather than a side effect.\n\nSo the question to ask early, while you still have leverage, is what leaving looks like concretely. Can I export everything, in a format something else can read, without their cooperation. How long would a migration take and who would do it. What happens to my data if they are acquired, change their pricing, or shut the product down. A vendor who answers those clearly is worth more than one who is merely cheaper, and the answers are much harder to obtain after you have signed.",
+  "beats": {
+    "broke": "Evaluation focuses on capability and price, both of which are easy to compare, while the cost of reversing the decision is never assessed. That cost is discovered years later, when the price rises or the product is discontinued and there is no alternative available.",
+    "fix": "Assess the exit before adopting. Can the data be exported completely, in a format something else can consume, without the vendor's help. How deeply will their concepts spread into your code. What is the concrete migration path away, and who would execute it.",
+    "cost": "It is slow, it makes you a difficult customer, and it can be taken too far: avoiding every managed service to prevent lock-in means building and operating everything yourself, which is the largest cost of all. Some lock-in is worth accepting deliberately in exchange for not doing the work.",
+    "interview": {
+      "q": "What is the most important question to ask a vendor before adopting their platform?",
+      "trap": "Asking about pricing, uptime guarantees or the roadmap. All negotiable or unenforceable, and all about the period while you are a customer.",
+      "answer": "What getting my data out looks like without their help. Specifically: is there a complete export, in a documented format another system can read, that I can run myself on demand. That single question exposes the real lock-in, which is structural rather than contractual, and it is the one question whose answer cannot be improved after signing. It also usefully separates vendors who expect to keep customers by being good from ones who expect to keep them by being difficult to leave."
+    }
+  },
+  "blueprint": "What the pitch covers      What decides the outcome\n  features                   can I export EVERYTHING, myself,\n  price                      in a format something else reads,\n  uptime SLA                 without asking them?\n  roadmap\n                             how far do their concepts spread\n                             into MY domain model?\n\n                             if they 3x the price / get acquired\n                             / sunset it -- what is my move,\n                             how long, and who does it?\n\nLock-in is structural, not contractual. And every one of\nthese is far easier to ask before you sign than after.",
+  "takeaway": "The pitch is built for the decision to join. Ask what leaving costs, in concrete steps, while you still have the leverage to get a straight answer."
+}

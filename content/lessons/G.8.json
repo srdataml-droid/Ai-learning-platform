@@ -1,0 +1,20 @@
+{
+  "id": "G.8",
+  "trackId": "G",
+  "trackName": "Critical thinking",
+  "title": "Read a benchmark critically: what was measured, on what hardware, by whom",
+  "status": "unsourced",
+  "story": "A benchmark is a measurement of one specific thing, on one specific machine, under one specific workload, by someone with a specific interest in the result. Reported as a single number it loses all four qualifications, and the number then travels much further than the conditions it was true under.\n\nFour questions recover most of what was lost. What exactly was measured — throughput and latency answer different questions, and an average hides the tail where users actually live. On what hardware, with what data volume, and was anything warmed up first. What was it compared against, and was the comparison configured by someone who knew how to configure it, because a default configuration against a tuned one is not a comparison. And who ran it, since a benchmark published by a vendor is not fraudulent but has been through a selection process where unflattering configurations were quietly not published.\n\nThe most common distortion is not dishonesty but workload mismatch. A system measured on a benchmark that resembles nothing you do can be entirely accurate and completely irrelevant, and the only defence is to measure on your own workload before believing anything about your own situation.",
+  "beats": {
+    "broke": "Results get compressed into a single comparative number, and the conditions that made it true — hardware, workload, data volume, configuration, who ran it — do not travel with it. The number then gets applied to situations resembling none of that.",
+    "fix": "Restore the conditions before using the number. Ask what was measured, on what hardware and workload, against what alternative, configured by whom, and published by whom. Then ask whether any of it resembles your situation.",
+    "cost": "Answering those questions takes real effort and the information is frequently not published, so the honest conclusion is often that the benchmark cannot be interpreted. That is unsatisfying when a decision is needed, and it pushes people back onto the number they were told not to trust.",
+    "interview": {
+      "q": "A vendor benchmark shows their database is four times faster than the one you use. What do you want to know before acting on it?",
+      "trap": "Assuming the numbers are fabricated. They are usually accurate measurements of something; the question is of what.",
+      "answer": "What the workload was and how it was configured, in that order. Four times on what: reads, writes, a mix, at what concurrency, against what data volume, with what indexes and what durability settings. Then whether the comparison system was tuned by someone who knew it, since a default configuration against a carefully tuned one is a common and entirely legal way to produce that ratio. Finally whether the shape of the workload resembles ours at all. The only result that settles it is a measurement on our own workload, which is why serious evaluations end in a proof of concept rather than a document."
+    }
+  },
+  "blueprint": "\"4x faster\"  -- four questions that recover the meaning:\n\n  WHAT   throughput or latency? mean or p99?\n         (mean hides the tail; users live in the tail)\n  WHERE  what hardware, what data volume, warmed up?\n         (a benchmark that fits in RAM measures RAM)\n  VS     was the other system tuned, or left on defaults\n         by someone who does not use it?\n  WHO    vendor-published? not fraud -- selection.\n         the unflattering configs were simply not published.\n\nMost distortion is workload mismatch, not dishonesty:\naccurate measurement of something you will never do.",
+  "takeaway": "A benchmark is one measurement, one machine, one workload, one interested party. The number travels; those four conditions do not."
+}

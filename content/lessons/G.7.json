@@ -1,0 +1,20 @@
+{
+  "id": "G.7",
+  "trackId": "G",
+  "trackName": "Critical thinking",
+  "title": "Reversible versus irreversible decisions",
+  "status": "unsourced",
+  "story": "Treating every decision with the same weight is a way of spending the same deliberation on things that differ by orders of magnitude in consequence. The distinction that matters is not how important a choice feels but how expensive it is to undo.\n\nMost technology choices are cheaper to reverse than the discussion around them implies. Frameworks get replaced, libraries get swapped, a service gets rewritten in a different language over a quarter. Expensive and possible. What is genuinely hard to undo is anything that has spread: a data model that every consumer now depends on, an identifier exposed in URLs and stored in other people's systems, an authorisation boundary that a hundred call sites assume, an API contract that customers have integrated against. Those are hard to reverse not because of the code but because the code is not the only thing holding them.\n\nSo the practical rule is to spend deliberation in proportion to the cost of being wrong. Decide reversible things quickly and change them when evidence arrives, because the cost of deciding slowly exceeds the cost of deciding wrongly. Slow down hard on the ones that will be load-bearing for everything built afterwards, and ask specifically what it would take to undo this in a year.",
+  "beats": {
+    "broke": "Every decision gets similar deliberation, so trivially reversible choices consume weeks of debate while a schema or an authorisation boundary is settled in an afternoon and becomes permanent. Effort is allocated by how contentious something feels rather than by consequence.",
+    "fix": "Classify by the cost of reversal before deciding. Reversible choices are made quickly and revised on evidence; irreversible ones get real deliberation, a written rationale and an explicit look at what undoing them would require.",
+    "cost": "The classification is a judgment and can be wrong in both directions. Something labelled reversible accumulates dependents until it is not, which is how a temporary identifier format becomes permanent. And labelling things irreversible too freely reintroduces the paralysis the distinction was meant to remove.",
+    "interview": {
+      "q": "Which is harder to reverse: choosing the wrong web framework, or choosing the wrong primary key format?",
+      "trap": "Picking the framework because it touches more code. Volume of code is not what makes something hard to undo.",
+      "answer": "The key format, and by a wide margin. A framework is contained within your codebase: replacing it is expensive, tedious and entirely within your control, and it can be done incrementally. A primary key format leaks outward. It appears in URLs people have bookmarked, in other teams' foreign keys, in exported reports, in third-party systems that stored it, and in data you no longer control. Undoing it means coordinating with everyone who holds a copy, and some of them cannot be reached. The cost of reversal tracks how far the decision has spread, not how much code implements it."
+    }
+  },
+  "blueprint": "Cheap to reverse            Expensive to reverse\n  web framework               data model / schema\n  logging library             primary key format\n  CSS approach                public API contract\n  deploy tooling              authorisation boundary\n  code formatting             anything in a URL\n                              anything another party stored\n\nThe test is not \"how much code?\" but \"how far has it spread,\nand can I reach everyone holding a copy?\"\n\nReversible  -> decide fast, revise on evidence\nIrreversible-> slow down, write down why, ask what undoing\n               this in a year would actually require",
+  "takeaway": "Cost of reversal, not importance, decides how much deliberation something deserves — and reversal cost tracks how far a decision has spread outside your codebase."
+}

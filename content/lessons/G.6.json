@@ -1,0 +1,20 @@
+{
+  "id": "G.6",
+  "trackId": "G",
+  "trackName": "Critical thinking",
+  "title": "Steelman the option you rejected, out loud, before rejecting it",
+  "status": "unsourced",
+  "story": "A decision defended only against a weak version of its alternative has not been tested. The usual pattern is unconscious: the option you prefer gets described at its best, the option you do not gets described at its worst, and the comparison that follows is real reasoning applied to an unfair setup.\n\nSteelmanning is stating the rejected option in the strongest form its actual advocates would recognise, out loud, before saying no to it. Out loud matters, because a steelman constructed silently tends to remain conveniently weak. Said to another person it has to survive their reaction, and someone who genuinely prefers that option will correct you immediately if you have softened it.\n\nTwo things come out of this, and the second is the more useful. Sometimes the rejected option turns out to be better and the decision changes, which is the obvious payoff and the rarer one. More often the decision stands but you now know precisely what it costs, which means you know what to watch for, and when the cost arrives six months later nobody is surprised and nobody relitigates.",
+  "beats": {
+    "broke": "Comparison is done against the weakest form of the alternative, because the weak form is what comes to mind when you already prefer something else. The reasoning may be sound and the inputs are unfair, so the conclusion is unreliable in a way that is invisible from inside it.",
+    "fix": "State the rejected option at its strongest, in terms its advocates would accept, and say it aloud to someone before rejecting it. Speaking it exposes the version you built to correction by someone who holds it genuinely.",
+    "cost": "It takes time and it is emotionally awkward to argue well for something you intend to refuse. It can also be performed rather than done, producing a steelman that is a token before a decision that was never in question, which is worse than skipping it because it manufactures false confidence.",
+    "interview": {
+      "q": "What does steelmanning a rejected technical option get you when the decision does not change?",
+      "trap": "Answering that it makes the decision better justified, or improves team buy-in. Those are side effects rather than the point.",
+      "answer": "A precise statement of what the decision costs. Arguing the other option properly forces you to name the specific things it would have been better at, and those are exactly the problems your choice will have. That becomes a list of what to monitor and what the tripwires are for revisiting. It also means that when one of those costs materialises, it is a known consequence rather than a surprise, which prevents the decision being relitigated from scratch by whoever is annoyed by it that week."
+    }
+  },
+  "blueprint": "Weak version (what comes to mind naturally):\n  \"we could use Postgres, but it doesn't scale as well\"\n\nSteelman (what an advocate would actually say):\n  \"Postgres gives you transactions across these three tables,\n   which our invariant needs. It is operationally boring, the\n   team already knows it, and JSONB covers the schemaless part\n   we thought we needed a document store for. At our projected\n   volume for the next 3 years it is not close to a limit.\"\n\nNow reject it if you still want to -- and you have just\nwritten the list of what your choice will cost you.",
+  "takeaway": "A decision defended against a weak alternative is untested. Argue the other side properly and, win or lose, you end up holding the list of what your choice costs."
+}
