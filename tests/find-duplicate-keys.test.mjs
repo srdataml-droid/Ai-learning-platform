@@ -34,3 +34,10 @@ test('ignores a colon inside a string that looks like a key', () => {
   const src = `const o = {\n  "a": { s: "b\\": fake" },\n  "b": { s: "" }\n};`;
   assert.deepEqual(findDuplicateKeys(src, { depth: 1 }), []);
 });
+
+test('lessons-data.js declares every lesson key exactly once', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const src = await readFile(new URL('../lessons-data.js', import.meta.url), 'utf8');
+  const dupes = findDuplicateKeys(src, { depth: 2 });
+  assert.deepEqual(dupes.map((d) => d.key), [], 'duplicate keys silently discard the earlier lesson');
+});

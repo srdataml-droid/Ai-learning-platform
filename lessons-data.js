@@ -303,13 +303,13 @@ An operation is idempotent if executing it once has the exact same effect as exe
       trackId: "B",
       trackName: "System design",
       title: "Consistency: what you give up, and CAP in plain words",
-      story: `In 1999, Eric Brewer gave a keynote at the ACM Symposium on Principles of Distributed Computing, posing the CAP Conjecture (formally proven by Seth Gilbert and Nancy Lynch in 2002). Brewer stated that any distributed data store can simultaneously guarantee at most two of three properties: Consistency (every read receives the most recent write), Availability (every non-failing node returns a response), and Partition Tolerance (the system continues to operate despite network messages being dropped or delayed).
+      story: `The idea surfaced in Fox and Brewer's 1999 HotOS paper 'Harvest, Yield and Scalable Tolerant Systems', then on 19 July 2000 Eric Brewer put it in front of the field as a keynote at the 19th ACM Symposium on Principles of Distributed Computing. He posed it as the CAP Conjecture, not a theorem: it was Seth Gilbert and Nancy Lynch who proved it in 2002. Brewer stated that any distributed data store can simultaneously guarantee at most two of three properties: Consistency (every read receives the most recent write), Availability (every non-failing node returns a response), and Partition Tolerance (the system continues to operate despite network messages being dropped or delayed).
 
 In a real distributed network, network cables get severed, switches reboot, and cloud routers drop packets. Therefore, Network Partitions (P) are an inescapable physical reality, not an optional preference. You cannot 'choose CA'. When a partition occurs between Data Center East and Data Center West, you are forced to make an existential architectural choice:
 
 Do you choose CP: halt writes in Data Center West because it cannot coordinate with East, preferring to return an error rather than risk inconsistent data? (Banks, inventory checkout). Or do you choose AP: allow Data Center West to keep accepting writes, accepting that East and West now hold diverging, conflicting realities that must be reconciled later? (Social media feeds, shopping carts).`,
       beat1: "Engineers built multi-node databases claiming they could deliver instantaneous synchronization, infinite uptime, and survive network cable cuts simultaneously.",
-      beat2: "Eric Brewer (1999) proposed the CAP theorem, formalized by Gilbert & Lynch (2002), proving mathematically that when a network partition occurs, a distributed system must choose between Consistency and Availability.",
+      beat2: "Fox and Brewer published the idea in 1999 (HotOS); Brewer posed it as a conjecture in his PODC keynote on 19 July 2000; Gilbert and Lynch turned it into a theorem with a proof in 2002. When a network partition occurs, a distributed system must choose between Consistency and Availability.",
       beat3: "True consistency (CP) requires cross-node consensus rounds (Paxos, Raft) that spike write latency. Availability (AP) requires eventual consistency, vector clocks, and CRDTs to merge divergent states.",
       beat4: {
         q: "Why is 'I choose CA' an impossible answer in modern cloud system design, and how does Amazon Dynamo illustrate an AP tradeoff?",
@@ -367,27 +367,6 @@ Why do algorithms matter? Because no amount of hardware upgrade can overcome alg
       takeaway: "Hardware gives you constant factors; algorithms give you scalability. O(n log n) always beats O(n^2) at scale."
     },
 
-    "E.4": {
-      id: "E.4",
-      trackId: "E",
-      trackName: "Data structures and algorithms",
-      title: "Hash maps: how they work, and when they degrade",
-      story: `Before hash tables became ubiquitous, looking up a record among N elements required either scanning an array in O(n) time or searching a balanced binary tree in O(log n) time. In 1953, Hans Peter Luhn of IBM proposed hashing: pass an arbitrary key through a mathematical function to produce an integer index, directly addressing an array bucket in O(1) time.
-
-Hash tables are the workhorses of software engineering. Dictionaries in Python, objects in JavaScript, indexes in databases, and caches in memory all rely on them. But the promise of 'O(1) lookup' is an average-case mathematical abstraction that hides dangerous failure modes.
-
-When two different keys produce the same hash code (a collision), the hash table must resolve it—either by chaining linked lists or probing open addresses. If an attacker knows your hash function (like Java's old polynomial string hash), they can submit 100,000 HTTP POST parameters engineered to collide on the exact same bucket. Lookup time degrades from O(1) to O(n), turning your web server's CPU to 100% load on a single HTTP request (HashDoS attack). Modern runtimes adopted randomized SipHash algorithms to survive.`,
-      beat1: "Looking up data in large collections required O(n) array scans or O(log n) tree traversals, limiting database and compiler symbol lookup throughput.",
-      beat2: "Hans Peter Luhn (1953) invented hashing and hash tables, mapping arbitrary keys to array memory offsets in O(1) average time.",
-      beat3: "Hash tables degrade to O(n) under heavy collisions; resizing (re-hashing) causes sudden latency spikes, and sparse tables consume substantial extra memory.",
-      beat4: {
-        q: "What causes a hash map to degrade from O(1) to O(n) time complexity, and how do modern language runtimes prevent HashDoS attacks?",
-        trap: "Thinking hash maps are always guaranteed O(1) without conditions.",
-        answer: "Degradation occurs when the hash function clusters keys into the same bucket (due to high load factor or malicious collisions), forcing O(n) traversal of collision chains. Modern runtimes (Python, Rust) use SipHash with randomized secret seeds per process, preventing attackers from predicting collisions to launch denial-of-service attacks."
-      },
-      blueprint: "# Conceptual hash table lookup:\ndef get(table, key):\n    bucket = hash(key) % len(table.buckets)\n    for k, v in table.buckets[bucket]: # O(1) if buckets are sparse\n        if k == key:\n            return v\n    return None",
-      takeaway: "A hash map buys O(1) speed by trading away memory and risking O(n) collapse if the hash function is compromised."
-    },
 
     // -------------------------------------------------------------
     // TRACK F: LOGIC
@@ -436,27 +415,6 @@ When debugging a production incident, you do not observe the internal code execu
       takeaway: "Debugging is not guessing; it is the rigorous elimination of hypotheses via contrapositive falsification."
     },
 
-    "F.8": {
-      id: "F.8",
-      trackId: "F",
-      trackName: "Logic",
-      title: "Null, undefined, and three valued logic in SQL: NULL is not equal to NULL",
-      story: `In 1965, British computer scientist Tony Hoare invented the null reference for the ALGOL W language. Decades later in 2009, Hoare publicly apologized at an engineering conference: 'I call it my billion-dollar mistake. It has led to innumerable errors, vulnerabilities, and system crashes.'
-
-Nowhere is the peril of null more insidious than in relational databases. SQL does not use classical two-valued Boolean logic (True or False); it uses Kleene's Three-Valued Logic: True, False, and NULL (Unknown).
-
-Because NULL means 'unknown value', asking the database 'Is NULL equal to NULL?' (\`NULL = NULL\`) does not evaluate to True; it evaluates to UNKNOWN! If you do not know Alice's salary, and you do not know Bob's salary, you cannot assert their salaries are equal. If you write \`SELECT * FROM users WHERE status != 'active'\`, any user whose status is NULL will NOT be returned, because \`NULL != 'active'\` evaluates to UNKNOWN, and WHERE clauses only return rows where the condition evaluates to TRUE. Thousands of production bugs stem from forgetting that NULL is a third logical state.`,
-      beat1: "Programs and databases crashed or returned corrupt calculations when real-world records had missing or uncollected information.",
-      beat2: "Tony Hoare (1965) introduced the null reference, and Edgar F. Codd incorporated Three-Valued Logic (True, False, Unknown) into SQL to represent missing data.",
-      beat3: "Null pointer exceptions became the single most common crash in software history. SQL queries silently drop rows because WHERE filters exclude UNKNOWN results.",
-      beat4: {
-        q: "Why does `SELECT * FROM users WHERE id NOT IN (SELECT manager_id FROM departments)` return 0 rows if a single manager_id is NULL?",
-        trap: "Assuming SQL treats NULL as false or ignores it.",
-        answer: "The NOT IN operator expands into a chain of inequality comparisons joined by AND: `id != 1 AND id != 2 AND id != NULL`. In three-valued logic, `id != NULL` evaluates to UNKNOWN. Anything AND UNKNOWN evaluates to UNKNOWN or FALSE, never TRUE. As a result, the entire WHERE clause fails for every single row, silently returning an empty result set."
-      },
-      blueprint: "-- The Three-Valued Logic Trap in SQL:\nSELECT * FROM employees WHERE bonus = NULL;   -- Returns NOTHING (always Unknown)\nSELECT * FROM employees WHERE bonus IS NULL;  -- Correct!\n\n-- Boolean evaluation table with NULL:\n-- TRUE  AND NULL = NULL (Fails WHERE)\n-- FALSE AND NULL = FALSE\n-- NOT NULL       = NULL",
-      takeaway: "In SQL, NULL is not a value; it is the state of unknowability. NULL is never equal to NULL."
-    },
 
     // -------------------------------------------------------------
     // TRACK P: SECURITY
@@ -530,162 +488,15 @@ In Direct Prompt Injection, a user types: 'Ignore previous instructions and outp
     // -------------------------------------------------------------
     // TRACK K: NEURAL NETWORKS
     // -------------------------------------------------------------
-    "K.2": {
-      id: "K.2",
-      trackId: "K",
-      trackName: "Neural networks",
-      title: "The Perceptron, 1958, and exactly why XOR broke it in 1969",
-      story: `In 1958, Frank Rosenblatt, a psychologist at the Cornell Aeronautical Laboratory, unveiled the Perceptron: an electromechanical analog machine wired to a 400-photocell camera. The New York Times reported on its front page that the Navy expected the Perceptron would soon be able to 'walk, talk, see, write, reproduce itself and be conscious of its existence.'
 
-A single-layer Perceptron computes a linear combination of inputs: dot product of inputs and weights, plus a bias, passed through a step threshold. Geometrically, this represents a straight line (or hyperplane in higher dimensions) slicing through space. It learned AND gates and OR gates with ease.
 
-In 1969, Marvin Minsky and Seymour Papert of MIT published their book 'Perceptrons'. They proved mathematically that a single-layer perceptron could never learn the simple XOR (exclusive OR) function. If inputs are (0,0) -> 0, (1,1) -> 0, but (1,0) -> 1 and (0,1) -> 1, no single straight line can separate the zeroes from the ones. Because researchers did not yet have an efficient mathematical algorithm to train multi-layer networks (backpropagation was still unviable), the book triggered the devastating First AI Winter: government funding vanished for nearly fifteen years.`,
-      beat1: "Single-layer neural models were hailed as artificial brains, but researchers hit a wall when simple non-linear logic could not be learned.",
-      beat2: "Frank Rosenblatt (1958) created the Perceptron. Marvin Minsky & Seymour Papert (1969) published their mathematical proof demonstrating linear separability limits.",
-      beat3: "The inability to train multi-layer networks destroyed scientific credibility and halted research funding in artificial intelligence for over a decade.",
-      beat4: {
-        q: "Explain why a single-layer perceptron cannot solve XOR, and what mathematical component resolves this in modern deep learning.",
-        trap: "Saying it needs more data or more training epochs.",
-        answer: "XOR is not linearly separable: plotting the four points (0,0), (0,1), (1,0), (1,1) in 2D space demonstrates that no single straight hyperplane can isolate the positive outputs from the negative outputs. The solution is adding hidden layers with non-linear activation functions (ReLU, GELU), which fold and transform the coordinate space so a linear classifier in the final layer can separate them."
-      },
-      blueprint: "# XOR Truth Table (Not Linearly Separable):\n# (0, 0) -> 0\n# (0, 1) -> 1\n# (1, 0) -> 1\n# (1, 1) -> 0\n\n# Modern PyTorch solution: Multi-Layer with non-linearity\nimport torch.nn as nn\nmodel = nn.Sequential(\n    nn.Linear(2, 4), # Hidden layer projects into higher dimension\n    nn.ReLU(),       # Non-linear activation folds the space\n    nn.Linear(4, 1)  # Output layer separates cleanly\n)",
-      takeaway: "Without non-linear activations, stacking a hundred linear layers is mathematically equivalent to a single linear layer."
-    },
 
-    "K.6": {
-      id: "K.6",
-      trackId: "K",
-      trackName: "Neural networks",
-      title: "Backpropagation, 1986, derived rather than memorised",
-      story: `Even after researchers understood that multi-layer perceptrons could solve non-linear problems like XOR, they faced an insurmountable computational hurdle: if you have millions of weights spread across hidden layers, how do you know how much a specific weight in layer 2 contributed to an error on the output layer?
-
-In 1986, David Rumelhart, Geoffrey Hinton, and Ronald Williams published 'Learning representations by back-propagating errors' in Nature. They applied the calculus chain rule backwards through computational graphs. By calculating the partial derivative of the scalar loss function with respect to every weight, layer by layer from output to input, gradients could be computed in a single reverse sweep with the exact same computational complexity as the forward pass.
-
-Building a micro-autograd engine from scratch (like Karpathy's micrograd) is the single highest-value exercise in machine learning. Once you see that backprop is simply recursively accumulating local gradients via node.grad += out.grad * local_derivative, the mystique of deep learning dissolves into clean, exact differential calculus.`,
-      beat1: "Multi-layer networks existed in theory, but adjusting weights in hidden layers required brute-force numerical perturbation that scaled in O(n^2) or O(2^n) time.",
-      beat2: "David Rumelhart, Geoffrey Hinton, and Ronald Williams (1986) popularized reverse-mode automatic differentiation (backpropagation) using the chain rule in O(n) time.",
-      beat3: "Deep networks suffered from vanishing and exploding gradients: multiplying many numbers smaller than 1.0 caused early layers to receive zero gradient updates.",
-      beat4: {
-        q: "What is the difference between forward-mode and reverse-mode automatic differentiation, and why does deep learning strictly use reverse-mode?",
-        trap: "Confusing automatic differentiation with symbolic algebra or numerical finite differences.",
-        answer: "Forward-mode calculates derivatives with respect to one input variable per forward pass; for N inputs and M outputs, it scales with O(N). Reverse-mode (backprop) calculates derivatives of a single scalar output with respect to all N inputs in one backward pass; it scales with O(M). Because deep learning loss is a single scalar (M=1) evaluated over millions of weights (N=millions), reverse-mode scales in O(1) passes rather than millions."
-      },
-      blueprint: "# Minimal autograd node (The Chain Rule in code):\nclass Value:\n    def __init__(self, data, _children=()):\n        self.data = data\n        self.grad = 0.0\n        self._backward = lambda: None\n        self._prev = set(_children)\n\n    def __mul__(self, other):\n        out = Value(self.data * other.data, (self, other))\n        def _backward():\n            self.grad += other.data * out.grad  # dz/dx = y * dz/dout\n            other.grad += self.data * out.grad  # dz/dy = x * dz/dout\n        out._backward = _backward\n        return out",
-      takeaway: "Backpropagation is simply the chain rule applied in reverse to evaluate millions of gradients in a single computational pass."
-    },
-
-    "K.11": {
-      id: "K.11",
-      trackId: "K",
-      trackName: "Neural networks",
-      title: "AlexNet, 2012: what actually changed was GPUs and ImageNet",
-      story: `For fifteen years following Yann LeCun's 1998 work on convolutional networks reading bank cheques, the machine learning establishment sidelined deep neural networks. Support Vector Machines (SVMs) and Random Forests dominated academic conferences because they had provable convex optimization bounds and didn't require weeks of mysterious hyperparameter tuning.
-
-On September 30, 2012, the ImageNet Large Scale Visual Recognition Challenge results were published. The competition tested models on 1.2 million high-resolution images across 1,000 classes. Traditional computer vision algorithms handcrafted by leading labs achieved error rates around 26%. Alex Krizhevsky, Ilya Sutskever, and Geoffrey Hinton submitted 'AlexNet', achieving an error rate of 15.3%—obliterating the second-place entry by more than 10 percentage points.
-
-What changed was not new math: convolutional networks, ReLU, dropout, and backpropagation had all existed for years. What changed was scale: Fei-Fei Li's ImageNet dataset provided millions of labeled examples, and Alex Krizhevsky wrote custom CUDA kernels to train the 60-million-parameter network across two gaming-grade NVIDIA GeForce GTX 580 GPUs. Overnight, the entire field of computer science abandoned manual feature engineering.`,
-      beat1: "Computer vision relied on handcrafted manual feature descriptors (SIFT, HOG) that plateaued at unacceptable error rates on real-world imagery.",
-      beat2: "Alex Krizhevsky, Ilya Sutskever, and Geoffrey Hinton (2012) trained AlexNet using NVIDIA CUDA on ImageNet, cutting benchmark error rates nearly in half in a single competition.",
-      beat3: "Model training demanded massive power, specialized GPU hardware clusters, and opaque empirical heuristics replacing classical mathematical guarantees.",
-      beat4: {
-        q: "Why did AlexNet succeed in 2012 when the underlying convolutional architecture had already been demonstrated by Yann LeCun in 1998?",
-        trap: "Attributing the victory purely to novel deep learning algorithms or architectural breakthroughs.",
-        answer: "LeNet-5 in 1998 processed 32x32 pixel grayscale digits with 60,000 parameters because larger datasets and compute did not exist. AlexNet succeeded due to the convergence of three factors: 1) Massive labeled data (Fei-Fei Li's ImageNet with 1.2 million images), 2) Hardware parallel compute (custom CUDA kernels on NVIDIA GPUs performing trillions of matrix operations), and 3) Practical training tricks (ReLU preventing vanishing gradients, Dropout mitigating severe overfitting)."
-      },
-      blueprint: "/* The Triad of Modern AI (2012 Convergence): */\n1. Algorithms: Convolutional layers + ReLU + Dropout (Rumelhart, LeCun, Hinton)\n2. Data:       ImageNet (1.2M images, 1,000 classes) (Fei-Fei Li)\n3. Compute:    NVIDIA GPUs + CUDA parallel matrix math (Krizhevsky)",
-      takeaway: "The breakthrough of 2012 was not a new theory; it was the collision of enough data with enough parallel GPU matrix silicon."
-    },
-
-    "K.13": {
-      id: "K.13",
-      trackId: "K",
-      trackName: "Neural networks",
-      title: "Attention, 2014, then the transformer, 2017",
-      story: `By 2014, sequence modeling (machine translation, speech recognition) relied on Recurrent Neural Networks (RNNs) and Long Short-Term Memory (LSTM) units. In an RNN, tokens are processed strictly one by one. The model compresses a 50-word sentence sequentially into a single fixed-size hidden vector. By the time the network reached word 45, it had forgotten word 3.
-
-In 2014, Dzmitry Bahdanau, Kyunghyun Cho, and Yoshua Bengio introduced Attention: instead of compressing an entire sentence into one rigid vector, allow the decoder to look back at all encoder hidden states and dynamically weight which words matter for the current output.
-
-In 2017, Ashish Vaswani and seven Google Brain/Research co-authors published 'Attention Is All You Need'. They threw away recurrence and convolution entirely. If attention could calculate relationships between all words simultaneously, why process tokens one by one at all? In the Transformer architecture, Self-Attention computes compatibility between every token in parallel using Queries, Keys, and Values (Softmax(QK^T / sqrt(d_k)) * V). This unlocked massive parallelization on GPU clusters, making large language models possible.`,
-      beat1: "Recurrent networks processed words sequentially, creating an unparallelizable computational bottleneck and suffering from catastrophic forgetting on long sentences.",
-      beat2: "Bahdanau et al. (2014) invented attention; Vaswani et al. (2017) published 'Attention Is All You Need', creating the fully parallelizable self-attention Transformer.",
-      beat3: "Standard self-attention scales quadratically (O(n^2)) with sequence length, causing memory and compute costs to explode as context windows widen.",
-      beat4: {
-        q: "Derive the scaled dot-product attention formula and explain why the scaling factor sqrt(d_k) is mandatory.",
-        trap: "Forgetting to explain why division by the square root of key dimension prevents gradient vanishing.",
-        answer: "Attention(Q, K, V) = softmax((Q * K^T) / sqrt(d_k)) * V. The scaling factor 1/sqrt(d_k) is mandatory because as key dimension d_k grows large, the dot products grow large in magnitude, pushing the softmax function into regions with tiny gradients (gradient saturation), which halts backpropagation training."
-      },
-      blueprint: "# Scaled Dot-Product Attention in Pure PyTorch\nimport torch\nimport torch.nn.functional as F\n\ndef attention(q, k, v):\n    d_k = q.size(-1)\n    scores = torch.matmul(q, k.transpose(-2, -1)) / (d_k ** 0.5)\n    weights = F.softmax(scores, dim=-1)\n    return torch.matmul(weights, v), weights",
-      takeaway: "The Transformer discarded recurrence to achieve GPU parallelism, trading linear sequence memory for quadratic pairwise attention."
-    },
 
     // -------------------------------------------------------------
     // TRACK L: AI ENGINEERING
     // -------------------------------------------------------------
-    "L.6": {
-      id: "L.6",
-      trackId: "L",
-      trackName: "AI engineering",
-      title: "Retrieval: keyword, vector, hybrid",
-      story: `When developers began building Retrieval-Augmented Generation (RAG) systems in 2023, the industry fell in love with vector search. You chunk text, run it through an embedding model (like text-embedding-ada-002), store high-dimensional floats in a vector database (Pinecone, Chroma, pgvector), and retrieve nearest neighbors using cosine similarity.
 
-Then production happened. A customer searched for an exact SKU number like 'XJ-9000-V2' or a legal statute 'Section 409A'. The vector embedding projected the query into a fuzzy conceptual neighborhood and returned manuals for generic valves or tax overviews, missing the exact document entirely.
 
-Dense vector retrieval understands synonyms and semantics ('red fruit' matches 'apple'), but is terrible at exact keywords, acronyms, product codes, and rare terms. BM25 (sparse keyword search) understands exact string tokens, but is blind to conceptual meaning. Production AI systems use Hybrid Search: execute both BM25 and vector queries, normalize their scores, and combine them using Reciprocal Rank Fusion (RRF) before feeding results into a cross-encoder reranker.`,
-      beat1: "Vector-only search failed in production on exact acronyms, SKUs, error codes, and legal terms, while keyword-only search failed on natural conversational questions.",
-      beat2: "Hybrid search architectures combine sparse lexical retrieval (BM25) with dense semantic embeddings, merging ranked lists using Reciprocal Rank Fusion (RRF).",
-      beat3: "Double storage index footprint (inverted index + vector index), dual query execution overhead, and the complexity of tuning fusion weights across disparate modalities.",
-      beat4: {
-        q: "How does Reciprocal Rank Fusion (RRF) work, and why is it preferred over raw score combination in hybrid search?",
-        trap: "Trying to linearly add cosine similarity floats to BM25 scores directly.",
-        answer: "Cosine similarity values (bounded 0 to 1) and BM25 scores (unbounded positive floats) have fundamentally different distributions and scales. RRF bypasses score calibration by using only the ranking positions: RRF_score(d) = sum(1 / (k + rank_i(d))) where k is a smoothing constant (typically 60). This provides robust, outlier-resistant rank merging without fragile score normalization."
-      },
-      blueprint: "# Reciprocal Rank Fusion (RRF) algorithm:\ndef rrf(vector_ranks, bm25_ranks, k=60):\n    scores = {}\n    for doc_id, rank in vector_ranks.items():\n        scores[doc_id] = scores.get(doc_id, 0) + (1.0 / (k + rank))\n    for doc_id, rank in bm25_ranks.items():\n        scores[doc_id] = scores.get(doc_id, 0) + (1.0 / (k + rank))\n    return sorted(scores.items(), key=lambda x: x[1], reverse=True)",
-      takeaway: "Vector search understands concepts; keyword search finds serial numbers. Production RAG requires both."
-    },
-
-    "L.9": {
-      id: "L.9",
-      trackId: "L",
-      trackName: "AI engineering",
-      title: "Refusal and the honest 'I don't know'",
-      story: `Large language models are probabilistic next-token predictors trained on internet text. By default, they have an overwhelming generative bias: when asked a question, their objective is to produce a plausible-sounding continuation, even if no factual basis exists. This produces hallucination.
-
-In a prototype RAG demo, a hallucinated answer looks convincing to executives. In a production enterprise system (medical diagnosis, financial auditing, contract review), a hallucinated citation is a catastrophic liability. The most important metric in production RAG is not precision or recall; it is the Honest Refusal Rate: does the model explicitly refuse when the retrieved context lacks the necessary facts?
-
-Achieving clean refusals requires context boundary defense: instructing the model in system prompts that answering outside the provided documents is a critical failure, injecting negative test sets into evaluation pipelines, and calibrating retrieval confidence thresholds so queries with low similarity scores trigger deterministic fallbacks before ever touching an LLM.`,
-      beat1: "Generative models hallucinated plausible falsehoods when retrieved contexts did not contain the answer, destroying customer trust in enterprise deployments.",
-      beat2: "Strict system boundary prompt conditioning, grounding verification passes, and deterministic retrieval confidence gates enforce explicit 'I do not have enough information' refusals.",
-      beat3: "Over-refusal: models reject valid questions with borderline relevance, requiring continuous calibration against golden evaluation benchmark datasets.",
-      beat4: {
-        q: "How do you evaluate and eliminate hallucination in an enterprise RAG pipeline?",
-        trap: "Saying you tell the model 'Please do not hallucinate' in the prompt.",
-        answer: "1) Grounding verification (using a smaller fast model or LLM-as-a-judge to verify every claim in the response is attributed to a specific retrieved chunk), 2) Synthetic negative evaluation sets (questions with no answers in the corpus to measure true refusal rate), and 3) Deterministic similarity thresholds (if top retrieval score < threshold, bypass the LLM and return a pre-canned honest refusal)."
-      },
-      blueprint: "// Production Prompt Conditioning Pattern:\nconst SYSTEM_PROMPT = `\nYou are a factual corporate assistant. Answer the question STRICTLY using only the CONTEXT below.\nIf the answer cannot be directly determined from the CONTEXT, you MUST state:\n\"I do not have sufficient information in the provided records to answer this question.\"\nDo NOT extrapolate or use outside training data.\n`;",
-      takeaway: "The ability to reliably say 'I don't know' is what separates a production AI product from a toy demo."
-    },
-
-    "L.12": {
-      id: "L.12",
-      trackId: "L",
-      trackName: "AI engineering",
-      title: "Agent loops: termination, budgets, compounding error",
-      story: `An AI agent is an LLM running inside a loop with access to tools: it observes the environment, reasons about the next step, calls an external function (database query, shell command, calculator, API), inspects the result, and repeats until it decides the goal is achieved.
-
-In 2023, early agent frameworks (AutoGPT, BabyAGI) mesmerized the internet. But when deployed in production, they reliably self-destructed. If an agent has a 90% accuracy rate at each individual reasoning step, after 5 steps its probability of success is 0.90^5 = 59%. After 10 steps, it drops to 34%. Errors compound exponentially.
-
-Worse, when an agent encounters an unexpected error message from a tool, it often enters an infinite self-reinforcing loop: trying the same failed API call with slight prompt variations until the developer's credit card is maxed out. Production agent engineering is primarily defensive engineering: strict step limits, hard dollar token budgets, schema-enforced tool validators, and human-in-the-loop escape hatches.`,
-      beat1: "Naive agent loops entered infinite loops, hallucinatory recursion, and runaway API spend when external tool responses deviated from expectations.",
-      beat2: "Finite State Machine (FSM) control layers, hard token/step budget guards, deterministic schema validation, and exponential backoff termination policies.",
-      beat3: "Constraining agent autonomy reduces open-ended problem-solving capability; developers must write more glue code to govern edge cases.",
-      beat4: {
-        q: "What is the 'compounding error' problem in multi-step AI agents and what architectural patterns mitigate it?",
-        trap: "Assuming newer, smarter models eliminate the need for loop constraints.",
-        answer: "If each step has independent accuracy p, multi-step success scales as p^n. At p=0.95 and n=10, success is only 60%. Mitigations: 1) Deterministic orchestration (LangGraph / state machines) rather than purely autonomous LLM loops, 2) Per-step validation gates (schema validation, unit tests, linters), 3) Short execution horizons (max 3-5 tool turns), and 4) Early failure termination."
-      },
-      blueprint: "// Defensive Agent Guard Pattern:\nlet turns = 0;\nconst MAX_TURNS = 5;\nconst MAX_TOKEN_BUDGET = 8000;\n\nwhile (!done) {\n  turns++;\n  if (turns > MAX_TURNS || totalTokens > MAX_TOKEN_BUDGET) {\n    throw new AgentBudgetExceededError('Terminating loop to protect budget.');\n  }\n  const step = await model.generateNextAction(state);\n  if (!validateAction(step)) { /* abort or repair */ }\n  // Execute tool...\n}",
-      takeaway: "In multi-step agents, errors compound exponentially. Without hard budgets and state machines, autonomy is just runaway spend."
-    },
 
     // -------------------------------------------------------------
     // TRACK D: CRAFT
@@ -806,27 +617,6 @@ Then second-order reality arrived: 1) When a user changes their avatar, how does
     // -------------------------------------------------------------
     // TRACK J: DEBUGGING
     // -------------------------------------------------------------
-    "J.1": {
-      id: "J.1",
-      trackId: "J",
-      trackName: "Debugging",
-      title: "Reproduce it reliably before touching anything",
-      story: `Every engineer has witnessed the panic: production throws an exception, an alert blares in Slack, and a frantic developer opens an IDE, starts editing code, and pushes three consecutive speculative commits with messages like 'maybe fix', 'try null check', and 'revert previous'. The bug remains, and now the git history is polluted with noise.
-
-A bug you cannot reproduce is not a bug; it is a rumor. Until you have a deterministic reproduction script or minimal failing unit test that triggers the failure at will, you do not understand the problem. Touching code before reproducing the failure violates the fundamental scientific method.
-
-In June 1996, the Ariane 5 rocket exploded 37 seconds after liftoff because a 64-bit floating point number representing horizontal velocity was converted into a 16-bit signed integer in reused guidance code. The value was greater than 32,767. The conversion threw an unhandled hardware trap, the computer shut down, and the rocket sheared itself in half. The failure was completely reproducible—and had the team run the real flight trajectory simulation against the software, the explosion would never have occurred.`,
-      beat1: "Engineers guessing and editing code speculatively without reproducing the failure often introduce secondary bugs and obscure the root cause.",
-      beat2: "The scientific discipline of reproduction: isolate the exact inputs, environment, and state until the failure can be triggered deterministically on demand.",
-      beat3: "Reproducing heisenbugs (race conditions, memory leaks, distributed timing issues) requires significant time and observability tooling before writing a single line of fix.",
-      beat4: {
-        q: "What is a 'Heisenbug' and what step-by-step strategy do you use to diagnose a bug that disappears when you attach a debugger?",
-        trap: "Adding random sleep statements or print lines without structured hypotheses.",
-        answer: "A Heisenbug is a defect that alters its behavior or vanishes when observed (usually due to timing changes from debugger breakpoints or compiler optimization flags). Strategy: 1) Inspect structured asynchronous logs and trace IDs without halting execution threads, 2) Stress test concurrency using thread sanitizers or load generators to amplify timing windows, 3) Bisect recent environmental or dependency changes."
-      },
-      blueprint: "# The Debugging Discipline Checklist:\n1. Stop editing code.\n2. Isolate exact inputs: user payload, headers, environment variables.\n3. Write an automated reproduction script or failing test.\n4. Run it: confirm it fails 100% of the time.\n5. Apply minimal fix.\n6. Run test: confirm it passes. Keep the test in CI permanently.",
-      takeaway: "A bug you cannot reproduce is a rumor. Never write a fix for something you haven't seen fail."
-    },
 
     "J.9": {
       id: "J.9",
@@ -1185,27 +975,6 @@ In real-world machine learning—fraud detection, rare disease diagnosis, ad cli
     // -------------------------------------------------------------
     // TRACK A: SYSTEMS THINKING
     // -------------------------------------------------------------
-    "A.2": {
-      id: "A.2",
-      trackId: "A",
-      trackName: "Systems thinking",
-      title: "Feedback loops, reinforcing versus balancing: why retries take sites down",
-      story: `A balancing feedback loop seeks equilibrium: if a room gets too hot, the thermostat cuts power to the heater. A reinforcing feedback loop amplifies change: the louder people talk in a noisy pub, the louder everyone else must speak to be heard, creating an escalating spiral.
-
-In distributed systems, naive engineering instincts often turn benign balancing systems into catastrophic reinforcing death spirals. The classic example is the immediate HTTP retry.
-
-Suppose a backend database experiences a brief 10% latency hiccup. Frontend API servers see their requests timing out at 2.0 seconds. The developers wrote code: 'if request fails, retry up to 3 times immediately'. Instead of the database processing 1,000 queries per second, it is suddenly slammed with 3,000 retries per second from the same traffic. The database load jumps to 300%, latencies skyrocket, more requests time out, and more retries fire. The system enters a self-inflicted Distributed Denial of Service (DDoS) attack until engineers pull the plug.`,
-      beat1: "Temporary, transient spikes in database latency caused entire cloud infrastructures to suffer cascading outages due to uncontrolled retry storms.",
-      beat2: "Implementation of balancing feedback mechanisms: Exponential Backoff with Jitter, Circuit Breakers, and Token-Bucket Retry Budgets.",
-      beat3: "Requests fail fast during outages rather than waiting indefinitely; user interfaces must be designed to gracefully display degradation states.",
-      beat4: {
-        q: "What is 'Retry Jitter' and why is standard exponential backoff without jitter insufficient to stop cascading server failures?",
-        trap: "Thinking exponential backoff alone spreads out load evenly.",
-        answer: "Without jitter, all clients that timed out at the same moment will sleep for the exact same exponential interval (e.g., 2s, 4s, 8s) and retry in synchronized lockstep waves (the thundering herd problem). Adding random jitter (e.g. sleep = random(0, base * 2^attempt)) breaks up synchronization, scattering retry spikes into a smooth, manageable background hum."
-      },
-      blueprint: "// Exponential Backoff with Full Jitter\nasync function retryWithJitter(fn, maxAttempts = 3) {\n  for (let attempt = 0; attempt < maxAttempts; attempt++) {\n    try {\n      return await fn();\n    } catch (err) {\n      if (attempt === maxAttempts - 1) throw err;\n      const baseBackoff = 1000 * Math.pow(2, attempt);\n      // Add full random jitter to avoid thundering herd:\n      const sleepMs = Math.random() * baseBackoff;\n      await new Promise(r => setTimeout(r, sleepMs));\n    }\n  }\n}",
-      takeaway: "Naive retries turn a minor hiccup into a total site outage. Always pair backoff with random jitter."
-    },
 
     "A.3": {
       id: "A.3",
@@ -1279,27 +1048,6 @@ Gray's Write-Ahead Log (WAL) was the core mechanical breakthrough: before updati
       takeaway: "The Write-Ahead Log is the heart of durability. You don't write the data; you write the log of the promise first."
     },
 
-    "B.32": {
-      id: "B.32",
-      trackId: "B",
-      trackName: "System design",
-      title: "Consistency: what you give up, and CAP in plain words",
-      story: `In 2000, Eric Brewer presented the CAP Theorem at the Symposium on Principles of Distributed Computing (formally proved by Seth Gilbert and Nancy Lynch in 2002). It states that any distributed data store can simultaneously provide at most two of three guarantees: Consistency (every read receives the most recent write), Availability (every non-failing node returns a response), and Partition Tolerance (the system functions despite arbitrary network drops between nodes).
-
-Because physical network cables can be cut, switches fail, and cloud regions suffer packet drops, Network Partitions (P) are an unavoidable law of physics. Therefore, distributed system design is not picking between CA, CP, or AP. You MUST tolerate partitions. The real decision is: when a network partition occurs, do you choose Consistency (CP) or Availability (AP)?
-
-If you choose CP (like Spanner or traditional Zookeeper), you reject writes or block reads if nodes cannot reach consensus, protecting data accuracy at the expense of downtime. If you choose AP (like DynamoDB or Cassandra), you allow any node to accept writes, remaining online but accepting that different users will see conflicting, stale data until eventual consistency resolves it.`,
-      beat1: "Engineers built multi-node databases claiming they could deliver instantaneous synchronization, 100% uptime, and survive network failures simultaneously.",
-      beat2: "Eric Brewer (2000) formulated the CAP theorem, proving that network partitions force an inevitable tradeoff between strong consistency and continuous availability.",
-      beat3: "Giving up consistency forces applications to handle conflicts, stale reads, and split-brain states; giving up availability causes user-facing error screens.",
-      beat4: {
-        q: "Why is 'CA' (Consistency + Availability without Partition Tolerance) an impossible architectural choice in real distributed networks?",
-        trap: "Claiming a system can simply 'choose CA' by buying better networking hardware.",
-        answer: "Network partitions are not optional configurations; they are physical inevitabilities of distributed networks (routers fail, links drop, garbage collection pauses mimic network splits). If a partition occurs between node 1 and node 2, a write to node 1 cannot reach node 2. To be Available, node 2 must answer reads (returning stale data, violating C). To be Consistent, node 2 must refuse to answer (violating A). You cannot choose CA."
-      },
-      blueprint: "/* The Distributed Tradeoff Matrix under Network Split: */\nPartition Occurs (Physics) \n   ├── Choose CP: Reject writes until consensus restored (e.g. Banking, Spanner)\n   └── Choose AP: Accept writes on both sides; resolve conflicts later (e.g. Social Feeds, Dynamo)",
-      takeaway: "In distributed systems, you cannot choose CA. Partitions are physics. The only question is: fail or serve stale data?"
-    }
   };
 
   // Dynamic Four Beats Lesson Generator for complete 100% curriculum coverage
