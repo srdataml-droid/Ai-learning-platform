@@ -1,0 +1,20 @@
+{
+  "id": "I.9",
+  "trackId": "I",
+  "trackName": "Planning",
+  "title": "Sequence for learning: do the thing that teaches you most, earliest",
+  "status": "unsourced",
+  "story": "Plans are written with the knowledge available at the start, which is the least you will ever have. Every task completed changes what you know, so the order in which work is done determines how much of the plan gets made with good information and how much with the initial guess.\n\nThis argues for a different ordering than the usual one. Rather than doing the easiest or most structurally foundational work first, do the work that resolves the most uncertainty, because it improves every decision after it. Building a thin path through the entire system — ugly, incomplete, but touching every layer — teaches you more about where the difficulties are than building one layer properly, and it teaches you before the layer you built properly has to be rebuilt.\n\nIt is closely related to testing the riskiest assumption but not the same thing. Risk-first asks what would waste the most work if false. Learning-first asks what would change the most subsequent decisions if understood. They often point at the same task; when they do not, the distinction is between avoiding a catastrophe and improving a hundred small choices.",
+  "beats": {
+    "broke": "A plan is authored at the moment of least knowledge, and work sequenced by structure or ease leaves the informative parts until late. Most of the plan is therefore executed on the initial guess rather than on what has since been learned.",
+    "fix": "Sequence by information gain: do the work that resolves the most uncertainty first, so later decisions are made with better knowledge. A thin, ugly path through every layer usually teaches more than one layer built properly.",
+    "cost": "Early work done for learning is often thrown away, which looks wasteful and is hard to justify to anyone measuring output. A thin path through everything also leaves a system in an incomplete state across the board, which is uncomfortable and harder to demo than one finished component.",
+    "interview": {
+      "q": "What is the difference between sequencing by risk and sequencing by learning?",
+      "trap": "Treating them as the same principle. They frequently agree, and where they diverge the difference matters.",
+      "answer": "Risk-first asks which assumption would invalidate the most work if it turned out false, and tests that to avoid a catastrophic discovery late. Learning-first asks which task would most improve the decisions that follow it, and does that to raise the quality of everything downstream. One is about avoiding a single large loss, the other about improving many small choices. They often point at the same task, and where they differ, risk usually wins, because a wasted month outweighs a hundred slightly better decisions."
+    }
+  },
+  "blueprint": "By structure                 By information gain\n  build the data layer         thin vertical slice:\n  properly first               UI -> API -> logic -> DB\n  -> learn in week 4 that      ugly, hardcoded, incomplete\n     the API shape forces      -> learn in week 1 where the\n     a different data model       difficulties actually are\n  -> rebuild the data layer\n\nKnowledge over time:\n  plan written HERE ^ (least you will ever know)\n  every task completed moves the line up.\n  sequence so the steep part comes first.",
+  "takeaway": "The plan is written when you know least. Do the work that resolves the most uncertainty first, so the rest is decided with better information."
+}

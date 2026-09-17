@@ -1,0 +1,20 @@
+{
+  "id": "J.16",
+  "trackId": "J",
+  "trackName": "Debugging",
+  "title": "Add the test that would have caught it, before closing it",
+  "status": "unsourced",
+  "story": "A bug that reached you got past everything already in place, which is a precise statement about a gap in the tests. Fixing the code without closing that gap leaves the gap open, and the same defect can be reintroduced by anyone, including by you, next month.\n\nThe test to write is the one that fails before the fix and passes after it. That ordering is not a formality: a test written after the fix and never observed failing may not exercise the bug at all, and a test that cannot fail is worse than no test because it is counted as coverage. Running it against the unfixed code, seeing it fail for the right reason, then applying the fix is what establishes that it tests what you believe.\n\nDoing it before closing matters because afterwards it does not happen. The bug is fixed, the pressure is off, and the test becomes a task that is always less urgent than the next thing. The moment when you understand the failure completely — which conditions trigger it, what the wrong behaviour is, what the right one would be — is the moment the test is easiest to write, and that understanding is the first thing to fade.",
+  "beats": {
+    "broke": "A bug that reached production got past every existing test, so the suite has a demonstrated gap. Fixing only the code leaves the gap, and nothing prevents the same defect being reintroduced later.",
+    "fix": "Write a test that fails against the unfixed code and passes with the fix, and run it in that order. Seeing it fail for the right reason is what proves it exercises the bug rather than merely existing.",
+    "cost": "Some bugs are genuinely hard to express as tests — timing-dependent races, environmental faults, failures needing large or sensitive fixtures — and forcing one can produce a slow or flaky test that erodes trust in the whole suite. A regression test per bug also accumulates, and old ones documenting long-gone conditions are rarely removed.",
+    "interview": {
+      "q": "Why write the regression test before the fix rather than after?",
+      "trap": "Answering that it is good practice or part of a workflow. There is a specific verification that only the original order provides.",
+      "answer": "Because only a test observed failing is known to exercise the bug. Written after the fix, it passes immediately and you cannot distinguish a test that checks the right behaviour from one that checks nothing — and a test that cannot fail is worse than none, since it is counted as coverage. Running it against the unfixed code and watching it fail for the expected reason is the verification. Doing it before closing also matters practically: afterwards the pressure is off and your complete understanding of the failure, which is what makes the test easy to write, is the first thing to fade."
+    }
+  },
+  "blueprint": "Order matters:\n  1. reproduce\n  2. write the test\n  3. RUN IT -> must FAIL, and for the right reason   <- the step\n  4. fix\n  5. RUN IT -> passes\n  6. now close\n\nSkipping step 3:\n  test written after the fix, passes immediately.\n  is it checking the bug, or checking nothing?\n  indistinguishable -- and it now counts as coverage,\n  which is worse than having no test at all.\n\nThe bug got past every existing test. That is a measurement\nof the suite, not bad luck.",
+  "takeaway": "The bug proved a gap in the suite. Only a test you have watched fail is known to test anything — write it before the fix, and run it before the fix."
+}

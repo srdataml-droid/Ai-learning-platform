@@ -1,0 +1,20 @@
+{
+  "id": "I.6",
+  "trackId": "I",
+  "trackName": "Planning",
+  "title": "Write a one page design doc before anything non trivial: problem, options, choice, why, failure modes",
+  "status": "unsourced",
+  "story": "Writing exposes thinking that talking does not. A design held in conversation can stay comfortably vague, because each participant fills gaps with their own assumptions and nobody notices the gaps exist. Written down, the gaps become visible sentences that cannot be completed, and that discovery is most of the value — it usually happens to the author, alone, before anyone else reads it.\n\nOne page is the constraint that makes it work. It is short enough that it actually gets written and actually gets read, and short enough that it forces a decision rather than a survey. Five sections carry it: the problem, stated so someone outside the team understands why it matters; the options considered, including the one you rejected, stated fairly; the choice; why, in terms of the trade being accepted; and the failure modes, meaning how this goes wrong and what you would see.\n\nThe failure modes section is the one most often skipped and the one that pays the most later. It is the only part written while you still have a clear head about the design's weaknesses, and six months on, when something goes wrong, it is the document that says whether this was anticipated or genuinely new — which is exactly the question nobody can answer from memory.",
+  "beats": {
+    "broke": "Designs discussed only in conversation stay vague, because every listener silently fills the gaps with their own assumptions. Everyone leaves agreeing, holding different designs, and the divergence surfaces during implementation.",
+    "fix": "Write one page: problem, options considered, the choice, why in terms of the trade accepted, and the failure modes. Writing forces the gaps into visible sentences, usually while the author is still alone with it.",
+    "cost": "It is slow at the point where momentum feels valuable, and it can become ceremony — documents written to satisfy a process, filed, never read. Written after the decision was already made it is worse than nothing, since it lends deliberation to something that had none.",
+    "interview": {
+      "q": "Which section of a short design document earns the most later, and why?",
+      "trap": "Saying the chosen approach, or the rationale. Both are largely recoverable from the code and from whoever was there.",
+      "answer": "The failure modes. It is the only section written while you still see the design's weaknesses clearly, before familiarity makes them invisible, and it is unrecoverable afterwards — the code shows what was built, never what was feared. Six months on when something breaks it answers the question nobody can settle from memory: was this anticipated and accepted, or genuinely new. That distinction decides whether you patch within the design or reopen it."
+    }
+  },
+  "blueprint": "One page. Five headings. No more.\n\n  PROBLEM        why this matters, to someone outside the team\n  OPTIONS        including the one you rejected, stated fairly\n                 (see: steelman it before rejecting it)\n  CHOICE         what you are doing\n  WHY            the trade you are ACCEPTING, not just benefits\n  FAILURE MODES  how this goes wrong, and what you would SEE\n                 <- skipped most, pays most, unrecoverable later\n\nIf it will not fit on a page, the decision is not made yet.",
+  "takeaway": "Talking lets a design stay vague because listeners fill the gaps silently. Writing it makes the gaps into sentences you cannot finish."
+}

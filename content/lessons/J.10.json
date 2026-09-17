@@ -1,0 +1,20 @@
+{
+  "id": "J.10",
+  "trackId": "J",
+  "trackName": "Debugging",
+  "title": "Debugging across a network: tracing, correlation IDs, timeouts",
+  "status": "unsourced",
+  "story": "A single-process failure leaves a stack trace covering the whole causal chain. Across services that chain is cut into pieces, one per service, each holding a fragment and none holding the path. Worse, the failure surfaces in whichever service was unlucky enough to be waiting when something upstream went wrong, so the error you receive is frequently the least informative one in the system.\n\nA correlation identifier is the minimum repair. Generate one at the edge, pass it with every downstream call, include it in every log line. That single field lets you reassemble the fragments into the story of one request, and without it you are matching timestamps across services whose clocks do not quite agree. Tracing extends the idea with timing and parent-child relationships, showing not just which services took part but which call was slow and which ones waited on it.\n\nTimeouts deserve particular suspicion, because they convert one failure into a misleading one. A service that times out reports a timeout, which describes its own experience accurately and says nothing about the cause. If the timeouts are configured so a caller gives up before its callee does, the caller reports failure while the work is still running, and the true error appears later in a log nobody is reading by then.",
+  "beats": {
+    "broke": "The call chain is split across processes, so no single stack trace covers it. The failure is reported by whichever service happened to be waiting, which is usually not the one that failed, and matching events by timestamp fails because clocks disagree.",
+    "fix": "Generate a correlation identifier at the edge, propagate it with every downstream call, and include it in every log line so one request can be reassembled across services. Distributed tracing adds timing and parent-child structure on top.",
+    "cost": "Propagation must be complete: one service that drops the identifier breaks the chain at exactly the boundary you needed. Tracing adds overhead and is usually sampled, so the failure you care about may not have been recorded. And the instrumentation itself becomes infrastructure that has to be maintained.",
+    "interview": {
+      "q": "Service A calls B calls C. C is failing, but A reports a timeout. Why is A's error misleading, and what would fix the diagnosis?",
+      "trap": "Concluding that A's timeout is too short. That is a symptom of the configuration, not the reason the diagnosis is hard.",
+      "answer": "Because a timeout reports the caller's experience, not the cause. A accurately says it waited and gave up; that is compatible with B being slow, C being slow, the network, or anything else in the chain. If A's timeout is shorter than the sum of the ones below it, A gives up while the real work is still running and C's actual error arrives afterwards, unconnected to anything. The fix is a correlation identifier propagated from the edge and logged everywhere, so C's error can be tied to A's timeout, plus timeout budgets that decrease as you go deeper so the innermost failure surfaces before the outer caller abandons it."
+    }
+  },
+  "blueprint": "Without correlation            With\n  A: timeout after 5s            req_id=a91f  A: calling B\n  B: (nothing useful)            req_id=a91f  B: calling C\n  C: connection refused          req_id=a91f  C: conn refused\n  -> three logs, no link         req_id=a91f  A: timeout\n  -> match by timestamp,         -> one grep, whole story\n     clocks disagree\n\nTimeout budgets must SHRINK going down:\n  A 5s  ->  B 4s  ->  C 3s     C fails first, A reports C\n  A 3s  ->  B 5s  ->  C 5s     A gives up while work runs;\n                                the real error arrives later,\n                                attached to nothing",
+  "takeaway": "A timeout reports the caller's experience, never the cause. Propagate one id from the edge, and shrink timeout budgets with depth so the real failure surfaces first."
+}

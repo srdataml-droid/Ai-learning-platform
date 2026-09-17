@@ -1,0 +1,20 @@
+{
+  "id": "I.7",
+  "trackId": "I",
+  "trackName": "Planning",
+  "title": "Define done, in writing, before starting",
+  "status": "unsourced",
+  "story": "Without a written definition, done is decided at the end by whoever is most tired or most impatient, and it moves. It moves outward when someone notices the tests are thin, the documentation is missing or an edge case is unhandled. It moves inward when a deadline arrives. Both movements happen under pressure, and neither is a decision anyone would have made calmly.\n\nWriting it beforehand fixes the target while nobody has a stake in where it sits. It is also the only reliable defence against the ninety percent state, where the visible work is finished and the remaining tail — error handling, the empty state, a migration for existing data, telling someone it shipped — turns out to be a third of the effort. Those items are invisible when imagining the work and undeniable when listed.\n\nDone is also different for different work, and saying so is useful. A prototype whose purpose is to answer a question is done when the question is answered, and holding it to production standards is waste. Something going in front of customers is done when it handles the cases customers will actually produce. Deciding which kind of work this is, in writing, prevents the confusion where one person is polishing an experiment and another is shipping a prototype.",
+  "beats": {
+    "broke": "Completion is judged at the end, by whoever has the strongest opinion or the nearest deadline. The definition moves outward under scrutiny and inward under time pressure, and both moves are made in the worst conditions for judgement.",
+    "fix": "Write the completion criteria before starting, as a checkable list including the unglamorous tail: error states, migrations for existing data, the note that tells people it exists. Say explicitly what kind of work it is, since done for a prototype and done for a shipped feature are different targets.",
+    "cost": "A list written up front can be wrong, and treated as fixed it becomes a reason to deliver something known to be inadequate or to keep working past the point of value. It also cannot anticipate everything, so it has to be revised openly rather than silently, which requires discipline.",
+    "interview": {
+      "q": "Why does a task stall at ninety percent so consistently?",
+      "trap": "Attributing it to motivation or to the boring nature of the last stretch. The pattern is too consistent across people to be about temperament.",
+      "answer": "Because the estimate was made against the visible work and the remaining tail was never enumerated. Error handling, empty and loading states, migrating data that already exists, updating whoever depends on it, removing the temporary scaffolding — each is small, none is visible when imagining the task, and collectively they are often a third of the effort. Ninety percent is not a stall; it is the point at which the unlisted work becomes the only work left. Writing the definition of done beforehand puts those items in the estimate, which is the only thing that moves them."
+    }
+  },
+  "blueprint": "\"Done\" as imagined          \"Done\" written down first\n  the feature works           [ ] the feature works\n                              [ ] error + empty + loading states\n  -> 90% forever              [ ] migration for existing rows\n                              [ ] tests for the failure path\n                              [ ] the feature flag is removed\n                              [ ] whoever depends on it is told\n\nEach item is small. Together they are often a third of the job,\nand none of them are visible when you imagine the work.\n\nAlso say WHICH kind of done:\n  prototype -> done when the question is answered\n  shipped   -> done when it survives what customers do",
+  "takeaway": "Done moves outward under scrutiny and inward under deadline. Fix it in writing while nobody has a stake in where it sits."
+}

@@ -1,0 +1,20 @@
+{
+  "id": "J.15",
+  "trackId": "J",
+  "trackName": "Debugging",
+  "title": "Write the postmortem: what happened, why, what prevents a repeat",
+  "status": "unsourced",
+  "story": "Everything learned during an incident is held by the people who were there, in a form that degrades within days. Within a fortnight the sequence is uncertain; within a quarter the whole episode compresses to a sentence. Writing it down while it is fresh is the only way any of it survives, and the record is worth far more than the individual incident.\n\nThree parts do the work. What happened, as a timeline of observations with times, separating what was seen from what was inferred at the time — including the wrong inferences, which are the most instructive part because they show where the system misled people. Why, meaning the causal chain down to the last actionable link. And what prevents a repeat, as specific changes with owners, not intentions to be careful.\n\nThe document has to be blameless, and this is an engineering requirement rather than a courtesy. If naming what you did carries a personal cost, the accurate account stops being written, and what you get instead is a sanitised narrative that teaches nothing. A system where one person's mistake causes an outage has a problem beyond that person, and the postmortem exists to find it — which is impossible if people are protecting themselves in the text.",
+  "beats": {
+    "broke": "Incident knowledge lives only in the memories of those present and decays within days. Without a record, the same failure is investigated from scratch by whoever is on call next time, and organisations relearn the same lesson repeatedly.",
+    "fix": "Write it while fresh: a timeline separating observation from inference, the causal chain down to the last actionable link, and specific preventive changes with owners. Keep the wrong inferences in, since they show where the system misled people.",
+    "cost": "It takes hours, immediately after an exhausting event, from the people least able to spare them. Actions frequently go unimplemented, which makes the document a record of good intentions. And if the culture is not genuinely blameless, the text becomes defensive and worthless.",
+    "interview": {
+      "q": "Why must a postmortem be blameless, as an engineering matter rather than a cultural nicety?",
+      "trap": "Answering that it maintains morale or psychological safety. Those follow, but the immediate reason is about data quality.",
+      "answer": "Because blame destroys the accuracy of the record. If describing what you did carries personal risk, people write a version that protects them, and the document that results is a narrative rather than evidence — so the detail that would prevent recurrence is precisely what gets omitted. There is also a systems argument: if one person's ordinary mistake could take down production, the significant fault is that such a mistake was possible with that consequence. A blaming postmortem stops at the person and never reaches the missing guard rail, which means the same outage is available to the next person."
+    }
+  },
+  "blueprint": "  WHAT HAPPENED   timeline, with times\n    14:02  deploy started\n    14:09  p99 rose. OBSERVED.\n    14:15  believed to be the cache. WRONG -- keep this in.\n           it shows where the system misled us.\n    14:41  found: connection pool exhausted\n\n  WHY             chain to the last actionable link\n                  (see: root cause vs symptom)\n\n  PREVENTS REPEAT specific changes, each with an OWNER\n    [ ] pool size alert at 80%        -- sam\n    [ ] pool size in the deploy check -- sam\n    NOT \"be more careful with deploys\"\n\nBlameless for a hard reason: blame makes people write a\nnarrative instead of evidence, and the omitted detail is\nexactly the one that would have prevented the repeat.",
+  "takeaway": "Blame is not merely unkind, it corrupts the data — people write narrative instead of evidence, and the omitted detail is the preventive one."
+}

@@ -1,0 +1,20 @@
+{
+  "id": "I.4",
+  "trackId": "I",
+  "trackName": "Planning",
+  "title": "Map dependencies, including ones that depend on other people replying",
+  "status": "unsourced",
+  "story": "Dependency maps are usually drawn as though every dependency were technical. The ones that actually slip a schedule are the ones that require a human being to respond: access to be granted, a review to happen, a contract to be signed, a question to be answered by the one person who knows.\n\nThey behave differently from technical dependencies in a way that matters for planning. A technical dependency is worked on; a human dependency is waited on, and the waiting time has almost nothing to do with the size of the task. Someone can grant access in ninety seconds and take eleven days to do it, because their queue, their holiday and their priorities are not visible to you and not yours to manage.\n\nWhich gives one clear planning rule: identify every human dependency and start it before you need it. A request made on day one and answered on day twelve costs nothing if you did not need it until day fifteen. The same request made on day fourteen is the reason the work is late, and the work involved was identical.",
+  "beats": {
+    "broke": "Dependency planning covers the technical chain and omits the human one, so a plan that is sound on paper stalls on an access request, a review or an approval that nobody scheduled because it was not work.",
+    "fix": "Map every dependency that requires another person to act, and initiate those first. Waiting time is unrelated to task size, so the only variable you control is when you start waiting.",
+    "cost": "Firing off every request up front generates noise and can burn goodwill, especially if half of them turn out to be unnecessary. Requests made too early also go stale and have to be repeated, and some cannot be made before a decision that has not happened yet.",
+    "interview": {
+      "q": "Why should human dependencies be initiated before technical work begins, even when they are not on the critical path yet?",
+      "trap": "Answering that it saves time in general. The specific property is that their duration is not controlled by you and is unrelated to their size.",
+      "answer": "Because the time a human dependency takes has nothing to do with the work involved and cannot be compressed by effort. Granting access might take two minutes of someone's attention and sit for two weeks behind their queue, their holiday, or an approval chain you cannot see. Technical work can be accelerated by working harder; waiting cannot. So the only lever available is starting the wait earlier, which costs nothing and is the difference between a dependency being invisible and being the reason you are late."
+    }
+  },
+  "blueprint": "Technical dependency        Human dependency\n  you work on it              you WAIT on it\n  effort shortens it          effort does nothing\n  duration ~ size             duration ~ their queue,\n                              holiday, priorities --\n                              none of it visible to you\n\n  request access    day 1 --------------> day 12  (free)\n  request access                day 14 -> day 25  (late)\n  identical work. different start.\n\nStart every human dependency before you need it.",
+  "takeaway": "Human dependencies are waited on, not worked on, and their duration is unrelated to their size. The only lever is starting the wait early."
+}

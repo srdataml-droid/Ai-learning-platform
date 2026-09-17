@@ -1,0 +1,20 @@
+{
+  "id": "I.5",
+  "trackId": "I",
+  "trackName": "Planning",
+  "title": "Identify the riskiest assumption and test it first",
+  "status": "unsourced",
+  "story": "Work is usually sequenced by what is comfortable or by what appears to come first structurally, which quietly defers the question the whole plan depends on. If the plan assumes an external system can deliver the data you need in the shape you need, that assumption is load-bearing: if it is false, everything built on it is wasted, and the amount wasted grows every week you postpone checking.\n\nSo the ordering rule is to find the assumption whose failure would invalidate the most work, and test it before building anything on top. The test does not have to be elegant. A throwaway script that pulls one record from that system and prints it settles in an hour a question that could otherwise consume a month, and the script being ugly is irrelevant because its output is an answer rather than an artefact.\n\nThis ordering feels wrong while doing it, and that is worth expecting. It front-loads the unpleasant and uncertain parts and defers the satisfying visible progress. The reward is asymmetric and arrives later: either you continue with the assumption confirmed, or you learn in week one what you would otherwise have learned in week six, with five weeks of work still unspent.",
+  "beats": {
+    "broke": "Work gets sequenced by structure or by comfort, so the assumption the whole plan rests on is tested last. Every week it goes untested increases the amount of work that a negative answer would invalidate.",
+    "fix": "Find the assumption whose failure would waste the most work and test it first, with the cheapest thing that produces a real answer. A throwaway script settling it in an hour is worth more than an elegant component built on an unverified premise.",
+    "cost": "It front-loads the uncertain and unrewarding work and defers visible progress, which is hard to sustain and hard to report on. Risk can also be misidentified, so effort goes into de-risking something that was never the real threat while the actual one sits untested.",
+    "interview": {
+      "q": "How do you decide what to build first when several components are needed?",
+      "trap": "Answering bottom-up, or starting with whatever is best understood. Both sequence by structure rather than by risk.",
+      "answer": "By asking which assumption, if false, would invalidate the most subsequent work, and testing that first. Usually it is an external dependency behaving as expected, a performance characteristic holding at real volume, or a data source containing what everyone believes it contains. The test should be the cheapest thing that yields a real answer, not a production-quality component. The point is to convert the largest uncertainty into a fact while very little has been built on top of it."
+    }
+  },
+  "blueprint": "By structure (comfortable)      By risk (correct)\n  1. data model                   1. can the vendor API even\n  2. API layer                       return this field?  <- 1hr\n  3. business logic                  throwaway script\n  4. integrate vendor API         2. does it hold at 10k rows?\n     <- find out in week 6        3. ...then build\n        that it cannot\n\nCost of being wrong:\n  tested in week 6 -> 6 weeks wasted\n  tested in hour 1 -> 1 hour wasted\n\nThe test does not need to be good. It needs to be an answer.",
+  "takeaway": "Sequence by what would invalidate the most work if false, not by what comes first structurally. The cheapest test that yields a real answer wins."
+}

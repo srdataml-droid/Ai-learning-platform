@@ -1,0 +1,20 @@
+{
+  "id": "J.6",
+  "trackId": "J",
+  "trackName": "Debugging",
+  "title": "Use a real debugger, not only print statements",
+  "status": "unsourced",
+  "story": "A print statement answers one question you thought to ask, at one place you thought to ask it, and each new question costs an edit and a re-run. A debugger inverts that: it stops the program and lets you ask anything about the state that exists at that moment, including the questions you did not know you had.\n\nThe capabilities that change the work are the ones with no print equivalent. Stepping into a call to see what a library actually does with your argument. Inspecting a whole object rather than the field you guessed was interesting. A conditional breakpoint that fires only on the one iteration out of fifty thousand that matters. Walking up the call stack to see the caller's variables at the moment it made the call — which is the state that caused the problem, and by the time a print at the failure site runs, it is gone.\n\nMost people avoid debuggers for one of two reasons: the setup is unfamiliar, or the environment makes it awkward. The setup is a one-time cost per project and pays back the first time a bug takes an hour rather than a day. The environment objection is sometimes real, which is the next lesson.",
+  "beats": {
+    "broke": "Printing answers only questions decided in advance, at locations decided in advance. Each new question requires editing the source and running again, so investigation proceeds at the speed of the rebuild cycle.",
+    "fix": "Stop the program and inspect its live state. Step through execution, examine whole objects rather than guessed fields, set breakpoints conditional on the specific case, and walk up the stack to see the caller's variables at the moment it called.",
+    "cost": "Setup is per-project and non-trivial, and it degrades badly in some environments: optimised builds move code, asynchronous execution scatters the stack, and attaching to production is usually impossible or unsafe. Stopping a process also changes timing, which can hide precisely the race you are chasing.",
+    "interview": {
+      "q": "What can a debugger tell you that a print statement fundamentally cannot?",
+      "trap": "Answering that it is faster or more convenient. Those are true and are not capability differences.",
+      "answer": "The state of frames other than the one that failed, at the moment of failure. Walking up the stack shows the caller's local variables as they were when it made the call, which is usually where the wrong value came from — and by the time a print at the failure site executes, that frame has already returned and its state is gone. Also: inspecting whole objects rather than fields you guessed to print, stepping into library code you do not want to modify, and conditional breakpoints that fire only on the one iteration that matters out of tens of thousands."
+    }
+  },
+  "blueprint": "print                          debugger\n  one question                   any question, at that moment\n  one place                      the whole stack\n  edit + rerun per question      no rebuild\n  the field you guessed          the entire object\n  every iteration                break WHEN order_id == 'X'\n                                 (1 of 50,000)\n\nThe one with no print equivalent:\n  frame 3  process_batch()   <- inspect ITS locals, now\n  frame 2  validate()           the caller's state at the\n  frame 1  parse()  <- boom     moment it called.\n                                a print here runs AFTER\n                                frame 3 has returned.",
+  "takeaway": "A print answers questions you thought of in advance. A debugger shows you the caller's state at the moment it made the call, which no print can reach."
+}

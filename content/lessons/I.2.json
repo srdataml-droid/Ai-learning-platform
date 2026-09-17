@@ -1,0 +1,20 @@
+{
+  "id": "I.2",
+  "trackId": "I",
+  "trackName": "Planning",
+  "title": "Break work into pieces you can finish in one sitting",
+  "status": "unsourced",
+  "story": "A piece of work too large to finish in one sitting has to be carried between sittings, and what gets carried is not the code. It is the state in your head: what you were part way through, which of three approaches you had settled on, what the half-finished thing was supposed to become. That state evaporates overnight, and rebuilding it is a real cost paid at the start of every session.\n\nSizing to a sitting removes the carry. Each session begins with a decision already made and ends with something whole, which also means it ends somewhere you can stop safely. Work left mid-structure is fragile in a way that finished work is not: it cannot be reviewed, it cannot be tested, and if you are pulled away for a week it may be easier to discard than resume.\n\nThe sizing is also a design check. A task that cannot be reduced to something finishable usually has not been understood yet, and the difficulty in splitting it is information rather than an obstacle. Forcing the split tends to reveal that what looked like one task was three, one of which is the actual problem and the other two of which are straightforward.",
+  "beats": {
+    "broke": "Work larger than a session has to be resumed, and what must be resumed is the mental state — the approach chosen, the part half-built, the reason for it. That state decays overnight and rebuilding it is paid again every time.",
+    "fix": "Size each piece so it can be finished in one sitting, ending with something whole: reviewable, testable, and safe to walk away from. The next session starts on a decision rather than a reconstruction.",
+    "cost": "Not everything divides cleanly, and forcing a split can produce artificial boundaries that add coordination overhead or leave the system in an odd intermediate shape. There is also real per-piece overhead, so splitting too finely spends more on the seams than on the work.",
+    "interview": {
+      "q": "What does it tell you when a task genuinely cannot be broken into finishable pieces?",
+      "trap": "Treating it as a scheduling problem to be solved with a longer block of time. The difficulty is usually about understanding, not hours.",
+      "answer": "That it is not understood well enough yet. The inability to name a smaller finishable piece usually means the shape of the problem is still unclear, so any plan for it is guesswork. The productive response is to find the smallest thing that would teach you something — a spike, a prototype, reading the existing code — and do that first. Once the shape is known the split is usually obvious, and it often reveals the work was several tasks, only one of which was actually hard."
+    }
+  },
+  "blueprint": "Too large                        Sized to a sitting\n  \"add search\"                     1. index schema + migration\n  -> 3 days, carried across        2. write path: index on save\n     4 sessions, restarted         3. read path: query + rank\n     each morning                  4. empty/error states in the UI\n                                   5. pagination\n\nEach ends WHOLE: reviewable, testable, safe to abandon.\n\nIf you cannot split it, you do not understand it yet --\nthat is information. Do the smallest thing that would\nteach you the shape, then split.",
+  "takeaway": "What you carry between sessions is mental state, not code, and it evaporates. Size work so nothing needs carrying."
+}

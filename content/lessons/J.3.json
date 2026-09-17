@@ -1,0 +1,20 @@
+{
+  "id": "J.3",
+  "trackId": "J",
+  "trackName": "Debugging",
+  "title": "Form one hypothesis at a time, and write it down",
+  "status": "unsourced",
+  "story": "Under pressure the mind holds several theories at once and tests none of them cleanly. An observation arrives, it is partially compatible with two of the three, and both survive in slightly modified form. Nothing is eliminated, the set of live theories grows, and after an hour you cannot say which have been ruled out.\n\nOne at a time is what makes elimination possible. A single hypothesis, stated precisely enough to predict something specific, produces a test whose outcome is informative either way: it either matches or it does not, and the theory is confirmed or dead. Held alongside two others, the same observation gets absorbed as partial support for whichever theory is currently preferred.\n\nWriting it before the test is what stops the quiet editing. An unwritten hypothesis reshapes itself to accommodate whatever you just saw, and it does so without any conscious decision, so you experience it as the theory having been roughly right all along. Written, it is fixed, and a fixed prediction that fails is a cause genuinely eliminated — which is the only thing that makes a long investigation converge instead of circling.",
+  "beats": {
+    "broke": "Several theories are held simultaneously and none is tested cleanly. An ambiguous result is absorbed by all of them in slightly altered form, so nothing is ever eliminated and the investigation circles.",
+    "fix": "One hypothesis at a time, written down before the test, stated precisely enough to predict a specific observation. The result then confirms or kills it, and a killed hypothesis stays killed.",
+    "cost": "It is slower than following intuition, and intuition is sometimes right. It also risks tunnel vision: committing to one theory can make you dismiss an observation that did not fit it, which is why a clearly falsified hypothesis has to be abandoned rather than repaired.",
+    "interview": {
+      "q": "Why is holding several debugging hypotheses simultaneously worse than testing one at a time?",
+      "trap": "Answering that it is confusing or hard to keep track of. The failure is more specific than cognitive load.",
+      "answer": "Because no single observation can eliminate anything. With three live theories, a result that is partially consistent with two of them gets absorbed by both in slightly modified form, so the set of live theories never shrinks and may grow. Elimination requires a prediction specific enough to be contradicted, which means one hypothesis, stated before the test so it cannot be adjusted afterwards. That is what makes an investigation converge rather than circle for an afternoon."
+    }
+  },
+  "blueprint": "Three at once                One at a time\n  maybe cache / maybe DB       H: the cache returns stale rows\n  / maybe the deploy              after a write\n                               PREDICT: read-after-write on the\n  observe: stale data             same key shows the old value\n  -> \"consistent with\" all     TEST: write, read immediately\n  -> nothing eliminated        RESULT: fresh value returned\n  -> repeat for an hour        -> H is DEAD. permanently.\n\nWrite it BEFORE the test. Unwritten, it edits itself to fit\nwhatever you just saw -- and you will not notice it happen.",
+  "takeaway": "Several live theories mean no observation eliminates anything. One written prediction, tested, kills a cause for good."
+}

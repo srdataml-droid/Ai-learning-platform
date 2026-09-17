@@ -1,0 +1,20 @@
+{
+  "id": "J.13",
+  "trackId": "J",
+  "trackName": "Debugging",
+  "title": "Debugging models: is it the data, the label, the metric or the code",
+  "status": "unsourced",
+  "story": "A model performing badly has four candidate causes and they need separating before anything is changed, because the usual response — adjust the model — addresses the one that is least often responsible.\n\nThe data is the most common. Wrong distribution, missing values encoded in a way the model reads as meaningful, a preprocessing step applied during training and not at inference. The labels are next and are frequently wrong in ways nobody has checked: inconsistent between annotators, systematically biased, or derived from something that already encodes the answer. The metric may not measure what you care about, which is how a classifier achieving high accuracy on a heavily imbalanced dataset can be entirely useless. Only then the code.\n\nThe specific failure worth knowing by name is leakage, and it is dangerous because it looks like success. If a feature contains information that would not exist at prediction time — a field populated after the outcome, an identifier correlated with the target, a duplicate row split across training and test — the model appears excellent in evaluation and fails immediately in production. Suspiciously good results deserve more investigation than poor ones, because poor results get investigated automatically and excellent ones get celebrated and shipped.",
+  "beats": {
+    "broke": "Poor model performance has four possible causes — data, labels, metric, code — and they are indistinguishable from the score alone. The default response is to change the model, which addresses the least likely one.",
+    "fix": "Separate them in order of base rate: inspect the data first, audit a sample of labels by hand, confirm the metric reflects what you actually care about, and only then examine the code. Treat unexpectedly good results as suspicious rather than as success.",
+    "cost": "Auditing data and labels is slow, unglamorous manual work, and label auditing needs domain knowledge the team may not have. Investigating good results is culturally difficult, since it means delaying a celebrated number to look for a problem nobody wants to find.",
+    "interview": {
+      "q": "Your model achieves an unexpectedly high score on the validation set. Why is that a reason for concern?",
+      "trap": "Treating it as a good outcome to be confirmed with more evaluation. More evaluation on a contaminated setup reproduces the same number.",
+      "answer": "Because it is the signature of leakage: information present at training time that will not exist at prediction time. Common sources are a feature populated only after the outcome is known, an identifier that correlates with the target, or duplicate rows split across training and test. The model learns the shortcut, scores brilliantly in evaluation and fails immediately in production. Poor results get investigated automatically; excellent ones get celebrated and deployed, which is why unexpectedly good numbers deserve more scrutiny rather than less."
+    }
+  },
+  "blueprint": "Check in this order (base rate, not interest):\n\n  1. DATA    distribution shift? missing values encoded as 0\n             and read as meaningful? preprocessing applied in\n             training but not at inference?\n  2. LABELS  audit 100 by hand. inconsistent? biased? derived\n             from something that already knows the answer?\n  3. METRIC  99% accuracy on 99:1 imbalance = predicts one\n             class, useless, looks excellent\n  4. CODE    least likely. checked last.\n\nLEAKAGE looks like brilliance:\n  a field filled in AFTER the outcome\n  an id correlated with the target\n  duplicate rows split across train/test\n  -> superb in eval, worthless in production",
+  "takeaway": "Check data, labels and metric before the model. And investigate results that are too good harder than results that are bad — bad ones get investigated anyway."
+}

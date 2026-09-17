@@ -1,0 +1,20 @@
+{
+  "id": "I.8",
+  "trackId": "I",
+  "trackName": "Planning",
+  "title": "Cut scope deliberately rather than slipping deadlines accidentally",
+  "status": "unsourced",
+  "story": "When work runs late there are only ever three levers: move the date, add people, or reduce what is delivered. Adding people to something already late usually slows it further, since the newcomers have to be taught by the people doing the work. So it comes down to the date or the scope, and the only real question is whether the choice is made or allowed to happen.\n\nAllowed to happen, it is made by omission. The last items in the plan are the ones that get dropped, and those are ordinarily the tests, the error handling and the documentation — not because anyone decided they mattered least, but because they were scheduled last. The team ships something that looks complete and is missing precisely the parts that make it survivable, and nobody chose that.\n\nCutting deliberately means naming what is being dropped, saying so out loud, and recording it. It is a worse conversation and a better outcome: everyone knows what they are getting, the dropped item can be scheduled rather than forgotten, and what remains is coherent. A deliberately reduced release is a smaller thing that works. An accidentally reduced one is the original thing with unpredictable holes in it.",
+  "beats": {
+    "broke": "Late work reduces itself by omission. Whatever was scheduled last is what gets dropped, which is typically tests, error handling and documentation, so the result is missing the parts that make it survivable and nobody consciously chose that.",
+    "fix": "Choose the cut. Name what is being dropped, say it to whoever is affected, and record it so it can be scheduled rather than forgotten. What ships is then smaller and coherent instead of full-sized with holes in it.",
+    "cost": "It requires an uncomfortable conversation and an admission that the original plan was wrong. Repeated cutting also erodes trust in estimates, and cuts made under pressure can remove something load-bearing, since the thing easiest to drop is not always the thing least needed.",
+    "interview": {
+      "q": "A project will not make its date. Why is deliberately cutting scope better than letting the deadline slip quietly?",
+      "trap": "Framing it as being honest with stakeholders. Honesty is a benefit, but the structural problem is which work disappears when nobody chooses.",
+      "answer": "Because scope gets cut either way; the only question is whether anyone chose what. Unmanaged, the cut falls on whatever was scheduled last, which is almost always tests, error handling and documentation, so you ship something that looks finished and lacks exactly the parts that make it survive contact with users. Choosing the cut means the remaining thing is coherent, the dropped part is recorded and can be scheduled, and everyone knows what they are getting. It is a worse conversation and a materially better outcome."
+    }
+  },
+  "blueprint": "Late. Three levers, and only two work:\n  move the date     |  reduce scope     |  add people\n                                           (slower: the team\n                                            now teaches)\n\nCut by omission              Cut deliberately\n  drops what was LAST          drops what matters LEAST\n  = tests, error handling,     = one named feature,\n    docs, migrations             recorded, scheduled later\n\n  ships: full-sized,           ships: smaller, and it works\n  with unpredictable holes\n\nScope gets cut either way. The only question is who chose.",
+  "takeaway": "Late work cuts itself, and it cuts whatever was scheduled last — the tests and error handling. Choosing the cut is the only way the remainder stays coherent."
+}

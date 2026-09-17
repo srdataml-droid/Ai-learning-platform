@@ -1,0 +1,20 @@
+{
+  "id": "J.12",
+  "trackId": "J",
+  "trackName": "Debugging",
+  "title": "Debugging data: silent corruption, encoding, timezones, floats",
+  "status": "unsourced",
+  "story": "Code failures announce themselves. Data failures do not: the program runs to completion, returns a plausible value, and the wrongness is discovered weeks later by someone who noticed a total that looked odd. There is no stack trace because nothing threw, and by then the bad values have propagated into reports, caches and downstream systems.\n\nFour sources account for most of it. Encoding, where text written in one encoding and read in another produces either mangled characters or, worse, characters that look fine until one particular name breaks a comparison. Timezones, where a timestamp without an offset is ambiguous by hours and daylight saving makes some local times occur twice and others not at all. Floats, where accumulated representation error turns an equality check into a coin flip and repeated addition drifts. And silent coercion, where a language converts a type rather than complaining and a string that should have been a number becomes one in a way nobody intended.\n\nThe defence is to check at the boundary rather than to hunt afterwards. Validate at the moment data enters, store timestamps with an explicit offset, be explicit about encoding at every read and write, and use a decimal or integer representation wherever exactness matters. Every one of these is cheap at the boundary and extremely expensive once the values have spread.",
+  "beats": {
+    "broke": "Bad data does not raise anything. The program completes and produces a plausible wrong answer, so discovery happens weeks later by inspection, with no trace and with the bad values already copied into other systems.",
+    "fix": "Validate at the boundary where data enters. Declare encodings explicitly on every read and write, store timestamps with an offset, use decimal or integer types where exactness is required, and reject rather than coerce.",
+    "cost": "Boundary validation is work at every entry point and can reject data that is imperfect but usable, which causes its own outages. Strictness also has to be maintained as formats evolve, and a validator that becomes wrong is worse than none because it is trusted.",
+    "interview": {
+      "q": "Why are data bugs typically discovered far later than logic bugs?",
+      "trap": "Answering that they are more subtle. The mechanism is that nothing fails at all.",
+      "answer": "Because nothing fails. A logic error tends to raise, crash or produce output obviously wrong, so it is caught immediately by a test or an alarm. Bad data flows through code that is working exactly as written, producing a plausible result, so no exception is raised and no alert fires. Detection depends on someone noticing an implausible value, which can take weeks, and by then it has propagated into reports, caches and downstream systems, so the fix involves finding and correcting every copy rather than only the code."
+    }
+  },
+  "blueprint": "The four:\n  ENCODING   written cp1252, read utf-8\n             -> \"Jos\\xe9\" or a name that breaks == quietly\n  TIMEZONE   \"2026-03-29 01:30\" -- which one? that local time\n             occurs twice in some zones, and never in others\n  FLOATS     0.1+0.2 != 0.3; repeated addition drifts\n  COERCION   \"12\" + 3  ->  \"123\" or 15, depending on language\n\nAll four: program completes, returns a plausible value,\nno exception, no alert, discovered in week 6.\n\nCheck at the BOUNDARY. Cheap on the way in; ruinous once\nthe values have been copied into three other systems.",
+  "takeaway": "Data bugs raise nothing — the code works as written on a wrong value. Validate at the boundary, because after it spreads you are fixing copies, not code."
+}

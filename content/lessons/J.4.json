@@ -1,0 +1,20 @@
+{
+  "id": "J.4",
+  "trackId": "J",
+  "trackName": "Debugging",
+  "title": "Change one thing per test",
+  "status": "unsourced",
+  "story": "Changing three things and observing an improvement gives you no information about which change was responsible, and it is worse than that: it may be that one change fixed it, a second made it worse, and a third fixed it again, leaving two latent problems behind a green result.\n\nThis is the same reasoning as a controlled experiment, and the temptation to abandon it is strongest exactly when it matters most. Under pressure, three plausible fixes are applied together because trying them separately takes three times as long. If it works, nobody goes back to find out why, and the codebase acquires two changes that nobody can justify and nobody will dare remove.\n\nThe discipline is cheap to state and costs patience to keep. Make one change, observe, revert it if it did not help. Reverting is the part that gets skipped, and skipping it is how a file ends up with four attempted fixes layered on top of each other, at which point the behaviour is a function of the combination and reasoning about it is genuinely impossible.",
+  "beats": {
+    "broke": "Multiple simultaneous changes make the result uninterpretable. Worse, changes can cancel each other, so a working system can contain two faults that happen to offset, and the green result conceals both.",
+    "fix": "One change per observation, and revert anything that did not help. That keeps every result attributable and stops the code accumulating unjustified modifications.",
+    "cost": "It is slower, sometimes several times slower, and the slowness bites hardest during an incident when speed is most wanted. Some problems also only manifest under a combination of conditions, where strict one-at-a-time testing will never reproduce them.",
+    "interview": {
+      "q": "Beyond not knowing which change helped, what is the risk of applying several fixes at once?",
+      "trap": "Stopping at attribution. The more serious risk is about what the passing result is hiding.",
+      "answer": "That changes can mask each other. One fix may have resolved the problem, a second introduced a new fault, and a third compensated for it, leaving a system that passes while containing two defects that cancel. Because it works, nobody investigates, and those defects surface later when unrelated work disturbs the balance. Applying one change at a time and reverting what did not help keeps every result attributable and stops the code accumulating modifications nobody can justify."
+    }
+  },
+  "blueprint": "Three at once:\n  + raise the timeout\n  + add a retry            -> it works now!\n  + change the pool size\n\n  actually: retry fixed it\n           pool size introduced a leak\n           timeout hid the leak\n  = passing, with two latent faults that cancel\n\nOne at a time:\n  + raise timeout  -> no change  -> REVERT  <- the skipped step\n  + add retry      -> fixed      -> keep\n  done. one justified change in the diff.",
+  "takeaway": "Simultaneous changes can cancel, so a green result can hide two faults. Reverting what did not help is the step everyone skips."
+}

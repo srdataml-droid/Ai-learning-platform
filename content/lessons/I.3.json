@@ -1,0 +1,20 @@
+{
+  "id": "I.3",
+  "trackId": "I",
+  "trackName": "Planning",
+  "title": "Estimate, record the estimate, compare afterwards",
+  "status": "unsourced",
+  "story": "Estimation is treated as a talent people either have or lack, which conveniently excuses never improving at it. It is a skill, and it improves the way skills do: by making predictions, recording them, and comparing them against what happened. Almost nobody does the recording, which is why almost nobody improves.\n\nWithout a record, memory does the comparison and memory is not neutral. Overruns are remembered as exceptional — an unusual dependency, an interruption, a thing nobody could have foreseen — so each one is filed as a special case and the general pattern never forms. Twenty recorded estimates make the pattern impossible to file away, and the useful discovery is usually not that you are wrong but that you are wrong by a consistent ratio, which is directly correctable.\n\nThe record also changes what estimating is for. An estimate with no history behind it is a guess presented as a number, and people plan around it as though it were information. An estimate backed by twenty comparisons can be stated with its own error bar, which is a far more useful thing to hand someone than false precision.",
+  "beats": {
+    "broke": "Estimates are made and never checked, so memory performs the comparison. Memory files every overrun as an exception caused by something unforeseeable, which prevents the general pattern from ever becoming visible.",
+    "fix": "Write the estimate down before starting and compare it to the actual afterwards. Twenty of those make the pattern undeniable, and the pattern is usually a consistent ratio rather than random error, which can be corrected by applying it.",
+    "cost": "It is bookkeeping, and it is uncomfortable to look at. Estimates recorded where others can see them also create pressure to hit them, which corrupts the data: people start estimating what is acceptable rather than what is likely, and the record stops measuring anything.",
+    "interview": {
+      "q": "Why does keeping a record of estimates improve them, when simply estimating repeatedly does not?",
+      "trap": "Answering that it creates accountability. Accountability pressure actively damages the data, which is the opposite of what is wanted.",
+      "answer": "Because without a record the comparison is done by memory, and memory rationalises each overrun as a one-off caused by something specific and unforeseeable. That explanation is available every time, so no pattern forms no matter how many estimates you make. A written record removes the rationalisation: twenty entries showing a consistent ratio cannot each be a special case. What you usually find is a stable multiplier rather than random error, which is directly correctable, and that only becomes visible in aggregate."
+    }
+  },
+  "blueprint": "  #   task                estimate   actual   ratio\n  1   migrate config        2h        5h      2.5\n  2   add retry logic       4h        7h      1.8\n  3   fix the flaky test    1h        6h      6.0\n  4   upgrade the SDK       3h        8h      2.7\n  ...\n  20  ...\n\nNot \"I am bad at estimating\" -- a MULTIPLIER of about 2.5,\nwhich you can simply apply.\n\nAnd the outlier (#3) is its own lesson: the tasks that\nblow up are the ones where you did not know the cause yet.",
+  "takeaway": "Without a record, memory files every overrun as an exception. Twenty written comparisons turn that into a multiplier you can apply."
+}

@@ -1,0 +1,20 @@
+{
+  "id": "J.11",
+  "trackId": "J",
+  "trackName": "Debugging",
+  "title": "Debugging concurrency: race conditions, deadlocks, ordering",
+  "status": "unsourced",
+  "story": "Concurrency bugs break the assumption every other debugging technique rests on: that running the same thing again does the same thing. A race depends on an interleaving that occurs under particular timing, so it appears once in ten thousand runs, disappears under a debugger, and vanishes when you add the logging that would have caught it.\n\nBecause reproduction is unreliable, the work shifts from observing the bug to reasoning about it. The question is which state is shared and mutable, and what is supposed to protect it. Shared and immutable is safe. Mutable and confined to one thread is safe. The intersection is where every race lives, and it is a much smaller surface than the whole program — enumerating it is usually feasible where reproducing the bug is not.\n\nDeadlocks are the tractable member of the family, because they are static rather than timing-dependent: two locks acquired in opposite orders by two paths. That is findable by reading, and preventable by a rule rather than by care — establish a global order for lock acquisition and take them only in that order. Ordering bugs, where two operations that appeared sequential are not, are best addressed by removing the assumption rather than by timing them, since anything that depends on one thing finishing before another must say so explicitly.",
+  "beats": {
+    "broke": "Reproduction is not reliable. A race depends on a specific interleaving, so it occurs rarely, and any observation added to catch it changes the timing enough to prevent it — the technique defeats itself.",
+    "fix": "Reason about the shared mutable state instead of chasing the symptom. Enumerate what is both shared and mutable and what protects each item; that intersection contains every race and is far smaller than the program. Prevent deadlocks structurally with a global lock ordering, and make ordering assumptions explicit rather than timing-dependent.",
+    "cost": "Reasoning is slower than observing and depends on knowing the whole concurrent design, which is often not written down. Defensive locking added out of uncertainty costs throughput and introduces new deadlock opportunities, and the analysis does not scale well as the number of interacting components grows.",
+    "interview": {
+      "q": "A race condition reproduces in production about once a day and never locally, and adding logging makes it disappear. How do you approach it?",
+      "trap": "Trying harder to reproduce it, with stress tests or artificial load. Sometimes it works, and it is not where the leverage is.",
+      "answer": "By reasoning about state rather than chasing reproduction. Enumerate what is both shared between threads and mutable, since anything immutable or thread-confined cannot race, and that intersection is small enough to inspect exhaustively. For each item, identify what is meant to protect it and check every path that touches it actually does. Logging making it vanish is itself evidence: it confirms a genuine timing dependency and narrows the window to the code around where the logging was added. Stress testing can help confirm a fix, but it is unreliable for finding the cause."
+    }
+  },
+  "blueprint": "                 shared        not shared\n  mutable     RACES LIVE      safe (thread-confined)\n              HERE ONLY\n  immutable   safe            safe\n\nEnumerate the top-left box. It is small. That is the whole\nsurface, and you can inspect it without reproducing anything.\n\nDeadlock is the easy one -- static, findable by reading:\n  thread 1:  lock(A) then lock(B)\n  thread 2:  lock(B) then lock(A)   <- opposite order\n  fix by RULE, not care: one global order, always.",
+  "takeaway": "Races defeat observation — logging changes the timing that causes them. Enumerate what is shared and mutable instead; that box is small and contains all of them."
+}
