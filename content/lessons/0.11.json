@@ -1,0 +1,20 @@
+{
+  "id": "0.11",
+  "trackId": "0",
+  "trackName": "Before any code",
+  "title": "Installing things: package managers, versions, virtual environments",
+  "status": "unsourced",
+  "story": "Reusing other people's code is the whole economics of software, and the awkwardness of installing it is the bill for that. Two programs on one machine will eventually need two different versions of the same library, and if there is a single shared place where libraries live, one of them is going to lose.\n\nPackage managers solved finding and fetching. You name a package, it resolves what that package itself depends on, and installs the lot. Version numbers became a promise about compatibility, so that a range could be requested rather than an exact release. That promise is a convention rather than a guarantee, and it is broken regularly, which is why lockfiles exist: a lockfile records the exact versions that were actually installed, so the next person gets the same set rather than whatever satisfies the range today.\n\nIsolation solved the conflict. Instead of one shared location, each project gets its own, and the tooling looks there first. The mechanism differs by ecosystem but the idea does not. What this does not solve is the size of what you are agreeing to: asking for one package can bring in dozens you never named, each written by someone you will never meet, and all of them running with your permissions. Reading what a dependency actually pulls in, before adding it, is a habit worth having early.",
+  "beats": {
+    "broke": "A single shared location for installed libraries means two projects needing different versions of the same library cannot both work. Installing for one silently breaks the other, and the breakage appears in the project nobody touched.",
+    "fix": "Package managers resolve and fetch dependencies and the dependencies of those dependencies. Version ranges plus a lockfile record both what was asked for and what was actually installed. Per-project environments give each project its own place to put libraries, so two versions can coexist on one machine.",
+    "cost": "The dependency graph grows far beyond what anyone chose directly, and every package in it runs with your permissions. Version ranges rely on authors honouring a compatibility convention, which is not enforced. And an environment is another piece of state that can be stale, activated or forgotten, which is a large share of what 'works on my machine' actually means.",
+    "interview": {
+      "q": "What does a lockfile do that a dependency list in a manifest does not?",
+      "trap": "Saying it pins versions, without saying whose. The manifest already constrains direct dependencies; the interesting part is everything else.",
+      "answer": "A manifest records what you asked for, usually as ranges, and only for direct dependencies. A lockfile records what was actually resolved, exactly, for the entire transitive graph including packages you never named. That is what makes an install reproducible: without it, two installs from the same manifest on different days can produce different code, because a range now matches a newer release. It is also what lets you audit and review a dependency change, since the diff shows every version that moved."
+    }
+  },
+  "blueprint": "Without isolation                With isolation\n  /usr/lib/python3/                project-a/.venv/   requests 2.28\n    requests 2.28                  project-b/.venv/   requests 2.31\n  project-a needs 2.28             both work; neither knows about\n  project-b needs 2.31             the other\n  -> one of them loses\n\nmanifest  \"requests\": \"^2.28\"    <- what you asked for (a range)\nlockfile  requests 2.31.0         <- what was installed, exactly\n          urllib3  2.2.1          <- and everything it dragged in\n          certifi  2024.2.2          that you never named",
+  "takeaway": "Isolation is what lets one machine hold conflicting versions; the lockfile is what makes an install the same twice; neither limits what you are trusting."
+}

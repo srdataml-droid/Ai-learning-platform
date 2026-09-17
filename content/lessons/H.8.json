@@ -1,0 +1,20 @@
+{
+  "id": "H.8",
+  "trackId": "H",
+  "trackName": "Observation",
+  "title": "Keep an engineering notebook: symptom, hypothesis, test, result",
+  "status": "unsourced",
+  "story": "Debugging held entirely in your head degrades in a predictable way. After an hour you cannot recall whether a particular theory was tested or merely considered, which configurations have already been tried, or what the behaviour was before the last four changes. So theories get retested, changes accumulate unrecorded, and the original symptom becomes unreachable.\n\nFour fields fix most of it. The symptom, stated precisely enough to recognise if it returns. The hypothesis, one at a time, written before the test rather than after. The test that would distinguish it from the alternatives. The result, including the ones that ruled nothing out. Writing the hypothesis first is the part that does the work, because a theory written down can be wrong in a way a theory in your head cannot: it stops quietly reshaping itself to fit whatever you just observed.\n\nThe record keeps paying after the bug is closed. It is the raw material for the postmortem, it is the evidence when someone asks why the fix is what it is, and it is what you consult in eight months when the same symptom reappears and you have entirely forgotten that you have met it before.",
+  "beats": {
+    "broke": "Working memory is too small and too editable for a long investigation. Hypotheses get retested, changes stack up unrecorded, and a theory held only in the head rewrites itself to fit each new observation without anyone noticing.",
+    "fix": "Write four things per attempt: the symptom, one hypothesis, the test that would distinguish it, and the result. Recording the hypothesis before the test is what makes it falsifiable, because it can no longer be quietly adjusted afterwards.",
+    "cost": "It is friction at exactly the moment you feel closest to the answer, and that feeling is when it gets abandoned. Written records are also only as good as the discipline behind them; a notebook filled in retrospectively is a reconstruction, which is the thing it exists to prevent.",
+    "interview": {
+      "q": "Why write the hypothesis down before running the test rather than recording what you found afterwards?",
+      "trap": "Answering that it is for the record, or for teammates. The benefit is to your own reasoning during the investigation.",
+      "answer": "Because an unwritten hypothesis adjusts itself to the evidence. If the theory lives only in your head, an ambiguous result gets absorbed as partial confirmation and the theory survives in a slightly altered form you never consciously chose. Writing it first fixes what was predicted, so the result either matches or does not, and a genuinely eliminated cause stays eliminated. That is also what stops you testing the same idea three times in different clothes."
+    }
+  },
+  "blueprint": "2026-09-17 14:02\n  SYMPTOM     upload fails ~1 in 5, only files > 4MB,\n              only on staging. 502 after ~30s.\n  HYPOTHESIS  proxy read timeout is 30s, upload exceeds it\n  TEST        upload 4.5MB with proxy timeout raised to 120s\n  RESULT      still fails at ~30s.  -> hypothesis WRONG,\n              and 30s is coming from somewhere else\n\n  HYPOTHESIS  the 30s is the load balancer, not the proxy\n  TEST        curl the app directly, bypassing the LB\n  RESULT      4.5MB succeeds in 41s.  -> CONFIRMED\n\nThe wrong hypothesis is worth writing. It is what stops\nyou re-testing the proxy at 16:30 having forgotten.",
+  "takeaway": "A hypothesis in your head edits itself to survive the evidence. Writing it before the test is what makes elimination stick."
+}

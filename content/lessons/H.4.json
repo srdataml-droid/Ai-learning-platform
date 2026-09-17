@@ -1,0 +1,20 @@
+{
+  "id": "H.4",
+  "trackId": "H",
+  "trackName": "Observation",
+  "title": "Measure before you optimise, always",
+  "status": "unsourced",
+  "story": "Intuition about performance is unreliable in a specific and consistent way: it tracks what the code looks like rather than what the machine does. A nested loop looks expensive and may take microseconds. A single innocuous line may open a connection, wait on a disk, or serialise an object graph, and take a hundred times longer than everything around it combined.\n\nSo the rule is not a suggestion about rigour. It is a response to the fact that the guess is usually wrong, and acting on a wrong guess costs twice: the work spent optimising something that did not matter, and the complexity permanently added to code that was previously simple and fast enough. Optimised code is harder to read, harder to change and more likely to be subtly incorrect, and that price is paid whether or not the optimisation helped.\n\nMeasuring also establishes something optimisation cannot proceed without: a number from before. Without it there is no way to tell whether a change helped, and no way to notice when a later change quietly gives the improvement back.",
+  "beats": {
+    "broke": "Performance work was directed by reading code and judging what looked expensive. That judgment tracks visual complexity rather than actual cost, so effort went to whatever appeared intricate while the real cost sat in an unremarkable line.",
+    "fix": "Measure first and let the measurement choose the target. Establish a baseline number before changing anything, so the effect of a change can be observed rather than assumed.",
+    "cost": "Measuring takes setup and the act of measuring perturbs what it measures. It also requires a workload resembling production, since optimising against an unrepresentative benchmark produces code tuned for a situation that never occurs.",
+    "interview": {
+      "q": "Why is premature optimisation harmful, beyond the time it wastes?",
+      "trap": "Treating the cost as only the hours spent. The lasting damage is to the code, not the schedule.",
+      "answer": "Because the complexity it adds is permanent and the benefit is usually zero. Optimised code is harder to read and change, and often trades clarity for caching, manual memory handling or loop restructuring that introduces its own bugs. That cost is paid by everyone who touches the code afterwards, forever, whether or not the optimisation mattered. Without a measurement you also have no baseline, so you cannot show the change helped or notice when a later change reverses it."
+    }
+  },
+  "blueprint": "Order of operations:\n  1. make it work\n  2. measure           <- baseline number, written down\n  3. find the top cost  (usually one thing, not everything)\n  4. change ONE thing\n  5. measure again     <- compare to step 2\n  6. keep it only if the number moved enough to justify\n     the complexity it added\n\nAmdahl, informally: speeding up something that is 5% of\nruntime cannot win you more than 5%, no matter how clever.",
+  "takeaway": "The guess is usually wrong, and the complexity an optimisation adds is permanent whether or not it helped. Get the number first."
+}

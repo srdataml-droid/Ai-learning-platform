@@ -1,0 +1,20 @@
+{
+  "id": "H.3",
+  "trackId": "H",
+  "trackName": "Observation",
+  "title": "Read logs at volume without drowning",
+  "status": "unsourced",
+  "story": "A system under real load produces more log lines per minute than anyone can read in a day. Reading them in sequence does not scale and never will, so the skill is not reading faster. It is narrowing before reading.\n\nNarrowing has a natural order. Time first: establish when the problem occurred and discard everything outside a window around it. Identity second: find the one request, user or job that failed, and follow only that. Severity last, and with suspicion, because the line that explains the failure is frequently at info level while the errors are all downstream consequences shouting about a thing that already went wrong.\n\nThis is why structured logging matters more than it appears to. A log line that is a sentence can only be searched as text. A log line that is a record with fields can be filtered by any of them, so the narrowing is a query rather than a guess at a substring. The most useful field is the one that ties every line produced by a single request together, because that is what turns a flat stream of everything into the story of one thing.",
+  "beats": {
+    "broke": "Volume grows with traffic while human reading speed does not. At a few hundred lines a second, sequential reading is not slow but impossible, and the relevant line is statistically certain to be skipped.",
+    "fix": "Narrow before reading. Cut to a time window around the event, then to a single identity such as one request or one job, and only then consider severity. Structured records with fields make each narrowing a query rather than a guess at a substring.",
+    "cost": "Narrowing can exclude the cause. A failure that begins minutes earlier, or in a different service under a different identity, falls outside the window you chose and becomes invisible. Filtering by severity in particular tends to hide the explanation and keep the consequences.",
+    "interview": {
+      "q": "Why is filtering logs by error level often the wrong first move?",
+      "trap": "Answering that it produces too much output. The problem is the opposite: it produces confident output that is missing the cause.",
+      "answer": "Because severity describes how loudly a line complains, not how close it is to the cause. The originating event is frequently logged at info level, such as a configuration value being read or a fallback being taken, while every error afterwards is a downstream consequence. Filtering to errors keeps the noise and discards the explanation. Narrowing by time and by a correlation identity preserves the causal sequence, which is what actually answers the question."
+    }
+  },
+  "blueprint": "Wrong order                 Right order\n  level=ERROR                 1. time window   [14:32:00, 14:33:00]\n  -> 400 lines, all           2. one identity  request_id=a91f\n     downstream               3. read ALL levels for that one\n     consequences\n\nUnstructured   \"failed to save user 91 after retry\"\n               -> grep, and hope you guessed the wording\n\nStructured     {evt:\"save_failed\", user:91, attempt:2,\n                request_id:\"a91f\", level:\"error\"}\n               -> filter on any field; follow request_id across services",
+  "takeaway": "You do not read logs, you narrow them: time, then identity, then severity, and severity last because the cause is usually logged quietly."
+}

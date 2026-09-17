@@ -1,0 +1,20 @@
+{
+  "id": "H.9",
+  "trackId": "H",
+  "trackName": "Observation",
+  "title": "Learn your system's normal before you need to recognise abnormal",
+  "status": "unsourced",
+  "story": "Abnormal is not a property of a measurement. Four hundred milliseconds is fine for one endpoint and a crisis for another; eighty percent memory is steady state for a service that caches and a warning for one that does not. Without knowing what a system does when nothing is wrong, every number is uninterpretable, and the interpretation gets invented under pressure.\n\nThis is why the worst moment to first look at a dashboard is during an incident. Everything on it looks alarming, because you have no basis for comparison and adrenaline supplies one. Teams routinely spend the first half of an outage investigating a metric that has looked exactly like that every day for a year.\n\nNormal also has shape rather than a single value. Traffic has a daily rhythm and a weekly one; batch jobs make memory sawtooth; deploys leave a signature. Knowing the shape means an anomaly can be recognised as a break in a pattern rather than a threshold crossing, which catches things no fixed limit would — a Tuesday that looks like a Sunday is a problem even though every individual number is within range.",
+  "beats": {
+    "broke": "Thresholds treat a measurement as meaningful in isolation, but the same number is healthy for one system and catastrophic for another. Without a baseline, judging severity during an incident means inventing one while under pressure.",
+    "fix": "Learn the system's ordinary behaviour before you need it: its daily and weekly rhythms, the shape memory makes between collections, what a deploy looks like on the graphs. Anomalies then appear as breaks in a known pattern rather than crossings of an arbitrary line.",
+    "cost": "Normal drifts. Traffic grows, caches warm differently, dependencies change, and a baseline learned last quarter slowly becomes wrong, so it needs revisiting. Worse, a fault that arrives gradually gets absorbed into the baseline and becomes the new normal, which is how systems degrade for months without anyone raising anything.",
+    "interview": {
+      "q": "Why is a fixed threshold alert often insufficient, and what does knowing the baseline add?",
+      "trap": "Proposing to fix it by tuning the threshold. Any single value is wrong at some hour of some day, which is the problem rather than a calibration issue.",
+      "answer": "Because the same value means different things at different times. A request rate that is healthy at midday indicates an outage at midday and is normal at three in the morning, so a single threshold either pages falsely overnight or misses a daytime failure. A baseline captures the expected shape, letting you alert on deviation from the pattern instead. That catches failures where every individual number stays inside its limits but the relationship between them is wrong, which fixed thresholds cannot see."
+    }
+  },
+  "blueprint": "Without a baseline            With one\n  \"CPU is at 70%!\"              \"CPU is at 70%, and it is 70%\n  -> is that bad?                every weekday at 09:00\"\n  -> nobody knows                -> not the incident. move on.\n\nNormal has shape, not a value:\n\n  req/s   .--.      .--.      .--.        <- daily rhythm\n        _/    \\____/    \\____/    \\___\n          Mon       Tue       Wed\n\n  memory  /|  /|  /|  /|                  <- sawtooth = GC\n         / | / | / | / |                     a FLAT line here\n        /  |/  |/  |/  |                     is the anomaly\n\nLearn it on a quiet Tuesday, not at 03:00 during an outage.",
+  "takeaway": "No measurement is abnormal on its own. Learn the shape of normal while nothing is wrong, because during an incident you will invent one."
+}

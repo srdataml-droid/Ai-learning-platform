@@ -1,0 +1,20 @@
+{
+  "id": "H.6",
+  "trackId": "H",
+  "trackName": "Observation",
+  "title": "Watch a real person use something you built, in silence",
+  "status": "unsourced",
+  "story": "You cannot un-know your own interface. Every label is obvious because you chose the word, every next step is discoverable because you built the path. The only way to see the thing as it is, rather than as you intended it, is to watch somebody meet it for the first time.\n\nSilence is the method, not the manners. The moment you explain, you have repaired the interface with your voice, and what you learn is that the design plus a person explaining it works. Nobody ships with you attached. The hesitation before a click, the scroll back up to re-read a label, the wrong menu opened first — those are the data, and they only survive if you say nothing. Watching someone struggle without helping is genuinely uncomfortable, which is why so few people manage it.\n\nIt also takes very few people. The same confusions recur almost immediately across users, because they come from the design rather than from the individual. A handful of sessions surfaces most of what a hundred would, which means the excuse that proper testing is too expensive does not hold at the scale most work happens.",
+  "beats": {
+    "broke": "The builder cannot evaluate their own interface, because they have the intended model in their head and cannot remove it. Everything is discoverable to the person who decided where to put it.",
+    "fix": "Watch someone unfamiliar use it, and say nothing. Their hesitations, misreadings and wrong turns are direct evidence about the design rather than about them.",
+    "cost": "It is slow, it is uncomfortable, and it requires finding people. The instinct to help is strong and destroys the measurement, because a design that works while its author narrates is not a design that works. Watching also reveals problems without telling you what to do about them.",
+    "interview": {
+      "q": "Why must you stay silent while watching someone use what you built?",
+      "trap": "Framing it as avoiding bias in a general sense, without naming what specifically is lost.",
+      "answer": "Because speaking repairs the interface in real time, so what gets tested is the design plus you, and the design ships alone. The observations of value are the hesitations and wrong turns, and those disappear the moment they are resolved by a hint. Silence also prevents the subtler bias where a user, once helped, starts performing competence to be agreeable, which converts the session from evidence into reassurance."
+    }
+  },
+  "blueprint": "What you learn when you speak:\n  \"just click the one at the top\"  ->  design + you = works\n                                        design alone = untested\n\nWhat to write down, saying nothing:\n  - where the cursor goes FIRST     (what reads as the action)\n  - every pause over ~2 seconds     (a decision they should not\n                                     have had to make)\n  - anything re-read                (the label is wrong)\n  - the wrong path taken            (your mental model != theirs)\n  - where they say \"I guess...\"     (they are not sure and are\n                                     about to be agreeable)",
+  "takeaway": "You cannot un-know your own interface. Silence is the instrument, and it is uncomfortable for the same reason it works."
+}

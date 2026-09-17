@@ -1,0 +1,20 @@
+{
+  "id": "0.10",
+  "trackId": "0",
+  "trackName": "Before any code",
+  "title": "Running your first program, and reading the error when it fails",
+  "status": "unsourced",
+  "story": "The first program fails. It is supposed to. What matters is that the failure is a message written for you, and that it can be read rather than merely endured.\n\nA modern error message has a shape. It names the kind of failure, it names where the program was when it noticed, and it usually shows the chain of calls that led there. That chain is printed with the place the program started nearest one end and the place it actually broke nearest the other, and reading only the last line is the single most common way to look straight past the answer. The last line tells you where the problem surfaced. Somewhere above it is the line you wrote, and that is nearly always where the problem is.\n\nThere is a habit worth forming immediately, because it never stops paying: read the message completely, out loud if necessary, before changing anything. The message is evidence produced by the only witness. Most of the time spent debugging early on is spent guessing at a cause while a precise statement of the cause sits unread on the screen.",
+  "beats": {
+    "broke": "Early failures reported a number, or nothing at all. The program stopped and the reason lived in a manual, if it was written down anywhere, so diagnosing a fault meant knowing the system rather than reading the output.",
+    "fix": "Make the failure describe itself: the category of error, the file and line where it was detected, and the sequence of calls that reached that point. The program now tells you what it knows at the moment it stopped being able to continue.",
+    "cost": "The messages became long, and length invites skimming. A deep call chain buries the one line you wrote under many you did not. Well-meaning code that catches an error and re-raises a friendlier one often discards the original, replacing precise evidence with a polite summary of nothing.",
+    "interview": {
+      "q": "Given a stack trace, how do you decide where to start looking?",
+      "trap": "Starting at the final line because it is the error, or at the first because it is the beginning. Neither is reliably the place you can act on.",
+      "answer": "Read the whole thing, then find the innermost frame that belongs to code you control. The last line tells you where the failure surfaced, which is often inside a library doing exactly what it was told. The frames above it show how execution arrived there. The boundary between your code and the library is usually where a wrong value was handed over, and that is the line worth reading first."
+    }
+  },
+  "blueprint": "Traceback (most recent call last):\n  File \"main.py\", line 12, in <module>      <- where it started\n    total = summarise(rows)\n  File \"main.py\", line 7, in summarise      <- YOUR code. start here.\n    return sum(r[\"amount\"] for r in rows)\n  File \"<string>\", line 7, in <genexpr>\nKeyError: 'amount'                           <- where it surfaced\n\nRead: something in rows has no \"amount\" key.\nNot: \"sum is broken\".",
+  "takeaway": "The error message is evidence from the only witness. Read all of it, and start at the innermost line you actually wrote."
+}

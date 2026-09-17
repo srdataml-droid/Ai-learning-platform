@@ -30,6 +30,46 @@
     "blueprint": "A directory is a file. Its contents are pairs.\n\n  directory \"/home/sam\"  ->  [ (\"notes.txt\", 4211), (\"draft.txt\", 4211), (\"photo.jpg\", 9004) ]\n                                        |              |\n                                        +------+-------+\n                                               |\n                                     both names point at i-number 4211\n\n  i-list[4211]  ->  size, permissions, timestamps, block addresses\n  i-list[9004]  ->  size, permissions, timestamps, block addresses\n\nRemoving (\"notes.txt\", 4211) from the directory removes a NAME.\ni-list[4211] and its blocks are untouched while \"draft.txt\" still\npoints at them. The data goes when the last pointer goes -- and even\nthen, the blocks are only marked reusable, not overwritten.",
     "takeaway": "A folder does not contain files. It holds names that point at them, which is why a file can have several names, or none, and why deleting is not erasing."
   },
+  "0.10": {
+    "id": "0.10",
+    "trackId": "0",
+    "trackName": "Before any code",
+    "title": "Running your first program, and reading the error when it fails",
+    "status": "unsourced",
+    "story": "The first program fails. It is supposed to. What matters is that the failure is a message written for you, and that it can be read rather than merely endured.\n\nA modern error message has a shape. It names the kind of failure, it names where the program was when it noticed, and it usually shows the chain of calls that led there. That chain is printed with the place the program started nearest one end and the place it actually broke nearest the other, and reading only the last line is the single most common way to look straight past the answer. The last line tells you where the problem surfaced. Somewhere above it is the line you wrote, and that is nearly always where the problem is.\n\nThere is a habit worth forming immediately, because it never stops paying: read the message completely, out loud if necessary, before changing anything. The message is evidence produced by the only witness. Most of the time spent debugging early on is spent guessing at a cause while a precise statement of the cause sits unread on the screen.",
+    "beats": {
+      "broke": "Early failures reported a number, or nothing at all. The program stopped and the reason lived in a manual, if it was written down anywhere, so diagnosing a fault meant knowing the system rather than reading the output.",
+      "fix": "Make the failure describe itself: the category of error, the file and line where it was detected, and the sequence of calls that reached that point. The program now tells you what it knows at the moment it stopped being able to continue.",
+      "cost": "The messages became long, and length invites skimming. A deep call chain buries the one line you wrote under many you did not. Well-meaning code that catches an error and re-raises a friendlier one often discards the original, replacing precise evidence with a polite summary of nothing.",
+      "interview": {
+        "q": "Given a stack trace, how do you decide where to start looking?",
+        "trap": "Starting at the final line because it is the error, or at the first because it is the beginning. Neither is reliably the place you can act on.",
+        "answer": "Read the whole thing, then find the innermost frame that belongs to code you control. The last line tells you where the failure surfaced, which is often inside a library doing exactly what it was told. The frames above it show how execution arrived there. The boundary between your code and the library is usually where a wrong value was handed over, and that is the line worth reading first."
+      }
+    },
+    "blueprint": "Traceback (most recent call last):\n  File \"main.py\", line 12, in <module>      <- where it started\n    total = summarise(rows)\n  File \"main.py\", line 7, in summarise      <- YOUR code. start here.\n    return sum(r[\"amount\"] for r in rows)\n  File \"<string>\", line 7, in <genexpr>\nKeyError: 'amount'                           <- where it surfaced\n\nRead: something in rows has no \"amount\" key.\nNot: \"sum is broken\".",
+    "takeaway": "The error message is evidence from the only witness. Read all of it, and start at the innermost line you actually wrote."
+  },
+  "0.11": {
+    "id": "0.11",
+    "trackId": "0",
+    "trackName": "Before any code",
+    "title": "Installing things: package managers, versions, virtual environments",
+    "status": "unsourced",
+    "story": "Reusing other people's code is the whole economics of software, and the awkwardness of installing it is the bill for that. Two programs on one machine will eventually need two different versions of the same library, and if there is a single shared place where libraries live, one of them is going to lose.\n\nPackage managers solved finding and fetching. You name a package, it resolves what that package itself depends on, and installs the lot. Version numbers became a promise about compatibility, so that a range could be requested rather than an exact release. That promise is a convention rather than a guarantee, and it is broken regularly, which is why lockfiles exist: a lockfile records the exact versions that were actually installed, so the next person gets the same set rather than whatever satisfies the range today.\n\nIsolation solved the conflict. Instead of one shared location, each project gets its own, and the tooling looks there first. The mechanism differs by ecosystem but the idea does not. What this does not solve is the size of what you are agreeing to: asking for one package can bring in dozens you never named, each written by someone you will never meet, and all of them running with your permissions. Reading what a dependency actually pulls in, before adding it, is a habit worth having early.",
+    "beats": {
+      "broke": "A single shared location for installed libraries means two projects needing different versions of the same library cannot both work. Installing for one silently breaks the other, and the breakage appears in the project nobody touched.",
+      "fix": "Package managers resolve and fetch dependencies and the dependencies of those dependencies. Version ranges plus a lockfile record both what was asked for and what was actually installed. Per-project environments give each project its own place to put libraries, so two versions can coexist on one machine.",
+      "cost": "The dependency graph grows far beyond what anyone chose directly, and every package in it runs with your permissions. Version ranges rely on authors honouring a compatibility convention, which is not enforced. And an environment is another piece of state that can be stale, activated or forgotten, which is a large share of what 'works on my machine' actually means.",
+      "interview": {
+        "q": "What does a lockfile do that a dependency list in a manifest does not?",
+        "trap": "Saying it pins versions, without saying whose. The manifest already constrains direct dependencies; the interesting part is everything else.",
+        "answer": "A manifest records what you asked for, usually as ranges, and only for direct dependencies. A lockfile records what was actually resolved, exactly, for the entire transitive graph including packages you never named. That is what makes an install reproducible: without it, two installs from the same manifest on different days can produce different code, because a range now matches a newer release. It is also what lets you audit and review a dependency change, since the diff shows every version that moved."
+      }
+    },
+    "blueprint": "Without isolation                With isolation\n  /usr/lib/python3/                project-a/.venv/   requests 2.28\n    requests 2.28                  project-b/.venv/   requests 2.31\n  project-a needs 2.28             both work; neither knows about\n  project-b needs 2.31             the other\n  -> one of them loses\n\nmanifest  \"requests\": \"^2.28\"    <- what you asked for (a range)\nlockfile  requests 2.31.0         <- what was installed, exactly\n          urllib3  2.2.1          <- and everything it dragged in\n          certifi  2024.2.2          that you never named",
+    "takeaway": "Isolation is what lets one machine hold conflicting versions; the lockfile is what makes an install the same twice; neither limits what you are trusting."
+  },
   "0.12": {
     "id": "0.12",
     "trackId": "0",
@@ -70,6 +110,66 @@
     "blueprint": "# Pipe stdout to grep while keeping errors visible on terminal\n$ node server.js 2> error.log | grep \"CRITICAL\"\n\n# Combine stdout and stderr into one stream\n$ ./build.sh > output.log 2>&1",
     "takeaway": "The terminal is not a retro interface; it is the raw stream API of operating system kernels."
   },
+  "0.3": {
+    "id": "0.3",
+    "trackId": "0",
+    "trackName": "Before any code",
+    "title": "Why code is plain text, not a document",
+    "status": "unsourced",
+    "story": "Open a document in a word processor and most of what the file contains is not what you typed. It carries fonts, styles, revision history, a schema describing its own structure, and a good deal of state you cannot see. That is the right design for something a person reads. It is the wrong design for something dozens of programs have to read.\n\nSource code is plain text because text is the one format every tool already agrees on. A compiler reads it. So does a diff tool, a version control system, a search, a linter, a formatter, a code review interface, and a script somebody wrote this morning. None of them had to coordinate. They agree on a sequence of bytes and an encoding, and nothing else. Add invisible structure to that file and every one of those tools needs teaching about it.\n\nThe consequence people meet first is diffing. Version control shows you what changed by comparing lines. That only works because a line is a real thing in the file, delimited by a byte. In a rich document, moving one paragraph can rewrite the whole underlying file, and the tool that compares them has nothing stable to hold on to. Plain text is not a limitation the industry never escaped. It is the thing that makes the rest of the toolchain possible.",
+    "beats": {
+      "broke": "Formats that carry hidden structure can only be read by programs that understand that structure. Every new tool would have to be taught the format, and a file written by one version of a program could be unreadable to another.",
+      "fix": "Settle on plain text: a sequence of bytes plus an agreed encoding, with line breaks as real delimiters. Any program can read it without permission from the format's author, which is why compilers, diffs, greps, linters and editors all interoperate without ever having been designed together.",
+      "cost": "Text carries no structure of its own, so every tool must parse it back into meaning, and the same source has to be re-parsed by each. It also exposes the parts of text that are not actually simple: character encoding, line endings that differ between operating systems, and whitespace that is invisible but significant.",
+      "interview": {
+        "q": "Why is source code stored as plain text rather than in a structured document format that could hold more information?",
+        "trap": "Answering that text is simpler or older. Age is not the reason, and text is not simple once encodings and line endings are involved.",
+        "answer": "Because plain text is the only interface every tool in the chain already agrees on, without any of them having been designed together. A compiler, a version control system, a search, a formatter and an editor written by strangers decades apart can all operate on the same file. It also makes line-based diffing possible, which is what version control is built on. The cost is that structure has to be recovered by parsing, every time, by every tool."
+      }
+    },
+    "blueprint": "What a .docx actually is:        What a .py actually is:\n  a zip archive containing         a sequence of bytes\n  XML describing styles,           decoded as UTF-8\n  relationships, revisions,        split on \\n\n  fonts, and your text             ...that is the entire format\n\nWhich is why this works on the second and not the first:\n  git diff        grep -n \"def \"      wc -l       sed -i\n  black .         ruff check          cat a b > c",
+    "takeaway": "Text is not the simplest format. It is the only one every tool already agrees on, which is a different and more useful property."
+  },
+  "0.4": {
+    "id": "0.4",
+    "trackId": "0",
+    "trackName": "Before any code",
+    "title": "What a program is: text, then interpreter or compiler, then a running process",
+    "status": "unsourced",
+    "story": "A source file does nothing. It is bytes on a disk, no more active than a shopping list. Something has to turn it into instructions a processor will execute, and there are two ways to do that, which differ mainly in when the translating happens.\n\nA compiler translates the whole thing ahead of time and hands you a file of machine instructions. The translation cost is paid once, by you, before anyone runs it. An interpreter translates as it goes, reading your source and acting on it line by line while the program runs. The translation cost is paid every time, by the user, during execution. Neither is more correct. They are the same work, scheduled differently, and almost everything people say about the speed of a language is really a statement about that schedule.\n\nWhat comes out the far end is a process, and a process is an operating system construct rather than a language one. When your program starts, the kernel gives it a private view of memory so it cannot see or corrupt other programs, a stack for the local variables of functions currently running, a heap for memory it asks for as it goes, and a small table of open files, of which the first three are already filled in. Your code is a guest inside that arrangement. Most confusing runtime behaviour, from stack overflows to why a variable vanished when a function returned, is the arrangement showing through.",
+    "beats": {
+      "broke": "Written instructions and executed instructions are not the same thing, and early on the gap was crossed by hand: people translated their intentions into numeric machine codes themselves, then entered them directly.",
+      "fix": "Automate the translation. A compiler does it once, ahead of time, producing a file the machine can run directly. An interpreter does it continuously, while the program runs. The operating system then wraps the result in a process, giving it private memory, a stack, a heap and a file descriptor table so it can run without interfering with anything else.",
+      "cost": "Compiling puts a wait between writing code and seeing it run, and produces a binary tied to one kind of machine. Interpreting removes the wait and the tie, but pays the translation cost on every execution and keeps a whole runtime in memory alongside your program. Hybrid approaches that compile while running buy back speed at the cost of unpredictable pauses and much greater complexity.",
+      "interview": {
+        "q": "What is the difference between a compile-time error and a runtime error, and why does the distinction exist at all?",
+        "trap": "Describing it as when the error is displayed. The distinction is about what information exists at each moment, not about timing for its own sake.",
+        "answer": "A compile-time error is one that can be found by inspecting the program's text, before any input exists: a syntax error, or in a statically typed language a type mismatch. A runtime error depends on values that only exist during execution, such as a file that is missing or a division by a number that happened to be zero. The distinction exists because the two moments have different information available. This is also why languages that check more at compile time catch more before shipping and are more restrictive to write."
+      }
+    },
+    "blueprint": "COMPILED                          INTERPRETED\n  source.c                          source.py\n    | compiler (once, by you)         | interpreter (every run)\n    v                                 v\n  binary  --exec-->  process        process (holds source + runtime)\n\nEither way the OS builds the same thing:\n  process\n    +-- private virtual memory   (cannot see other processes)\n    +-- stack                    (locals; reclaimed on return)\n    +-- heap                     (what you allocate as you go)\n    +-- fd table  0=stdin 1=stdout 2=stderr",
+    "takeaway": "Compiling and interpreting are the same translation work scheduled at different times; what runs is a process, which belongs to the operating system, not to your language."
+  },
+  "0.5": {
+    "id": "0.5",
+    "trackId": "0",
+    "trackName": "Before any code",
+    "title": "Bits, bytes, binary, hex",
+    "status": "unsourced",
+    "story": "The hardware can distinguish two states. That is the whole of what it offers. Everything above that is agreement about what patterns of those states are taken to mean.\n\nGroup eight of them and you have a byte, which can hold one of 256 patterns. What that pattern means is not a property of the byte. The same eight bits are the number 65, the letter A, or part of a machine instruction, depending entirely on what is reading them. Hexadecimal exists because writing bytes in binary is unreadable and writing them in decimal hides the structure: one hex digit is exactly four bits, so two hex digits are exactly one byte, and the notation lines up with the thing it is describing.\n\nFixed width is where the abstraction starts to leak. A counter that has run out of room does not grow; it wraps, quietly, to a number on the other side of zero. Fractions are worse. Binary fractions can represent halves, quarters and eighths exactly, and cannot represent a tenth at all, for the same reason decimal cannot write a third exactly. So a tenth is stored as the nearest representable value, and adding three of those does not land on the value you would write down. This is not a bug in any particular language, and every language that uses the hardware's floating point inherits it.",
+    "beats": {
+      "broke": "Physical hardware distinguishes two states and nothing else, so every number, character, colour and instruction has to be encoded into patterns of those states before a machine can hold it.",
+      "fix": "Agree on groupings and on interpretations. Eight bits make a byte; a byte holds one of 256 patterns; a separate agreement such as a character encoding or a numeric type decides what a given pattern means. Hexadecimal is used to write bytes down because one hex digit maps exactly onto four bits.",
+      "cost": "Fixed width means every representation has an edge, and going past it wraps rather than growing. Binary fractions cannot represent most decimal fractions exactly, so arithmetic on them accumulates small errors. And because a pattern carries no meaning by itself, reading bytes with the wrong agreement produces plausible nonsense rather than an error.",
+      "interview": {
+        "q": "Why does adding 0.1 and 0.2 not give exactly 0.3 in most languages?",
+        "trap": "Calling it a rounding bug or a language flaw. Every language using hardware floating point behaves identically, so it is not a property of the language.",
+        "answer": "Floating point stores values in binary fractions. A tenth cannot be written exactly as a sum of powers of two, just as a third cannot be written exactly in decimal, so 0.1 is stored as the nearest representable value and so is 0.2. Adding those two approximations gives a value very slightly off from the nearest representation of 0.3, and the comparison fails. The fix is to compare within a tolerance, or to use a decimal or integer representation when exactness matters, which is why money is usually held in whole cents."
+      }
+    },
+    "blueprint": "One byte, three readings, same bits:\n\n  bits    0100 0001\n  hex     0x41            <- two hex digits, four bits each\n  as int  65\n  as char 'A'             (under ASCII/UTF-8)\n  as part of an instruction: depends on the CPU\n\nWhere fixed width shows:\n  uint8 255 + 1  ->  0          (wraps; it does not grow)\n  0.1 + 0.2      ->  0.30000000000000004\n  reason: 0.1 in binary is 0.0001100110011... forever",
+    "takeaway": "A pattern of bits has no meaning until something decides how to read it, and the readings are agreements, not facts about the hardware."
+  },
   "0.6": {
     "id": "0.6",
     "trackId": "0",
@@ -109,6 +209,46 @@
     },
     "blueprint": "# In Python:\ntext = '🚀'\nprint(len(text))              # 1 character (Unicode code point)\nprint(len(text.encode('utf-8')) # 4 bytes on wire/disk\n\n// In JavaScript:\nconsole.log('🚀'.length);     // 2 (UTF-16 code units)\nconsole.log([...'🚀'].length); // 1 (Spread into code points)",
     "takeaway": "One character is not one byte, and in modern text, one glyph is not even one code point."
+  },
+  "0.8": {
+    "id": "0.8",
+    "trackId": "0",
+    "trackName": "Before any code",
+    "title": "Variables, values, types",
+    "status": "unsourced",
+    "story": "Three things get collapsed into one word in conversation and they are not the same. A value is a thing: the number seven, the text hello. A variable is a name you can use to reach a value. A type is the agreement about how the underlying bits are to be read and what may be done with them.\n\nThe separation matters most when a variable does not hold a value but a reference to one. Assigning such a variable to another does not copy the thing; it makes a second name for the same thing. Change it through one name and the other name sees the change, because there was only ever one object. Nearly every surprising bug about a list that changed when nobody touched it is this, and no amount of staring at the line that appeared to do nothing will reveal it, because the line that did the damage is elsewhere and looks innocent.\n\nLanguages then differ on when the type agreement is checked. Checking while compiling means whole categories of mistake cannot reach a running program, at the price of having to convince the compiler about things you already know. Checking while running means the code is quicker to write and the mistake arrives later, in front of a user, on the one branch nobody exercised. That is the entire trade, and it is a trade rather than a matter of one approach being better.",
+    "beats": {
+      "broke": "Memory is undifferentiated: a location holds a pattern of bits with no record of what those bits are meant to represent, and no name. Without names and interpretations, a program can only be written in terms of addresses and raw patterns.",
+      "fix": "Introduce three separate ideas. A value is the data. A variable is a name bound to it. A type is the agreement about how to read the bits and what operations are legal on them, which lets the language reject nonsense such as subtracting a word from a date.",
+      "cost": "A variable may hold a reference rather than the value, so assignment can share instead of copy and a change made through one name appears through another. Checking types while compiling catches errors early but forces you to prove things to the compiler; checking them while running is faster to write but defers the failure to whichever branch a user happens to hit.",
+      "interview": {
+        "q": "What is the difference between a variable, a value and a reference, and why does it change how assignment behaves?",
+        "trap": "Treating assignment as always copying. Whether it copies or shares is the crux, and it varies by language and by type.",
+        "answer": "A value is the data itself. A variable is a name bound to something. A reference is an indirection: the variable holds the location of a value rather than the value. When assignment copies a reference, both names then denote the same object, so mutating through one is visible through the other. When it copies a value, the two are independent. This is why appending to a list passed into a function can be visible to the caller, while reassigning the parameter is not."
+      }
+    },
+    "blueprint": "a = [1, 2]        a ---> [ 1, 2 ]      one object\nb = a             b ---^               two names\nb.append(3)\na                 [1, 2, 3]            a changed; nothing touched a\n\nb = [9]           a ---> [ 1, 2, 3 ]   rebinding the NAME\n                  b ---> [ 9 ]         leaves the object alone\n\nMutating through a name  ->  everyone sharing it sees it\nRebinding a name         ->  only that name moves",
+    "takeaway": "A variable is a name, not a box. When the name points at something shared, changing the thing and changing the name are different operations with different blast radii."
+  },
+  "0.9": {
+    "id": "0.9",
+    "trackId": "0",
+    "trackName": "Before any code",
+    "title": "Input and output",
+    "status": "unsourced",
+    "story": "A program with no input and no output is unobservable. It can be perfectly correct and there is no way to tell. Input and output are how a computation touches the world, and the way that is arranged has consequences that show up long before you are writing anything sophisticated.\n\nUnix made the arrangement uniform: reading from a keyboard, a file, a network socket or another program all look the same to your code, because they are all reached through a small integer called a file descriptor. Three of them are already open when your program starts. Zero is standard input, one is standard output, two is standard error. Because they are interchangeable, output can be redirected to a file or piped into another program without your code knowing or caring, and that single decision is why command line tools compose at all.\n\nThe part that catches people is buffering. Writing to a device one character at a time is slow, so output is collected and written in batches. Standard output is usually buffered when it is going to a file or a pipe, and standard error usually is not. So a program that prints progress and then crashes may show the crash and none of the progress: the progress was sitting in a buffer that was never flushed. The print you added did run. It just never left the building.",
+    "beats": {
+      "broke": "Every device spoke its own language, so reading from a tape, a terminal and a card reader required different code, and a program written for one source could not be pointed at another.",
+      "fix": "Represent every stream as a file descriptor: a small integer the kernel maps to something that can be read from or written to. Your program uses the same calls regardless of what is behind it. Descriptors 0, 1 and 2 are opened for you as standard input, output and error, so a program can be written without knowing where its data comes from or goes.",
+      "cost": "Uniformity hides real differences in behaviour. Writing is buffered for speed, so output can be lost on a crash or appear out of order relative to unbuffered error output. Reads can block indefinitely on a source that never produces anything. And because a descriptor is just a number, it can be closed, exhausted or pointing somewhere unexpected with no visible difference at the call site.",
+      "interview": {
+        "q": "A program prints progress lines and then crashes. The crash appears but the progress lines do not. What happened?",
+        "trap": "Concluding that the print statements never executed, and hunting for a control flow bug that is not there.",
+        "answer": "They executed and the text went into a buffer that was never flushed. Standard output is typically block-buffered when it is not attached to a terminal, so the data waits until the buffer fills or the stream is closed cleanly. A crash can end the process without that happening. Standard error is typically unbuffered, which is why the crash message survives. Flushing explicitly, or writing diagnostics to standard error, makes the output survive the failure."
+      }
+    },
+    "blueprint": "Your code                kernel               wherever\n  write(1, ...)  ---->   fd 1       ---->     terminal\n                                   or  ---->  a file      (> out.txt)\n                                   or  ---->  another proc ( | grep )\n\nSame call in your program. The shell decides the destination.\n\nBuffering, and why output vanishes:\n  fd 1 to a terminal  ->  line buffered   (you see it promptly)\n  fd 1 to a file/pipe ->  block buffered  (waits ~4-8KB)\n  fd 2                ->  unbuffered      (survives the crash)",
+    "takeaway": "Everything readable or writable is reached the same way, which is why tools compose; buffering is the price, and it is why your last print did not appear."
   },
   "A.2": {
     "id": "A.2",
@@ -549,6 +689,186 @@
     },
     "blueprint": "-- The Three-Valued Logic Trap in SQL:\nSELECT * FROM employees WHERE bonus = NULL;   -- Returns NOTHING (always Unknown)\nSELECT * FROM employees WHERE bonus IS NULL;  -- Correct!\n\n-- Boolean evaluation table with NULL:\n-- TRUE  AND NULL = NULL (Fails WHERE)\n-- FALSE AND NULL = FALSE\n-- NOT NULL       = NULL",
     "takeaway": "In SQL, NULL is not a value; it is the state of unknowability. NULL is never equal to NULL."
+  },
+  "H.1": {
+    "id": "H.1",
+    "trackId": "H",
+    "trackName": "Observation",
+    "title": "Read the whole error message, out loud if necessary",
+    "status": "unsourced",
+    "story": "The instruction sounds insulting until you watch how people actually behave in front of a failure. The message appears, the eye goes to the last line, and a fix is attempted within seconds. The middle of the message, which frequently contains the answer, is never read.\n\nReading aloud works because it defeats the specific failure mode at play. Skimming is pattern matching: you recognise the shape of an error you have seen before and act on the recognition rather than the text. Saying the words forces serial processing, so a path you assumed said one thing turns out to say another, and a number you assumed was a count turns out to be a byte offset. The trick is not about diligence. It is about disabling a shortcut that is usually helpful and is wrong here.\n\nThe habit compounds because error messages are the highest quality evidence you will ever get. They are produced by the program at the moment it stopped, describing its own state, with no reconstruction involved. Every other debugging technique is an attempt to recover information that the error message may already be handing you.",
+    "beats": {
+      "broke": "A failure is read in under a second by pattern recognition, so a message that differs from the one it resembles gets treated as the one it resembles. The fix that follows addresses a problem the program never reported.",
+      "fix": "Read the message completely, word by word, before touching anything. Reading aloud forces serial processing and defeats the skimming that caused the misread in the first place.",
+      "cost": "It feels slow, and it feels slow exactly when there is pressure not to be. The technique asks you to spend seconds reading at the moment you most want to be acting, which is why people abandon it under stress, which is when it is most valuable.",
+      "interview": {
+        "q": "How do you begin when handed an unfamiliar failure?",
+        "trap": "Describing tooling first: attaching a debugger, adding logging, reproducing locally. All of these come after the evidence you already have has been exhausted.",
+        "answer": "By reading what has already been reported, in full, before generating any new evidence. The message names the kind of failure, the location where it was detected and the path that reached it, and it was produced at the moment of failure without reconstruction. Adding logging or a debugger is an attempt to recover information the message may already contain, so doing that first is paying to learn something you were told for free."
+      }
+    },
+    "blueprint": "What the eye does:            What reading does:\n  [......................]      \"Connection refused\"\n  [......................]      \"to 127.0.0.1 port 5432\"\n  ConnectionError  <-- here     \"after 0.003 seconds\"\n                                 -> nothing is listening.\n  \"the database is down\"          not a timeout. not the network.\n                                  not DNS. the port is closed.\n\nThree words in the middle changed the entire search.",
+    "takeaway": "The error message is the highest quality evidence available and it is free. Read it before you start manufacturing more."
+  },
+  "H.2": {
+    "id": "H.2",
+    "trackId": "H",
+    "trackName": "Observation",
+    "title": "Read a stack trace: where it started, where it surfaced",
+    "status": "unsourced",
+    "story": "A stack trace is a record of unfinished business. Each frame is a function that called another and is still waiting for it to return, so the trace is a chain of who asked whom, captured at the instant the chain broke.\n\nTwo positions in it matter and they are rarely the same. The place it surfaced is the innermost frame, where the program finally could not continue. The place it started is the outermost, where execution entered. The cause usually sits at neither end but at the boundary: the last frame belonging to code you control, just before it hands a value to code you do not. Library functions mostly fail because they were given something wrong, so the frames inside the library describe the symptom in detail and say nothing about the cause.\n\nDifferent runtimes print the two ends in different orders, and getting that backwards wastes a great deal of time. Some print the innermost first, some last. Before relying on position, check which convention you are looking at, because a trace read upside down leads you to investigate the entry point of your program as though it were the fault.",
+    "beats": {
+      "broke": "A failure reports only its immediate location, which is almost never where the mistake was made. Without the chain of callers, diagnosing it means reconstructing by hand how execution could possibly have arrived there.",
+      "fix": "Capture and print the call stack at the moment of failure: every function that is still waiting for the one below it to return, with file and line for each. The path that produced the failure becomes visible instead of inferred.",
+      "cost": "Traces through frameworks and async machinery grow long and mostly consist of frames nobody can act on. Asynchronous code breaks the chain entirely, since the code that scheduled the work is no longer on the stack when it runs. And printing conventions differ between runtimes, so the same trace read with the wrong assumption points at the opposite end.",
+      "interview": {
+        "q": "A stack trace ends inside a third-party library. How do you proceed?",
+        "trap": "Concluding the library has a bug and looking for an upgrade or a workaround. It is occasionally true and usually not.",
+        "answer": "Find the deepest frame that belongs to code you own, which is the boundary where your values entered the library. Libraries generally fail because they were handed something they cannot accept, so the frames inside describe the symptom precisely and the cause lives at the handover. Inspect what was passed at that boundary. Only after establishing that the input was valid does the library itself become a reasonable suspect."
+      }
+    },
+    "blueprint": "  outermost   main()                 <- where execution started\n              handle_request()\n              save_user()            <- LAST FRAME YOU OWN\n              ---------------------     look here first\n              orm.insert()\n              driver.execute()\n  innermost   IntegrityError         <- where it surfaced\n\nThe library is describing what it received.\nsave_user() is where it was decided.",
+    "takeaway": "The trace shows where it surfaced and where it began; the cause is usually at the boundary between your code and code you did not write."
+  },
+  "H.3": {
+    "id": "H.3",
+    "trackId": "H",
+    "trackName": "Observation",
+    "title": "Read logs at volume without drowning",
+    "status": "unsourced",
+    "story": "A system under real load produces more log lines per minute than anyone can read in a day. Reading them in sequence does not scale and never will, so the skill is not reading faster. It is narrowing before reading.\n\nNarrowing has a natural order. Time first: establish when the problem occurred and discard everything outside a window around it. Identity second: find the one request, user or job that failed, and follow only that. Severity last, and with suspicion, because the line that explains the failure is frequently at info level while the errors are all downstream consequences shouting about a thing that already went wrong.\n\nThis is why structured logging matters more than it appears to. A log line that is a sentence can only be searched as text. A log line that is a record with fields can be filtered by any of them, so the narrowing is a query rather than a guess at a substring. The most useful field is the one that ties every line produced by a single request together, because that is what turns a flat stream of everything into the story of one thing.",
+    "beats": {
+      "broke": "Volume grows with traffic while human reading speed does not. At a few hundred lines a second, sequential reading is not slow but impossible, and the relevant line is statistically certain to be skipped.",
+      "fix": "Narrow before reading. Cut to a time window around the event, then to a single identity such as one request or one job, and only then consider severity. Structured records with fields make each narrowing a query rather than a guess at a substring.",
+      "cost": "Narrowing can exclude the cause. A failure that begins minutes earlier, or in a different service under a different identity, falls outside the window you chose and becomes invisible. Filtering by severity in particular tends to hide the explanation and keep the consequences.",
+      "interview": {
+        "q": "Why is filtering logs by error level often the wrong first move?",
+        "trap": "Answering that it produces too much output. The problem is the opposite: it produces confident output that is missing the cause.",
+        "answer": "Because severity describes how loudly a line complains, not how close it is to the cause. The originating event is frequently logged at info level, such as a configuration value being read or a fallback being taken, while every error afterwards is a downstream consequence. Filtering to errors keeps the noise and discards the explanation. Narrowing by time and by a correlation identity preserves the causal sequence, which is what actually answers the question."
+      }
+    },
+    "blueprint": "Wrong order                 Right order\n  level=ERROR                 1. time window   [14:32:00, 14:33:00]\n  -> 400 lines, all           2. one identity  request_id=a91f\n     downstream               3. read ALL levels for that one\n     consequences\n\nUnstructured   \"failed to save user 91 after retry\"\n               -> grep, and hope you guessed the wording\n\nStructured     {evt:\"save_failed\", user:91, attempt:2,\n                request_id:\"a91f\", level:\"error\"}\n               -> filter on any field; follow request_id across services",
+    "takeaway": "You do not read logs, you narrow them: time, then identity, then severity, and severity last because the cause is usually logged quietly."
+  },
+  "H.4": {
+    "id": "H.4",
+    "trackId": "H",
+    "trackName": "Observation",
+    "title": "Measure before you optimise, always",
+    "status": "unsourced",
+    "story": "Intuition about performance is unreliable in a specific and consistent way: it tracks what the code looks like rather than what the machine does. A nested loop looks expensive and may take microseconds. A single innocuous line may open a connection, wait on a disk, or serialise an object graph, and take a hundred times longer than everything around it combined.\n\nSo the rule is not a suggestion about rigour. It is a response to the fact that the guess is usually wrong, and acting on a wrong guess costs twice: the work spent optimising something that did not matter, and the complexity permanently added to code that was previously simple and fast enough. Optimised code is harder to read, harder to change and more likely to be subtly incorrect, and that price is paid whether or not the optimisation helped.\n\nMeasuring also establishes something optimisation cannot proceed without: a number from before. Without it there is no way to tell whether a change helped, and no way to notice when a later change quietly gives the improvement back.",
+    "beats": {
+      "broke": "Performance work was directed by reading code and judging what looked expensive. That judgment tracks visual complexity rather than actual cost, so effort went to whatever appeared intricate while the real cost sat in an unremarkable line.",
+      "fix": "Measure first and let the measurement choose the target. Establish a baseline number before changing anything, so the effect of a change can be observed rather than assumed.",
+      "cost": "Measuring takes setup and the act of measuring perturbs what it measures. It also requires a workload resembling production, since optimising against an unrepresentative benchmark produces code tuned for a situation that never occurs.",
+      "interview": {
+        "q": "Why is premature optimisation harmful, beyond the time it wastes?",
+        "trap": "Treating the cost as only the hours spent. The lasting damage is to the code, not the schedule.",
+        "answer": "Because the complexity it adds is permanent and the benefit is usually zero. Optimised code is harder to read and change, and often trades clarity for caching, manual memory handling or loop restructuring that introduces its own bugs. That cost is paid by everyone who touches the code afterwards, forever, whether or not the optimisation mattered. Without a measurement you also have no baseline, so you cannot show the change helped or notice when a later change reverses it."
+      }
+    },
+    "blueprint": "Order of operations:\n  1. make it work\n  2. measure           <- baseline number, written down\n  3. find the top cost  (usually one thing, not everything)\n  4. change ONE thing\n  5. measure again     <- compare to step 2\n  6. keep it only if the number moved enough to justify\n     the complexity it added\n\nAmdahl, informally: speeding up something that is 5% of\nruntime cannot win you more than 5%, no matter how clever.",
+    "takeaway": "The guess is usually wrong, and the complexity an optimisation adds is permanent whether or not it helped. Get the number first."
+  },
+  "H.5": {
+    "id": "H.5",
+    "trackId": "H",
+    "trackName": "Observation",
+    "title": "Profile a real program",
+    "status": "unsourced",
+    "story": "A profiler answers a question a benchmark cannot: not how fast is this function, but where did the time actually go. The answer is regularly somewhere nobody would have proposed, which is the entire reason the tool exists.\n\nThere are two families and the difference matters. A sampling profiler interrupts the program many times a second and records what it was doing, producing a statistical picture with very little overhead. An instrumenting profiler records every call, which is exact and slows the program enough to change its behaviour, sometimes enough to move the bottleneck. Sampling is the right default for anything resembling a real workload.\n\nReading the output has one trap worth naming. Time spent inside a function alone is not the same as time spent inside it and everything it called. A function that appears to consume most of the runtime may be doing nothing but waiting for something further down. Sorting by the first number finds the work; sorting by the second finds the responsible path. Both are needed, and confusing them sends you to optimise a function whose body is three lines long.",
+    "beats": {
+      "broke": "Timing whole runs tells you something is slow and nothing about where. Adding timers by hand only measures the places you already suspected, so the measurement confirms the guess it was meant to test.",
+      "fix": "Profile the whole program and let it report where time was spent. Sampling profilers interrupt periodically and build a statistical picture at low cost; instrumenting profilers record every call for exactness at much higher cost.",
+      "cost": "Instrumenting changes what it observes, sometimes enough to relocate the bottleneck. Sampling can miss anything short-lived or rare. Both struggle with time spent waiting rather than computing, which is why a program that is mostly idle on network calls can look fast in a CPU profile while being slow to its users.",
+      "interview": {
+        "q": "What is the difference between self time and total time in a profile, and when does each mislead?",
+        "trap": "Using the larger number because it sounds more significant. Total time is larger by construction for anything near the top of the call tree.",
+        "answer": "Self time is time spent executing that function's own instructions. Total time includes everything it called. Sorting by total time surfaces entry points that are responsible for a lot of work without doing any of it, so optimising them is meaningless. Sorting by self time finds where the work happens but hides the caller that invoked it a thousand times unnecessarily. The usual approach is to find the expensive self time, then walk back up to see who is causing it to be called that often."
+      }
+    },
+    "blueprint": "          total   self   function\n          98.2%   0.1%   main()           <- responsible, does nothing\n          97.9%   0.3%   process_all()\n          96.4%   2.1%   process_one()\n          94.0%  94.0%   json.loads()     <- the work is HERE\n\nOptimising main() is meaningless.\nOptimising json.loads() is hard.\nAsking why process_all() calls it 40,000 times is the win.\n\nCPU profile shows compute. It does not show waiting.\nA program 90% blocked on the network looks idle and is slow.",
+    "takeaway": "Self time finds the work, total time finds who caused it, and a CPU profile is blind to waiting — which is where most web service latency lives."
+  },
+  "H.6": {
+    "id": "H.6",
+    "trackId": "H",
+    "trackName": "Observation",
+    "title": "Watch a real person use something you built, in silence",
+    "status": "unsourced",
+    "story": "You cannot un-know your own interface. Every label is obvious because you chose the word, every next step is discoverable because you built the path. The only way to see the thing as it is, rather than as you intended it, is to watch somebody meet it for the first time.\n\nSilence is the method, not the manners. The moment you explain, you have repaired the interface with your voice, and what you learn is that the design plus a person explaining it works. Nobody ships with you attached. The hesitation before a click, the scroll back up to re-read a label, the wrong menu opened first — those are the data, and they only survive if you say nothing. Watching someone struggle without helping is genuinely uncomfortable, which is why so few people manage it.\n\nIt also takes very few people. The same confusions recur almost immediately across users, because they come from the design rather than from the individual. A handful of sessions surfaces most of what a hundred would, which means the excuse that proper testing is too expensive does not hold at the scale most work happens.",
+    "beats": {
+      "broke": "The builder cannot evaluate their own interface, because they have the intended model in their head and cannot remove it. Everything is discoverable to the person who decided where to put it.",
+      "fix": "Watch someone unfamiliar use it, and say nothing. Their hesitations, misreadings and wrong turns are direct evidence about the design rather than about them.",
+      "cost": "It is slow, it is uncomfortable, and it requires finding people. The instinct to help is strong and destroys the measurement, because a design that works while its author narrates is not a design that works. Watching also reveals problems without telling you what to do about them.",
+      "interview": {
+        "q": "Why must you stay silent while watching someone use what you built?",
+        "trap": "Framing it as avoiding bias in a general sense, without naming what specifically is lost.",
+        "answer": "Because speaking repairs the interface in real time, so what gets tested is the design plus you, and the design ships alone. The observations of value are the hesitations and wrong turns, and those disappear the moment they are resolved by a hint. Silence also prevents the subtler bias where a user, once helped, starts performing competence to be agreeable, which converts the session from evidence into reassurance."
+      }
+    },
+    "blueprint": "What you learn when you speak:\n  \"just click the one at the top\"  ->  design + you = works\n                                        design alone = untested\n\nWhat to write down, saying nothing:\n  - where the cursor goes FIRST     (what reads as the action)\n  - every pause over ~2 seconds     (a decision they should not\n                                     have had to make)\n  - anything re-read                (the label is wrong)\n  - the wrong path taken            (your mental model != theirs)\n  - where they say \"I guess...\"     (they are not sure and are\n                                     about to be agreeable)",
+    "takeaway": "You cannot un-know your own interface. Silence is the instrument, and it is uncomfortable for the same reason it works."
+  },
+  "H.7": {
+    "id": "H.7",
+    "trackId": "H",
+    "trackName": "Observation",
+    "title": "Notice what is absent: the missing log line, the request that never arrived",
+    "status": "unsourced",
+    "story": "Most monitoring is built to notice things happening. Errors raise alarms, latency crosses thresholds, exceptions get counted. Almost none of it notices things not happening, and a significant class of failure produces no event at all.\n\nA job that should run hourly and stops produces nothing. A queue consumer that dies leaves a queue that grows, and growth is only visible if somebody is watching the depth rather than the errors. A request that never arrives generates no log, no error and no metric, because the code that would have produced them never ran. These failures are quiet by construction, and they are frequently found by a customer rather than by a system, days later.\n\nDetecting absence requires inverting the question. Instead of alerting when something bad occurs, assert that something expected occurred and alert when it did not. A heartbeat is the simplest form: the job reports that it ran, and the alarm fires when the report fails to arrive. The habit generalises beyond monitoring — in debugging, asking which log line should be here and is not will often locate a fault faster than reading the lines that are.",
+    "beats": {
+      "broke": "Detection is built around events, and a thing that fails to happen emits no event. A stopped scheduler, a dead consumer, a request lost before it arrived — all produce silence, which every alarm reads as health.",
+      "fix": "Assert expectations rather than watching for faults. A heartbeat that must arrive, a queue depth that must not grow, a count that must be non-zero in each interval. The alarm fires on the absence of the expected signal.",
+      "cost": "Every expectation is a thing to maintain and to tune. Set the window too tight and normal variation pages someone at night; too loose and the outage is hours old before anyone hears. Expectations also go stale: a job that is legitimately retired leaves an alarm that fires forever, and alarms that fire without meaning are how people learn to ignore alarms.",
+      "interview": {
+        "q": "How would you detect that a nightly batch job has silently stopped running?",
+        "trap": "Proposing to alert on job failures. A job that does not start cannot fail, and failure alerting is exactly what misses this.",
+        "answer": "By alerting on the absence of success rather than the presence of failure. The job emits a heartbeat or writes a completion record, and a separate check asserts that one arrived within the expected window, alerting when it did not. Crucially the check must not live inside the job, since a job that never starts cannot run its own monitoring. The same reasoning applies to queue consumers, where watching depth catches a dead consumer that is emitting no errors because it is emitting nothing."
+      }
+    },
+    "blueprint": "Watching for events                Asserting expectations\n  alert if error_count > 0           alert if success_count == 0\n                                     over the last 25 hours\n  job dies  -> no errors\n          -> no alert                job dies -> no success\n          -> silence reads as ok            -> alert fires\n\nThe check MUST live outside the thing it checks.\nA job that never starts cannot run its own monitoring.\n\nIn debugging, same move:\n  not \"what does this log say\"\n  but \"which line should be here, and is not\"",
+    "takeaway": "Alarms built on events read silence as health. Assert what should happen and alert on its absence, from outside the thing you are watching."
+  },
+  "H.8": {
+    "id": "H.8",
+    "trackId": "H",
+    "trackName": "Observation",
+    "title": "Keep an engineering notebook: symptom, hypothesis, test, result",
+    "status": "unsourced",
+    "story": "Debugging held entirely in your head degrades in a predictable way. After an hour you cannot recall whether a particular theory was tested or merely considered, which configurations have already been tried, or what the behaviour was before the last four changes. So theories get retested, changes accumulate unrecorded, and the original symptom becomes unreachable.\n\nFour fields fix most of it. The symptom, stated precisely enough to recognise if it returns. The hypothesis, one at a time, written before the test rather than after. The test that would distinguish it from the alternatives. The result, including the ones that ruled nothing out. Writing the hypothesis first is the part that does the work, because a theory written down can be wrong in a way a theory in your head cannot: it stops quietly reshaping itself to fit whatever you just observed.\n\nThe record keeps paying after the bug is closed. It is the raw material for the postmortem, it is the evidence when someone asks why the fix is what it is, and it is what you consult in eight months when the same symptom reappears and you have entirely forgotten that you have met it before.",
+    "beats": {
+      "broke": "Working memory is too small and too editable for a long investigation. Hypotheses get retested, changes stack up unrecorded, and a theory held only in the head rewrites itself to fit each new observation without anyone noticing.",
+      "fix": "Write four things per attempt: the symptom, one hypothesis, the test that would distinguish it, and the result. Recording the hypothesis before the test is what makes it falsifiable, because it can no longer be quietly adjusted afterwards.",
+      "cost": "It is friction at exactly the moment you feel closest to the answer, and that feeling is when it gets abandoned. Written records are also only as good as the discipline behind them; a notebook filled in retrospectively is a reconstruction, which is the thing it exists to prevent.",
+      "interview": {
+        "q": "Why write the hypothesis down before running the test rather than recording what you found afterwards?",
+        "trap": "Answering that it is for the record, or for teammates. The benefit is to your own reasoning during the investigation.",
+        "answer": "Because an unwritten hypothesis adjusts itself to the evidence. If the theory lives only in your head, an ambiguous result gets absorbed as partial confirmation and the theory survives in a slightly altered form you never consciously chose. Writing it first fixes what was predicted, so the result either matches or does not, and a genuinely eliminated cause stays eliminated. That is also what stops you testing the same idea three times in different clothes."
+      }
+    },
+    "blueprint": "2026-09-17 14:02\n  SYMPTOM     upload fails ~1 in 5, only files > 4MB,\n              only on staging. 502 after ~30s.\n  HYPOTHESIS  proxy read timeout is 30s, upload exceeds it\n  TEST        upload 4.5MB with proxy timeout raised to 120s\n  RESULT      still fails at ~30s.  -> hypothesis WRONG,\n              and 30s is coming from somewhere else\n\n  HYPOTHESIS  the 30s is the load balancer, not the proxy\n  TEST        curl the app directly, bypassing the LB\n  RESULT      4.5MB succeeds in 41s.  -> CONFIRMED\n\nThe wrong hypothesis is worth writing. It is what stops\nyou re-testing the proxy at 16:30 having forgotten.",
+    "takeaway": "A hypothesis in your head edits itself to survive the evidence. Writing it before the test is what makes elimination stick."
+  },
+  "H.9": {
+    "id": "H.9",
+    "trackId": "H",
+    "trackName": "Observation",
+    "title": "Learn your system's normal before you need to recognise abnormal",
+    "status": "unsourced",
+    "story": "Abnormal is not a property of a measurement. Four hundred milliseconds is fine for one endpoint and a crisis for another; eighty percent memory is steady state for a service that caches and a warning for one that does not. Without knowing what a system does when nothing is wrong, every number is uninterpretable, and the interpretation gets invented under pressure.\n\nThis is why the worst moment to first look at a dashboard is during an incident. Everything on it looks alarming, because you have no basis for comparison and adrenaline supplies one. Teams routinely spend the first half of an outage investigating a metric that has looked exactly like that every day for a year.\n\nNormal also has shape rather than a single value. Traffic has a daily rhythm and a weekly one; batch jobs make memory sawtooth; deploys leave a signature. Knowing the shape means an anomaly can be recognised as a break in a pattern rather than a threshold crossing, which catches things no fixed limit would — a Tuesday that looks like a Sunday is a problem even though every individual number is within range.",
+    "beats": {
+      "broke": "Thresholds treat a measurement as meaningful in isolation, but the same number is healthy for one system and catastrophic for another. Without a baseline, judging severity during an incident means inventing one while under pressure.",
+      "fix": "Learn the system's ordinary behaviour before you need it: its daily and weekly rhythms, the shape memory makes between collections, what a deploy looks like on the graphs. Anomalies then appear as breaks in a known pattern rather than crossings of an arbitrary line.",
+      "cost": "Normal drifts. Traffic grows, caches warm differently, dependencies change, and a baseline learned last quarter slowly becomes wrong, so it needs revisiting. Worse, a fault that arrives gradually gets absorbed into the baseline and becomes the new normal, which is how systems degrade for months without anyone raising anything.",
+      "interview": {
+        "q": "Why is a fixed threshold alert often insufficient, and what does knowing the baseline add?",
+        "trap": "Proposing to fix it by tuning the threshold. Any single value is wrong at some hour of some day, which is the problem rather than a calibration issue.",
+        "answer": "Because the same value means different things at different times. A request rate that is healthy at midday indicates an outage at midday and is normal at three in the morning, so a single threshold either pages falsely overnight or misses a daytime failure. A baseline captures the expected shape, letting you alert on deviation from the pattern instead. That catches failures where every individual number stays inside its limits but the relationship between them is wrong, which fixed thresholds cannot see."
+      }
+    },
+    "blueprint": "Without a baseline            With one\n  \"CPU is at 70%!\"              \"CPU is at 70%, and it is 70%\n  -> is that bad?                every weekday at 09:00\"\n  -> nobody knows                -> not the incident. move on.\n\nNormal has shape, not a value:\n\n  req/s   .--.      .--.      .--.        <- daily rhythm\n        _/    \\____/    \\____/    \\___\n          Mon       Tue       Wed\n\n  memory  /|  /|  /|  /|                  <- sawtooth = GC\n         / | / | / | / |                     a FLAT line here\n        /  |/  |/  |/  |                     is the anomaly\n\nLearn it on a quiet Tuesday, not at 03:00 during an outage.",
+    "takeaway": "No measurement is abnormal on its own. Learn the shape of normal while nothing is wrong, because during an incident you will invent one."
   },
   "J.1": {
     "id": "J.1",

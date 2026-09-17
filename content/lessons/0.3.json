@@ -1,0 +1,20 @@
+{
+  "id": "0.3",
+  "trackId": "0",
+  "trackName": "Before any code",
+  "title": "Why code is plain text, not a document",
+  "status": "unsourced",
+  "story": "Open a document in a word processor and most of what the file contains is not what you typed. It carries fonts, styles, revision history, a schema describing its own structure, and a good deal of state you cannot see. That is the right design for something a person reads. It is the wrong design for something dozens of programs have to read.\n\nSource code is plain text because text is the one format every tool already agrees on. A compiler reads it. So does a diff tool, a version control system, a search, a linter, a formatter, a code review interface, and a script somebody wrote this morning. None of them had to coordinate. They agree on a sequence of bytes and an encoding, and nothing else. Add invisible structure to that file and every one of those tools needs teaching about it.\n\nThe consequence people meet first is diffing. Version control shows you what changed by comparing lines. That only works because a line is a real thing in the file, delimited by a byte. In a rich document, moving one paragraph can rewrite the whole underlying file, and the tool that compares them has nothing stable to hold on to. Plain text is not a limitation the industry never escaped. It is the thing that makes the rest of the toolchain possible.",
+  "beats": {
+    "broke": "Formats that carry hidden structure can only be read by programs that understand that structure. Every new tool would have to be taught the format, and a file written by one version of a program could be unreadable to another.",
+    "fix": "Settle on plain text: a sequence of bytes plus an agreed encoding, with line breaks as real delimiters. Any program can read it without permission from the format's author, which is why compilers, diffs, greps, linters and editors all interoperate without ever having been designed together.",
+    "cost": "Text carries no structure of its own, so every tool must parse it back into meaning, and the same source has to be re-parsed by each. It also exposes the parts of text that are not actually simple: character encoding, line endings that differ between operating systems, and whitespace that is invisible but significant.",
+    "interview": {
+      "q": "Why is source code stored as plain text rather than in a structured document format that could hold more information?",
+      "trap": "Answering that text is simpler or older. Age is not the reason, and text is not simple once encodings and line endings are involved.",
+      "answer": "Because plain text is the only interface every tool in the chain already agrees on, without any of them having been designed together. A compiler, a version control system, a search, a formatter and an editor written by strangers decades apart can all operate on the same file. It also makes line-based diffing possible, which is what version control is built on. The cost is that structure has to be recovered by parsing, every time, by every tool."
+    }
+  },
+  "blueprint": "What a .docx actually is:        What a .py actually is:\n  a zip archive containing         a sequence of bytes\n  XML describing styles,           decoded as UTF-8\n  relationships, revisions,        split on \\n\n  fonts, and your text             ...that is the entire format\n\nWhich is why this works on the second and not the first:\n  git diff        grep -n \"def \"      wc -l       sed -i\n  black .         ruff check          cat a b > c",
+  "takeaway": "Text is not the simplest format. It is the only one every tool already agrees on, which is a different and more useful property."
+}

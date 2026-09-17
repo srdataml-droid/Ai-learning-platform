@@ -1,0 +1,20 @@
+{
+  "id": "0.9",
+  "trackId": "0",
+  "trackName": "Before any code",
+  "title": "Input and output",
+  "status": "unsourced",
+  "story": "A program with no input and no output is unobservable. It can be perfectly correct and there is no way to tell. Input and output are how a computation touches the world, and the way that is arranged has consequences that show up long before you are writing anything sophisticated.\n\nUnix made the arrangement uniform: reading from a keyboard, a file, a network socket or another program all look the same to your code, because they are all reached through a small integer called a file descriptor. Three of them are already open when your program starts. Zero is standard input, one is standard output, two is standard error. Because they are interchangeable, output can be redirected to a file or piped into another program without your code knowing or caring, and that single decision is why command line tools compose at all.\n\nThe part that catches people is buffering. Writing to a device one character at a time is slow, so output is collected and written in batches. Standard output is usually buffered when it is going to a file or a pipe, and standard error usually is not. So a program that prints progress and then crashes may show the crash and none of the progress: the progress was sitting in a buffer that was never flushed. The print you added did run. It just never left the building.",
+  "beats": {
+    "broke": "Every device spoke its own language, so reading from a tape, a terminal and a card reader required different code, and a program written for one source could not be pointed at another.",
+    "fix": "Represent every stream as a file descriptor: a small integer the kernel maps to something that can be read from or written to. Your program uses the same calls regardless of what is behind it. Descriptors 0, 1 and 2 are opened for you as standard input, output and error, so a program can be written without knowing where its data comes from or goes.",
+    "cost": "Uniformity hides real differences in behaviour. Writing is buffered for speed, so output can be lost on a crash or appear out of order relative to unbuffered error output. Reads can block indefinitely on a source that never produces anything. And because a descriptor is just a number, it can be closed, exhausted or pointing somewhere unexpected with no visible difference at the call site.",
+    "interview": {
+      "q": "A program prints progress lines and then crashes. The crash appears but the progress lines do not. What happened?",
+      "trap": "Concluding that the print statements never executed, and hunting for a control flow bug that is not there.",
+      "answer": "They executed and the text went into a buffer that was never flushed. Standard output is typically block-buffered when it is not attached to a terminal, so the data waits until the buffer fills or the stream is closed cleanly. A crash can end the process without that happening. Standard error is typically unbuffered, which is why the crash message survives. Flushing explicitly, or writing diagnostics to standard error, makes the output survive the failure."
+    }
+  },
+  "blueprint": "Your code                kernel               wherever\n  write(1, ...)  ---->   fd 1       ---->     terminal\n                                   or  ---->  a file      (> out.txt)\n                                   or  ---->  another proc ( | grep )\n\nSame call in your program. The shell decides the destination.\n\nBuffering, and why output vanishes:\n  fd 1 to a terminal  ->  line buffered   (you see it promptly)\n  fd 1 to a file/pipe ->  block buffered  (waits ~4-8KB)\n  fd 2                ->  unbuffered      (survives the crash)",
+  "takeaway": "Everything readable or writable is reached the same way, which is why tools compose; buffering is the price, and it is why your last print did not appear."
+}

@@ -1,0 +1,20 @@
+{
+  "id": "H.1",
+  "trackId": "H",
+  "trackName": "Observation",
+  "title": "Read the whole error message, out loud if necessary",
+  "status": "unsourced",
+  "story": "The instruction sounds insulting until you watch how people actually behave in front of a failure. The message appears, the eye goes to the last line, and a fix is attempted within seconds. The middle of the message, which frequently contains the answer, is never read.\n\nReading aloud works because it defeats the specific failure mode at play. Skimming is pattern matching: you recognise the shape of an error you have seen before and act on the recognition rather than the text. Saying the words forces serial processing, so a path you assumed said one thing turns out to say another, and a number you assumed was a count turns out to be a byte offset. The trick is not about diligence. It is about disabling a shortcut that is usually helpful and is wrong here.\n\nThe habit compounds because error messages are the highest quality evidence you will ever get. They are produced by the program at the moment it stopped, describing its own state, with no reconstruction involved. Every other debugging technique is an attempt to recover information that the error message may already be handing you.",
+  "beats": {
+    "broke": "A failure is read in under a second by pattern recognition, so a message that differs from the one it resembles gets treated as the one it resembles. The fix that follows addresses a problem the program never reported.",
+    "fix": "Read the message completely, word by word, before touching anything. Reading aloud forces serial processing and defeats the skimming that caused the misread in the first place.",
+    "cost": "It feels slow, and it feels slow exactly when there is pressure not to be. The technique asks you to spend seconds reading at the moment you most want to be acting, which is why people abandon it under stress, which is when it is most valuable.",
+    "interview": {
+      "q": "How do you begin when handed an unfamiliar failure?",
+      "trap": "Describing tooling first: attaching a debugger, adding logging, reproducing locally. All of these come after the evidence you already have has been exhausted.",
+      "answer": "By reading what has already been reported, in full, before generating any new evidence. The message names the kind of failure, the location where it was detected and the path that reached it, and it was produced at the moment of failure without reconstruction. Adding logging or a debugger is an attempt to recover information the message may already contain, so doing that first is paying to learn something you were told for free."
+    }
+  },
+  "blueprint": "What the eye does:            What reading does:\n  [......................]      \"Connection refused\"\n  [......................]      \"to 127.0.0.1 port 5432\"\n  ConnectionError  <-- here     \"after 0.003 seconds\"\n                                 -> nothing is listening.\n  \"the database is down\"          not a timeout. not the network.\n                                  not DNS. the port is closed.\n\nThree words in the middle changed the entire search.",
+  "takeaway": "The error message is the highest quality evidence available and it is free. Read it before you start manufacturing more."
+}

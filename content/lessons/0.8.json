@@ -1,0 +1,20 @@
+{
+  "id": "0.8",
+  "trackId": "0",
+  "trackName": "Before any code",
+  "title": "Variables, values, types",
+  "status": "unsourced",
+  "story": "Three things get collapsed into one word in conversation and they are not the same. A value is a thing: the number seven, the text hello. A variable is a name you can use to reach a value. A type is the agreement about how the underlying bits are to be read and what may be done with them.\n\nThe separation matters most when a variable does not hold a value but a reference to one. Assigning such a variable to another does not copy the thing; it makes a second name for the same thing. Change it through one name and the other name sees the change, because there was only ever one object. Nearly every surprising bug about a list that changed when nobody touched it is this, and no amount of staring at the line that appeared to do nothing will reveal it, because the line that did the damage is elsewhere and looks innocent.\n\nLanguages then differ on when the type agreement is checked. Checking while compiling means whole categories of mistake cannot reach a running program, at the price of having to convince the compiler about things you already know. Checking while running means the code is quicker to write and the mistake arrives later, in front of a user, on the one branch nobody exercised. That is the entire trade, and it is a trade rather than a matter of one approach being better.",
+  "beats": {
+    "broke": "Memory is undifferentiated: a location holds a pattern of bits with no record of what those bits are meant to represent, and no name. Without names and interpretations, a program can only be written in terms of addresses and raw patterns.",
+    "fix": "Introduce three separate ideas. A value is the data. A variable is a name bound to it. A type is the agreement about how to read the bits and what operations are legal on them, which lets the language reject nonsense such as subtracting a word from a date.",
+    "cost": "A variable may hold a reference rather than the value, so assignment can share instead of copy and a change made through one name appears through another. Checking types while compiling catches errors early but forces you to prove things to the compiler; checking them while running is faster to write but defers the failure to whichever branch a user happens to hit.",
+    "interview": {
+      "q": "What is the difference between a variable, a value and a reference, and why does it change how assignment behaves?",
+      "trap": "Treating assignment as always copying. Whether it copies or shares is the crux, and it varies by language and by type.",
+      "answer": "A value is the data itself. A variable is a name bound to something. A reference is an indirection: the variable holds the location of a value rather than the value. When assignment copies a reference, both names then denote the same object, so mutating through one is visible through the other. When it copies a value, the two are independent. This is why appending to a list passed into a function can be visible to the caller, while reassigning the parameter is not."
+    }
+  },
+  "blueprint": "a = [1, 2]        a ---> [ 1, 2 ]      one object\nb = a             b ---^               two names\nb.append(3)\na                 [1, 2, 3]            a changed; nothing touched a\n\nb = [9]           a ---> [ 1, 2, 3 ]   rebinding the NAME\n                  b ---> [ 9 ]         leaves the object alone\n\nMutating through a name  ->  everyone sharing it sees it\nRebinding a name         ->  only that name moves",
+  "takeaway": "A variable is a name, not a box. When the name points at something shared, changing the thing and changing the name are different operations with different blast radii."
+}

@@ -1,0 +1,20 @@
+{
+  "id": "H.7",
+  "trackId": "H",
+  "trackName": "Observation",
+  "title": "Notice what is absent: the missing log line, the request that never arrived",
+  "status": "unsourced",
+  "story": "Most monitoring is built to notice things happening. Errors raise alarms, latency crosses thresholds, exceptions get counted. Almost none of it notices things not happening, and a significant class of failure produces no event at all.\n\nA job that should run hourly and stops produces nothing. A queue consumer that dies leaves a queue that grows, and growth is only visible if somebody is watching the depth rather than the errors. A request that never arrives generates no log, no error and no metric, because the code that would have produced them never ran. These failures are quiet by construction, and they are frequently found by a customer rather than by a system, days later.\n\nDetecting absence requires inverting the question. Instead of alerting when something bad occurs, assert that something expected occurred and alert when it did not. A heartbeat is the simplest form: the job reports that it ran, and the alarm fires when the report fails to arrive. The habit generalises beyond monitoring — in debugging, asking which log line should be here and is not will often locate a fault faster than reading the lines that are.",
+  "beats": {
+    "broke": "Detection is built around events, and a thing that fails to happen emits no event. A stopped scheduler, a dead consumer, a request lost before it arrived — all produce silence, which every alarm reads as health.",
+    "fix": "Assert expectations rather than watching for faults. A heartbeat that must arrive, a queue depth that must not grow, a count that must be non-zero in each interval. The alarm fires on the absence of the expected signal.",
+    "cost": "Every expectation is a thing to maintain and to tune. Set the window too tight and normal variation pages someone at night; too loose and the outage is hours old before anyone hears. Expectations also go stale: a job that is legitimately retired leaves an alarm that fires forever, and alarms that fire without meaning are how people learn to ignore alarms.",
+    "interview": {
+      "q": "How would you detect that a nightly batch job has silently stopped running?",
+      "trap": "Proposing to alert on job failures. A job that does not start cannot fail, and failure alerting is exactly what misses this.",
+      "answer": "By alerting on the absence of success rather than the presence of failure. The job emits a heartbeat or writes a completion record, and a separate check asserts that one arrived within the expected window, alerting when it did not. Crucially the check must not live inside the job, since a job that never starts cannot run its own monitoring. The same reasoning applies to queue consumers, where watching depth catches a dead consumer that is emitting no errors because it is emitting nothing."
+    }
+  },
+  "blueprint": "Watching for events                Asserting expectations\n  alert if error_count > 0           alert if success_count == 0\n                                     over the last 25 hours\n  job dies  -> no errors\n          -> no alert                job dies -> no success\n          -> silence reads as ok            -> alert fires\n\nThe check MUST live outside the thing it checks.\nA job that never starts cannot run its own monitoring.\n\nIn debugging, same move:\n  not \"what does this log say\"\n  but \"which line should be here, and is not\"",
+  "takeaway": "Alarms built on events read silence as health. Assert what should happen and alert on its absence, from outside the thing you are watching."
+}
