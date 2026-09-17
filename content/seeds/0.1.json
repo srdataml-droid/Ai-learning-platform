@@ -1,0 +1,68 @@
+{
+  "taskId": "0.1",
+  "title": "What a file is, what a folder is",
+  "researchedAt": "2026-09-17",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The hierarchical file system was described for Multics by R. C. Daley and P. G. Neumann in 'A General-Purpose File System for Secondary Storage', presented at the AFIPS Fall Joint Computer Conference on 30 November to 1 December 1965. The paper cites no prior work for the idea, and no hierarchical file system is known to predate it.",
+      "type": "event",
+      "tokens": ["Multics", "1965", "Daley", "Neumann", "AFIPS", "FJCC"],
+      "source": {
+        "title": "Daley & Neumann, A General-Purpose File System for Secondary Storage, Proc. AFIPS 1965 FJCC vol. 27 pt. 1, pp. 213-229",
+        "url": "https://multicians.org/fjcc4.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Daley was at the Massachusetts Institute of Technology and Neumann at Bell Telephone Laboratories.",
+      "type": "person",
+      "tokens": ["Massachusetts Institute of Technology", "Bell Telephone Laboratories"],
+      "source": {
+        "title": "AFIPS '65 Fall Joint Computer Conference proceedings, author affiliations",
+        "url": "https://dl.acm.org/doi/10.1145/1463891.1463915",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The paper states that anything not basic to a user's manipulation of information should remain invisible unless the user asks otherwise, and that information must be easy to access, safe from accident and malice, and shareable on a controllable basis.",
+      "type": "quote",
+      "tokens": ["Multics"],
+      "source": {
+        "title": "Daley & Neumann, A General-Purpose File System for Secondary Storage, abstract",
+        "url": "https://multicians.org/fjcc4.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "Unix was written by Ken Thompson and Dennis Ritchie at Bell Labs; the first edition manual is dated 3 November 1971.",
+      "type": "date",
+      "tokens": ["Unix", "Ken Thompson", "Dennis Ritchie", "Bell Labs", "1971"],
+      "source": {
+        "title": "Thompson & Ritchie, UNIX Programmer's Manual, First Edition, 3 November 1971",
+        "url": "https://www.bell-labs.com/usr/dmr/www/1stEdman.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "In Unix a directory is itself a file whose contents are pairs of a name and an i-number, and the i-number indexes the i-list, which holds the file's actual description. The name is therefore not a property of the file.",
+      "type": "event",
+      "tokens": ["Unix", "i-number", "i-list"],
+      "source": {
+        "title": "Ritchie & Thompson, The UNIX Time-Sharing System, CACM 17(7), July 1974",
+        "url": "https://dsf.berkeley.edu/cs262/unix.pdf",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "storage addressed by physical position; no namespace; two programs could target the same place with nothing to stop them",
+    "fix": "Multics 1965, Daley and Neumann: a directory is a file holding names and pointers, so names became a layer above physical position",
+    "cost": "a name is now an indirection: lookups walk a tree, a file can have several names or none, and deleting a name is not deleting data",
+    "interview": "why does deleting a file not erase it, and what does that tell you about what a folder holds"
+  }
+}

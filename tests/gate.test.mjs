@@ -80,3 +80,18 @@ test('POISONED FIXTURE: an invented figure is caught', () => {
   const poisoned = 'Multics introduced it in 1965, cutting seek times by 40%.';
   assert.deepEqual(checkTraceable(poisoned, seed, allowlist), { ok: false, unlicensed: ['40%'] });
 });
+
+test('a unit never binds to a number on an earlier line', () => {
+  // Regression: with \s* as the separator the figure pattern ran "1965."
+  // across a paragraph break into an "x" in the next field and produced the
+  // atom "1965.\n\nx", which no claim could license and no author could fix.
+  const atoms = extractAtoms('Multics shipped it in 1965.\n\nx marks a different field entirely.');
+  assert.ok(!atoms.some((a) => a.includes('\n')), `no atom may span a line break: ${JSON.stringify(atoms)}`);
+  assert.ok(atoms.includes('1965'));
+});
+
+test('a figure with a unit beside it is still caught', () => {
+  assert.ok(extractAtoms('It cut latency to 40 ms.').includes('40 ms'));
+  assert.ok(extractAtoms('A 3x speedup.').includes('3x'));
+  assert.ok(extractAtoms('Costing $2M a year.').includes('$2M'));
+});

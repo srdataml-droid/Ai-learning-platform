@@ -17,7 +17,12 @@
 const YEAR = /\b(?:1[89]|20)\d{2}\b/g;
 // A figure only counts when it carries a magnitude or unit; a bare "two" or a
 // list index is not a claim about the world.
-const FIGURE = /\b\d[\d,.]*\s*(?:%|x\b|ms\b|GB\b|MB\b|KB\b|TB\b|bits?\b|bytes?\b)|\$\d[\d,.]*[KMB]?\b/gi;
+//
+// The separator is [ \t]? and not \s*, deliberately. With \s* the pattern ran
+// "1965." across two newlines into an "x" in the next field and reported the
+// atom "1965.\n\nx", which no claim could ever license. A unit belongs to the
+// number it is written beside, never to one on an earlier line.
+const FIGURE = /\b\d[\d,]*(?:\.\d+)?[ \t]?(?:%|x\b|ms\b|GB\b|MB\b|KB\b|TB\b|bits?\b|bytes?\b)|\$\d[\d,]*(?:\.\d+)?[KMB]?\b/gi;
 const ACRONYM = /\b[A-Z][A-Z0-9]{1,}\b/g;
 // Two or more capitalised words in a row: "Ken Thompson", "Bell Labs".
 const PROPER_NOUN = /\b[A-Z][a-z]+(?:\s+(?:of|the|and)\s+)?(?:\s[A-Z][a-z]+)+\b/g;
