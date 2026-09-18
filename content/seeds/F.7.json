@@ -1,0 +1,54 @@
+{
+  "taskId": "F.7",
+  "title": "Short circuit evaluation, and the bugs it hides",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "De Morgan’s laws state that not (A and B) is equivalent to (not A) or (not B), and not (A or B) is equivalent to (not A) and (not B). The equivalence is of truth values, holding for every assignment of the variables.",
+      "type": "event",
+      "tokens": [
+        "De Morgan",
+        "Morgan"
+      ],
+      "source": {
+        "title": "De Morgan, A., Formal Logic: or, The Calculus of Inference, Necessary and Probable, Taylor and Walton, London, 1847",
+        "url": "https://archive.org/details/formallogicorcal00demouoft",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Boole’s argument in 1854 is that conjunction, disjunction and negation suffice to perform all logical functions — a claim about which truth functions are expressible, not about how an expression is evaluated.",
+      "type": "date",
+      "tokens": [
+        "Boole",
+        "1854"
+      ],
+      "source": {
+        "title": "Boole, G., An Investigation of the Laws of Thought, Walton and Maberly, London, 1854",
+        "url": "https://www.gutenberg.org/ebooks/15114",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Shannon’s switching algebra models a circuit in which every relay in the network has a state at once. A physical series circuit has no notion of skipping the second switch because the first was open; the algebra it is modelled by inherits that, and describes values rather than a sequence of steps.",
+      "type": "event",
+      "tokens": [
+        "Shannon"
+      ],
+      "source": {
+        "title": "Shannon, C. E., A Symbolic Analysis of Relay and Switching Circuits, MIT master’s thesis 1937; Transactions of the American Institute of Electrical Engineers 57:713-723, 1938",
+        "url": "https://dspace.mit.edu/handle/1721.1/11173",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "the conjunction of logic evaluates both sides and the conjunction of a programming language often does not, so an expression is simultaneously an algebraic term and a piece of control flow",
+    "fix": "read a short-circuiting operator as a conditional, so that the ordering is understood as a dependency rather than as a stylistic choice",
+    "cost": "every algebraic law remains valid about the value and becomes invalid about the execution, so simplification can silently remove a guard",
+    "interview": "why applying De Morgan to a real condition can break it while preserving its truth value"
+  }
+}

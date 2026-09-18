@@ -1,0 +1,48 @@
+{
+  "id": "F.13",
+  "trackId": "F",
+  "trackName": "Logic",
+  "title": "Computability: what Turing proved cannot be done, 1936",
+  "status": "traced",
+  "seed": "F.13",
+  "story": "The question on the table was the Entscheidungsproblem: is there a mechanical procedure that, given a mathematical statement, decides whether it follows from the axioms? Answering no requires something the question does not supply — a precise definition of \"mechanical procedure\" — because without one you cannot rule out procedures nobody has thought of. Turing’s paper supplies the definition and then the negative answer, and the definition is the part that outlived the result.\n\nTwo matters of record first. The paper was received by the London Mathematical Society in May 1936 and printed in the Proceedings dated 1937, with a correction the following year, which is why you see it cited both ways. And it was the second proof, not the first: Church had got there by a different route, and Turing inserted a reference after receiving his offprint.\n\nNow the thing almost everyone has slightly wrong, and it is worth being exact about because this lesson is the place to be exact. Turing did not state the halting problem. The words halt, stop and terminate do not appear in the paper. His undecidability results concern the satisfactoriness problem and the printing problem, and the argument runs through the circle-free problem, which is not equivalent to halting but strictly harder. The phrase itself first appears in Davis’s Computability and Unsolvability in 1958 — \"we call this problem the halting problem\" — with Davis recalling he had used it in lectures from 1952, and some scholars giving Kleene priority for the formulation the same year.\n\nWhat survives into daily work is the shape rather than the theorem. Non-trivial questions about what an arbitrary program does are undecidable in general, so any tool that answers them must either fail to terminate, or refuse some inputs, or give conservative answers. That is why every static analyser you have met is conservative, and it is the same structure as C.20: a borrow checker rejects correct programs not because it is unfinished but because deciding the property in general is not available to it. The conservatism is the theorem showing up in your build output.",
+  "problem": {
+    "name": "Undecidability",
+    "aka": [
+      "the halting problem",
+      "limits of mechanical procedure"
+    ],
+    "shape": "You want a procedure that answers a question about arbitrary programs, correctly, for every input, and terminates.",
+    "tell": [
+      "the tool you are asking for would decide what an arbitrary program does",
+      "someone proposes a linter that catches all instances of a behavioural property",
+      "a static analyser is being criticised for false positives as though they were a defect"
+    ],
+    "move": "Accept that you may have any two of correct, total and terminating, and choose which to give up: answer conservatively, restrict the inputs to a decidable subset, or accept that the analysis may not finish.",
+    "invariant": "The impossibility is about deciding in general — every program, every input, always correct, always terminating. Drop any one of those and useful tools exist, which is why the theorem bounds tools rather than forbidding them.",
+    "breaks": "It is routinely overstated. The result does not say you cannot tell whether a particular program halts, which is often easy; it does not say approximation is useless; and it does not say a tool restricted to a well-behaved subset is impossible. Most practical verification lives in exactly those gaps, so treating the theorem as a blanket prohibition gives up things that are available.",
+    "cost": {
+      "time": "nothing; this is a constraint on what can be built rather than a technique",
+      "space": "nothing",
+      "beats": "hoping for a complete decision procedure, which is provably unavailable"
+    },
+    "worked": {
+      "problem": "What did Turing actually prove, and what is usually attributed to him instead?",
+      "reasoning": "He gave a precise model of mechanical computation and used it to show the decision problem has no solution. That is the headline result, and the model turned out to matter more than the result.\n\nWhat he did not do is state the halting problem. The words do not occur in the paper; his undecidability results are the satisfactoriness problem and the printing problem, and the argument goes through the circle-free problem, which is strictly harder than halting rather than equivalent to it. The phrase comes from Davis in 1958, with a plausible claim that Kleene stated the problem in 1952.\n\nWhy care? Partly because precision is the point of this track. But mainly because the popular version encourages a sloppy reading — \"you cannot know if a program will stop\" — which is false for most particular programs and misdescribes the constraint. The real statement is about a single procedure that must work for all of them, always, and terminate.\n\nThat distinction is what tells you where the usable tools are.",
+      "code": "  the claim: a SINGLE procedure that\n       - answers for EVERY program and input\n       - is always CORRECT\n       - always TERMINATES\n     ...does not exist.\n\n  drop any one and you get real tools:\n\n     correct-in-general  -> conservative analysis\n                            (may say \"don't know\" /\n                             refuse a correct program)\n     every program       -> a decidable subset\n                            (total languages, type\n                             systems, termination\n                             checkers)\n     always terminates   -> a solver with a timeout\n\n  what Turing's paper does NOT contain:\n     \"halt\", \"stop\", \"terminate\"\n     -> his results: satisfactoriness, printing\n     -> his route:   circle-free, strictly HARDER\n     -> the phrase:  Davis, 1958"
+    },
+    "practice": "Find a warning from a static analyser that is a false positive. Decide which of the three properties the tool gave up to exist at all — and whether the alternative you would prefer is one of the available ones."
+  },
+  "beats": {
+    "broke": "The open question was whether a mechanical procedure could decide whether any given mathematical statement follows from the axioms, and answering no was impossible without a precise account of what a mechanical procedure is.",
+    "fix": "A model of mechanical computation, and then a proof that the decision problem has no solution. Received by the London Mathematical Society in May 1936, printed in the Proceedings dated 1937 — the second such proof, after Church’s.",
+    "cost": "The result is narrower than its reputation. It concerns one procedure that must be correct for every program and input and must terminate, and dropping any of those conditions leaves a large space of tools that do exist.",
+    "interview": {
+      "q": "What did Turing actually prove in 1936, and what gets attributed to him that he did not?",
+      "trap": "Answering that he proved the halting problem is undecidable. That is the standard account and it is not what the paper does.",
+      "answer": "He gave a precise model of mechanical computation and used it to show that the Entscheidungsproblem — whether a procedure can decide if a statement follows from the axioms — has no solution. It was the second such proof, after Church's, and the model has outlasted the result in importance.\n\nHe did not state the halting problem. The words halt, stop and terminate do not appear in the paper; his undecidability results are the satisfactoriness problem and the printing problem, and the argument runs through the circle-free problem, which is strictly harder than halting rather than equivalent to it. The phrase first appears in Davis's Computability and Unsolvability in 1958, and Kleene has a claim on the formulation in 1952.\n\nThe distinction is worth keeping because the popular version licenses a false reading — that you cannot tell whether a program will stop. For most particular programs you can. The claim is about a single procedure that is correct for every program and input and always terminates, and giving up any one of those three yields the tools we actually use: conservative analysers, decidable subsets, and solvers with timeouts."
+    }
+  },
+  "blueprint": "What is impossible, stated exactly:\n\n  ONE procedure that is\n     - correct for EVERY program and input\n     - and always TERMINATES\n  does not exist.\n\n  give up one, and tools appear:\n\n     correctness-in-general -> conservative analysis\n     every program          -> a decidable subset\n     termination            -> a solver + timeout\n\n  and that is why the borrow checker refuses correct\n  programs (C.20). not an unfinished tool --\n  the theorem, appearing in your build output.\n\n  the record, precisely:\n\n     received 1936, printed 1937, corrected 1938\n     SECOND proof, after Church\n     \"halt\"/\"stop\"/\"terminate\": not in the paper\n     his problems: satisfactoriness, printing\n     his route:    circle-free (strictly harder)\n     the phrase:   Davis 1958 (Kleene 1952 for the\n                   formulation)",
+  "takeaway": "Turing proved the decision problem has no solution and never stated the halting problem — and the usable content is that a procedure cannot be correct for every program and always terminate, so every static tool gives up one of those and its false positives are the theorem showing."
+}

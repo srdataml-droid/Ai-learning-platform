@@ -1,0 +1,66 @@
+{
+  "taskId": "F.11",
+  "title": "Invariants: the thing that must stay true",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Loops pose a problem for finite reasoning because they may execute an unbounded number of times, which is why an auxiliary predicate — a loop invariant — is required. For a loop with a guard, a precondition and a postcondition, a valid invariant must satisfy three conditions: initiation, that the precondition implies the invariant on entry; consecution, that the body preserves the invariant when the guard holds; and sufficiency, that the invariant together with the negated guard implies the postcondition.",
+      "type": "event",
+      "tokens": [
+        "Hoare"
+      ],
+      "source": {
+        "title": "Hoare, C. A. R., An Axiomatic Basis for Computer Programming, Communications of the ACM 12(10):576-580, 1969",
+        "url": "https://dl.acm.org/doi/10.1145/363235.363259",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "In Floyd’s flowchart formulation the invariant is simply the proposition attached to the connection at the loop header, and he connects this to automatic verification with the programmer merely tagging entrances and one edge in each innermost loop.",
+      "type": "event",
+      "tokens": [
+        "Floyd"
+      ],
+      "source": {
+        "title": "Floyd, R. W., Assigning Meanings to Programs, Proceedings of Symposia in Applied Mathematics 19:19-32, American Mathematical Society, 1967",
+        "url": "https://www.cs.tau.ac.il/~nachumd/term/FloydMeaning.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Hoare’s paper argues that elucidating sets of axioms and rules of inference usable in proofs of properties of programs brings important theoretical and practical advantages, and the formal treatment of program execution in it is derived from Floyd.",
+      "type": "event",
+      "tokens": [
+        "Hoare",
+        "Floyd"
+      ],
+      "source": {
+        "title": "Hoare, C. A. R., An Axiomatic Basis for Computer Programming, Communications of the ACM 12(10):576-580, 1969",
+        "url": "https://dl.acm.org/doi/10.1145/363235.363259",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "The notation gives no guarantee of termination: executing the program from a state satisfying the precondition need not halt, so an invariant argument establishes partial correctness only.",
+      "type": "event",
+      "tokens": [
+        "Hoare"
+      ],
+      "source": {
+        "title": "Hoare, C. A. R., An Axiomatic Basis for Computer Programming, Communications of the ACM 12(10):576-580, 1969",
+        "url": "https://dl.acm.org/doi/10.1145/363235.363259",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a loop can run any number of times, so no finite description of what it has done so far is available by enumeration",
+    "fix": "find one statement that is true before the loop, stays true across every iteration, and together with the exit condition gives you what you wanted",
+    "cost": "a statement can satisfy the first two conditions and be useless, which is the common failure and the one nothing warns you about",
+    "interview": "what makes an invariant useful rather than merely true"
+  }
+}

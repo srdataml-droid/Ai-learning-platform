@@ -3214,6 +3214,247 @@
     "blueprint": "// Truth Table for XOR (Exclusive OR):\n// A | B | A ^ B\n// 0 | 0 |   0\n// 0 | 1 |   1\n// 1 | 0 |   1\n// 1 | 1 |   0\n\n// Invert conditional via De Morgan's Law:\nif (!(hasToken && isValid)) { /* ... */ }\n// Becomes:\nif (!hasToken || !isValid)  { /* ... */ }",
     "takeaway": "All computation is physical logic gates; Claude Shannon showed that electrical switches can evaluate human truth."
   },
+  "F.10": {
+    "id": "F.10",
+    "trackId": "F",
+    "trackName": "Logic",
+    "title": "Induction as the basis of recursion correctness",
+    "status": "traced",
+    "seed": "F.10",
+    "story": "The reason recursion feels like it should not work is that tracing it never finishes. You follow the function into itself, and into itself again, and the justification recedes ahead of you. So the mental move of tracing — which is how people verify loops — is the wrong tool here, and needs replacing rather than doing harder.\n\nThe replacement is induction, and the correspondence is exact rather than analogical. An inductive proof has a base case and a step in which you assume the claim for smaller values and establish it for the current one. A recursive function has a base case and a body in which you call it on smaller inputs and combine the results. The recursive call and the inductive hypothesis are the same object seen from two directions: in the proof you assume it, in the program you invoke it.\n\nFloyd made this the basis for reasoning about programs generally in 1967. His method attaches a proposition to each connection in the flow of control, requires each command to preserve the propositions across it, and then concludes about the whole program by induction on the number of commands executed. The structure of the program supplies the structure of the argument, which is why the technique scales at all.\n\nAnd the part that is routinely dropped: none of this gives termination. Floyd’s condition says a command is left \"if at all\", and Hoare’s triple says the postcondition holds when the program ends without claiming it does. So a complete argument has two independent halves. One: if it returns, the answer is right — which induction over the structure gives you. Two: it returns — which needs a quantity that strictly decreases at every call and cannot decrease forever. Proving the first and forgetting the second is how you get a function that is provably correct and hangs.",
+    "problem": {
+      "name": "Structural induction",
+      "aka": [
+        "recursion correctness",
+        "the inductive hypothesis"
+      ],
+      "shape": "A routine is defined in terms of itself, so no finite trace of its execution justifies it.",
+      "tell": [
+        "you are trying to verify a function by following it into its own call",
+        "the data is a tree, a list, or anything else defined in terms of smaller copies of itself",
+        "the function is obviously right and you cannot say why"
+      ],
+      "move": "Stop tracing. Check the base case separately. Then assume the function is correct for every smaller input, and show that given correct results from the recursive calls, this call combines them correctly.",
+      "invariant": "Every recursive call is made on a strictly smaller instance under some fixed measure. That is what licenses the assumption — you are only ever assuming the claim for cases already settled — and it is the single condition that separates induction from circular reasoning.",
+      "breaks": "It establishes partial correctness only. If the measure does not decrease, or decreases without a floor, the function need not terminate, and the inductive argument is silent about that — Floyd’s own phrasing is that the command is left \"if at all\". A proof of the recursive step therefore guarantees nothing about whether you ever reach the base case.",
+      "cost": {
+        "time": "nothing at run time; this is a way of reasoning rather than a technique to apply",
+        "space": "nothing",
+        "beats": "tracing the execution, which never bottoms out and does not scale past two levels"
+      },
+      "worked": {
+        "problem": "Why is assuming the function already works not circular?",
+        "reasoning": "Because you are not assuming it for the case you are proving. You are assuming it for strictly smaller cases, and those have already been settled by the argument.\n\nRead it as an ordering. The base case is established outright, with no assumption. The step establishes each case using only cases below it. So every case has a finite chain of support terminating at the base — nothing supports itself, directly or through a cycle.\n\nCircularity would mean using the case to establish itself, and the thing preventing that is the measure: the requirement that every recursive call goes to a strictly smaller instance. Without a measure that decreases, the chains do not terminate and the assumption really is unfounded.\n\nWhich is why the measure is not a separate concern you attend to afterwards for performance reasons. It is the condition that makes the correctness argument valid at all — the same requirement, looked at once for soundness and once for termination.",
+        "code": "induction                 recursion\n---------                 ---------\nbase case                 base case\nassume for n-1            call f(n-1)\nprove for n               combine the results\n\n  the inductive hypothesis IS the recursive call.\n\n  why it isn't circular:\n\n     base:  established with no assumption\n     n:     established using only cases < n\n     -> every case has a FINITE chain of support\n        ending at the base\n     -> nothing supports itself\n\n  what licenses it: a measure that strictly decreases\n  no decreasing measure\n     -> chains don't terminate\n     -> the assumption is unfounded\n     -> and the function doesn't stop either\n\n  same condition. two payoffs. that is not a\n  coincidence."
+      },
+      "practice": "Take a recursive function you wrote and state its inductive hypothesis in one sentence, then name the measure that decreases at every call. If you cannot name the measure, you have not shown it terminates — whatever the tests say."
+    },
+    "beats": {
+      "broke": "A recursive routine is defined in terms of itself, so tracing its execution to justify it never bottoms out — and tracing is the method people reach for by default.",
+      "fix": "Induction. Establish the base case outright, then assume correctness for smaller inputs and prove it for the current one. Floyd built program reasoning on exactly this in 1967, concluding by induction on the number of commands executed.",
+      "cost": "It gives partial correctness and nothing more. Floyd’s condition says a command is left \"if at all\" and Hoare’s triple makes no claim that the program ends, so termination is a second, independent obligation.",
+      "interview": {
+        "q": "Why is assuming the function already works not circular reasoning?",
+        "trap": "Answering that it works because it eventually reaches the base case. That is the conclusion you need, not the reason the assumption is legitimate.",
+        "answer": "Because the assumption is never about the case being proved. It is about strictly smaller cases, and those have already been established by the argument itself.\n\nRead it as an ordering: the base case is proved outright with no assumption; each larger case is proved using only cases below it. Every case therefore has a finite chain of support ending at the base, and nothing supports itself directly or through a cycle. Circularity would require using a case to establish itself, which the ordering forbids.\n\nWhat enforces the ordering is a measure that strictly decreases at every recursive call. Without one the chains never terminate and the assumption really is unfounded.\n\nThat is why the measure is not an afterthought about performance. It is the condition that makes the correctness argument valid, and separately the condition that makes the function terminate — the same requirement doing two jobs. Which is also the warning: prove the step, omit the measure, and you can have a function that is provably correct and hangs."
+      }
+    },
+    "blueprint": "The correspondence is exact, not an analogy:\n\n  base case          <->   base case\n  assume for n-1     <->   call f(n-1)\n  prove for n        <->   combine the results\n\n  not circular, because of the ordering:\n\n     base : no assumption\n     n    : uses only cases < n\n     -> finite chain of support to the base\n     -> nothing supports itself\n\n  enforced by a strictly decreasing MEASURE.\n  and the measure does two jobs:\n\n     soundness   - the chains terminate, so the\n                   assumption is well-founded\n     termination - the recursion reaches the base\n\n  drop it and you lose both, in that order.\n\n  what this argument NEVER gives you:\n     Floyd: left \"if at all\"\n     Hoare: holds \"when it ends\"\n     -> partial correctness. termination is separate.",
+    "takeaway": "The recursive call and the inductive hypothesis are the same object, and what keeps the reasoning non-circular is a strictly decreasing measure — the same condition that makes the recursion terminate, which is why omitting it loses correctness and termination together."
+  },
+  "F.11": {
+    "id": "F.11",
+    "trackId": "F",
+    "trackName": "Logic",
+    "title": "Invariants: the thing that must stay true",
+    "status": "traced",
+    "seed": "F.11",
+    "story": "A loop may run any number of times, so you cannot describe what it has done by listing what it has done. The device that replaces the list is a single statement that is true throughout, and the reason it works is that one statement holding at every iteration says as much as an unbounded enumeration would.\n\nHoare’s rule makes the obligations precise, and there are exactly three. Initiation: the precondition implies the invariant, so it is true when the loop is entered. Consecution: if the invariant and the guard both hold, the body leaves the invariant holding, so it survives an iteration. Sufficiency: the invariant together with the negation of the guard implies the postcondition, so when the loop stops you have what you came for. In Floyd’s earlier flowchart form the same thing is the proposition attached to the loop header, and he already saw the automation: the programmer tags one edge in each innermost loop and the rest is derivable.\n\nThe third condition is the one that does the real work and the one people forget, so it is worth isolating. Anything can be made to satisfy the first two. The proposition that is simply true is preserved by every loop body and holds on entry, and it tells you nothing at exit. So an invariant is not merely something that stays true — that is cheap — it is something that stays true and is strong enough, when combined with the loop having stopped, to give you the result. Sufficiency is what separates a useful invariant from a trivially correct one, and finding it is the actual work.\n\nThat is why this concept is stated in every lesson of this curriculum. An invariant tells you what a technique depends on, which means it also tells you when the technique stops applying — and the companion warning from F.9 and F.10 applies here too: all of this is partial correctness, and a loop can maintain its invariant perfectly and never terminate.",
+    "problem": {
+      "name": "Loop invariant",
+      "aka": [
+        "inductive assertion",
+        "the thing that must stay true"
+      ],
+      "shape": "A repeated process may run an unbounded number of times, and you need to say something true about it without enumerating the iterations.",
+      "tell": [
+        "you are reasoning about a loop by imagining the first two or three passes",
+        "the code is correct and you cannot say what keeps it correct",
+        "a change to the loop body breaks something several iterations later"
+      ],
+      "move": "Find a statement that holds on entry, is preserved by the body whenever the guard holds, and — crucially — combined with the guard being false gives you the postcondition. Then check all three, in that order.",
+      "invariant": "The statement is preserved by an arbitrary iteration, not by the iterations you pictured. That is what makes it cover an unbounded number of passes, and it is why the argument has to be about the body rather than about a trace.",
+      "breaks": "It breaks on sufficiency, silently. A statement can satisfy initiation and consecution and be worthless — the proposition \"true\" does — so a correct-looking invariant may simply fail to imply anything at exit. And none of it addresses termination: a loop can preserve its invariant forever.",
+      "cost": {
+        "time": "nothing at run time; finding the invariant is the expensive part and it is human time",
+        "space": "nothing, unless you assert it, which is often worth doing",
+        "beats": "tracing iterations, which covers a sample of executions and cannot cover an unbounded number"
+      },
+      "worked": {
+        "problem": "What makes an invariant useful rather than merely true?",
+        "reasoning": "Sufficiency, and it is the condition that cannot be satisfied by accident.\n\nTake the three obligations and ask which ones are hard. Initiation is usually easy; you arrange the setup to make it so. Consecution is a check on the body, and a weak statement passes it trivially. Sufficiency requires that the statement, plus the single extra fact that the loop has stopped, gets you to the result — and that is a demand on the statement’s strength.\n\nThe instructive case is the invariant that says merely true. It holds on entry. Every body preserves it. It satisfies two of three conditions perfectly, and at exit it tells you nothing, so it cannot imply any postcondition worth having.\n\nSo the search is not for something that survives the loop; almost anything does. It is for the weakest statement that still implies the postcondition at exit, which is why finding an invariant is genuinely difficult and why it is where the understanding of the algorithm actually lives.",
+        "code": "three obligations:\n\n  initiation   precondition       => invariant\n  consecution  invariant & guard  => invariant (after body)\n  sufficiency  invariant & !guard => postcondition\n                                     ^^^^^^^^^^^^\n                                     the one that\n                                     does the work\n\n  the cautionary invariant:\n\n     I = \"true\"\n       initiation:  holds\n       consecution: every body preserves it\n       sufficiency: gives you NOTHING\n     -> 2 of 3, and useless\n\n  so the target is:\n     the WEAKEST statement that still implies the\n     postcondition when the loop stops\n\n  and none of the three mentions termination.\n  a loop can preserve its invariant forever."
+      },
+      "practice": "Take a loop you have written and state its invariant, then check all three conditions in order. If sufficiency fails, your invariant is too weak — and strengthening it until it passes is the exercise."
+    },
+    "beats": {
+      "broke": "A loop may run an unbounded number of times, so no enumeration of what it has done is available, and reasoning by imagining the first few passes covers a sample rather than the behaviour.",
+      "fix": "One statement, true on entry, preserved by an arbitrary iteration, and strong enough that it plus the exit condition yields the postcondition — Hoare’s three obligations, with Floyd’s earlier form attaching the same proposition to the loop header.",
+      "cost": "Sufficiency is the condition that fails quietly. A statement can satisfy the other two and be worthless, and nothing in the process warns you — plus the whole argument is partial correctness, so an invariant can hold forever.",
+      "interview": {
+        "q": "What makes an invariant useful rather than merely true?",
+        "trap": "Answering that it must be preserved by the loop body. That is necessary and is the easy half — almost any statement manages it.",
+        "answer": "Sufficiency: that the invariant, together with the single extra fact that the loop has stopped, implies what you wanted.\n\nLook at the three obligations and ask which are hard. Initiation is usually arranged by the setup. Consecution is a check on the body, and a weak statement passes it trivially. Sufficiency is a demand on the statement's strength, and it is the one that cannot be satisfied by accident.\n\nThe clarifying case is the invariant that says merely true. It holds on entry, every loop body preserves it, and at exit it tells you nothing — two of three conditions satisfied perfectly and no use whatever.\n\nSo the search is not for something that survives the loop, because almost everything does. It is for the weakest statement that still implies the postcondition at exit, and that is where the real understanding of the algorithm sits. Worth adding that none of the three conditions mentions termination: a loop can maintain its invariant and run forever, so that remains a separate obligation."
+      }
+    },
+    "blueprint": "Three obligations, and which one earns its keep:\n\n  initiation    pre               => I        easy\n  consecution   I & guard         => I        easy for\n                                              weak I\n  sufficiency   I & NOT guard     => post     HARD\n\n  the cautionary case:\n\n     I = \"true\"\n     initiation  OK\n     consecution OK   (every body preserves it)\n     sufficiency ---  (implies nothing)\n     -> 2 of 3, worthless\n\n  so you are not looking for something that survives\n  the loop. you are looking for the WEAKEST statement\n  that still implies the postcondition at exit.\n\n  and note what is absent from all three:\n     termination. an invariant can hold forever.",
+    "takeaway": "An invariant is not merely something that stays true — almost anything does — it is the weakest statement that, combined with the loop having stopped, gives you the result, which is why sufficiency is where the difficulty and the understanding both live."
+  },
+  "F.12": {
+    "id": "F.12",
+    "trackId": "F",
+    "trackName": "Logic",
+    "title": "Type systems as logic, lightly",
+    "status": "traced",
+    "seed": "F.12",
+    "story": "Types are usually introduced as a mechanism: they catch mistakes, they document intent, the compiler checks them. All true, and none of it says what a type is. There is a more exact answer, and it was noticed rather than designed.\n\nHoward made it explicit in 1969: there is a syntactic analogy between the programs of the simply typed lambda calculus and the proofs of natural deduction. A proposition corresponds to a type. A proof of that proposition corresponds to a program of that type. Simplifying a proof corresponds to evaluating a program. These are not similar structures; they are the same structure, arrived at independently by logicians and by computer scientists, which is the sort of coincidence that usually means neither party invented it.\n\nThe history is worth getting right because it is routinely compressed. Curry had earlier drawn a correspondence between Hilbert-style deduction and typed combinatory logic. Howard circulated his 1969 work as a xeroxed manuscript and it was not published until 1980, in a Festschrift for Curry, under the title The Formulae-as-Types Notion of Construction. The insight that natural deduction is the right setting, and the formulation now used, are attributed to Martin-Löf, with Prawitz’s 1965 work on the subformula principle setting the ground.\n\nWhat it buys you in ordinary work, lightly, is a reading. A function signature is the statement of a theorem: given something of this type, I can produce something of that type. Writing the function is exhibiting the proof. That reframing pays immediately — a signature returning a type nothing can inhabit states a theorem you cannot prove, and one accepting a type broader than the function can actually handle states a theorem stronger than what you are about to demonstrate. The honest limit is that the exact correspondence is with a logic weaker than the one you reason in informally, and real type systems with exceptions, non-termination and escape hatches sit some distance from it.",
+    "problem": {
+      "name": "Propositions as types",
+      "aka": [
+        "the Curry-Howard correspondence",
+        "formulae-as-types"
+      ],
+      "shape": "You want to know what a type system is doing, rather than which errors it happens to prevent.",
+      "tell": [
+        "you can use types fluently and cannot say what one is",
+        "a signature seems to promise more than the function delivers, and nothing catches it",
+        "you are choosing between encoding a rule in a type and checking it at run time"
+      ],
+      "move": "Read a type as a proposition and a value of that type as evidence for it. Then read a function signature as an implication — give me evidence for the argument type and I will produce evidence for the return type — and the function body as the construction that discharges it.",
+      "invariant": "A well-typed program is a proof of the proposition its type denotes. Everything the correspondence gives you rests on that, which is also why anything letting you produce a value without constructing it — a cast, an exception, a non-terminating loop — breaks the correspondence rather than bending it.",
+      "breaks": "The exact correspondence is with a constructive logic weaker than ordinary informal reasoning, and practical languages sit further away still. Non-termination alone is enough to break it: a function that never returns can claim any return type, which corresponds to proving anything, so the escape hatches that make a language usable are the same ones that stop it being a proof system.",
+      "cost": {
+        "time": "nothing new to run; the cost is in expressing things precisely enough to be typed",
+        "space": "nothing at run time where types are erased",
+        "beats": "checking properties at run time, which handles what types cannot express and finds out later"
+      },
+      "worked": {
+        "problem": "What does it mean to say a function signature is a theorem?",
+        "reasoning": "Read the arrow as implication. A signature from A to B claims: given evidence for A, I can produce evidence for B. The body of the function is the construction that backs the claim, and type-checking is the verification that the construction actually does so.\n\nThat reading has immediate consequences. A signature whose return type nothing can inhabit states a theorem you cannot prove — and if the compiler accepts your implementation, something else is going on: the function does not return, or it throws, or it lies.\n\nIt also sharpens what a weak signature costs. A function taking a broad type states a weaker theorem, so it obliges you to handle every case in the breadth. Narrowing the input type is strengthening the hypothesis, which makes the theorem easier to prove and pushes the obligation to the caller, where the information usually is.\n\nThat is the whole practical content: the signature is the claim, the body is the argument, and a claim you cannot support should be visible before you start writing the support.",
+        "code": "  type        <->  proposition\n  program     <->  proof of it\n  evaluation  <->  simplification of the proof\n\n  f : A -> B\n     \"given evidence for A, I produce evidence for B\"\n     the body is the construction\n     type-checking verifies the construction\n\n  consequences, immediately:\n\n     return type nothing can inhabit\n        -> a theorem you cannot prove\n        -> if it compiles: it doesn't return, or\n           it throws, or it lies\n\n     broad input type  -> weaker hypothesis\n                       -> harder theorem\n                       -> you handle every case\n     narrow it         -> stronger hypothesis\n                       -> obligation moves to the\n                          caller, who has the info\n\n  and what breaks it: anything producing a value\n  without constructing one -- casts, exceptions,\n  non-termination."
+      },
+      "practice": "Take a function whose signature accepts a broad type and narrow it until the body has no case it cannot handle. Then note what moved to the caller, and whether the caller was in a better position to know."
+    },
+    "beats": {
+      "broke": "Types get explained by what they prevent, which describes an effect rather than the thing. That leaves you able to use them fluently and unable to say what a type is or why the discipline works.",
+      "fix": "Read a type as a proposition and a program of that type as a proof. Howard made the analogy explicit in 1969 between programs of the simply typed lambda calculus and proofs in natural deduction — with proof simplification corresponding to evaluation.",
+      "cost": "The exact correspondence holds for a logic weaker than the one you reason in, and real languages are further away. Non-termination alone breaks it, since a function that never returns can claim any type at all — which corresponds to proving anything.",
+      "interview": {
+        "q": "What does it mean to say that a function signature is a theorem?",
+        "trap": "Treating it as a metaphor about rigour. The correspondence is structural — proofs and programs are the same objects — which is why it has consequences rather than connotations.",
+        "answer": "Read the arrow as implication: a signature from A to B claims that given evidence for A you can produce evidence for B. The body is the construction backing the claim, and type-checking verifies that the construction does what it says.\n\nThe consequences are practical rather than decorative. A signature returning a type nothing can inhabit states a theorem you cannot prove — so if it compiles, something else is happening: the function does not return, or it throws, or it casts. And a broad input type states a weaker hypothesis, which makes the theorem harder and obliges you to handle every case in that breadth; narrowing the input strengthens the hypothesis and moves the obligation to the caller, who usually has the information to discharge it.\n\nThe honest limit is that the exact correspondence is with a constructive logic weaker than ordinary informal reasoning, and practical languages sit further out still. Anything that yields a value without constructing one — a cast, an exception, an infinite loop — breaks the correspondence rather than stretching it, which is why the features that make a language usable are the same ones that stop it being a proof system."
+      }
+    },
+    "blueprint": "Two fields, one structure, found independently:\n\n  logic                      programming\n  -----                      -----------\n  proposition          <->   type\n  proof                <->   program\n  simplifying a proof  <->   evaluating a program\n  implication          <->   function type\n  conjunction          <->   pair\n  disjunction          <->   sum / either\n\n  f : A -> B  is the claim.\n  the body    is the argument.\n  the checker verifies the argument.\n\n  practical reading:\n\n     broad input  = weak hypothesis = hard theorem\n                    = you handle every case\n     narrow input = strong hypothesis\n                    = obligation moves to the caller\n\n  what breaks it:\n     a value produced WITHOUT being constructed\n     (cast, exception, non-termination)\n     -> not a bent correspondence. a broken one.",
+    "takeaway": "A type is a proposition and a program of that type is its proof, so a signature is a theorem and the body is the argument for it — which is why narrowing an input type strengthens the hypothesis and moves the obligation to whoever knows more."
+  },
+  "F.13": {
+    "id": "F.13",
+    "trackId": "F",
+    "trackName": "Logic",
+    "title": "Computability: what Turing proved cannot be done, 1936",
+    "status": "traced",
+    "seed": "F.13",
+    "story": "The question on the table was the Entscheidungsproblem: is there a mechanical procedure that, given a mathematical statement, decides whether it follows from the axioms? Answering no requires something the question does not supply — a precise definition of \"mechanical procedure\" — because without one you cannot rule out procedures nobody has thought of. Turing’s paper supplies the definition and then the negative answer, and the definition is the part that outlived the result.\n\nTwo matters of record first. The paper was received by the London Mathematical Society in May 1936 and printed in the Proceedings dated 1937, with a correction the following year, which is why you see it cited both ways. And it was the second proof, not the first: Church had got there by a different route, and Turing inserted a reference after receiving his offprint.\n\nNow the thing almost everyone has slightly wrong, and it is worth being exact about because this lesson is the place to be exact. Turing did not state the halting problem. The words halt, stop and terminate do not appear in the paper. His undecidability results concern the satisfactoriness problem and the printing problem, and the argument runs through the circle-free problem, which is not equivalent to halting but strictly harder. The phrase itself first appears in Davis’s Computability and Unsolvability in 1958 — \"we call this problem the halting problem\" — with Davis recalling he had used it in lectures from 1952, and some scholars giving Kleene priority for the formulation the same year.\n\nWhat survives into daily work is the shape rather than the theorem. Non-trivial questions about what an arbitrary program does are undecidable in general, so any tool that answers them must either fail to terminate, or refuse some inputs, or give conservative answers. That is why every static analyser you have met is conservative, and it is the same structure as C.20: a borrow checker rejects correct programs not because it is unfinished but because deciding the property in general is not available to it. The conservatism is the theorem showing up in your build output.",
+    "problem": {
+      "name": "Undecidability",
+      "aka": [
+        "the halting problem",
+        "limits of mechanical procedure"
+      ],
+      "shape": "You want a procedure that answers a question about arbitrary programs, correctly, for every input, and terminates.",
+      "tell": [
+        "the tool you are asking for would decide what an arbitrary program does",
+        "someone proposes a linter that catches all instances of a behavioural property",
+        "a static analyser is being criticised for false positives as though they were a defect"
+      ],
+      "move": "Accept that you may have any two of correct, total and terminating, and choose which to give up: answer conservatively, restrict the inputs to a decidable subset, or accept that the analysis may not finish.",
+      "invariant": "The impossibility is about deciding in general — every program, every input, always correct, always terminating. Drop any one of those and useful tools exist, which is why the theorem bounds tools rather than forbidding them.",
+      "breaks": "It is routinely overstated. The result does not say you cannot tell whether a particular program halts, which is often easy; it does not say approximation is useless; and it does not say a tool restricted to a well-behaved subset is impossible. Most practical verification lives in exactly those gaps, so treating the theorem as a blanket prohibition gives up things that are available.",
+      "cost": {
+        "time": "nothing; this is a constraint on what can be built rather than a technique",
+        "space": "nothing",
+        "beats": "hoping for a complete decision procedure, which is provably unavailable"
+      },
+      "worked": {
+        "problem": "What did Turing actually prove, and what is usually attributed to him instead?",
+        "reasoning": "He gave a precise model of mechanical computation and used it to show the decision problem has no solution. That is the headline result, and the model turned out to matter more than the result.\n\nWhat he did not do is state the halting problem. The words do not occur in the paper; his undecidability results are the satisfactoriness problem and the printing problem, and the argument goes through the circle-free problem, which is strictly harder than halting rather than equivalent to it. The phrase comes from Davis in 1958, with a plausible claim that Kleene stated the problem in 1952.\n\nWhy care? Partly because precision is the point of this track. But mainly because the popular version encourages a sloppy reading — \"you cannot know if a program will stop\" — which is false for most particular programs and misdescribes the constraint. The real statement is about a single procedure that must work for all of them, always, and terminate.\n\nThat distinction is what tells you where the usable tools are.",
+        "code": "  the claim: a SINGLE procedure that\n       - answers for EVERY program and input\n       - is always CORRECT\n       - always TERMINATES\n     ...does not exist.\n\n  drop any one and you get real tools:\n\n     correct-in-general  -> conservative analysis\n                            (may say \"don't know\" /\n                             refuse a correct program)\n     every program       -> a decidable subset\n                            (total languages, type\n                             systems, termination\n                             checkers)\n     always terminates   -> a solver with a timeout\n\n  what Turing's paper does NOT contain:\n     \"halt\", \"stop\", \"terminate\"\n     -> his results: satisfactoriness, printing\n     -> his route:   circle-free, strictly HARDER\n     -> the phrase:  Davis, 1958"
+      },
+      "practice": "Find a warning from a static analyser that is a false positive. Decide which of the three properties the tool gave up to exist at all — and whether the alternative you would prefer is one of the available ones."
+    },
+    "beats": {
+      "broke": "The open question was whether a mechanical procedure could decide whether any given mathematical statement follows from the axioms, and answering no was impossible without a precise account of what a mechanical procedure is.",
+      "fix": "A model of mechanical computation, and then a proof that the decision problem has no solution. Received by the London Mathematical Society in May 1936, printed in the Proceedings dated 1937 — the second such proof, after Church’s.",
+      "cost": "The result is narrower than its reputation. It concerns one procedure that must be correct for every program and input and must terminate, and dropping any of those conditions leaves a large space of tools that do exist.",
+      "interview": {
+        "q": "What did Turing actually prove in 1936, and what gets attributed to him that he did not?",
+        "trap": "Answering that he proved the halting problem is undecidable. That is the standard account and it is not what the paper does.",
+        "answer": "He gave a precise model of mechanical computation and used it to show that the Entscheidungsproblem — whether a procedure can decide if a statement follows from the axioms — has no solution. It was the second such proof, after Church's, and the model has outlasted the result in importance.\n\nHe did not state the halting problem. The words halt, stop and terminate do not appear in the paper; his undecidability results are the satisfactoriness problem and the printing problem, and the argument runs through the circle-free problem, which is strictly harder than halting rather than equivalent to it. The phrase first appears in Davis's Computability and Unsolvability in 1958, and Kleene has a claim on the formulation in 1952.\n\nThe distinction is worth keeping because the popular version licenses a false reading — that you cannot tell whether a program will stop. For most particular programs you can. The claim is about a single procedure that is correct for every program and input and always terminates, and giving up any one of those three yields the tools we actually use: conservative analysers, decidable subsets, and solvers with timeouts."
+      }
+    },
+    "blueprint": "What is impossible, stated exactly:\n\n  ONE procedure that is\n     - correct for EVERY program and input\n     - and always TERMINATES\n  does not exist.\n\n  give up one, and tools appear:\n\n     correctness-in-general -> conservative analysis\n     every program          -> a decidable subset\n     termination            -> a solver + timeout\n\n  and that is why the borrow checker refuses correct\n  programs (C.20). not an unfinished tool --\n  the theorem, appearing in your build output.\n\n  the record, precisely:\n\n     received 1936, printed 1937, corrected 1938\n     SECOND proof, after Church\n     \"halt\"/\"stop\"/\"terminate\": not in the paper\n     his problems: satisfactoriness, printing\n     his route:    circle-free (strictly harder)\n     the phrase:   Davis 1958 (Kleene 1952 for the\n                   formulation)",
+    "takeaway": "Turing proved the decision problem has no solution and never stated the halting problem — and the usable content is that a procedure cannot be correct for every program and always terminate, so every static tool gives up one of those and its false positives are the theorem showing."
+  },
+  "F.2": {
+    "id": "F.2",
+    "trackId": "F",
+    "trackName": "Logic",
+    "title": "Implication, and why \"if A then B\" confuses everyone",
+    "status": "traced",
+    "seed": "F.2",
+    "story": "The title is not a figure of speech. Wason’s selection task from 1968 gives people a rule of the form if p then q and four cards showing p, not-p, q and not-q, and asks which must be turned over to test it. The answer is p and not-q. On the abstract version the classic finding is that fewer than 10% get it right, with some aggregated datasets as low as 4%. A later meta-analysis puts it at 19%, so treat 10% as the classic lower bound rather than a fixed constant — but at any figure in that range, this is a rule almost nobody applies correctly.\n\nThe failures are not random, which is what makes them informative. People pick the antecedent alone, or the antecedent together with the consequent. Both are attempts to confirm the rule, and the one card that can actually refute it — not-q — is the one people leave alone.\n\nThe reason is that two different operators are sharing one phrase. Ordinary \"if A then B\" carries relevance and often causation: saying it suggests A has something to do with B. The logical conditional claims much less. It says only that you will not find A together with not-B, so it is false in exactly one situation and true in all three others — including, awkwardly, whenever A is false. \"If the list is empty then every element is prime\" is true.\n\nNow the part that is usually told badly. Performance jumps to around 70 to 75% on Griggs and Cox’s drinking-age version, which is logically the same problem in familiar clothes. It is often cited as showing that people reason better about permissions and obligations, and that is a later interpretation, not the paper’s. Griggs and Cox were mostly reporting a failure to replicate: two earlier thematic results did not reproduce, and the one that did used a rule within the subjects’ own experience, which they explained as memory cueing rather than anything about obligation. The permission and cheater-detection readings came afterwards and are contested — Sperber, Cara and Girotto got 16% against 65% on two versions that were logically and semantically identical. So the solid finding is that framing moves performance enormously; why it does is still argued about.",
+    "problem": {
+      "name": "Material implication",
+      "aka": [
+        "the conditional",
+        "if-then",
+        "vacuous truth"
+      ],
+      "shape": "A rule of the form \"whenever A, also B\" has to be tested, stated or negated, and the everyday reading of it differs from the one the system will use.",
+      "tell": [
+        "a condition is written to confirm a rule rather than to break it",
+        "a check passes on an empty input and nobody expects it to",
+        "someone argues that a rule is untested because the antecedent never occurred"
+      ],
+      "move": "Read the conditional as a single prohibition: it forbids A together with not-B, and asserts nothing else. To test it, look for that combination. To negate it, produce that combination.",
+      "invariant": "The conditional is false in exactly one of the four combinations and true in the other three. Everything counterintuitive about it — vacuous truth, the irrelevance of the consequent alone — is a consequence of that single row of the table.",
+      "breaks": "It breaks against the natural-language reading, which carries relevance and causation the operator does not have. That mismatch is not a failure of education: it survives in people who know the truth table, which is why the measured error rates stay low on abstract versions and why the reliable remedy is to make the case concrete rather than to try harder.",
+      "cost": {
+        "time": "nothing; this is a reading, not a technique",
+        "space": "nothing",
+        "beats": "intuition, which is measurably around 10 to 20% accurate on the abstract form of exactly this question"
+      },
+      "worked": {
+        "problem": "Why is a rule about an empty collection satisfied?",
+        "reasoning": "Because the rule forbids a combination, and an empty collection contains no combinations at all.\n\nThe claim that every element of S is valid means: there is no element of S that is invalid. If S is empty there is no such element, so nothing violates the rule, so the rule holds. It is not a special case bolted on — it falls straight out of the one row of the truth table that can be false.\n\nThis is worth internalising because it is a live source of bugs rather than a curiosity. A validation that loops over items and returns true if none failed will pass an empty input. A test asserting that all results match a condition passes when there are no results, which is exactly what happens when the query silently returned nothing.\n\nThe check you want in that case is a different claim — that S is non-empty and every element is valid — and noticing that you needed two claims rather than one is the whole lesson.",
+        "code": "  A     B     A -> B\n  ----  ----  ------\n  T     T     T\n  T     F     F      <- the only false row\n  F     T     T\n  F     F     T      <- \"vacuously\" true\n\n  so: A -> B  means  NOT (A AND NOT B)\n      one prohibition, nothing more\n\n  for_all(items, is_valid)   with items == []\n      -> no item is invalid\n      -> nothing violates it\n      -> TRUE\n\n  the bug: your query returned nothing, and the\n  assertion passed.\n\n  what you meant:\n      items is non-empty  AND  all are valid\n      -> two claims. that's why one wasn't enough."
+      },
+      "practice": "Find an assertion in your test suite of the form \"every result satisfies X\". Make the query return nothing and run it. Then decide whether the test should have failed — and write the second claim if so."
+    },
+    "beats": {
+      "broke": "The conditional of ordinary speech carries relevance and causation; the logical one carries neither. The two share a phrase, so people reason using the first while the machine uses the second.",
+      "fix": "Read it as a single prohibition: A together with not-B is forbidden and nothing else is claimed. Testing it means hunting for that combination, which is what almost nobody does — the abstract selection task is answered correctly by somewhere between 10 and 20% of people.",
+      "cost": "It makes every conditional with a false antecedent true. That is correct and permanently counterintuitive, and it is the mechanism behind a real class of bug: the check that passes because there was nothing to check.",
+      "interview": {
+        "q": "Why is a rule like \"every element is valid\" satisfied by an empty collection?",
+        "trap": "Calling it a convention, or an edge case the definition handles specially. It is neither — it falls out of the only row of the truth table that can be false.",
+        "answer": "Because the rule forbids a combination and an empty collection has none. The claim that every element of S is valid means there is no element of S that is invalid; with S empty, no such element exists, so nothing violates it and the claim holds.\n\nThat is not a special case grafted on. A conditional is false in exactly one of four combinations — antecedent true, consequent false — and true in the other three, including both rows where the antecedent is false.\n\nThe practical consequence is a live class of bug rather than a curiosity. A validator that loops and reports success when nothing failed will succeed on empty input; a test asserting all results match a condition passes when the query returned no results, which is precisely the failure you wanted to catch.\n\nThe fix is to notice you needed two claims: that the collection is non-empty, and that every element satisfies the property. Realising one claim was doing the work of two is the useful part."
+      }
+    },
+    "blueprint": "One prohibition, four combinations:\n\n    A -> B   ==   NOT (A AND NOT B)\n\n    A   B   result\n    T   T   T\n    T   F   F     <-- the ONLY thing forbidden\n    F   T   T\n    F   F   T     <-- vacuous, and correct\n\n  to TEST it:  look for A with not-B\n  to BREAK it: produce A with not-B\n  the q card alone: proves nothing, ever\n\n  measured: ~10-20% pick p and not-q on the abstract\n  task; ~70-75% on a logically identical familiar one\n\n  -> the remedy is to make the case CONCRETE,\n     not to concentrate harder.",
+    "takeaway": "A conditional forbids exactly one combination and claims nothing else, which is why it is satisfied whenever its antecedent fails — and why a check over an empty collection passes when you most wanted it to fail."
+  },
   "F.3": {
     "id": "F.3",
     "trackId": "F",
@@ -3234,6 +3475,198 @@
     "blueprint": "/* Logic Truth Table: */\nStatement:      P -> Q       (\"If code works, tests pass\")\nContrapositive: not Q -> not P (\"Tests failed, so code does NOT work\") [VALID]\nConverse:       Q -> P       (\"Tests passed, so code works\")          [FALLACY!]",
     "takeaway": "Debugging is not guessing; it is the rigorous elimination of hypotheses via contrapositive falsification."
   },
+  "F.4": {
+    "id": "F.4",
+    "trackId": "F",
+    "trackName": "Logic",
+    "title": "De Morgan’s laws",
+    "status": "traced",
+    "seed": "F.4",
+    "story": "Two rules, published in London in 1847 in De Morgan’s Formal Logic, the same year as Boole’s first book on symbolic logic — the two were correspondents, and the near-simultaneity is a coincidence of a field arriving rather than of two people racing. The negation of a conjunction is the disjunction of the negations; the negation of a disjunction is the conjunction of the negations. Flip the connective, negate both sides.\n\nThe reason they matter is not that they are surprising but that they are mechanical. Negating a compound condition by understanding it is exactly where mistakes happen: you hold \"not both admin and active\" in your head, you think about what it means, and you arrive at \"not admin and not active\", which is wrong. The rule requires no understanding at all. It is a rewriting operation on the shape of the expression, and shapes can be transformed reliably while meanings cannot.\n\nThat is the general lesson of this part of the track and it is worth stating explicitly, because it sounds anti-intellectual and is the opposite. Boole’s claim in 1854 was that three operations suffice for all of logic; the payoff of putting logic into algebra is that you can then manipulate it the way you manipulate algebra — by symbol pushing, without re-deriving the meaning at each step. Shannon’s application of the same algebra to switching circuits is the same move again, which is why the laws appear in older circuit texts in complement notation.\n\nThere is a boundary, and it is the subject of F.7. The equivalence is about truth values. In a program, an expression has an evaluation order, may have side effects, and may fail partway. Applying De Morgan to a short-circuited condition preserves what it computes and changes what it evaluates, and an expression whose left operand was protecting the right one stops protecting it. So the rule is safe about values and unsafe about execution — which is exactly the distinction to carry.",
+    "problem": {
+      "name": "Negating a compound condition",
+      "aka": [
+        "De Morgan’s laws",
+        "pushing negation inward"
+      ],
+      "shape": "A condition built from ands, ors and nots must be inverted, simplified or restructured, and doing it by reasoning about its meaning is unreliable.",
+      "tell": [
+        "you are about to write the opposite of a condition by thinking about what the opposite is",
+        "a filter and its complement do not partition the data the way you expected",
+        "a query with a negation wrapped around a compound clause returns the wrong rows"
+      ],
+      "move": "Rewrite symbolically. To push a negation inwards, change and to or or or to and, and negate each operand. Repeat until no negation sits outside a compound.",
+      "invariant": "The rewrite preserves the truth value for every assignment of the variables. That is what makes it usable without understanding the condition — and the scope of the guarantee is truth values and nothing else.",
+      "breaks": "It says nothing about execution. In a language with short-circuit evaluation the rewrite changes which operand is evaluated first and whether the second is evaluated at all, so side effects and guard clauses do not survive it. It also interacts badly with three-valued logic, where negation does not behave the way the two-valued intuition expects.",
+      "cost": {
+        "time": "none; it is a syntactic transformation",
+        "space": "none",
+        "beats": "reasoning about what the negated condition means, which is the step where the error occurs"
+      },
+      "worked": {
+        "problem": "Why should you trust a mechanical rule over understanding the condition?",
+        "reasoning": "Because understanding is the unreliable part, and you can check that claim on yourself in one line.\n\nTake \"not (admin and active)\". Reasoning about it, most people produce \"not admin and not active\" — which says neither is true, when the original says merely that they are not both true. A user who is an admin but inactive satisfies the original and fails the rewrite.\n\nThe rule cannot make that mistake because it does not consider what admin or active mean. It sees a negation outside a conjunction and produces a disjunction of negations. The operation is defined on the shape of the expression, so the space in which the error lives has been removed rather than navigated.\n\nThat generalises past this rule. The value of a formal system is that it lets you get right answers in a region where your intuition is known to be poor, by not consulting it.",
+        "code": "NOT (A AND B)  ==  (NOT A) OR  (NOT B)\nNOT (A OR  B)  ==  (NOT A) AND (NOT B)\n\n  by reasoning:\n     \"not (admin and active)\"\n       -> \"not admin and not active\"      WRONG\n       (an inactive admin satisfies the first,\n        fails the second)\n\n  by the rule:\n     negation outside an AND\n       -> OR of the negations\n       -> \"not admin OR not active\"       right\n\n  the rule never asked what \"admin\" means.\n  that is the feature.\n\n  SQL:  NOT (a = 1 AND b = 2)\n     == a <> 1 OR b <> 2        ...for non-NULL a, b\n        (and NULL is a different lesson: F.8)"
+      },
+      "practice": "Take a compound condition from your code with three or more terms and negate it twice, once by reasoning and once by the rule, without looking at the other. Then find an assignment of the variables that distinguishes them if they differ."
+    },
+    "beats": {
+      "broke": "Inverting a compound condition requires working out what its opposite means, and that is the step where people reliably get it wrong — producing \"neither\" where the original said \"not both\".",
+      "fix": "Two rewriting rules from De Morgan’s Formal Logic of 1847: flip the connective and negate both operands. The transformation is defined on the shape of the expression, so it does not consult the meaning at all.",
+      "cost": "The guarantee covers truth values only. In a real language the rewrite changes evaluation order and whether the second operand runs, so guards and side effects do not survive it — and three-valued logic breaks the two-valued intuition about negation separately.",
+      "interview": {
+        "q": "Why prefer a mechanical rewriting rule to just understanding the condition?",
+        "trap": "Answering that it is faster. It is, but the reason it is worth trusting is that it removes the step where errors actually occur.",
+        "answer": "Because understanding is the unreliable part, and the failure is demonstrable in one line. Asked for the opposite of \"admin and active\", most people produce \"not admin and not active\" — which asserts neither holds, while the original only denies that both hold. An inactive admin satisfies the original and fails the rewrite.\n\nThe rule cannot make that error because it never consults what the terms mean. It matches a negation outside a conjunction and emits a disjunction of negations. The region where the mistake lives has been removed rather than navigated carefully.\n\nThat is the general value of a formal system: it lets you get correct answers in an area where your intuition is measurably poor, precisely by not asking your intuition.\n\nThe boundary matters though. The equivalence is about truth values for every assignment. It says nothing about evaluation order, so applying it to a short-circuited expression preserves what is computed and changes what is executed — which is how a left operand that was guarding the right one stops guarding it."
+      }
+    },
+    "blueprint": "Flip the connective, negate both sides:\n\n    NOT (A AND B)  ==  NOT A  OR   NOT B\n    NOT (A OR  B)  ==  NOT A  AND  NOT B\n\n  why mechanical beats thoughtful here:\n\n     \"not both\"      != \"neither\"\n     and the second is what reasoning produces\n\n  scope of the guarantee:\n\n     truth values, every assignment      YES\n     evaluation order                    NO\n     whether operand 2 runs at all       NO\n     side effects                        NO\n     three-valued logic (NULL)           NO\n\n  so: safe about VALUES, unsafe about EXECUTION.\n  that boundary is F.7.",
+    "takeaway": "Negation distributes by flipping the connective, a rewrite defined on the shape of an expression rather than its meaning — which is why it is reliable, and why its guarantee covers truth values and not evaluation order."
+  },
+  "F.5": {
+    "id": "F.5",
+    "trackId": "F",
+    "trackName": "Logic",
+    "title": "Quantifiers: for all, there exists",
+    "status": "traced",
+    "seed": "F.5",
+    "story": "Consider two requirements. Every user can be served by some server. There is some server that can serve every user. In ordinary speech these are a word order apart and are routinely confused; as system requirements they are entirely different, and the second is a much stronger and more expensive claim than the first.\n\nFrege’s Begriffsschrift of 1879 is where the machinery for telling them apart arrives: a formal language in which quantifiers bind variables explicitly, so that the scope of each is written down rather than inferred. Two details are worth having straight. He did not introduce the symbols now used — the universal one is due to Gentzen and the existential to Peano, and Frege’s own notation was two-dimensional, with a concavity for the universal. And priority is contested: scholars of Peirce point out that the Begriffsschrift is among the first published accounts of quantification rather than uniquely the first.\n\nThe three facts worth carrying are small and do most of the work. First, order matters, and swapping it changes the claim from a weaker to a stronger one in the direction described above. Second, negation flips the quantifier: the negation of \"for all x, P\" is \"there exists an x with not P\", which is why refuting a universal claim requires exactly one counterexample and why proving one requires an argument covering every case. Third, a universal claim over an empty collection is true — which is F.2 reappearing, since \"for all\" is a conditional in disguise.\n\nThe cost is the one Frege’s contemporaries felt: the notation is unambiguous and hard to read, and they largely failed to see its advantages over Boole’s. That is a pattern rather than an anecdote. Precision that removes ambiguity almost always costs legibility, because ambiguity is partly what makes natural language brief — and the answer is not to choose one but to know which of the two you need for the sentence you are writing.",
+    "problem": {
+      "name": "Quantification",
+      "aka": [
+        "for all and there exists",
+        "quantifier scope"
+      ],
+      "shape": "A claim is made about members of a collection, and whether it means each of them separately or one of them for all of them is left to word order.",
+      "tell": [
+        "a requirement contains \"every\" and \"some\" in the same sentence",
+        "two people read the same specification and build different systems",
+        "a proof or a test covers examples when the claim was universal"
+      ],
+      "move": "Write the quantifiers explicitly and in order, binding each variable, before writing the predicate. Then check the order against what you meant by asking whether the inner thing may depend on the outer one.",
+      "invariant": "An inner quantifier may depend on the variable bound by an outer one, and never the reverse. That dependency is exactly what the order encodes, and it is the entire difference between the two readings.",
+      "breaks": "It breaks on empty collections, where a universal claim is true and an existential one is false — both correct, both surprising, and both live sources of bugs. It also breaks when the collection is infinite or unenumerable, where a universal claim cannot be established by checking and requires an argument instead.",
+      "cost": {
+        "time": "none, but the notation is slower to read than the ambiguous sentence it replaces",
+        "space": "none",
+        "beats": "natural language, which is briefer partly because it leaves the scope unstated"
+      },
+      "worked": {
+        "problem": "What changes when you swap the order of two quantifiers?",
+        "reasoning": "The dependency changes, and with it the strength of the claim.\n\nSaying that for every user there is a server that serves them allows the server to be chosen after the user is known — a different one for each, which is what a load-balanced system provides.\n\nsaying that there is a server such that for every user it serves them fixes the server first, before any user is known, so one server must serve all of them. That is a single machine large enough for everyone, or a single point of failure, depending on your mood.\n\nThe rule underneath is that an inner quantifier may depend on an outer one and never the reverse, so moving an existential outward strengthens the claim by removing its ability to vary.\n\nWhich gives a usable test in ordinary language: ask whether the thing being asserted to exist is allowed to be different for each case. If yes, it belongs inside. If it must be the same one for all of them, it belongs outside — and you have just specified a very different system.",
+        "code": "  for all u, exists s : serves(s, u)\n      s may depend on u  ->  a different server\n                             per user            WEAK\n\n  exists s, for all u : serves(s, u)\n      s is fixed first   ->  ONE server for all\n                             users               STRONG\n\n  inner may depend on outer. never the reverse.\n\n  negation flips them:\n\n     NOT (for all x, P(x))  ==  exists x, NOT P(x)\n     NOT (exists x, P(x))   ==  for all x, NOT P(x)\n\n  -> refuting a universal: ONE counterexample\n  -> proving a universal:  an argument over all cases\n\n  and on an empty collection:\n     for all: TRUE     exists: FALSE\n     (for-all is a conditional in disguise: F.2)"
+      },
+      "practice": "Take a requirement from your current work containing both \"every\" and \"some\" and write it with explicit quantifiers in both orders. Then decide which one you are actually building, and whether the specification says so."
+    },
+    "beats": {
+      "broke": "Ordinary language distinguishes \"everyone can find a server\" from \"one server serves everyone\" only by word order, so two readers of the same requirement can correctly build different systems.",
+      "fix": "Bind variables explicitly and write the quantifiers in order, as in the formal language Frege introduced in 1879 — where the scope of each quantifier is written rather than inferred.",
+      "cost": "The notation is unambiguous and hard to read; Frege’s contemporaries largely failed to see its advantage over the alternative. Ambiguity is part of what makes natural language brief, so precision here is bought with legibility.",
+      "interview": {
+        "q": "What changes when you swap the order of two quantifiers?",
+        "trap": "Answering that it is a subtlety of notation. It changes which system you have specified, and one of the two is typically much more expensive to build.",
+        "answer": "The dependency, and therefore the strength of the claim. An inner quantifier may depend on the variable bound by an outer one, never the reverse.\n\nSaying that for every user there exists a server that serves them lets the server be chosen after the user is known, so it may be a different server each time — a load-balanced system. saying that there exists a server such that for every user it serves them fixes the server before any user is considered, so one machine must serve everyone. Same words, different architecture, and the second is strictly stronger.\n\nThe usable test in plain language is to ask whether the thing asserted to exist is allowed to differ per case. If it may, it belongs inside; if it must be the same one throughout, it belongs outside — and you have specified something much more demanding.\n\nTwo companions worth keeping: negation flips a quantifier, which is why one counterexample refutes a universal claim while proving one needs an argument over all cases; and over an empty collection a universal claim is true and an existential one false."
+      }
+    },
+    "blueprint": "Order encodes dependency:\n\n  for all u, exists s      s AFTER u  -> may vary\n                                       -> weak\n  exists s, for all u      s BEFORE u -> fixed\n                                       -> strong\n\n  inner may depend on outer. never the reverse.\n\n  negation flips:\n     NOT for-all  ==  exists NOT\n     NOT exists   ==  for-all NOT\n\n     -> one counterexample refutes a universal\n     -> proving one needs every case\n\n  empty collection:\n     for all -> TRUE    exists -> FALSE\n\n  plain-language test:\n     \"is it allowed to be a different one each time?\"\n       yes -> inside      no -> outside",
+    "takeaway": "Quantifier order encodes which variable may depend on which — an inner one may vary with an outer one and never the reverse — so swapping them turns a load-balanced requirement into a single-server one."
+  },
+  "F.6": {
+    "id": "F.6",
+    "trackId": "F",
+    "trackName": "Logic",
+    "title": "Boolean algebra and simplification",
+    "status": "traced",
+    "seed": "F.6",
+    "story": "Boole’s first book came out in 1847, little more than a pamphlet, and attracted almost no attention outside a small circle that included De Morgan. The expanded argument arrived in 1854: three operations — conjunction, disjunction, negation — suffice for all of logic. For decades this had no evident use. It was a way of writing arguments as equations, admired by a few people and applied by nobody.\n\nWhat Shannon noticed at MIT, working on the circuitry of a mechanical analogue computer under Vannevar Bush, is that the algebra of truth values and the algebra of switches are the same algebra. A switch is open or closed; a proposition is true or false; series is conjunction and parallel is disjunction. His master’s thesis of 1937, published the following year, turns that observation into a method for designing and optimising circuits systematically. He was twenty-one.\n\nThe reason to care as a programmer is the same reason it mattered for circuits, and it is worth stating plainly: putting logic into an algebra converts questions of meaning into questions of form. Whether two conditions are equivalent stops being a judgement you make by reading them and becomes something you derive by applying laws — distribution, absorption, De Morgan, complement. That matters because the two conditions in front of you often look nothing alike, and reading them is precisely the operation people get wrong.\n\nThe costs are two and both are easy to forget. First, the algebraically simplest expression is often the least readable one, because simplification optimises for term count rather than for the thing the condition is about — so the minimal form may express a business rule in a way no one can recognise. Second, and more dangerous, the algebra says nothing about execution. Every law here preserves the value of the expression for every assignment and none of them preserves the order in which operands are evaluated or whether they are evaluated at all, which is the subject of F.7.",
+    "problem": {
+      "name": "Boolean simplification",
+      "aka": [
+        "switching algebra",
+        "canonical form"
+      ],
+      "shape": "Conditions accumulate terms and nesting, and you need to know whether two of them mean the same thing without arguing about what they mean.",
+      "tell": [
+        "a conditional has grown past the point where you can hold it in your head",
+        "two branches look different and you suspect one is unreachable",
+        "you are about to rewrite a condition and want to know the rewrite is safe"
+      ],
+      "move": "Treat the condition as an algebraic expression and transform it with laws — De Morgan, distribution, absorption, complement — reducing both candidates towards a common form and comparing the results.",
+      "invariant": "Every law preserves the truth value for every assignment of the variables. That is the whole guarantee, and it is what makes the manipulation trustworthy without any appeal to what the variables represent.",
+      "breaks": "The guarantee covers values, not evaluation. Reordering or dropping a term is sound algebraically and may remove a guard, skip a side effect, or move an expensive call to a position where it always runs. And minimality is not readability: the shortest equivalent form often destroys the correspondence between the condition and the rule it encodes.",
+      "cost": {
+        "time": "derivation is mechanical, and the minimal form of a large expression is expensive to find",
+        "space": "none",
+        "beats": "reading two conditions and deciding whether they agree, which is the step this exists to remove"
+      },
+      "worked": {
+        "problem": "What does putting logic into an algebra actually buy?",
+        "reasoning": "It converts a semantic question into a syntactic one, and syntax is the part that can be checked mechanically.\n\nWithout the algebra, \"do these two conditions agree?\" is answered by understanding both and comparing your understandings. With it, the question is answered by transforming one into the other using laws, each step of which is valid regardless of what the variables mean.\n\nThat is exactly the move De Morgan’s laws make in one small place, generalised. And it is why Shannon’s application to circuits worked: a relay network has no meaning to appeal to, so a method that ignores meaning loses nothing and gains the ability to be applied by someone who does not understand the circuit’s purpose.\n\nThe limit is equally clean. Because the laws are about values, everything about a condition that is not its value — what it costs, what order it runs in, what it protects — is outside the guarantee and can be destroyed by a valid step.",
+        "code": "question: do these agree?\n\n  semantic route : understand both, compare\n                   -> where the errors are\n\n  algebraic route: transform by laws\n                   -> each step valid regardless\n                      of what the variables mean\n\n  a(b + b')  =  a(1)   =  a          complement\n  a + ab     =  a                    absorption\n  (ab)'      =  a' + b'              De Morgan\n\n  what is preserved:  the value, every assignment\n  what is NOT:        order of evaluation\n                      whether an operand runs\n                      cost\n                      readability\n\n  minimal != clearest. the shortest form often\n  destroys the link between the condition and the\n  rule it encodes."
+      },
+      "practice": "Take the most complex conditional in your codebase and reduce it algebraically. Then ask whether the reduced form is one you would want to read in six months — and whether any term you dropped was doing a job other than contributing to the value."
+    },
+    "beats": {
+      "broke": "Two conditions can be identical in meaning and unrecognisably different in form, so deciding whether a rewrite is safe becomes a matter of reading and judging — which is where the mistakes are.",
+      "fix": "Boole’s move, from 1847 and expanded in 1854: put logic into an algebra, so equivalence is derived by applying laws rather than judged. Shannon’s thesis of 1937 showed the same algebra describes switching circuits.",
+      "cost": "The laws preserve values and nothing else. Reordering or dropping terms is algebraically sound and can remove a guard or skip a side effect — and the minimal form is frequently the least readable, since minimality optimises term count rather than meaning.",
+      "interview": {
+        "q": "What does putting logic into an algebra actually buy you?",
+        "trap": "Answering \"simpler conditions\". Simplification is one use; the property that makes it valuable is about what kind of question you are answering.",
+        "answer": "It converts a semantic question into a syntactic one. \"Do these two conditions agree?\" normally means understanding both and comparing your understandings, which is exactly where people err. With an algebra it means transforming one into the other by laws, each step valid regardless of what the variables stand for.\n\nThat is De Morgan's rule generalised — a rewrite defined on the shape of an expression rather than its meaning — and it is why the same algebra transferred so cleanly to switching circuits. A relay network has no meaning to appeal to, so a method that ignores meaning gives up nothing and can be applied by someone who does not know what the circuit is for.\n\nThe limit follows from the same fact. The laws preserve the truth value for every assignment and nothing else, so everything about a condition that is not its value — its cost, its evaluation order, whether one operand is guarding another — lies outside the guarantee and can be destroyed by a step that is perfectly valid."
+      }
+    },
+    "blueprint": "The move: meaning -> form\n\n  \"do these agree?\"\n     by understanding  -> judgement -> errors\n     by the laws       -> derivation -> checkable\n\n  and the laws don't care what the variables mean,\n  which is why the same algebra describes:\n\n     propositions        switches\n     -----------         --------\n     AND                 series\n     OR                  parallel\n     NOT                 a relay's complement\n\n     (Boole 1847/1854)   (Shannon 1937)\n\n  scope of the guarantee:\n\n     truth value, every assignment    YES\n     evaluation order                 NO\n     whether an operand runs          NO\n     cost                             NO\n     readability                      NO  (minimal\n                                          != clear)",
+    "takeaway": "An algebra turns \"do these conditions agree?\" from a judgement into a derivation whose steps hold regardless of meaning — which is why it transferred to circuits, and why everything about a condition other than its value falls outside the guarantee."
+  },
+  "F.7": {
+    "id": "F.7",
+    "trackId": "F",
+    "trackName": "Logic",
+    "title": "Short circuit evaluation, and the bugs it hides",
+    "status": "traced",
+    "seed": "F.7",
+    "story": "The operators look like the ones in the algebra and they are not the same objects. Boole’s conjunction is a function of two truth values: given both, it returns one. Shannon’s series circuit has both relays in a state simultaneously, and there is no physical sense in which the second switch is skipped because the first was open. In a program, by contrast, conjunction is frequently a conditional wearing the costume of an operator: evaluate the left side, and evaluate the right side only if you must.\n\nThat single difference produces three distinct classes of bug, and they are worth separating. First, side effects on the right of the operator become conditional. An expression like check() && record() does not always record, and nothing about the syntax announces that. Second, the operator is routinely used as a guard: writing a test for a non-null pointer and then dereferencing it in the same expression works only because the right side does not run when the left is false. The condition is doing two jobs, testing and protecting, and only one of them is visible.\n\nThird, and most dangerous because it is done deliberately by careful people: the algebraic laws stop being safe. Every law in F.6 and F.4 preserves the truth value for every assignment of the variables, which is a guarantee about values and never about execution. Apply De Morgan to a guarded condition and you may hand the resulting expression an order in which the guard no longer precedes the thing it guards. The rewrite is correct in the algebra and wrong in the program, and the tests may not notice because the guarded case is exactly the rare one.\n\nSo the reading to carry is that a short-circuiting operator is a control structure. Its operands are ordered, that order is a dependency rather than a style preference, and any transformation that reorders them — simplification, De Morgan, extracting a variable to make the line shorter — must be checked against the execution and not only against the truth table.",
+    "problem": {
+      "name": "Evaluation order in boolean expressions",
+      "aka": [
+        "short circuit evaluation",
+        "guard clauses in conditions"
+      ],
+      "shape": "An expression is both a term in an algebra and a sequence of steps, and the laws you would use to rewrite it only describe one of those.",
+      "tell": [
+        "a condition tests for existence and then uses the thing it tested for, in one expression",
+        "a function call appears on the right of an and or an or",
+        "someone is about to simplify a conditional to make it shorter"
+      ],
+      "move": "Read the operator as a conditional: the left operand is evaluated, and the right operand is evaluated only when the left does not already determine the answer. Treat the ordering as a dependency and record it if it matters.",
+      "invariant": "The left operand is evaluated before the right, and the right only when necessary. Every guard written this way depends on that and on nothing else, which is why extracting either side into a variable changes the meaning even though the expression looks the same.",
+      "breaks": "It breaks under exactly the transformations that are supposed to be safe. Algebraic equivalence is about values, so simplification, De Morgan and reordering preserve what the expression computes and can destroy what it protects — and the failure surfaces only on the path where the guard mattered, which is the path least likely to be covered.",
+      "cost": {
+        "time": "faster on average, since the right operand is often skipped",
+        "space": "none",
+        "beats": "evaluating both sides always, which is uniform, slower, and cannot express a guard in a condition"
+      },
+      "worked": {
+        "problem": "How can applying De Morgan to a condition break the program while preserving its truth value?",
+        "reasoning": "Because the two guarantees are about different things, and only one of them is what the code depends on.\n\nTake a guard: the expression is false when there is no user, and otherwise depends on a field of that user. It works because the right side never runs when the left is false.\n\nNow negate it with De Morgan. The law is valid: the truth value is identical for every assignment. But the resulting expression may have the field access on the left, or on a branch that is reached when there is no user — and the moment it is evaluated with no user present, you have a fault rather than a false.\n\nNothing in the algebra was violated. The algebra never claimed anything about which operands are evaluated, because in Boole’s setting both values already exist and in Shannon’s both relays are already in a state.\n\nSo the check when rewriting a condition is not \"is this equivalent\" but \"is every operand still only evaluated in the situations where it is safe\" — and those are different questions with different answers.",
+        "code": "  user != null && user.age > 18\n      right side runs only when left is true\n      -> the && is a GUARD, not just an operator\n\n  negate it \"by the law\":\n\n  NOT(user != null && user.age > 18)\n   == user == null || user.age <= 18      valid!\n      ^ truth value: identical, every assignment\n      ^ execution:   if user IS null, the left is\n                     true, so it short-circuits.\n                     still safe -- this time.\n\n  but reorder for readability:\n\n     user.age <= 18 || user == null       valid!\n     -> and now it faults on a null user\n\n  algebra preserved the VALUE.\n  it never claimed anything about which operands run:\n     Boole  - both values already exist\n     Shannon- both relays already have a state"
+      },
+      "practice": "Find a condition in your code where one side guards the other. Apply De Morgan to it, then reorder the result for readability, and work out at which step it would fault — then check whether any test covers that path."
+    },
+    "beats": {
+      "broke": "The operators are written like the ones in the algebra and behave like control flow: the right operand may not be evaluated at all. That difference is invisible in the syntax and load-bearing in the behaviour.",
+      "fix": "Read a short-circuiting operator as a conditional, with the ordering of operands as a dependency rather than a preference — so a guard in a condition is recognised as a guard.",
+      "cost": "Every algebraic law stays valid about the value and becomes invalid about the execution. Simplification and De Morgan can move an operand to a position where it runs unsafely, and the failure appears only on the rare path the guard existed for.",
+      "interview": {
+        "q": "How can applying De Morgan to a real condition break the program while preserving its truth value?",
+        "trap": "Answering that the rewrite must have been done incorrectly. The rewrite can be perfectly correct — that is what makes this worth knowing.",
+        "answer": "Because the law guarantees something narrower than people assume. It says the truth value is identical for every assignment of the variables. It says nothing about which operands get evaluated, because in the settings the algebra came from that question does not arise — Boole's conjunction takes two values that already exist, and in a switching circuit both relays are already in a state.\n\nIn a language with short-circuit evaluation the right operand runs only when the left does not settle the answer, and that is routinely load-bearing: a test for existence followed by a use of the thing tested for is safe only because of the ordering. Rewrite the expression — by De Morgan, by simplification, or just by reordering for readability — and an operand can end up in a position where it is evaluated in a state it cannot handle. The value is unchanged and the program faults.\n\nSo the question when rewriting a condition is not whether it is equivalent but whether every operand is still evaluated only where it is safe. And the failure surfaces on the path the guard existed for, which is the one least likely to be covered."
+      }
+    },
+    "blueprint": "Same symbol, two different objects:\n\n  Boole's AND        a function of two values\n                     both already exist\n  Shannon's series   both relays already in a state\n  a program's &&     evaluate left;\n                     evaluate right ONLY IF NEEDED\n                     -> it is control flow\n\n  three consequences:\n\n     1. side effects on the right are CONDITIONAL\n     2. the left operand is often a GUARD\n        (the condition does two jobs; one is invisible)\n     3. algebraic laws stop being safe\n\n  because the guarantee is:\n\n     value, for every assignment      YES\n     which operands are evaluated     NEVER CLAIMED\n\n  so when rewriting, the question is not\n     \"is this equivalent?\"\n  but\n     \"is each operand still evaluated only where\n      it is safe?\"",
+    "takeaway": "A short-circuiting operator is control flow wearing an operator’s costume, so the algebraic laws preserve what a condition computes and not what it protects — and the resulting fault appears only on the path the guard was there for."
+  },
   "F.8": {
     "id": "F.8",
     "trackId": "F",
@@ -3253,6 +3686,55 @@
     },
     "blueprint": "-- The Three-Valued Logic Trap in SQL:\nSELECT * FROM employees WHERE bonus = NULL;   -- Returns NOTHING (always Unknown)\nSELECT * FROM employees WHERE bonus IS NULL;  -- Correct!\n\n-- Boolean evaluation table with NULL:\n-- TRUE  AND NULL = NULL (Fails WHERE)\n-- FALSE AND NULL = FALSE\n-- NOT NULL       = NULL",
     "takeaway": "In SQL, NULL is not a value; it is the state of unknowability. NULL is never equal to NULL."
+  },
+  "F.9": {
+    "id": "F.9",
+    "trackId": "F",
+    "trackName": "Logic",
+    "title": "Proof techniques: direct, contradiction, induction",
+    "status": "traced",
+    "seed": "F.9",
+    "story": "Three shapes, and the practical skill is choosing between them by looking at the shape of the claim rather than by preference.\n\nA direct argument assumes the hypothesis and derives the conclusion. It is the default and it works whenever you can get from one to the other by steps. Contradiction assumes the negation of what you want and derives something impossible. It earns its place on claims of non-existence and impossibility, because the negation of \"there is no such thing\" is \"there is one\" — and being handed the thing gives you something concrete to work with, where the original claim gave you nothing. Induction applies when the domain is generated by a rule: prove it for the generators, and you have it for everything the rule can build.\n\nThat third one is what connects this to programs, and Floyd made the connection in 1967. His method attaches a proposition to each connection in the flow of control and requires that a command entered where its proposition holds is left where the next proposition holds; the conclusion then follows by induction on the number of commands executed. Hoare built the axiomatic version two years later and says plainly that his treatment of execution is derived from Floyd.\n\nThe one detail that separates people who have read this from people who have heard of it is what such a proof does not give you. Floyd’s phrasing is that the command will be left \"if at all\", and Hoare’s triple carries the same gap: if the precondition holds before the program runs, the postcondition holds when it ends — and nothing says it ends. That is partial correctness, and termination is a separate obligation requiring a separate argument. A proof that a loop maintains its invariant tells you nothing whatever about whether the loop stops.",
+    "problem": {
+      "name": "Choosing a proof shape",
+      "aka": [
+        "direct proof",
+        "proof by contradiction",
+        "induction"
+      ],
+      "shape": "A claim covers more cases than you can check, so it must be established by argument rather than by enumeration.",
+      "tell": [
+        "the claim says \"every\", \"always\", \"never\" or \"no such\"",
+        "you have tested many cases and cannot test the rest",
+        "the domain is infinite, or generated by a rule that can be applied repeatedly"
+      ],
+      "move": "Match the technique to the claim. Existence or a concrete implication: argue directly. Non-existence or impossibility: assume the thing exists and derive a contradiction. A domain built by a rule: prove the base cases and the step.",
+      "invariant": "The argument covers every case in the domain, not a sample of it. That is the only property distinguishing a proof from evidence, and it is why a technique is chosen by the structure of the domain rather than by taste.",
+      "breaks": "Each shape has its own failure. A direct argument can smuggle in an assumption that holds in the cases you pictured. A contradiction argument can derive a contradiction from an error in your own reasoning rather than from the assumption. An induction can prove the step and quietly omit or misstate the base, which yields a confident proof of something false.",
+      "cost": {
+        "time": "far more than testing, and it is the only thing that settles a universal claim",
+        "space": "none",
+        "beats": "checking examples, which is cheaper and cannot establish a claim about a domain larger than your sample"
+      },
+      "worked": {
+        "problem": "When should you reach for contradiction rather than argue directly?",
+        "reasoning": "When the claim denies that something exists, because the negation is the only form of it you can hold.\n\nA direct argument needs somewhere to start. The claim that there is no largest prime gives you nothing to work with: you cannot examine the largest prime, since the claim is that it is not there. Every step you might take begins with an object the claim says does not exist.\n\nAssume the negation and you are handed exactly that object. Now you have a thing with properties, you can construct from it, and you can look for the impossibility. The technique converts an absence, which you cannot manipulate, into a presence, which you can.\n\nThat is also the shape of debugging, which is why it belongs in this curriculum. The thought that this cannot be happening is a claim of impossibility; assume it is happening, follow what must then be true, and either you reach something contradicted by observation — which eliminates a branch — or you reach the cause. The technique is the same and the payoff is the elimination.",
+        "code": "claim shape              technique\n-----------              ---------\n\"if P then Q\"            direct: assume P, derive Q\n\"there exists X\"         direct: construct it\n\"there is NO X\"          contradiction: assume one,\n\"X is impossible\"          break something\n\"for all n in a domain   induction: base case(s)\n built by a rule\"                   + the step\n\n  why contradiction for non-existence:\n\n     direct argument needs an object to reason about\n     \"no largest prime\" gives you none\n     assume the negation -> you are HANDED one\n     -> absence becomes presence, and presence can\n        be manipulated\n\n  and the induction failure mode:\n     step proved, base forgotten\n     -> a confident proof of something false"
+      },
+      "practice": "Take a claim you believe about your system — \"this queue never loses a message\" — and try to prove it by contradiction: assume a message was lost, and follow what must have been true. Note where the argument stops, because that is where the guarantee actually ends."
+    },
+    "beats": {
+      "broke": "Interesting claims cover every case, and checking cases can never establish one. Testing produces evidence, and a universal claim needs an argument that reaches the cases nobody ran.",
+      "fix": "Three shapes chosen by the shape of the claim: derive it directly, assume the negation and break something, or — where the domain is generated by a rule — prove the base and the step. Floyd applied the third to programs in 1967 by induction on the number of commands executed.",
+      "cost": "Each shape has its own way of going wrong, and the one for induction is the quiet one: prove the step, omit or misstate the base, and you obtain a confident proof of something false.",
+      "interview": {
+        "q": "When should you reach for proof by contradiction instead of arguing directly?",
+        "trap": "Answering that it is for when the direct proof is hard. That is often true and does not tell you when to switch — the structural cue does.",
+        "answer": "When the claim is that something does not exist or cannot happen, because the negation is the only version of it you can actually manipulate.\n\nA direct argument needs an object to reason about. The claim that there is no largest prime hands you nothing: every step you might take starts with a thing the claim says is not there. Assume the negation and you are given exactly that object, with properties you can construct from and examine — so the technique converts an absence you cannot handle into a presence you can.\n\nThat is also the shape of debugging, which is why it is worth practising deliberately. The thought that this cannot be happening is an impossibility claim; assume it is happening, derive what must then be true, and either you hit something your observations contradict — eliminating a branch — or you arrive at the cause.\n\nThe failure mode is specific: you can derive a contradiction from a mistake in your own reasoning rather than from the assumption, which feels identical from the inside. So the discipline is to check each step against something independent before concluding that the assumption was what broke."
+      }
+    },
+    "blueprint": "Pick by the shape of the claim, not by taste:\n\n  \"if P then Q\"        -> direct\n  \"there exists X\"     -> direct (construct it)\n  \"there is NO X\"      -> contradiction\n  \"X can't happen\"        (assume one, break something)\n  \"for all n, built    -> induction\n   by a rule\"             (base + step)\n\n  why contradiction suits non-existence:\n     an absence can't be reasoned about\n     the negation HANDS YOU the object\n     -> and objects have properties\n\n  what each gets wrong:\n     direct        - an assumption true only in the\n                     cases you pictured\n     contradiction - the contradiction came from your\n                     own error, not the assumption\n     induction     - step proved, BASE forgotten\n\n  and the gap in all program proofs of this kind:\n     Floyd: the command is left \"IF AT ALL\"\n     -> partial correctness. termination is separate.",
+    "takeaway": "Choose the proof shape from the shape of the claim — contradiction earns its place on non-existence because it converts an absence you cannot reason about into an object you can — and remember that these arguments give partial correctness, never termination."
   },
   "G.1": {
     "id": "G.1",
@@ -6310,6 +6792,266 @@
       "title": "Introsort, successors: pattern-defeating quicksort adoption in Rust and Go",
       "url": "https://en.wikipedia.org/wiki/Introsort",
       "kind": "secondary"
+    }
+  ],
+  "F.10": [
+    {
+      "claim": "Floyd’s method imposes a condition on each command guaranteeing that whenever a command is reached by a connection whose proposition is true, it will be left, if at all, by a connection whose proposition is true. The conclusion about the whole program then follows by induction on the number of commands executed.",
+      "title": "Floyd, R. W., Assigning Meanings to Programs, Proceedings of Symposia in Applied Mathematics 19:19-32, American Mathematical Society, 1967",
+      "url": "https://www.cs.tau.ac.il/~nachumd/term/FloydMeaning.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "Floyd states the aim as establishing a rigorous standard for proofs about programs, including proofs of correctness, equivalence and termination — termination being treated separately from the rest.",
+      "title": "Floyd, R. W., Assigning Meanings to Programs, Proceedings of Symposia in Applied Mathematics 19:19-32, American Mathematical Society, 1967",
+      "url": "https://www.cs.tau.ac.il/~nachumd/term/FloydMeaning.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "Hoare’s notation asserts that if the precondition holds before the program runs, the postcondition holds when it ends. It offers no guarantee of termination, since execution from a state satisfying the precondition need not halt.",
+      "title": "Hoare, C. A. R., An Axiomatic Basis for Computer Programming, Communications of the ACM 12(10):576-580, 1969",
+      "url": "https://dl.acm.org/doi/10.1145/363235.363259",
+      "kind": "primary"
+    }
+  ],
+  "F.11": [
+    {
+      "claim": "Loops pose a problem for finite reasoning because they may execute an unbounded number of times, which is why an auxiliary predicate — a loop invariant — is required. For a loop with a guard, a precondition and a postcondition, a valid invariant must satisfy three conditions: initiation, that the precondition implies the invariant on entry; consecution, that the body preserves the invariant when the guard holds; and sufficiency, that the invariant together with the negated guard implies the postcondition.",
+      "title": "Hoare, C. A. R., An Axiomatic Basis for Computer Programming, Communications of the ACM 12(10):576-580, 1969",
+      "url": "https://dl.acm.org/doi/10.1145/363235.363259",
+      "kind": "primary"
+    },
+    {
+      "claim": "In Floyd’s flowchart formulation the invariant is simply the proposition attached to the connection at the loop header, and he connects this to automatic verification with the programmer merely tagging entrances and one edge in each innermost loop.",
+      "title": "Floyd, R. W., Assigning Meanings to Programs, Proceedings of Symposia in Applied Mathematics 19:19-32, American Mathematical Society, 1967",
+      "url": "https://www.cs.tau.ac.il/~nachumd/term/FloydMeaning.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "Hoare’s paper argues that elucidating sets of axioms and rules of inference usable in proofs of properties of programs brings important theoretical and practical advantages, and the formal treatment of program execution in it is derived from Floyd.",
+      "title": "Hoare, C. A. R., An Axiomatic Basis for Computer Programming, Communications of the ACM 12(10):576-580, 1969",
+      "url": "https://dl.acm.org/doi/10.1145/363235.363259",
+      "kind": "primary"
+    },
+    {
+      "claim": "The notation gives no guarantee of termination: executing the program from a state satisfying the precondition need not halt, so an invariant argument establishes partial correctness only.",
+      "title": "Hoare, C. A. R., An Axiomatic Basis for Computer Programming, Communications of the ACM 12(10):576-580, 1969",
+      "url": "https://dl.acm.org/doi/10.1145/363235.363259",
+      "kind": "primary"
+    }
+  ],
+  "F.12": [
+    {
+      "claim": "Howard made explicit in 1969 a syntactic analogy between the programs of the simply typed lambda calculus and the proofs of natural deduction. His first formulation referred to a variant of Gentzen’s sequent calculus.",
+      "title": "Wadler, P., Propositions as Types, Communications of the ACM 58(12):75-84, 2015",
+      "url": "https://homepages.inf.ed.ac.uk/wadler/papers/propositions-as-types/propositions-as-types.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "Howard circulated the work in 1969 as a xeroxed manuscript; it was not published until 1980, when it appeared in a Festschrift dedicated to Curry under the title The Formulae-as-Types Notion of Construction.",
+      "title": "Wadler, P., Propositions as Types, Communications of the ACM 58(12):75-84, 2015",
+      "url": "https://homepages.inf.ed.ac.uk/wadler/papers/propositions-as-types/propositions-as-types.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "Curry had earlier emphasised the correspondence between intuitionistic Hilbert-style deduction and typed combinatory logic. The observation that the correspondence is best understood via natural deduction, and the current formulation of it, are attributed to Martin-Löf, with Prawitz’s 1965 proof of the subformula principle setting the ground.",
+      "title": "Wadler, P., Propositions as Types, Communications of the ACM 58(12):75-84, 2015",
+      "url": "https://homepages.inf.ed.ac.uk/wadler/papers/propositions-as-types/propositions-as-types.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "Under the correspondence a proposition corresponds to a type, a proof of the proposition to a program of that type, and the simplification of proofs to the evaluation of programs.",
+      "title": "Wadler, P., Propositions as Types, Communications of the ACM 58(12):75-84, 2015",
+      "url": "https://homepages.inf.ed.ac.uk/wadler/papers/propositions-as-types/propositions-as-types.pdf",
+      "kind": "primary"
+    }
+  ],
+  "F.13": [
+    {
+      "claim": "Turing’s paper On Computable Numbers, with an Application to the Entscheidungsproblem was received by the London Mathematical Society on 28 May 1936 and appeared in its Proceedings, series 2, volume 42, pages 230 to 265, dated 1937. A correction followed in volume 43, pages 544 to 546, in 1938.",
+      "title": "Turing, A. M., On Computable Numbers, with an Application to the Entscheidungsproblem, Proceedings of the London Mathematical Society s2-42(1):230-265, 1936/1937",
+      "url": "https://londmathsoc.onlinelibrary.wiley.com/doi/abs/10.1112/plms/s2-42.1.230",
+      "kind": "primary"
+    },
+    {
+      "claim": "Turing’s was the second proof of the negative answer to the decision problem, after Church’s; Turing received Church’s offprint and inserted a reference in his introduction before submitting.",
+      "title": "The origins of the halting problem — an examination of what Turing’s paper does and does not contain, and of Davis’s 1958 coinage",
+      "url": "https://academic.oup.com/logcom/article/36/1/exaf075/8417148",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Turing did not state or prove the halting problem. The words halt, halting, stop and terminate do not occur in the paper; his undecidability results concern the satisfactoriness problem and the printing problem, and his arguments proceed through the circle-free problem, which is not computably equivalent to the halting problem but strictly harder.",
+      "title": "The origins of the halting problem — an examination of what Turing’s paper does and does not contain, and of Davis’s 1958 coinage",
+      "url": "https://academic.oup.com/logcom/article/36/1/exaf075/8417148",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The phrase the halting problem first appears in Davis’s Computability and Unsolvability of 1958, where he defines the problem of whether a machine placed in a given initial state will eventually halt and writes that we call this the halting problem. Davis believed he began using the term in lectures from 1952. Some scholars give Kleene priority for the formulation, in his Introduction to Metamathematics of 1952.",
+      "title": "The origins of the halting problem — an examination of what Turing’s paper does and does not contain, and of Davis’s 1958 coinage",
+      "url": "https://academic.oup.com/logcom/article/36/1/exaf075/8417148",
+      "kind": "secondary"
+    }
+  ],
+  "F.2": [
+    {
+      "claim": "In the selection task introduced by Wason in 1968, a participant is given a rule of the form if p then q and four cards showing p, not-p, q and not-q, and asked which must be turned over to test the rule. The correct answer is p and not-q.",
+      "title": "Griggs, R. A. and Cox, J. R., The Elusive Thematic-Materials Effect in Wason’s Selection Task, British Journal of Psychology 73:407-420, 1982",
+      "url": "https://bpspsychub.onlinelibrary.wiley.com/doi/abs/10.1111/j.2044-8295.1982.tb01823.x",
+      "kind": "primary"
+    },
+    {
+      "claim": "On the abstract version the classic reported figure is that fewer than 10% of participants answer correctly, with some aggregated datasets as low as 4%. A later meta-analysis puts accuracy on the abstract task at 19%, and the range usually quoted is 10 to 20%, so the 10% figure is best treated as a classic lower bound rather than a settled constant.",
+      "title": "The Wason Selection Task: A Meta-Analysis, Ragni et al., 2017 — aggregate accuracy on the abstract task",
+      "url": "https://www.researchgate.net/publication/322682384_The_Wason_Selection_Task_A_Meta-Analysis",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The errors are systematic rather than random: participants tend either to select the card representing the antecedent alone, a verification bias, or the antecedent and the consequent together, a matching bias.",
+      "title": "The Wason Selection Task: A Meta-Analysis, Ragni et al., 2017 — aggregate accuracy on the abstract task",
+      "url": "https://www.researchgate.net/publication/322682384_The_Wason_Selection_Task_A_Meta-Analysis",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Griggs and Cox found that performance rises sharply on a version that is logically identical but concretely familiar. Their drinking-age problem — if a person is drinking beer then he must be over a stated age, with cards showing drinks and ages — produces correct responses in the region of 70 to 75%.",
+      "title": "Griggs, R. A. and Cox, J. R., The Elusive Thematic-Materials Effect in Wason’s Selection Task, British Journal of Psychology 73:407-420, 1982",
+      "url": "https://bpspsychub.onlinelibrary.wiley.com/doi/abs/10.1111/j.2044-8295.1982.tb01823.x",
+      "kind": "primary"
+    },
+    {
+      "claim": "The paper is primarily a failure to replicate. Experiments 1 and 2 failed to reproduce the earlier thematic-facilitation results of Wason and Shapiro and of Johnson-Laird and colleagues; only the third experiment, using a rule that was part of the subjects’ own past experience, showed improvement. The authors’ own explanation is memory cueing — that people retrieve relevant counter-examples — rather than anything about obligation or permission.",
+      "title": "Griggs, R. A. and Cox, J. R., The Elusive Thematic-Materials Effect in Wason’s Selection Task, British Journal of Psychology 73:407-420, 1982",
+      "url": "https://bpspsychub.onlinelibrary.wiley.com/doi/abs/10.1111/j.2044-8295.1982.tb01823.x",
+      "kind": "primary"
+    },
+    {
+      "claim": "The permission-schema and cheater-detection readings of the same data came later and are contested. Sperber, Cara and Girotto reported 16% correct in one scenario against 65% in another that was logically and semantically the same, arguing that relevance matters more than the other proposed factors.",
+      "title": "The Wason Selection Task: A Meta-Analysis, Ragni et al., 2017 — aggregate accuracy on the abstract task",
+      "url": "https://www.researchgate.net/publication/322682384_The_Wason_Selection_Task_A_Meta-Analysis",
+      "kind": "secondary"
+    }
+  ],
+  "F.4": [
+    {
+      "claim": "The laws are named for Augustus De Morgan, whose Formal Logic: or, The Calculus of Inference, Necessary and Probable was published in London in 1847 — the same year as Boole’s first book on symbolic logic, the two men being correspondents.",
+      "title": "De Morgan, A., Formal Logic: or, The Calculus of Inference, Necessary and Probable, Taylor and Walton, London, 1847",
+      "url": "https://archive.org/details/formallogicorcal00demouoft",
+      "kind": "primary"
+    },
+    {
+      "claim": "The laws state that the negation of a conjunction is the disjunction of the negations, and the negation of a disjunction is the conjunction of the negations: not (A and B) is equivalent to (not A) or (not B), and not (A or B) is equivalent to (not A) and (not B).",
+      "title": "De Morgan, A., Formal Logic: or, The Calculus of Inference, Necessary and Probable, Taylor and Walton, London, 1847",
+      "url": "https://archive.org/details/formallogicorcal00demouoft",
+      "kind": "primary"
+    },
+    {
+      "claim": "Boole argued in An Investigation of the Laws of Thought, 1854, that three operations — conjunction, disjunction and negation — suffice to perform all logical functions.",
+      "title": "Boole, G., An Investigation of the Laws of Thought, on Which are Founded the Mathematical Theories of Logic and Probabilities, Walton and Maberly, London, 1854",
+      "url": "https://www.gutenberg.org/ebooks/15114",
+      "kind": "primary"
+    },
+    {
+      "claim": "In older circuit-engineering notation, where complement is written as an apostrophe or an overbar, the laws appear as (AB)′ = A′ + B′ — a form that comes from Shannon’s application of the algebra to switching circuits.",
+      "title": "Shannon, C. E., A Symbolic Analysis of Relay and Switching Circuits, MIT master’s thesis 1937; Transactions of the American Institute of Electrical Engineers 57:713-723, 1938",
+      "url": "https://dspace.mit.edu/handle/1721.1/11173",
+      "kind": "primary"
+    }
+  ],
+  "F.5": [
+    {
+      "claim": "Frege introduced modern quantificational logic in the Begriffsschrift of 1879, devising a formal language with quantifier symbols binding variables, together with axioms and rules of inference, in what amounts to a presentation of first-order predicate logic.",
+      "title": "Frege, G., Begriffsschrift, eine der arithmetischen nachgebildete Formelsprache des reinen Denkens, 1879",
+      "url": "https://plato.stanford.edu/entries/frege-logic/",
+      "kind": "primary"
+    },
+    {
+      "claim": "Frege did not introduce the now-standard symbols. His universal quantifier was written as a concavity in a two-dimensional notation; the modern universal symbol is due to Gentzen and the existential to Peano. Contemporaries found the two-dimensional notation difficult and largely failed to see its advantages over Boole’s approach.",
+      "title": "Frege, G., Begriffsschrift, eine der arithmetischen nachgebildete Formelsprache des reinen Denkens, 1879",
+      "url": "https://plato.stanford.edu/entries/frege-logic/",
+      "kind": "primary"
+    },
+    {
+      "claim": "Frege officially adopts only one rule of inference, modus ponens, while tacitly making use of a rule of instantiation for the universal quantifier.",
+      "title": "Frege, G., Begriffsschrift, eine der arithmetischen nachgebildete Formelsprache des reinen Denkens, 1879",
+      "url": "https://plato.stanford.edu/entries/frege-logic/",
+      "kind": "primary"
+    },
+    {
+      "claim": "Priority is contested: scholars of Peirce note that the Begriffsschrift is among the first published accounts of a logical system with quantification rather than being uniquely the first.",
+      "title": "Frege, G., Begriffsschrift, eine der arithmetischen nachgebildete Formelsprache des reinen Denkens, 1879",
+      "url": "https://plato.stanford.edu/entries/frege-logic/",
+      "kind": "primary"
+    }
+  ],
+  "F.6": [
+    {
+      "claim": "Boole published The Mathematical Analysis of Logic in 1847, described as the first modern book on symbolic logic and little more than a pamphlet, containing his first efforts towards an algebraic logic of classes. It attracted very little attention outside his immediate circle, of which De Morgan was a member.",
+      "title": "Boole, G., The Mathematical Analysis of Logic: Being an Essay Towards a Calculus of Deductive Reasoning, Macmillan, Barclay & Macmillan, Cambridge, 1847",
+      "url": "https://www.gutenberg.org/ebooks/36884",
+      "kind": "primary"
+    },
+    {
+      "claim": "He expanded the idea in An Investigation of the Laws of Thought in 1854, whose core argument is that three operations — conjunction, disjunction and negation — suffice to perform all logical functions.",
+      "title": "Boole, G., An Investigation of the Laws of Thought, Walton and Maberly, London, 1854",
+      "url": "https://www.gutenberg.org/ebooks/15114",
+      "kind": "primary"
+    },
+    {
+      "claim": "For decades the ideas had no apparent practical application and were largely ignored. Shannon, working at MIT under Vannevar Bush on the electrical circuitry of a mechanical analogue computer, realised the algebra could be applied to circuit design, treating two-valued logical functions as switching gates.",
+      "title": "Shannon, C. E., A Symbolic Analysis of Relay and Switching Circuits, MIT master’s thesis 1937; Transactions of the American Institute of Electrical Engineers 57:713-723, 1938",
+      "url": "https://dspace.mit.edu/handle/1721.1/11173",
+      "kind": "primary"
+    },
+    {
+      "claim": "Shannon’s master’s thesis of 1937, A Symbolic Analysis of Relay and Switching Circuits, applied the algebra to logic circuits built from electromechanical relays; he was twenty-one, and it was published in the Transactions of the American Institute of Electrical Engineers in 1938. It introduced switching algebra, allowing systematic design and optimisation of logical circuits.",
+      "title": "Shannon, C. E., A Symbolic Analysis of Relay and Switching Circuits, MIT master’s thesis 1937; Transactions of the American Institute of Electrical Engineers 57:713-723, 1938",
+      "url": "https://dspace.mit.edu/handle/1721.1/11173",
+      "kind": "primary"
+    }
+  ],
+  "F.7": [
+    {
+      "claim": "De Morgan’s laws state that not (A and B) is equivalent to (not A) or (not B), and not (A or B) is equivalent to (not A) and (not B). The equivalence is of truth values, holding for every assignment of the variables.",
+      "title": "De Morgan, A., Formal Logic: or, The Calculus of Inference, Necessary and Probable, Taylor and Walton, London, 1847",
+      "url": "https://archive.org/details/formallogicorcal00demouoft",
+      "kind": "primary"
+    },
+    {
+      "claim": "Boole’s argument in 1854 is that conjunction, disjunction and negation suffice to perform all logical functions — a claim about which truth functions are expressible, not about how an expression is evaluated.",
+      "title": "Boole, G., An Investigation of the Laws of Thought, Walton and Maberly, London, 1854",
+      "url": "https://www.gutenberg.org/ebooks/15114",
+      "kind": "primary"
+    },
+    {
+      "claim": "Shannon’s switching algebra models a circuit in which every relay in the network has a state at once. A physical series circuit has no notion of skipping the second switch because the first was open; the algebra it is modelled by inherits that, and describes values rather than a sequence of steps.",
+      "title": "Shannon, C. E., A Symbolic Analysis of Relay and Switching Circuits, MIT master’s thesis 1937; Transactions of the American Institute of Electrical Engineers 57:713-723, 1938",
+      "url": "https://dspace.mit.edu/handle/1721.1/11173",
+      "kind": "primary"
+    }
+  ],
+  "F.9": [
+    {
+      "claim": "Floyd’s 1967 paper sets out to provide a basis for formal definitions of the meanings of programs, so that a rigorous standard is established for proofs about programs, including proofs of correctness, equivalence and termination.",
+      "title": "Floyd, R. W., Assigning Meanings to Programs, in Mathematical Aspects of Computer Science, Proceedings of Symposia in Applied Mathematics 19:19-32, American Mathematical Society, 1967",
+      "url": "https://www.cs.tau.ac.il/~nachumd/term/FloydMeaning.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "Floyd’s method associates a proposition with each connection in the flow of control, asserted to hold whenever that connection is taken, with a condition on each command ensuring that a command entered by a connection whose proposition is true will be left, if at all, by a connection whose proposition is true. The argument then proceeds by induction on the number of commands executed. The method is usually known as inductive assertions, and Floyd credited ideas of Perlis and Gorn.",
+      "title": "Floyd, R. W., Assigning Meanings to Programs, in Mathematical Aspects of Computer Science, Proceedings of Symposia in Applied Mathematics 19:19-32, American Mathematical Society, 1967",
+      "url": "https://www.cs.tau.ac.il/~nachumd/term/FloydMeaning.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "Hoare’s 1969 paper explores the logical foundations of computer programming using techniques first applied in the study of geometry, elucidating sets of axioms and rules of inference usable in proofs of properties of programs. Hoare states that the formal treatment of program execution there is clearly derived from Floyd.",
+      "title": "Hoare, C. A. R., An Axiomatic Basis for Computer Programming, Communications of the ACM 12(10):576-580, 1969",
+      "url": "https://dl.acm.org/doi/10.1145/363235.363259",
+      "kind": "primary"
+    },
+    {
+      "claim": "The notation Hoare introduced is read as: if the first assertion holds before the program runs, the second holds when it ends. It offers no guarantee of termination, since executing the program from a state satisfying the precondition need not halt — the phrase in Floyd’s formulation is that the command will be left \"if at all\".",
+      "title": "Hoare, C. A. R., An Axiomatic Basis for Computer Programming, Communications of the ACM 12(10):576-580, 1969",
+      "url": "https://dl.acm.org/doi/10.1145/363235.363259",
+      "kind": "primary"
     }
   ]
 };

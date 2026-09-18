@@ -1,0 +1,79 @@
+{
+  "taskId": "F.13",
+  "title": "Computability: what Turing proved cannot be done, 1936",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Turing’s paper On Computable Numbers, with an Application to the Entscheidungsproblem was received by the London Mathematical Society on 28 May 1936 and appeared in its Proceedings, series 2, volume 42, pages 230 to 265, dated 1937. A correction followed in volume 43, pages 544 to 546, in 1938.",
+      "type": "date",
+      "tokens": [
+        "Turing",
+        "Entscheidungsproblem",
+        "London Mathematical Society",
+        "Proceedings",
+        "1936",
+        "1937",
+        "1938"
+      ],
+      "source": {
+        "title": "Turing, A. M., On Computable Numbers, with an Application to the Entscheidungsproblem, Proceedings of the London Mathematical Society s2-42(1):230-265, 1936/1937",
+        "url": "https://londmathsoc.onlinelibrary.wiley.com/doi/abs/10.1112/plms/s2-42.1.230",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Turing’s was the second proof of the negative answer to the decision problem, after Church’s; Turing received Church’s offprint and inserted a reference in his introduction before submitting.",
+      "type": "event",
+      "tokens": [
+        "Turing",
+        "Church"
+      ],
+      "source": {
+        "title": "The origins of the halting problem — an examination of what Turing’s paper does and does not contain, and of Davis’s 1958 coinage",
+        "url": "https://academic.oup.com/logcom/article/36/1/exaf075/8417148",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Turing did not state or prove the halting problem. The words halt, halting, stop and terminate do not occur in the paper; his undecidability results concern the satisfactoriness problem and the printing problem, and his arguments proceed through the circle-free problem, which is not computably equivalent to the halting problem but strictly harder.",
+      "type": "event",
+      "tokens": [
+        "Turing"
+      ],
+      "source": {
+        "title": "The origins of the halting problem — an examination of what Turing’s paper does and does not contain, and of Davis’s 1958 coinage",
+        "url": "https://academic.oup.com/logcom/article/36/1/exaf075/8417148",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "The phrase the halting problem first appears in Davis’s Computability and Unsolvability of 1958, where he defines the problem of whether a machine placed in a given initial state will eventually halt and writes that we call this the halting problem. Davis believed he began using the term in lectures from 1952. Some scholars give Kleene priority for the formulation, in his Introduction to Metamathematics of 1952.",
+      "type": "date",
+      "tokens": [
+        "Davis",
+        "Computability",
+        "Unsolvability",
+        "Kleene",
+        "Introduction",
+        "Metamathematics",
+        "1952",
+        "1958"
+      ],
+      "source": {
+        "title": "The origins of the halting problem — an examination of what Turing’s paper does and does not contain, and of Davis’s 1958 coinage",
+        "url": "https://academic.oup.com/logcom/article/36/1/exaf075/8417148",
+        "kind": "secondary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "the open question was whether a mechanical procedure could decide the truth of any mathematical statement, and the answer was widely assumed to be yes",
+    "fix": "a precise model of what a mechanical procedure is, and then a proof that no such procedure decides its own general behaviour",
+    "cost": "the impossibility is about deciding in general, which is a much narrower statement than the one usually drawn from it",
+    "interview": "what Turing actually proved, and what he did not"
+  }
+}

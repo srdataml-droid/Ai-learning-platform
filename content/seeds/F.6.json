@@ -1,0 +1,77 @@
+{
+  "taskId": "F.6",
+  "title": "Boolean algebra and simplification",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Boole published The Mathematical Analysis of Logic in 1847, described as the first modern book on symbolic logic and little more than a pamphlet, containing his first efforts towards an algebraic logic of classes. It attracted very little attention outside his immediate circle, of which De Morgan was a member.",
+      "type": "date",
+      "tokens": [
+        "Boole",
+        "De Morgan",
+        "Morgan",
+        "1847"
+      ],
+      "source": {
+        "title": "Boole, G., The Mathematical Analysis of Logic: Being an Essay Towards a Calculus of Deductive Reasoning, Macmillan, Barclay & Macmillan, Cambridge, 1847",
+        "url": "https://www.gutenberg.org/ebooks/36884",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "He expanded the idea in An Investigation of the Laws of Thought in 1854, whose core argument is that three operations — conjunction, disjunction and negation — suffice to perform all logical functions.",
+      "type": "date",
+      "tokens": [
+        "Boole",
+        "Laws of Thought",
+        "1854"
+      ],
+      "source": {
+        "title": "Boole, G., An Investigation of the Laws of Thought, Walton and Maberly, London, 1854",
+        "url": "https://www.gutenberg.org/ebooks/15114",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "For decades the ideas had no apparent practical application and were largely ignored. Shannon, working at MIT under Vannevar Bush on the electrical circuitry of a mechanical analogue computer, realised the algebra could be applied to circuit design, treating two-valued logical functions as switching gates.",
+      "type": "event",
+      "tokens": [
+        "Shannon",
+        "MIT",
+        "Vannevar Bush",
+        "Bush"
+      ],
+      "source": {
+        "title": "Shannon, C. E., A Symbolic Analysis of Relay and Switching Circuits, MIT master’s thesis 1937; Transactions of the American Institute of Electrical Engineers 57:713-723, 1938",
+        "url": "https://dspace.mit.edu/handle/1721.1/11173",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "Shannon’s master’s thesis of 1937, A Symbolic Analysis of Relay and Switching Circuits, applied the algebra to logic circuits built from electromechanical relays; he was twenty-one, and it was published in the Transactions of the American Institute of Electrical Engineers in 1938. It introduced switching algebra, allowing systematic design and optimisation of logical circuits.",
+      "type": "date",
+      "tokens": [
+        "Shannon",
+        "American Institute",
+        "Electrical Engineers",
+        "1937",
+        "1938"
+      ],
+      "source": {
+        "title": "Shannon, C. E., A Symbolic Analysis of Relay and Switching Circuits, MIT master’s thesis 1937; Transactions of the American Institute of Electrical Engineers 57:713-723, 1938",
+        "url": "https://dspace.mit.edu/handle/1721.1/11173",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "two conditions can mean the same thing and look completely different, so you cannot tell whether a rewrite preserved behaviour by reading it",
+    "fix": "treat conditions as expressions in an algebra with laws, so equivalence becomes something you derive rather than something you judge",
+    "cost": "the algebraically simplest form is frequently the least readable, and says nothing about how the expression will be executed",
+    "interview": "what putting logic into algebra actually buys"
+  }
+}

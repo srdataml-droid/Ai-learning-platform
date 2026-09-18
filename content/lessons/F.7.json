@@ -1,0 +1,48 @@
+{
+  "id": "F.7",
+  "trackId": "F",
+  "trackName": "Logic",
+  "title": "Short circuit evaluation, and the bugs it hides",
+  "status": "traced",
+  "seed": "F.7",
+  "story": "The operators look like the ones in the algebra and they are not the same objects. Boole’s conjunction is a function of two truth values: given both, it returns one. Shannon’s series circuit has both relays in a state simultaneously, and there is no physical sense in which the second switch is skipped because the first was open. In a program, by contrast, conjunction is frequently a conditional wearing the costume of an operator: evaluate the left side, and evaluate the right side only if you must.\n\nThat single difference produces three distinct classes of bug, and they are worth separating. First, side effects on the right of the operator become conditional. An expression like check() && record() does not always record, and nothing about the syntax announces that. Second, the operator is routinely used as a guard: writing a test for a non-null pointer and then dereferencing it in the same expression works only because the right side does not run when the left is false. The condition is doing two jobs, testing and protecting, and only one of them is visible.\n\nThird, and most dangerous because it is done deliberately by careful people: the algebraic laws stop being safe. Every law in F.6 and F.4 preserves the truth value for every assignment of the variables, which is a guarantee about values and never about execution. Apply De Morgan to a guarded condition and you may hand the resulting expression an order in which the guard no longer precedes the thing it guards. The rewrite is correct in the algebra and wrong in the program, and the tests may not notice because the guarded case is exactly the rare one.\n\nSo the reading to carry is that a short-circuiting operator is a control structure. Its operands are ordered, that order is a dependency rather than a style preference, and any transformation that reorders them — simplification, De Morgan, extracting a variable to make the line shorter — must be checked against the execution and not only against the truth table.",
+  "problem": {
+    "name": "Evaluation order in boolean expressions",
+    "aka": [
+      "short circuit evaluation",
+      "guard clauses in conditions"
+    ],
+    "shape": "An expression is both a term in an algebra and a sequence of steps, and the laws you would use to rewrite it only describe one of those.",
+    "tell": [
+      "a condition tests for existence and then uses the thing it tested for, in one expression",
+      "a function call appears on the right of an and or an or",
+      "someone is about to simplify a conditional to make it shorter"
+    ],
+    "move": "Read the operator as a conditional: the left operand is evaluated, and the right operand is evaluated only when the left does not already determine the answer. Treat the ordering as a dependency and record it if it matters.",
+    "invariant": "The left operand is evaluated before the right, and the right only when necessary. Every guard written this way depends on that and on nothing else, which is why extracting either side into a variable changes the meaning even though the expression looks the same.",
+    "breaks": "It breaks under exactly the transformations that are supposed to be safe. Algebraic equivalence is about values, so simplification, De Morgan and reordering preserve what the expression computes and can destroy what it protects — and the failure surfaces only on the path where the guard mattered, which is the path least likely to be covered.",
+    "cost": {
+      "time": "faster on average, since the right operand is often skipped",
+      "space": "none",
+      "beats": "evaluating both sides always, which is uniform, slower, and cannot express a guard in a condition"
+    },
+    "worked": {
+      "problem": "How can applying De Morgan to a condition break the program while preserving its truth value?",
+      "reasoning": "Because the two guarantees are about different things, and only one of them is what the code depends on.\n\nTake a guard: the expression is false when there is no user, and otherwise depends on a field of that user. It works because the right side never runs when the left is false.\n\nNow negate it with De Morgan. The law is valid: the truth value is identical for every assignment. But the resulting expression may have the field access on the left, or on a branch that is reached when there is no user — and the moment it is evaluated with no user present, you have a fault rather than a false.\n\nNothing in the algebra was violated. The algebra never claimed anything about which operands are evaluated, because in Boole’s setting both values already exist and in Shannon’s both relays are already in a state.\n\nSo the check when rewriting a condition is not \"is this equivalent\" but \"is every operand still only evaluated in the situations where it is safe\" — and those are different questions with different answers.",
+      "code": "  user != null && user.age > 18\n      right side runs only when left is true\n      -> the && is a GUARD, not just an operator\n\n  negate it \"by the law\":\n\n  NOT(user != null && user.age > 18)\n   == user == null || user.age <= 18      valid!\n      ^ truth value: identical, every assignment\n      ^ execution:   if user IS null, the left is\n                     true, so it short-circuits.\n                     still safe -- this time.\n\n  but reorder for readability:\n\n     user.age <= 18 || user == null       valid!\n     -> and now it faults on a null user\n\n  algebra preserved the VALUE.\n  it never claimed anything about which operands run:\n     Boole  - both values already exist\n     Shannon- both relays already have a state"
+    },
+    "practice": "Find a condition in your code where one side guards the other. Apply De Morgan to it, then reorder the result for readability, and work out at which step it would fault — then check whether any test covers that path."
+  },
+  "beats": {
+    "broke": "The operators are written like the ones in the algebra and behave like control flow: the right operand may not be evaluated at all. That difference is invisible in the syntax and load-bearing in the behaviour.",
+    "fix": "Read a short-circuiting operator as a conditional, with the ordering of operands as a dependency rather than a preference — so a guard in a condition is recognised as a guard.",
+    "cost": "Every algebraic law stays valid about the value and becomes invalid about the execution. Simplification and De Morgan can move an operand to a position where it runs unsafely, and the failure appears only on the rare path the guard existed for.",
+    "interview": {
+      "q": "How can applying De Morgan to a real condition break the program while preserving its truth value?",
+      "trap": "Answering that the rewrite must have been done incorrectly. The rewrite can be perfectly correct — that is what makes this worth knowing.",
+      "answer": "Because the law guarantees something narrower than people assume. It says the truth value is identical for every assignment of the variables. It says nothing about which operands get evaluated, because in the settings the algebra came from that question does not arise — Boole's conjunction takes two values that already exist, and in a switching circuit both relays are already in a state.\n\nIn a language with short-circuit evaluation the right operand runs only when the left does not settle the answer, and that is routinely load-bearing: a test for existence followed by a use of the thing tested for is safe only because of the ordering. Rewrite the expression — by De Morgan, by simplification, or just by reordering for readability — and an operand can end up in a position where it is evaluated in a state it cannot handle. The value is unchanged and the program faults.\n\nSo the question when rewriting a condition is not whether it is equivalent but whether every operand is still evaluated only where it is safe. And the failure surfaces on the path the guard existed for, which is the one least likely to be covered."
+    }
+  },
+  "blueprint": "Same symbol, two different objects:\n\n  Boole's AND        a function of two values\n                     both already exist\n  Shannon's series   both relays already in a state\n  a program's &&     evaluate left;\n                     evaluate right ONLY IF NEEDED\n                     -> it is control flow\n\n  three consequences:\n\n     1. side effects on the right are CONDITIONAL\n     2. the left operand is often a GUARD\n        (the condition does two jobs; one is invisible)\n     3. algebraic laws stop being safe\n\n  because the guarantee is:\n\n     value, for every assignment      YES\n     which operands are evaluated     NEVER CLAIMED\n\n  so when rewriting, the question is not\n     \"is this equivalent?\"\n  but\n     \"is each operand still evaluated only where\n      it is safe?\"",
+  "takeaway": "A short-circuiting operator is control flow wearing an operator’s costume, so the algebraic laws preserve what a condition computes and not what it protects — and the resulting fault appears only on the path the guard was there for."
+}

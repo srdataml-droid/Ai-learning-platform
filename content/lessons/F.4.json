@@ -1,0 +1,48 @@
+{
+  "id": "F.4",
+  "trackId": "F",
+  "trackName": "Logic",
+  "title": "De Morgan’s laws",
+  "status": "traced",
+  "seed": "F.4",
+  "story": "Two rules, published in London in 1847 in De Morgan’s Formal Logic, the same year as Boole’s first book on symbolic logic — the two were correspondents, and the near-simultaneity is a coincidence of a field arriving rather than of two people racing. The negation of a conjunction is the disjunction of the negations; the negation of a disjunction is the conjunction of the negations. Flip the connective, negate both sides.\n\nThe reason they matter is not that they are surprising but that they are mechanical. Negating a compound condition by understanding it is exactly where mistakes happen: you hold \"not both admin and active\" in your head, you think about what it means, and you arrive at \"not admin and not active\", which is wrong. The rule requires no understanding at all. It is a rewriting operation on the shape of the expression, and shapes can be transformed reliably while meanings cannot.\n\nThat is the general lesson of this part of the track and it is worth stating explicitly, because it sounds anti-intellectual and is the opposite. Boole’s claim in 1854 was that three operations suffice for all of logic; the payoff of putting logic into algebra is that you can then manipulate it the way you manipulate algebra — by symbol pushing, without re-deriving the meaning at each step. Shannon’s application of the same algebra to switching circuits is the same move again, which is why the laws appear in older circuit texts in complement notation.\n\nThere is a boundary, and it is the subject of F.7. The equivalence is about truth values. In a program, an expression has an evaluation order, may have side effects, and may fail partway. Applying De Morgan to a short-circuited condition preserves what it computes and changes what it evaluates, and an expression whose left operand was protecting the right one stops protecting it. So the rule is safe about values and unsafe about execution — which is exactly the distinction to carry.",
+  "problem": {
+    "name": "Negating a compound condition",
+    "aka": [
+      "De Morgan’s laws",
+      "pushing negation inward"
+    ],
+    "shape": "A condition built from ands, ors and nots must be inverted, simplified or restructured, and doing it by reasoning about its meaning is unreliable.",
+    "tell": [
+      "you are about to write the opposite of a condition by thinking about what the opposite is",
+      "a filter and its complement do not partition the data the way you expected",
+      "a query with a negation wrapped around a compound clause returns the wrong rows"
+    ],
+    "move": "Rewrite symbolically. To push a negation inwards, change and to or or or to and, and negate each operand. Repeat until no negation sits outside a compound.",
+    "invariant": "The rewrite preserves the truth value for every assignment of the variables. That is what makes it usable without understanding the condition — and the scope of the guarantee is truth values and nothing else.",
+    "breaks": "It says nothing about execution. In a language with short-circuit evaluation the rewrite changes which operand is evaluated first and whether the second is evaluated at all, so side effects and guard clauses do not survive it. It also interacts badly with three-valued logic, where negation does not behave the way the two-valued intuition expects.",
+    "cost": {
+      "time": "none; it is a syntactic transformation",
+      "space": "none",
+      "beats": "reasoning about what the negated condition means, which is the step where the error occurs"
+    },
+    "worked": {
+      "problem": "Why should you trust a mechanical rule over understanding the condition?",
+      "reasoning": "Because understanding is the unreliable part, and you can check that claim on yourself in one line.\n\nTake \"not (admin and active)\". Reasoning about it, most people produce \"not admin and not active\" — which says neither is true, when the original says merely that they are not both true. A user who is an admin but inactive satisfies the original and fails the rewrite.\n\nThe rule cannot make that mistake because it does not consider what admin or active mean. It sees a negation outside a conjunction and produces a disjunction of negations. The operation is defined on the shape of the expression, so the space in which the error lives has been removed rather than navigated.\n\nThat generalises past this rule. The value of a formal system is that it lets you get right answers in a region where your intuition is known to be poor, by not consulting it.",
+      "code": "NOT (A AND B)  ==  (NOT A) OR  (NOT B)\nNOT (A OR  B)  ==  (NOT A) AND (NOT B)\n\n  by reasoning:\n     \"not (admin and active)\"\n       -> \"not admin and not active\"      WRONG\n       (an inactive admin satisfies the first,\n        fails the second)\n\n  by the rule:\n     negation outside an AND\n       -> OR of the negations\n       -> \"not admin OR not active\"       right\n\n  the rule never asked what \"admin\" means.\n  that is the feature.\n\n  SQL:  NOT (a = 1 AND b = 2)\n     == a <> 1 OR b <> 2        ...for non-NULL a, b\n        (and NULL is a different lesson: F.8)"
+    },
+    "practice": "Take a compound condition from your code with three or more terms and negate it twice, once by reasoning and once by the rule, without looking at the other. Then find an assignment of the variables that distinguishes them if they differ."
+  },
+  "beats": {
+    "broke": "Inverting a compound condition requires working out what its opposite means, and that is the step where people reliably get it wrong — producing \"neither\" where the original said \"not both\".",
+    "fix": "Two rewriting rules from De Morgan’s Formal Logic of 1847: flip the connective and negate both operands. The transformation is defined on the shape of the expression, so it does not consult the meaning at all.",
+    "cost": "The guarantee covers truth values only. In a real language the rewrite changes evaluation order and whether the second operand runs, so guards and side effects do not survive it — and three-valued logic breaks the two-valued intuition about negation separately.",
+    "interview": {
+      "q": "Why prefer a mechanical rewriting rule to just understanding the condition?",
+      "trap": "Answering that it is faster. It is, but the reason it is worth trusting is that it removes the step where errors actually occur.",
+      "answer": "Because understanding is the unreliable part, and the failure is demonstrable in one line. Asked for the opposite of \"admin and active\", most people produce \"not admin and not active\" — which asserts neither holds, while the original only denies that both hold. An inactive admin satisfies the original and fails the rewrite.\n\nThe rule cannot make that error because it never consults what the terms mean. It matches a negation outside a conjunction and emits a disjunction of negations. The region where the mistake lives has been removed rather than navigated carefully.\n\nThat is the general value of a formal system: it lets you get correct answers in an area where your intuition is measurably poor, precisely by not asking your intuition.\n\nThe boundary matters though. The equivalence is about truth values for every assignment. It says nothing about evaluation order, so applying it to a short-circuited expression preserves what is computed and changes what is executed — which is how a left operand that was guarding the right one stops guarding it."
+    }
+  },
+  "blueprint": "Flip the connective, negate both sides:\n\n    NOT (A AND B)  ==  NOT A  OR   NOT B\n    NOT (A OR  B)  ==  NOT A  AND  NOT B\n\n  why mechanical beats thoughtful here:\n\n     \"not both\"      != \"neither\"\n     and the second is what reasoning produces\n\n  scope of the guarantee:\n\n     truth values, every assignment      YES\n     evaluation order                    NO\n     whether operand 2 runs at all       NO\n     side effects                        NO\n     three-valued logic (NULL)           NO\n\n  so: safe about VALUES, unsafe about EXECUTION.\n  that boundary is F.7.",
+  "takeaway": "Negation distributes by flipping the connective, a rewrite defined on the shape of an expression rather than its meaning — which is why it is reliable, and why its guarantee covers truth values and not evaluation order."
+}

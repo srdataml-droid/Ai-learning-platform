@@ -8,37 +8,20 @@ A batch is one writing session and never spans two tracks.
 
 | # | Track | Missing | Batches | Why here |
 |---|---|---|---|---|
-| 1 | **F** Logic | 10 | 1 | Logic. Small, and underpins the debugging and ML tracks. |
-| 2 | **P** Security | 10 | 1 | Security. Small, and every claim in it needs care. |
-| 3–4 | **E** Data structures and algorithms | 20 | 2 | Data structures and algorithms. Large, and the most citation-heavy of the foundations. |
-| 5–6 | **M** Math for machines | 14 | 2 | Math for machines. Notation-heavy; blueprints matter more than prose here. |
-| 7–8 | **N** Data work | 14 | 2 | Data work. Practical; much of it is about failure modes rather than history. |
-| 9–10 | **O** Classical ML | 19 | 2 | Classical ML. Large, and needs real sourcing for every named method. |
-| 11–12 | **K** Neural networks | 14 | 2 | Neural networks. Dates and papers throughout, so these want seeds, not just prose. |
-| 13–14 | **L** AI engineering | 23 | 2 | AI engineering. Fastest-moving material, so the most likely to date badly. |
-| 15–18 | **B** System design | 37 | 4 | System design. The largest single track and the heaviest research load. |
+| 1 | **P** Security | 10 | 1 | Security. Small, and every claim in it needs care. |
+| 2–3 | **E** Data structures and algorithms | 20 | 2 | Data structures and algorithms. Large, and the most citation-heavy of the foundations. |
+| 4–5 | **M** Math for machines | 14 | 2 | Math for machines. Notation-heavy; blueprints matter more than prose here. |
+| 6–7 | **N** Data work | 14 | 2 | Data work. Practical; much of it is about failure modes rather than history. |
+| 8–9 | **O** Classical ML | 19 | 2 | Classical ML. Large, and needs real sourcing for every named method. |
+| 10–11 | **K** Neural networks | 14 | 2 | Neural networks. Dates and papers throughout, so these want seeds, not just prose. |
+| 12–13 | **L** AI engineering | 23 | 2 | AI engineering. Fastest-moving material, so the most likely to date badly. |
+| 14–17 | **B** System design | 37 | 4 | System design. The largest single track and the heaviest research load. |
 
-**161 lessons across 18 batches.**
+**151 lessons across 17 batches.**
 
 ---
 
-### Batch 1 — Track F: Logic
-
-10 lessons.
-
-- [ ] `F.2` Implication, and why "if A then B" confuses everyone
-- [ ] `F.4` De Morgan's laws
-      <br>_note: used on every complex conditional and every SQL WHERE clause_
-- [ ] `F.5` Quantifiers: for all, there exists
-- [ ] `F.6` Boolean algebra and simplification
-- [ ] `F.7` Short circuit evaluation, and the bugs it hides
-- [ ] `F.9` Proof techniques: direct, contradiction, induction
-- [ ] `F.10` Induction as the basis of recursion correctness
-- [ ] `F.11` Invariants: the thing that must stay true
-- [ ] `F.12` Type systems as logic, lightly
-- [ ] `F.13` Computability: what Turing proved cannot be done, 1936
-
-### Batch 2 — Track P: Security
+### Batch 1 — Track P: Security
 
 10 lessons.
 
@@ -53,7 +36,7 @@ A batch is one writing session and never spans two tracks.
 - [ ] `P.12` Prompt injection and tool abuse
 - [ ] `P.13` PII, retention, consent
 
-### Batch 3 — Track E: Data structures and algorithms (part 1 of 2)
+### Batch 2 — Track E: Data structures and algorithms (part 1 of 2)
 
 12 lessons.
 
@@ -71,7 +54,7 @@ A batch is one writing session and never spans two tracks.
 - [ ] `E.15` Graphs: adjacency list versus matrix
 - [ ] `E.16` Breadth first search
 
-### Batch 4 — Track E: Data structures and algorithms (part 2 of 2)
+### Batch 3 — Track E: Data structures and algorithms (part 2 of 2)
 
 8 lessons.
 
@@ -84,7 +67,7 @@ A batch is one writing session and never spans two tracks.
 - [ ] `E.27` The cadence: a small near daily block, medium difficulty, timed after month one
 - [ ] `E.28` A log of every pattern you miss, revisited a week later
 
-### Batch 5 — Track M: Math for machines (part 1 of 2)
+### Batch 4 — Track M: Math for machines (part 1 of 2)
 
 12 lessons.
 
@@ -101,14 +84,14 @@ A batch is one writing session and never spans two tracks.
 - [ ] `M.13` Conditional probability and Bayes
 - [ ] `M.14` Sampling and bias
 
-### Batch 6 — Track M: Math for machines (part 2 of 2)
+### Batch 5 — Track M: Math for machines (part 2 of 2)
 
 2 lessons.
 
 - [ ] `M.15` Logs and exponents, and why loss functions use them
 - [ ] `M.16` Do all of the above in numpy
 
-### Batch 7 — Track N: Data work (part 1 of 2)
+### Batch 6 — Track N: Data work (part 1 of 2)
 
 12 lessons.
 
@@ -125,14 +108,14 @@ A batch is one writing session and never spans two tracks.
 - [ ] `N.11` Exploratory analysis: look before you model
 - [ ] `N.12` Plotting to understand, not to present
 
-### Batch 8 — Track N: Data work (part 2 of 2)
+### Batch 7 — Track N: Data work (part 2 of 2)
 
 2 lessons.
 
 - [ ] `N.14` Splitting data honestly
 - [ ] `N.15` A reusable pipeline
 
-### Batch 9 — Track O: Classical ML (part 1 of 2)
+### Batch 8 — Track O: Classical ML (part 1 of 2)
 
 12 lessons.
 
@@ -149,7 +132,7 @@ A batch is one writing session and never spans two tracks.
 - [ ] `O.11` PCA
 - [ ] `O.12` Train, validation, test
 
-### Batch 10 — Track O: Classical ML (part 2 of 2)
+### Batch 9 — Track O: Classical ML (part 2 of 2)
 
 7 lessons.
 
@@ -161,7 +144,7 @@ A batch is one writing session and never spans two tracks.
 - [ ] `O.19` When classical ML beats a neural network, which is often
 - [ ] `O.20` Always build the dumb baseline first
 
-### Batch 11 — Track K: Neural networks (part 1 of 2)
+### Batch 10 — Track K: Neural networks (part 1 of 2)
 
 12 lessons.
 
@@ -180,14 +163,14 @@ A batch is one writing session and never spans two tracks.
 - [ ] `K.16` Instruction tuning and RLHF
       <br>_note: why ChatGPT in 2022 felt different from GPT-3 in 2020. The base model was not the change, the alignment step was_
 
-### Batch 12 — Track K: Neural networks (part 2 of 2)
+### Batch 11 — Track K: Neural networks (part 2 of 2)
 
 2 lessons.
 
 - [ ] `K.17` Tokenisation, context windows, and why cost grows the way it does
 - [ ] `K.18` Inference versus training: completely different engineering problems
 
-### Batch 13 — Track L: AI engineering (part 1 of 2)
+### Batch 12 — Track L: AI engineering (part 1 of 2)
 
 12 lessons.
 
@@ -204,7 +187,7 @@ A batch is one writing session and never spans two tracks.
 - [ ] `L.14` Guardrails: input filtering, output checking, prompt injection
 - [ ] `L.15` Cost control: caching, model routing, batching, token accounting
 
-### Batch 14 — Track L: AI engineering (part 2 of 2)
+### Batch 13 — Track L: AI engineering (part 2 of 2)
 
 11 lessons.
 
@@ -220,7 +203,7 @@ A batch is one writing session and never spans two tracks.
 - [ ] `L.25` Feedback loops into evaluation
 - [ ] `L.26` Safety: bias, red teaming, failure disclosure
 
-### Batch 15 — Track B: System design (part 1 of 4)
+### Batch 14 — Track B: System design (part 1 of 4)
 
 12 lessons.
 
@@ -239,7 +222,7 @@ A batch is one writing session and never spans two tracks.
 - [ ] `B.15` Tables, keys, relationships
 - [ ] `B.17` Indexes: why your query is slow
 
-### Batch 16 — Track B: System design (part 2 of 4)
+### Batch 15 — Track B: System design (part 2 of 4)
 
 12 lessons.
 
@@ -258,7 +241,7 @@ A batch is one writing session and never spans two tracks.
 - [ ] `B.34` Reliability patterns: circuit breakers, graceful degradation, health checks
       <br>_note: Chaos Monkey 2011_
 
-### Batch 17 — Track B: System design (part 3 of 4)
+### Batch 16 — Track B: System design (part 3 of 4)
 
 12 lessons.
 
@@ -275,7 +258,7 @@ A batch is one writing session and never spans two tracks.
 - [ ] `B.46` Back of envelope estimation drills
 - [ ] `B.47` How to open, scope and drive a design round
 
-### Batch 18 — Track B: System design (part 4 of 4)
+### Batch 17 — Track B: System design (part 4 of 4)
 
 1 lessons.
 
@@ -289,7 +272,7 @@ A batch is one writing session and never spans two tracks.
 - **Track C — Languages: the chain of walls: complete (34).**
 - **Track D — Software development craft: complete (13).**
 - Track E — Data structures and algorithms: 8 of 28.
-- Track F — Logic: 3 of 13.
+- **Track F — Logic: complete (13).**
 - Track B — System design: 11 of 48.
 - Track P — Security: 3 of 13.
 - Track M — Math for machines: 2 of 16.

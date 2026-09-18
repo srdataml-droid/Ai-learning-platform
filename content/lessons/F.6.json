@@ -1,0 +1,48 @@
+{
+  "id": "F.6",
+  "trackId": "F",
+  "trackName": "Logic",
+  "title": "Boolean algebra and simplification",
+  "status": "traced",
+  "seed": "F.6",
+  "story": "Boole’s first book came out in 1847, little more than a pamphlet, and attracted almost no attention outside a small circle that included De Morgan. The expanded argument arrived in 1854: three operations — conjunction, disjunction, negation — suffice for all of logic. For decades this had no evident use. It was a way of writing arguments as equations, admired by a few people and applied by nobody.\n\nWhat Shannon noticed at MIT, working on the circuitry of a mechanical analogue computer under Vannevar Bush, is that the algebra of truth values and the algebra of switches are the same algebra. A switch is open or closed; a proposition is true or false; series is conjunction and parallel is disjunction. His master’s thesis of 1937, published the following year, turns that observation into a method for designing and optimising circuits systematically. He was twenty-one.\n\nThe reason to care as a programmer is the same reason it mattered for circuits, and it is worth stating plainly: putting logic into an algebra converts questions of meaning into questions of form. Whether two conditions are equivalent stops being a judgement you make by reading them and becomes something you derive by applying laws — distribution, absorption, De Morgan, complement. That matters because the two conditions in front of you often look nothing alike, and reading them is precisely the operation people get wrong.\n\nThe costs are two and both are easy to forget. First, the algebraically simplest expression is often the least readable one, because simplification optimises for term count rather than for the thing the condition is about — so the minimal form may express a business rule in a way no one can recognise. Second, and more dangerous, the algebra says nothing about execution. Every law here preserves the value of the expression for every assignment and none of them preserves the order in which operands are evaluated or whether they are evaluated at all, which is the subject of F.7.",
+  "problem": {
+    "name": "Boolean simplification",
+    "aka": [
+      "switching algebra",
+      "canonical form"
+    ],
+    "shape": "Conditions accumulate terms and nesting, and you need to know whether two of them mean the same thing without arguing about what they mean.",
+    "tell": [
+      "a conditional has grown past the point where you can hold it in your head",
+      "two branches look different and you suspect one is unreachable",
+      "you are about to rewrite a condition and want to know the rewrite is safe"
+    ],
+    "move": "Treat the condition as an algebraic expression and transform it with laws — De Morgan, distribution, absorption, complement — reducing both candidates towards a common form and comparing the results.",
+    "invariant": "Every law preserves the truth value for every assignment of the variables. That is the whole guarantee, and it is what makes the manipulation trustworthy without any appeal to what the variables represent.",
+    "breaks": "The guarantee covers values, not evaluation. Reordering or dropping a term is sound algebraically and may remove a guard, skip a side effect, or move an expensive call to a position where it always runs. And minimality is not readability: the shortest equivalent form often destroys the correspondence between the condition and the rule it encodes.",
+    "cost": {
+      "time": "derivation is mechanical, and the minimal form of a large expression is expensive to find",
+      "space": "none",
+      "beats": "reading two conditions and deciding whether they agree, which is the step this exists to remove"
+    },
+    "worked": {
+      "problem": "What does putting logic into an algebra actually buy?",
+      "reasoning": "It converts a semantic question into a syntactic one, and syntax is the part that can be checked mechanically.\n\nWithout the algebra, \"do these two conditions agree?\" is answered by understanding both and comparing your understandings. With it, the question is answered by transforming one into the other using laws, each step of which is valid regardless of what the variables mean.\n\nThat is exactly the move De Morgan’s laws make in one small place, generalised. And it is why Shannon’s application to circuits worked: a relay network has no meaning to appeal to, so a method that ignores meaning loses nothing and gains the ability to be applied by someone who does not understand the circuit’s purpose.\n\nThe limit is equally clean. Because the laws are about values, everything about a condition that is not its value — what it costs, what order it runs in, what it protects — is outside the guarantee and can be destroyed by a valid step.",
+      "code": "question: do these agree?\n\n  semantic route : understand both, compare\n                   -> where the errors are\n\n  algebraic route: transform by laws\n                   -> each step valid regardless\n                      of what the variables mean\n\n  a(b + b')  =  a(1)   =  a          complement\n  a + ab     =  a                    absorption\n  (ab)'      =  a' + b'              De Morgan\n\n  what is preserved:  the value, every assignment\n  what is NOT:        order of evaluation\n                      whether an operand runs\n                      cost\n                      readability\n\n  minimal != clearest. the shortest form often\n  destroys the link between the condition and the\n  rule it encodes."
+    },
+    "practice": "Take the most complex conditional in your codebase and reduce it algebraically. Then ask whether the reduced form is one you would want to read in six months — and whether any term you dropped was doing a job other than contributing to the value."
+  },
+  "beats": {
+    "broke": "Two conditions can be identical in meaning and unrecognisably different in form, so deciding whether a rewrite is safe becomes a matter of reading and judging — which is where the mistakes are.",
+    "fix": "Boole’s move, from 1847 and expanded in 1854: put logic into an algebra, so equivalence is derived by applying laws rather than judged. Shannon’s thesis of 1937 showed the same algebra describes switching circuits.",
+    "cost": "The laws preserve values and nothing else. Reordering or dropping terms is algebraically sound and can remove a guard or skip a side effect — and the minimal form is frequently the least readable, since minimality optimises term count rather than meaning.",
+    "interview": {
+      "q": "What does putting logic into an algebra actually buy you?",
+      "trap": "Answering \"simpler conditions\". Simplification is one use; the property that makes it valuable is about what kind of question you are answering.",
+      "answer": "It converts a semantic question into a syntactic one. \"Do these two conditions agree?\" normally means understanding both and comparing your understandings, which is exactly where people err. With an algebra it means transforming one into the other by laws, each step valid regardless of what the variables stand for.\n\nThat is De Morgan's rule generalised — a rewrite defined on the shape of an expression rather than its meaning — and it is why the same algebra transferred so cleanly to switching circuits. A relay network has no meaning to appeal to, so a method that ignores meaning gives up nothing and can be applied by someone who does not know what the circuit is for.\n\nThe limit follows from the same fact. The laws preserve the truth value for every assignment and nothing else, so everything about a condition that is not its value — its cost, its evaluation order, whether one operand is guarding another — lies outside the guarantee and can be destroyed by a step that is perfectly valid."
+    }
+  },
+  "blueprint": "The move: meaning -> form\n\n  \"do these agree?\"\n     by understanding  -> judgement -> errors\n     by the laws       -> derivation -> checkable\n\n  and the laws don't care what the variables mean,\n  which is why the same algebra describes:\n\n     propositions        switches\n     -----------         --------\n     AND                 series\n     OR                  parallel\n     NOT                 a relay's complement\n\n     (Boole 1847/1854)   (Shannon 1937)\n\n  scope of the guarantee:\n\n     truth value, every assignment    YES\n     evaluation order                 NO\n     whether an operand runs          NO\n     cost                             NO\n     readability                      NO  (minimal\n                                          != clear)",
+  "takeaway": "An algebra turns \"do these conditions agree?\" from a judgement into a derivation whose steps hold regardless of meaning — which is why it transferred to circuits, and why everything about a condition other than its value falls outside the guarantee."
+}

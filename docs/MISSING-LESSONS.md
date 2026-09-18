@@ -44,19 +44,7 @@ Study order: the sequence first, then the five habits running underneath.
 
 ## Track F — Logic
 
-10 of 13 still missing.
-
-- [ ] `F.2` Implication, and why "if A then B" confuses everyone
-- [ ] `F.4` De Morgan's laws
-      <br>_note: used on every complex conditional and every SQL WHERE clause_
-- [ ] `F.5` Quantifiers: for all, there exists
-- [ ] `F.6` Boolean algebra and simplification
-- [ ] `F.7` Short circuit evaluation, and the bugs it hides
-- [ ] `F.9` Proof techniques: direct, contradiction, induction
-- [ ] `F.10` Induction as the basis of recursion correctness
-- [ ] `F.11` Invariants: the thing that must stay true
-- [ ] `F.12` Type systems as logic, lightly
-- [ ] `F.13` Computability: what Turing proved cannot be done, 1936
+**Complete.** All 13 written.
 
 ## Track B — System design
 
@@ -252,7 +240,7 @@ Study order: the sequence first, then the five habits running underneath.
 
 ---
 
-**Total remaining: 161 of 313.**
+**Total remaining: 151 of 313.**
 
 Regenerate: `node tools/missing-lessons.mjs > docs/MISSING-LESSONS.md`
 

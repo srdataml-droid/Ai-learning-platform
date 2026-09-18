@@ -1,0 +1,77 @@
+{
+  "taskId": "F.12",
+  "title": "Type systems as logic, lightly",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Howard made explicit in 1969 a syntactic analogy between the programs of the simply typed lambda calculus and the proofs of natural deduction. His first formulation referred to a variant of Gentzen’s sequent calculus.",
+      "type": "date",
+      "tokens": [
+        "Howard",
+        "Gentzen",
+        "1969"
+      ],
+      "source": {
+        "title": "Wadler, P., Propositions as Types, Communications of the ACM 58(12):75-84, 2015",
+        "url": "https://homepages.inf.ed.ac.uk/wadler/papers/propositions-as-types/propositions-as-types.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Howard circulated the work in 1969 as a xeroxed manuscript; it was not published until 1980, when it appeared in a Festschrift dedicated to Curry under the title The Formulae-as-Types Notion of Construction.",
+      "type": "date",
+      "tokens": [
+        "Howard",
+        "Curry",
+        "Festschrift",
+        "1969",
+        "1980"
+      ],
+      "source": {
+        "title": "Wadler, P., Propositions as Types, Communications of the ACM 58(12):75-84, 2015",
+        "url": "https://homepages.inf.ed.ac.uk/wadler/papers/propositions-as-types/propositions-as-types.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Curry had earlier emphasised the correspondence between intuitionistic Hilbert-style deduction and typed combinatory logic. The observation that the correspondence is best understood via natural deduction, and the current formulation of it, are attributed to Martin-Löf, with Prawitz’s 1965 proof of the subformula principle setting the ground.",
+      "type": "event",
+      "tokens": [
+        "Curry",
+        "Hilbert",
+        "Martin-Löf",
+        "Martin",
+        "Prawitz",
+        "1965"
+      ],
+      "source": {
+        "title": "Wadler, P., Propositions as Types, Communications of the ACM 58(12):75-84, 2015",
+        "url": "https://homepages.inf.ed.ac.uk/wadler/papers/propositions-as-types/propositions-as-types.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "Under the correspondence a proposition corresponds to a type, a proof of the proposition to a program of that type, and the simplification of proofs to the evaluation of programs.",
+      "type": "event",
+      "tokens": [
+        "Howard",
+        "Curry"
+      ],
+      "source": {
+        "title": "Wadler, P., Propositions as Types, Communications of the ACM 58(12):75-84, 2015",
+        "url": "https://homepages.inf.ed.ac.uk/wadler/papers/propositions-as-types/propositions-as-types.pdf",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "types are taught as a mechanism for catching mistakes, which explains what they prevent and not what they are",
+    "fix": "read a type as a proposition and a program of that type as a proof of it, which makes a signature a statement of a theorem",
+    "cost": "the correspondence is exact for a logic weaker than the one you reason in, so most real type systems sit somewhere short of it",
+    "interview": "what it means to say a function signature is a theorem"
+  }
+}

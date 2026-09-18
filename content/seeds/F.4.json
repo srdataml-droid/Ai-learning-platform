@@ -1,0 +1,73 @@
+{
+  "taskId": "F.4",
+  "title": "De Morgan’s laws",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The laws are named for Augustus De Morgan, whose Formal Logic: or, The Calculus of Inference, Necessary and Probable was published in London in 1847 — the same year as Boole’s first book on symbolic logic, the two men being correspondents.",
+      "type": "date",
+      "tokens": [
+        "Augustus De Morgan",
+        "De Morgan",
+        "Morgan",
+        "Formal Logic",
+        "Boole",
+        "London",
+        "1847"
+      ],
+      "source": {
+        "title": "De Morgan, A., Formal Logic: or, The Calculus of Inference, Necessary and Probable, Taylor and Walton, London, 1847",
+        "url": "https://archive.org/details/formallogicorcal00demouoft",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The laws state that the negation of a conjunction is the disjunction of the negations, and the negation of a disjunction is the conjunction of the negations: not (A and B) is equivalent to (not A) or (not B), and not (A or B) is equivalent to (not A) and (not B).",
+      "type": "event",
+      "tokens": [
+        "De Morgan"
+      ],
+      "source": {
+        "title": "De Morgan, A., Formal Logic: or, The Calculus of Inference, Necessary and Probable, Taylor and Walton, London, 1847",
+        "url": "https://archive.org/details/formallogicorcal00demouoft",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Boole argued in An Investigation of the Laws of Thought, 1854, that three operations — conjunction, disjunction and negation — suffice to perform all logical functions.",
+      "type": "date",
+      "tokens": [
+        "Boole",
+        "Laws of Thought",
+        "1854"
+      ],
+      "source": {
+        "title": "Boole, G., An Investigation of the Laws of Thought, on Which are Founded the Mathematical Theories of Logic and Probabilities, Walton and Maberly, London, 1854",
+        "url": "https://www.gutenberg.org/ebooks/15114",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "In older circuit-engineering notation, where complement is written as an apostrophe or an overbar, the laws appear as (AB)′ = A′ + B′ — a form that comes from Shannon’s application of the algebra to switching circuits.",
+      "type": "event",
+      "tokens": [
+        "Shannon"
+      ],
+      "source": {
+        "title": "Shannon, C. E., A Symbolic Analysis of Relay and Switching Circuits, MIT master’s thesis 1937; Transactions of the American Institute of Electrical Engineers 57:713-723, 1938",
+        "url": "https://dspace.mit.edu/handle/1721.1/11173",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "negating a compound condition requires reasoning about what the whole thing means, and that reasoning is where people make the mistake",
+    "fix": "two rewriting rules that push a negation inwards mechanically — flip the connective, negate both sides — with no understanding required",
+    "cost": "the rewrite is valid about truth values and says nothing about evaluation order or side effects, which is where it stops being safe in a program",
+    "interview": "why a mechanical rule beats understanding the condition"
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "taskId": "F.10",
+  "title": "Induction as the basis of recursion correctness",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Floyd’s method imposes a condition on each command guaranteeing that whenever a command is reached by a connection whose proposition is true, it will be left, if at all, by a connection whose proposition is true. The conclusion about the whole program then follows by induction on the number of commands executed.",
+      "type": "event",
+      "tokens": [
+        "Floyd",
+        "1967"
+      ],
+      "source": {
+        "title": "Floyd, R. W., Assigning Meanings to Programs, Proceedings of Symposia in Applied Mathematics 19:19-32, American Mathematical Society, 1967",
+        "url": "https://www.cs.tau.ac.il/~nachumd/term/FloydMeaning.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Floyd states the aim as establishing a rigorous standard for proofs about programs, including proofs of correctness, equivalence and termination — termination being treated separately from the rest.",
+      "type": "event",
+      "tokens": [
+        "Floyd"
+      ],
+      "source": {
+        "title": "Floyd, R. W., Assigning Meanings to Programs, Proceedings of Symposia in Applied Mathematics 19:19-32, American Mathematical Society, 1967",
+        "url": "https://www.cs.tau.ac.il/~nachumd/term/FloydMeaning.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Hoare’s notation asserts that if the precondition holds before the program runs, the postcondition holds when it ends. It offers no guarantee of termination, since execution from a state satisfying the precondition need not halt.",
+      "type": "event",
+      "tokens": [
+        "Hoare"
+      ],
+      "source": {
+        "title": "Hoare, C. A. R., An Axiomatic Basis for Computer Programming, Communications of the ACM 12(10):576-580, 1969",
+        "url": "https://dl.acm.org/doi/10.1145/363235.363259",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a recursive function calls itself, so any attempt to justify it by tracing the execution never bottoms out",
+    "fix": "assume the function is correct on smaller inputs, prove it correct on this one, and check the base case — which is induction with the names changed",
+    "cost": "the argument establishes that the answer is right if one is produced, and says nothing about whether the recursion stops",
+    "interview": "why assuming the function already works is not circular reasoning"
+  }
+}

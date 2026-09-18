@@ -1,0 +1,74 @@
+{
+  "taskId": "F.9",
+  "title": "Proof techniques: direct, contradiction, induction",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Floyd’s 1967 paper sets out to provide a basis for formal definitions of the meanings of programs, so that a rigorous standard is established for proofs about programs, including proofs of correctness, equivalence and termination.",
+      "type": "date",
+      "tokens": [
+        "Floyd",
+        "American Mathematical Society",
+        "1967"
+      ],
+      "source": {
+        "title": "Floyd, R. W., Assigning Meanings to Programs, in Mathematical Aspects of Computer Science, Proceedings of Symposia in Applied Mathematics 19:19-32, American Mathematical Society, 1967",
+        "url": "https://www.cs.tau.ac.il/~nachumd/term/FloydMeaning.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Floyd’s method associates a proposition with each connection in the flow of control, asserted to hold whenever that connection is taken, with a condition on each command ensuring that a command entered by a connection whose proposition is true will be left, if at all, by a connection whose proposition is true. The argument then proceeds by induction on the number of commands executed. The method is usually known as inductive assertions, and Floyd credited ideas of Perlis and Gorn.",
+      "type": "event",
+      "tokens": [
+        "Floyd",
+        "Perlis",
+        "Gorn"
+      ],
+      "source": {
+        "title": "Floyd, R. W., Assigning Meanings to Programs, in Mathematical Aspects of Computer Science, Proceedings of Symposia in Applied Mathematics 19:19-32, American Mathematical Society, 1967",
+        "url": "https://www.cs.tau.ac.il/~nachumd/term/FloydMeaning.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Hoare’s 1969 paper explores the logical foundations of computer programming using techniques first applied in the study of geometry, elucidating sets of axioms and rules of inference usable in proofs of properties of programs. Hoare states that the formal treatment of program execution there is clearly derived from Floyd.",
+      "type": "date",
+      "tokens": [
+        "Hoare",
+        "Communications",
+        "ACM",
+        "Floyd",
+        "1969"
+      ],
+      "source": {
+        "title": "Hoare, C. A. R., An Axiomatic Basis for Computer Programming, Communications of the ACM 12(10):576-580, 1969",
+        "url": "https://dl.acm.org/doi/10.1145/363235.363259",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "The notation Hoare introduced is read as: if the first assertion holds before the program runs, the second holds when it ends. It offers no guarantee of termination, since executing the program from a state satisfying the precondition need not halt — the phrase in Floyd’s formulation is that the command will be left \"if at all\".",
+      "type": "quote",
+      "tokens": [
+        "Hoare",
+        "Floyd"
+      ],
+      "source": {
+        "title": "Hoare, C. A. R., An Axiomatic Basis for Computer Programming, Communications of the ACM 12(10):576-580, 1969",
+        "url": "https://dl.acm.org/doi/10.1145/363235.363259",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a claim about every case cannot be established by checking cases, and most interesting claims are about every case",
+    "fix": "three shapes of argument, chosen by the shape of the claim — derive it, assume its negation and break something, or generate the domain and cover the generators",
+    "cost": "each has a failure mode of its own, and the one for induction is that it proves the step and forgets the base",
+    "interview": "when to reach for contradiction rather than a direct argument"
+  }
+}

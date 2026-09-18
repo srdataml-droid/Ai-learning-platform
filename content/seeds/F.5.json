@@ -1,0 +1,71 @@
+{
+  "taskId": "F.5",
+  "title": "Quantifiers: for all, there exists",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Frege introduced modern quantificational logic in the Begriffsschrift of 1879, devising a formal language with quantifier symbols binding variables, together with axioms and rules of inference, in what amounts to a presentation of first-order predicate logic.",
+      "type": "date",
+      "tokens": [
+        "Frege",
+        "Begriffsschrift",
+        "1879"
+      ],
+      "source": {
+        "title": "Frege, G., Begriffsschrift, eine der arithmetischen nachgebildete Formelsprache des reinen Denkens, 1879",
+        "url": "https://plato.stanford.edu/entries/frege-logic/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Frege did not introduce the now-standard symbols. His universal quantifier was written as a concavity in a two-dimensional notation; the modern universal symbol is due to Gentzen and the existential to Peano. Contemporaries found the two-dimensional notation difficult and largely failed to see its advantages over Boole’s approach.",
+      "type": "event",
+      "tokens": [
+        "Frege",
+        "Gentzen",
+        "Peano",
+        "Boole"
+      ],
+      "source": {
+        "title": "Frege, G., Begriffsschrift, eine der arithmetischen nachgebildete Formelsprache des reinen Denkens, 1879",
+        "url": "https://plato.stanford.edu/entries/frege-logic/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Frege officially adopts only one rule of inference, modus ponens, while tacitly making use of a rule of instantiation for the universal quantifier.",
+      "type": "event",
+      "tokens": [
+        "Frege"
+      ],
+      "source": {
+        "title": "Frege, G., Begriffsschrift, eine der arithmetischen nachgebildete Formelsprache des reinen Denkens, 1879",
+        "url": "https://plato.stanford.edu/entries/frege-logic/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "Priority is contested: scholars of Peirce note that the Begriffsschrift is among the first published accounts of a logical system with quantification rather than being uniquely the first.",
+      "type": "event",
+      "tokens": [
+        "Peirce",
+        "Begriffsschrift"
+      ],
+      "source": {
+        "title": "Frege, G., Begriffsschrift, eine der arithmetischen nachgebildete Formelsprache des reinen Denkens, 1879",
+        "url": "https://plato.stanford.edu/entries/frege-logic/",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "ordinary language cannot express the difference between one thing working for everybody and everybody having something of their own, and the two are different requirements",
+    "fix": "bind variables explicitly, so the order of the quantifiers is written down rather than left to the reader",
+    "cost": "the notation is unambiguous and unreadable, which is why it took decades to be adopted even by logicians",
+    "interview": "what changes when you swap the order of two quantifiers"
+  }
+}

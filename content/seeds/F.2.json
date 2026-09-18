@@ -1,0 +1,107 @@
+{
+  "taskId": "F.2",
+  "title": "Implication, and why \"if A then B\" confuses everyone",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "In the selection task introduced by Wason in 1968, a participant is given a rule of the form if p then q and four cards showing p, not-p, q and not-q, and asked which must be turned over to test the rule. The correct answer is p and not-q.",
+      "type": "event",
+      "tokens": [
+        "Wason",
+        "1968"
+      ],
+      "source": {
+        "title": "Griggs, R. A. and Cox, J. R., The Elusive Thematic-Materials Effect in Wason’s Selection Task, British Journal of Psychology 73:407-420, 1982",
+        "url": "https://bpspsychub.onlinelibrary.wiley.com/doi/abs/10.1111/j.2044-8295.1982.tb01823.x",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "On the abstract version the classic reported figure is that fewer than 10% of participants answer correctly, with some aggregated datasets as low as 4%. A later meta-analysis puts accuracy on the abstract task at 19%, and the range usually quoted is 10 to 20%, so the 10% figure is best treated as a classic lower bound rather than a settled constant.",
+      "type": "number",
+      "tokens": [
+        "10%",
+        "4%",
+        "19%",
+        "20%"
+      ],
+      "source": {
+        "title": "The Wason Selection Task: A Meta-Analysis, Ragni et al., 2017 — aggregate accuracy on the abstract task",
+        "url": "https://www.researchgate.net/publication/322682384_The_Wason_Selection_Task_A_Meta-Analysis",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The errors are systematic rather than random: participants tend either to select the card representing the antecedent alone, a verification bias, or the antecedent and the consequent together, a matching bias.",
+      "type": "event",
+      "tokens": [
+        "Wason",
+        "Evans"
+      ],
+      "source": {
+        "title": "The Wason Selection Task: A Meta-Analysis, Ragni et al., 2017 — aggregate accuracy on the abstract task",
+        "url": "https://www.researchgate.net/publication/322682384_The_Wason_Selection_Task_A_Meta-Analysis",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "Griggs and Cox found that performance rises sharply on a version that is logically identical but concretely familiar. Their drinking-age problem — if a person is drinking beer then he must be over a stated age, with cards showing drinks and ages — produces correct responses in the region of 70 to 75%.",
+      "type": "number",
+      "tokens": [
+        "Griggs",
+        "Cox",
+        "70%",
+        "75%"
+      ],
+      "source": {
+        "title": "Griggs, R. A. and Cox, J. R., The Elusive Thematic-Materials Effect in Wason’s Selection Task, British Journal of Psychology 73:407-420, 1982",
+        "url": "https://bpspsychub.onlinelibrary.wiley.com/doi/abs/10.1111/j.2044-8295.1982.tb01823.x",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "The paper is primarily a failure to replicate. Experiments 1 and 2 failed to reproduce the earlier thematic-facilitation results of Wason and Shapiro and of Johnson-Laird and colleagues; only the third experiment, using a rule that was part of the subjects’ own past experience, showed improvement. The authors’ own explanation is memory cueing — that people retrieve relevant counter-examples — rather than anything about obligation or permission.",
+      "type": "event",
+      "tokens": [
+        "Griggs",
+        "Cox",
+        "Wason",
+        "Shapiro",
+        "Johnson-Laird"
+      ],
+      "source": {
+        "title": "Griggs, R. A. and Cox, J. R., The Elusive Thematic-Materials Effect in Wason’s Selection Task, British Journal of Psychology 73:407-420, 1982",
+        "url": "https://bpspsychub.onlinelibrary.wiley.com/doi/abs/10.1111/j.2044-8295.1982.tb01823.x",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c6",
+      "text": "The permission-schema and cheater-detection readings of the same data came later and are contested. Sperber, Cara and Girotto reported 16% correct in one scenario against 65% in another that was logically and semantically the same, arguing that relevance matters more than the other proposed factors.",
+      "type": "number",
+      "tokens": [
+        "Sperber",
+        "Cara",
+        "Girotto",
+        "16%",
+        "65%"
+      ],
+      "source": {
+        "title": "The Wason Selection Task: A Meta-Analysis, Ragni et al., 2017 — aggregate accuracy on the abstract task",
+        "url": "https://www.researchgate.net/publication/322682384_The_Wason_Selection_Task_A_Meta-Analysis",
+        "kind": "secondary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "the conditional of logic and the conditional of ordinary speech are different operators wearing the same words, and people reason with the second while writing the first",
+    "fix": "read if A then B as a claim only about the case where A holds, which is false in exactly one situation and true in every other",
+    "cost": "that reading makes a conditional with a false antecedent true, which is correct and feels wrong every time",
+    "interview": "why a rule about an empty collection is satisfied"
+  }
+}

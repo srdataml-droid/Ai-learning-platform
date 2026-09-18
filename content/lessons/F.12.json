@@ -1,0 +1,48 @@
+{
+  "id": "F.12",
+  "trackId": "F",
+  "trackName": "Logic",
+  "title": "Type systems as logic, lightly",
+  "status": "traced",
+  "seed": "F.12",
+  "story": "Types are usually introduced as a mechanism: they catch mistakes, they document intent, the compiler checks them. All true, and none of it says what a type is. There is a more exact answer, and it was noticed rather than designed.\n\nHoward made it explicit in 1969: there is a syntactic analogy between the programs of the simply typed lambda calculus and the proofs of natural deduction. A proposition corresponds to a type. A proof of that proposition corresponds to a program of that type. Simplifying a proof corresponds to evaluating a program. These are not similar structures; they are the same structure, arrived at independently by logicians and by computer scientists, which is the sort of coincidence that usually means neither party invented it.\n\nThe history is worth getting right because it is routinely compressed. Curry had earlier drawn a correspondence between Hilbert-style deduction and typed combinatory logic. Howard circulated his 1969 work as a xeroxed manuscript and it was not published until 1980, in a Festschrift for Curry, under the title The Formulae-as-Types Notion of Construction. The insight that natural deduction is the right setting, and the formulation now used, are attributed to Martin-Löf, with Prawitz’s 1965 work on the subformula principle setting the ground.\n\nWhat it buys you in ordinary work, lightly, is a reading. A function signature is the statement of a theorem: given something of this type, I can produce something of that type. Writing the function is exhibiting the proof. That reframing pays immediately — a signature returning a type nothing can inhabit states a theorem you cannot prove, and one accepting a type broader than the function can actually handle states a theorem stronger than what you are about to demonstrate. The honest limit is that the exact correspondence is with a logic weaker than the one you reason in informally, and real type systems with exceptions, non-termination and escape hatches sit some distance from it.",
+  "problem": {
+    "name": "Propositions as types",
+    "aka": [
+      "the Curry-Howard correspondence",
+      "formulae-as-types"
+    ],
+    "shape": "You want to know what a type system is doing, rather than which errors it happens to prevent.",
+    "tell": [
+      "you can use types fluently and cannot say what one is",
+      "a signature seems to promise more than the function delivers, and nothing catches it",
+      "you are choosing between encoding a rule in a type and checking it at run time"
+    ],
+    "move": "Read a type as a proposition and a value of that type as evidence for it. Then read a function signature as an implication — give me evidence for the argument type and I will produce evidence for the return type — and the function body as the construction that discharges it.",
+    "invariant": "A well-typed program is a proof of the proposition its type denotes. Everything the correspondence gives you rests on that, which is also why anything letting you produce a value without constructing it — a cast, an exception, a non-terminating loop — breaks the correspondence rather than bending it.",
+    "breaks": "The exact correspondence is with a constructive logic weaker than ordinary informal reasoning, and practical languages sit further away still. Non-termination alone is enough to break it: a function that never returns can claim any return type, which corresponds to proving anything, so the escape hatches that make a language usable are the same ones that stop it being a proof system.",
+    "cost": {
+      "time": "nothing new to run; the cost is in expressing things precisely enough to be typed",
+      "space": "nothing at run time where types are erased",
+      "beats": "checking properties at run time, which handles what types cannot express and finds out later"
+    },
+    "worked": {
+      "problem": "What does it mean to say a function signature is a theorem?",
+      "reasoning": "Read the arrow as implication. A signature from A to B claims: given evidence for A, I can produce evidence for B. The body of the function is the construction that backs the claim, and type-checking is the verification that the construction actually does so.\n\nThat reading has immediate consequences. A signature whose return type nothing can inhabit states a theorem you cannot prove — and if the compiler accepts your implementation, something else is going on: the function does not return, or it throws, or it lies.\n\nIt also sharpens what a weak signature costs. A function taking a broad type states a weaker theorem, so it obliges you to handle every case in the breadth. Narrowing the input type is strengthening the hypothesis, which makes the theorem easier to prove and pushes the obligation to the caller, where the information usually is.\n\nThat is the whole practical content: the signature is the claim, the body is the argument, and a claim you cannot support should be visible before you start writing the support.",
+      "code": "  type        <->  proposition\n  program     <->  proof of it\n  evaluation  <->  simplification of the proof\n\n  f : A -> B\n     \"given evidence for A, I produce evidence for B\"\n     the body is the construction\n     type-checking verifies the construction\n\n  consequences, immediately:\n\n     return type nothing can inhabit\n        -> a theorem you cannot prove\n        -> if it compiles: it doesn't return, or\n           it throws, or it lies\n\n     broad input type  -> weaker hypothesis\n                       -> harder theorem\n                       -> you handle every case\n     narrow it         -> stronger hypothesis\n                       -> obligation moves to the\n                          caller, who has the info\n\n  and what breaks it: anything producing a value\n  without constructing one -- casts, exceptions,\n  non-termination."
+    },
+    "practice": "Take a function whose signature accepts a broad type and narrow it until the body has no case it cannot handle. Then note what moved to the caller, and whether the caller was in a better position to know."
+  },
+  "beats": {
+    "broke": "Types get explained by what they prevent, which describes an effect rather than the thing. That leaves you able to use them fluently and unable to say what a type is or why the discipline works.",
+    "fix": "Read a type as a proposition and a program of that type as a proof. Howard made the analogy explicit in 1969 between programs of the simply typed lambda calculus and proofs in natural deduction — with proof simplification corresponding to evaluation.",
+    "cost": "The exact correspondence holds for a logic weaker than the one you reason in, and real languages are further away. Non-termination alone breaks it, since a function that never returns can claim any type at all — which corresponds to proving anything.",
+    "interview": {
+      "q": "What does it mean to say that a function signature is a theorem?",
+      "trap": "Treating it as a metaphor about rigour. The correspondence is structural — proofs and programs are the same objects — which is why it has consequences rather than connotations.",
+      "answer": "Read the arrow as implication: a signature from A to B claims that given evidence for A you can produce evidence for B. The body is the construction backing the claim, and type-checking verifies that the construction does what it says.\n\nThe consequences are practical rather than decorative. A signature returning a type nothing can inhabit states a theorem you cannot prove — so if it compiles, something else is happening: the function does not return, or it throws, or it casts. And a broad input type states a weaker hypothesis, which makes the theorem harder and obliges you to handle every case in that breadth; narrowing the input strengthens the hypothesis and moves the obligation to the caller, who usually has the information to discharge it.\n\nThe honest limit is that the exact correspondence is with a constructive logic weaker than ordinary informal reasoning, and practical languages sit further out still. Anything that yields a value without constructing one — a cast, an exception, an infinite loop — breaks the correspondence rather than stretching it, which is why the features that make a language usable are the same ones that stop it being a proof system."
+    }
+  },
+  "blueprint": "Two fields, one structure, found independently:\n\n  logic                      programming\n  -----                      -----------\n  proposition          <->   type\n  proof                <->   program\n  simplifying a proof  <->   evaluating a program\n  implication          <->   function type\n  conjunction          <->   pair\n  disjunction          <->   sum / either\n\n  f : A -> B  is the claim.\n  the body    is the argument.\n  the checker verifies the argument.\n\n  practical reading:\n\n     broad input  = weak hypothesis = hard theorem\n                    = you handle every case\n     narrow input = strong hypothesis\n                    = obligation moves to the caller\n\n  what breaks it:\n     a value produced WITHOUT being constructed\n     (cast, exception, non-termination)\n     -> not a bent correspondence. a broken one.",
+  "takeaway": "A type is a proposition and a program of that type is its proof, so a signature is a theorem and the body is the argument for it — which is why narrowing an input type strengthens the hypothesis and moves the obligation to whoever knows more."
+}

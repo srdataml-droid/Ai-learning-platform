@@ -1,0 +1,49 @@
+{
+  "id": "F.2",
+  "trackId": "F",
+  "trackName": "Logic",
+  "title": "Implication, and why \"if A then B\" confuses everyone",
+  "status": "traced",
+  "seed": "F.2",
+  "story": "The title is not a figure of speech. Wason’s selection task from 1968 gives people a rule of the form if p then q and four cards showing p, not-p, q and not-q, and asks which must be turned over to test it. The answer is p and not-q. On the abstract version the classic finding is that fewer than 10% get it right, with some aggregated datasets as low as 4%. A later meta-analysis puts it at 19%, so treat 10% as the classic lower bound rather than a fixed constant — but at any figure in that range, this is a rule almost nobody applies correctly.\n\nThe failures are not random, which is what makes them informative. People pick the antecedent alone, or the antecedent together with the consequent. Both are attempts to confirm the rule, and the one card that can actually refute it — not-q — is the one people leave alone.\n\nThe reason is that two different operators are sharing one phrase. Ordinary \"if A then B\" carries relevance and often causation: saying it suggests A has something to do with B. The logical conditional claims much less. It says only that you will not find A together with not-B, so it is false in exactly one situation and true in all three others — including, awkwardly, whenever A is false. \"If the list is empty then every element is prime\" is true.\n\nNow the part that is usually told badly. Performance jumps to around 70 to 75% on Griggs and Cox’s drinking-age version, which is logically the same problem in familiar clothes. It is often cited as showing that people reason better about permissions and obligations, and that is a later interpretation, not the paper’s. Griggs and Cox were mostly reporting a failure to replicate: two earlier thematic results did not reproduce, and the one that did used a rule within the subjects’ own experience, which they explained as memory cueing rather than anything about obligation. The permission and cheater-detection readings came afterwards and are contested — Sperber, Cara and Girotto got 16% against 65% on two versions that were logically and semantically identical. So the solid finding is that framing moves performance enormously; why it does is still argued about.",
+  "problem": {
+    "name": "Material implication",
+    "aka": [
+      "the conditional",
+      "if-then",
+      "vacuous truth"
+    ],
+    "shape": "A rule of the form \"whenever A, also B\" has to be tested, stated or negated, and the everyday reading of it differs from the one the system will use.",
+    "tell": [
+      "a condition is written to confirm a rule rather than to break it",
+      "a check passes on an empty input and nobody expects it to",
+      "someone argues that a rule is untested because the antecedent never occurred"
+    ],
+    "move": "Read the conditional as a single prohibition: it forbids A together with not-B, and asserts nothing else. To test it, look for that combination. To negate it, produce that combination.",
+    "invariant": "The conditional is false in exactly one of the four combinations and true in the other three. Everything counterintuitive about it — vacuous truth, the irrelevance of the consequent alone — is a consequence of that single row of the table.",
+    "breaks": "It breaks against the natural-language reading, which carries relevance and causation the operator does not have. That mismatch is not a failure of education: it survives in people who know the truth table, which is why the measured error rates stay low on abstract versions and why the reliable remedy is to make the case concrete rather than to try harder.",
+    "cost": {
+      "time": "nothing; this is a reading, not a technique",
+      "space": "nothing",
+      "beats": "intuition, which is measurably around 10 to 20% accurate on the abstract form of exactly this question"
+    },
+    "worked": {
+      "problem": "Why is a rule about an empty collection satisfied?",
+      "reasoning": "Because the rule forbids a combination, and an empty collection contains no combinations at all.\n\nThe claim that every element of S is valid means: there is no element of S that is invalid. If S is empty there is no such element, so nothing violates the rule, so the rule holds. It is not a special case bolted on — it falls straight out of the one row of the truth table that can be false.\n\nThis is worth internalising because it is a live source of bugs rather than a curiosity. A validation that loops over items and returns true if none failed will pass an empty input. A test asserting that all results match a condition passes when there are no results, which is exactly what happens when the query silently returned nothing.\n\nThe check you want in that case is a different claim — that S is non-empty and every element is valid — and noticing that you needed two claims rather than one is the whole lesson.",
+      "code": "  A     B     A -> B\n  ----  ----  ------\n  T     T     T\n  T     F     F      <- the only false row\n  F     T     T\n  F     F     T      <- \"vacuously\" true\n\n  so: A -> B  means  NOT (A AND NOT B)\n      one prohibition, nothing more\n\n  for_all(items, is_valid)   with items == []\n      -> no item is invalid\n      -> nothing violates it\n      -> TRUE\n\n  the bug: your query returned nothing, and the\n  assertion passed.\n\n  what you meant:\n      items is non-empty  AND  all are valid\n      -> two claims. that's why one wasn't enough."
+    },
+    "practice": "Find an assertion in your test suite of the form \"every result satisfies X\". Make the query return nothing and run it. Then decide whether the test should have failed — and write the second claim if so."
+  },
+  "beats": {
+    "broke": "The conditional of ordinary speech carries relevance and causation; the logical one carries neither. The two share a phrase, so people reason using the first while the machine uses the second.",
+    "fix": "Read it as a single prohibition: A together with not-B is forbidden and nothing else is claimed. Testing it means hunting for that combination, which is what almost nobody does — the abstract selection task is answered correctly by somewhere between 10 and 20% of people.",
+    "cost": "It makes every conditional with a false antecedent true. That is correct and permanently counterintuitive, and it is the mechanism behind a real class of bug: the check that passes because there was nothing to check.",
+    "interview": {
+      "q": "Why is a rule like \"every element is valid\" satisfied by an empty collection?",
+      "trap": "Calling it a convention, or an edge case the definition handles specially. It is neither — it falls out of the only row of the truth table that can be false.",
+      "answer": "Because the rule forbids a combination and an empty collection has none. The claim that every element of S is valid means there is no element of S that is invalid; with S empty, no such element exists, so nothing violates it and the claim holds.\n\nThat is not a special case grafted on. A conditional is false in exactly one of four combinations — antecedent true, consequent false — and true in the other three, including both rows where the antecedent is false.\n\nThe practical consequence is a live class of bug rather than a curiosity. A validator that loops and reports success when nothing failed will succeed on empty input; a test asserting all results match a condition passes when the query returned no results, which is precisely the failure you wanted to catch.\n\nThe fix is to notice you needed two claims: that the collection is non-empty, and that every element satisfies the property. Realising one claim was doing the work of two is the useful part."
+    }
+  },
+  "blueprint": "One prohibition, four combinations:\n\n    A -> B   ==   NOT (A AND NOT B)\n\n    A   B   result\n    T   T   T\n    T   F   F     <-- the ONLY thing forbidden\n    F   T   T\n    F   F   T     <-- vacuous, and correct\n\n  to TEST it:  look for A with not-B\n  to BREAK it: produce A with not-B\n  the q card alone: proves nothing, ever\n\n  measured: ~10-20% pick p and not-q on the abstract\n  task; ~70-75% on a logically identical familiar one\n\n  -> the remedy is to make the case CONCRETE,\n     not to concentrate harder.",
+  "takeaway": "A conditional forbids exactly one combination and claims nothing else, which is why it is satisfied whenever its antecedent fails — and why a check over an empty collection passes when you most wanted it to fail."
+}

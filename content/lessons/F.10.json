@@ -1,0 +1,48 @@
+{
+  "id": "F.10",
+  "trackId": "F",
+  "trackName": "Logic",
+  "title": "Induction as the basis of recursion correctness",
+  "status": "traced",
+  "seed": "F.10",
+  "story": "The reason recursion feels like it should not work is that tracing it never finishes. You follow the function into itself, and into itself again, and the justification recedes ahead of you. So the mental move of tracing — which is how people verify loops — is the wrong tool here, and needs replacing rather than doing harder.\n\nThe replacement is induction, and the correspondence is exact rather than analogical. An inductive proof has a base case and a step in which you assume the claim for smaller values and establish it for the current one. A recursive function has a base case and a body in which you call it on smaller inputs and combine the results. The recursive call and the inductive hypothesis are the same object seen from two directions: in the proof you assume it, in the program you invoke it.\n\nFloyd made this the basis for reasoning about programs generally in 1967. His method attaches a proposition to each connection in the flow of control, requires each command to preserve the propositions across it, and then concludes about the whole program by induction on the number of commands executed. The structure of the program supplies the structure of the argument, which is why the technique scales at all.\n\nAnd the part that is routinely dropped: none of this gives termination. Floyd’s condition says a command is left \"if at all\", and Hoare’s triple says the postcondition holds when the program ends without claiming it does. So a complete argument has two independent halves. One: if it returns, the answer is right — which induction over the structure gives you. Two: it returns — which needs a quantity that strictly decreases at every call and cannot decrease forever. Proving the first and forgetting the second is how you get a function that is provably correct and hangs.",
+  "problem": {
+    "name": "Structural induction",
+    "aka": [
+      "recursion correctness",
+      "the inductive hypothesis"
+    ],
+    "shape": "A routine is defined in terms of itself, so no finite trace of its execution justifies it.",
+    "tell": [
+      "you are trying to verify a function by following it into its own call",
+      "the data is a tree, a list, or anything else defined in terms of smaller copies of itself",
+      "the function is obviously right and you cannot say why"
+    ],
+    "move": "Stop tracing. Check the base case separately. Then assume the function is correct for every smaller input, and show that given correct results from the recursive calls, this call combines them correctly.",
+    "invariant": "Every recursive call is made on a strictly smaller instance under some fixed measure. That is what licenses the assumption — you are only ever assuming the claim for cases already settled — and it is the single condition that separates induction from circular reasoning.",
+    "breaks": "It establishes partial correctness only. If the measure does not decrease, or decreases without a floor, the function need not terminate, and the inductive argument is silent about that — Floyd’s own phrasing is that the command is left \"if at all\". A proof of the recursive step therefore guarantees nothing about whether you ever reach the base case.",
+    "cost": {
+      "time": "nothing at run time; this is a way of reasoning rather than a technique to apply",
+      "space": "nothing",
+      "beats": "tracing the execution, which never bottoms out and does not scale past two levels"
+    },
+    "worked": {
+      "problem": "Why is assuming the function already works not circular?",
+      "reasoning": "Because you are not assuming it for the case you are proving. You are assuming it for strictly smaller cases, and those have already been settled by the argument.\n\nRead it as an ordering. The base case is established outright, with no assumption. The step establishes each case using only cases below it. So every case has a finite chain of support terminating at the base — nothing supports itself, directly or through a cycle.\n\nCircularity would mean using the case to establish itself, and the thing preventing that is the measure: the requirement that every recursive call goes to a strictly smaller instance. Without a measure that decreases, the chains do not terminate and the assumption really is unfounded.\n\nWhich is why the measure is not a separate concern you attend to afterwards for performance reasons. It is the condition that makes the correctness argument valid at all — the same requirement, looked at once for soundness and once for termination.",
+      "code": "induction                 recursion\n---------                 ---------\nbase case                 base case\nassume for n-1            call f(n-1)\nprove for n               combine the results\n\n  the inductive hypothesis IS the recursive call.\n\n  why it isn't circular:\n\n     base:  established with no assumption\n     n:     established using only cases < n\n     -> every case has a FINITE chain of support\n        ending at the base\n     -> nothing supports itself\n\n  what licenses it: a measure that strictly decreases\n  no decreasing measure\n     -> chains don't terminate\n     -> the assumption is unfounded\n     -> and the function doesn't stop either\n\n  same condition. two payoffs. that is not a\n  coincidence."
+    },
+    "practice": "Take a recursive function you wrote and state its inductive hypothesis in one sentence, then name the measure that decreases at every call. If you cannot name the measure, you have not shown it terminates — whatever the tests say."
+  },
+  "beats": {
+    "broke": "A recursive routine is defined in terms of itself, so tracing its execution to justify it never bottoms out — and tracing is the method people reach for by default.",
+    "fix": "Induction. Establish the base case outright, then assume correctness for smaller inputs and prove it for the current one. Floyd built program reasoning on exactly this in 1967, concluding by induction on the number of commands executed.",
+    "cost": "It gives partial correctness and nothing more. Floyd’s condition says a command is left \"if at all\" and Hoare’s triple makes no claim that the program ends, so termination is a second, independent obligation.",
+    "interview": {
+      "q": "Why is assuming the function already works not circular reasoning?",
+      "trap": "Answering that it works because it eventually reaches the base case. That is the conclusion you need, not the reason the assumption is legitimate.",
+      "answer": "Because the assumption is never about the case being proved. It is about strictly smaller cases, and those have already been established by the argument itself.\n\nRead it as an ordering: the base case is proved outright with no assumption; each larger case is proved using only cases below it. Every case therefore has a finite chain of support ending at the base, and nothing supports itself directly or through a cycle. Circularity would require using a case to establish itself, which the ordering forbids.\n\nWhat enforces the ordering is a measure that strictly decreases at every recursive call. Without one the chains never terminate and the assumption really is unfounded.\n\nThat is why the measure is not an afterthought about performance. It is the condition that makes the correctness argument valid, and separately the condition that makes the function terminate — the same requirement doing two jobs. Which is also the warning: prove the step, omit the measure, and you can have a function that is provably correct and hangs."
+    }
+  },
+  "blueprint": "The correspondence is exact, not an analogy:\n\n  base case          <->   base case\n  assume for n-1     <->   call f(n-1)\n  prove for n        <->   combine the results\n\n  not circular, because of the ordering:\n\n     base : no assumption\n     n    : uses only cases < n\n     -> finite chain of support to the base\n     -> nothing supports itself\n\n  enforced by a strictly decreasing MEASURE.\n  and the measure does two jobs:\n\n     soundness   - the chains terminate, so the\n                   assumption is well-founded\n     termination - the recursion reaches the base\n\n  drop it and you lose both, in that order.\n\n  what this argument NEVER gives you:\n     Floyd: left \"if at all\"\n     Hoare: holds \"when it ends\"\n     -> partial correctness. termination is separate.",
+  "takeaway": "The recursive call and the inductive hypothesis are the same object, and what keeps the reasoning non-circular is a strictly decreasing measure — the same condition that makes the recursion terminate, which is why omitting it loses correctness and termination together."
+}

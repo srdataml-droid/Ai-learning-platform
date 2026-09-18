@@ -1,0 +1,48 @@
+{
+  "id": "F.11",
+  "trackId": "F",
+  "trackName": "Logic",
+  "title": "Invariants: the thing that must stay true",
+  "status": "traced",
+  "seed": "F.11",
+  "story": "A loop may run any number of times, so you cannot describe what it has done by listing what it has done. The device that replaces the list is a single statement that is true throughout, and the reason it works is that one statement holding at every iteration says as much as an unbounded enumeration would.\n\nHoare’s rule makes the obligations precise, and there are exactly three. Initiation: the precondition implies the invariant, so it is true when the loop is entered. Consecution: if the invariant and the guard both hold, the body leaves the invariant holding, so it survives an iteration. Sufficiency: the invariant together with the negation of the guard implies the postcondition, so when the loop stops you have what you came for. In Floyd’s earlier flowchart form the same thing is the proposition attached to the loop header, and he already saw the automation: the programmer tags one edge in each innermost loop and the rest is derivable.\n\nThe third condition is the one that does the real work and the one people forget, so it is worth isolating. Anything can be made to satisfy the first two. The proposition that is simply true is preserved by every loop body and holds on entry, and it tells you nothing at exit. So an invariant is not merely something that stays true — that is cheap — it is something that stays true and is strong enough, when combined with the loop having stopped, to give you the result. Sufficiency is what separates a useful invariant from a trivially correct one, and finding it is the actual work.\n\nThat is why this concept is stated in every lesson of this curriculum. An invariant tells you what a technique depends on, which means it also tells you when the technique stops applying — and the companion warning from F.9 and F.10 applies here too: all of this is partial correctness, and a loop can maintain its invariant perfectly and never terminate.",
+  "problem": {
+    "name": "Loop invariant",
+    "aka": [
+      "inductive assertion",
+      "the thing that must stay true"
+    ],
+    "shape": "A repeated process may run an unbounded number of times, and you need to say something true about it without enumerating the iterations.",
+    "tell": [
+      "you are reasoning about a loop by imagining the first two or three passes",
+      "the code is correct and you cannot say what keeps it correct",
+      "a change to the loop body breaks something several iterations later"
+    ],
+    "move": "Find a statement that holds on entry, is preserved by the body whenever the guard holds, and — crucially — combined with the guard being false gives you the postcondition. Then check all three, in that order.",
+    "invariant": "The statement is preserved by an arbitrary iteration, not by the iterations you pictured. That is what makes it cover an unbounded number of passes, and it is why the argument has to be about the body rather than about a trace.",
+    "breaks": "It breaks on sufficiency, silently. A statement can satisfy initiation and consecution and be worthless — the proposition \"true\" does — so a correct-looking invariant may simply fail to imply anything at exit. And none of it addresses termination: a loop can preserve its invariant forever.",
+    "cost": {
+      "time": "nothing at run time; finding the invariant is the expensive part and it is human time",
+      "space": "nothing, unless you assert it, which is often worth doing",
+      "beats": "tracing iterations, which covers a sample of executions and cannot cover an unbounded number"
+    },
+    "worked": {
+      "problem": "What makes an invariant useful rather than merely true?",
+      "reasoning": "Sufficiency, and it is the condition that cannot be satisfied by accident.\n\nTake the three obligations and ask which ones are hard. Initiation is usually easy; you arrange the setup to make it so. Consecution is a check on the body, and a weak statement passes it trivially. Sufficiency requires that the statement, plus the single extra fact that the loop has stopped, gets you to the result — and that is a demand on the statement’s strength.\n\nThe instructive case is the invariant that says merely true. It holds on entry. Every body preserves it. It satisfies two of three conditions perfectly, and at exit it tells you nothing, so it cannot imply any postcondition worth having.\n\nSo the search is not for something that survives the loop; almost anything does. It is for the weakest statement that still implies the postcondition at exit, which is why finding an invariant is genuinely difficult and why it is where the understanding of the algorithm actually lives.",
+      "code": "three obligations:\n\n  initiation   precondition       => invariant\n  consecution  invariant & guard  => invariant (after body)\n  sufficiency  invariant & !guard => postcondition\n                                     ^^^^^^^^^^^^\n                                     the one that\n                                     does the work\n\n  the cautionary invariant:\n\n     I = \"true\"\n       initiation:  holds\n       consecution: every body preserves it\n       sufficiency: gives you NOTHING\n     -> 2 of 3, and useless\n\n  so the target is:\n     the WEAKEST statement that still implies the\n     postcondition when the loop stops\n\n  and none of the three mentions termination.\n  a loop can preserve its invariant forever."
+    },
+    "practice": "Take a loop you have written and state its invariant, then check all three conditions in order. If sufficiency fails, your invariant is too weak — and strengthening it until it passes is the exercise."
+  },
+  "beats": {
+    "broke": "A loop may run an unbounded number of times, so no enumeration of what it has done is available, and reasoning by imagining the first few passes covers a sample rather than the behaviour.",
+    "fix": "One statement, true on entry, preserved by an arbitrary iteration, and strong enough that it plus the exit condition yields the postcondition — Hoare’s three obligations, with Floyd’s earlier form attaching the same proposition to the loop header.",
+    "cost": "Sufficiency is the condition that fails quietly. A statement can satisfy the other two and be worthless, and nothing in the process warns you — plus the whole argument is partial correctness, so an invariant can hold forever.",
+    "interview": {
+      "q": "What makes an invariant useful rather than merely true?",
+      "trap": "Answering that it must be preserved by the loop body. That is necessary and is the easy half — almost any statement manages it.",
+      "answer": "Sufficiency: that the invariant, together with the single extra fact that the loop has stopped, implies what you wanted.\n\nLook at the three obligations and ask which are hard. Initiation is usually arranged by the setup. Consecution is a check on the body, and a weak statement passes it trivially. Sufficiency is a demand on the statement's strength, and it is the one that cannot be satisfied by accident.\n\nThe clarifying case is the invariant that says merely true. It holds on entry, every loop body preserves it, and at exit it tells you nothing — two of three conditions satisfied perfectly and no use whatever.\n\nSo the search is not for something that survives the loop, because almost everything does. It is for the weakest statement that still implies the postcondition at exit, and that is where the real understanding of the algorithm sits. Worth adding that none of the three conditions mentions termination: a loop can maintain its invariant and run forever, so that remains a separate obligation."
+    }
+  },
+  "blueprint": "Three obligations, and which one earns its keep:\n\n  initiation    pre               => I        easy\n  consecution   I & guard         => I        easy for\n                                              weak I\n  sufficiency   I & NOT guard     => post     HARD\n\n  the cautionary case:\n\n     I = \"true\"\n     initiation  OK\n     consecution OK   (every body preserves it)\n     sufficiency ---  (implies nothing)\n     -> 2 of 3, worthless\n\n  so you are not looking for something that survives\n  the loop. you are looking for the WEAKEST statement\n  that still implies the postcondition at exit.\n\n  and note what is absent from all three:\n     termination. an invariant can hold forever.",
+  "takeaway": "An invariant is not merely something that stays true — almost anything does — it is the weakest statement that, combined with the loop having stopped, gives you the result, which is why sufficiency is where the difficulty and the understanding both live."
+}
