@@ -3727,6 +3727,1030 @@
   }
 };
 
+  const SOURCES = {
+  "0.1": [
+    {
+      "claim": "The hierarchical file system was described for Multics by R. C. Daley and P. G. Neumann in 'A General-Purpose File System for Secondary Storage', presented at the AFIPS Fall Joint Computer Conference on 30 November to 1 December 1965. The paper cites no prior work for the idea, and no hierarchical file system is known to predate it.",
+      "title": "Daley & Neumann, A General-Purpose File System for Secondary Storage, Proc. AFIPS 1965 FJCC vol. 27 pt. 1, pp. 213-229",
+      "url": "https://multicians.org/fjcc4.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "Daley was at the Massachusetts Institute of Technology and Neumann at Bell Telephone Laboratories.",
+      "title": "AFIPS '65 Fall Joint Computer Conference proceedings, author affiliations",
+      "url": "https://dl.acm.org/doi/10.1145/1463891.1463915",
+      "kind": "primary"
+    },
+    {
+      "claim": "The paper states that anything not basic to a user's manipulation of information should remain invisible unless the user asks otherwise, and that information must be easy to access, safe from accident and malice, and shareable on a controllable basis.",
+      "title": "Daley & Neumann, A General-Purpose File System for Secondary Storage, abstract",
+      "url": "https://multicians.org/fjcc4.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "Unix was written by Ken Thompson and Dennis Ritchie at Bell Labs; the first edition manual is dated 3 November 1971.",
+      "title": "Thompson & Ritchie, UNIX Programmer's Manual, First Edition, 3 November 1971",
+      "url": "https://www.bell-labs.com/usr/dmr/www/1stEdman.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "In Unix a directory is itself a file whose contents are pairs of a name and an i-number, and the i-number indexes the i-list, which holds the file's actual description. The name is therefore not a property of the file.",
+      "title": "Ritchie & Thompson, The UNIX Time-Sharing System, CACM 17(7), July 1974",
+      "url": "https://dsf.berkeley.edu/cs262/unix.pdf",
+      "kind": "primary"
+    }
+  ],
+  "C.0": [
+    {
+      "claim": "EDSAC ran its first program successfully on May 6, 1949, and the initial orders David Wheeler wrote that month occupied locations 0 to 30 and read a symbolic program in from paper tape. An order was a character giving the operation code followed by decimal digits giving the address.",
+      "title": "Richards, M., EDSAC Initial Orders and Squares Program, University of Cambridge Computer Laboratory",
+      "url": "https://www.cl.cam.ac.uk/~mr10/Edsac/edsacposter.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "Backus wrote that if the system were to translate a reasonable scientific source program into an object program only half as fast as its hand coded counterpart, acceptance would be in serious danger, and that this belief made the translator the real challenge rather than the language. Shipment to IBM 704 users began in April 1957.",
+      "title": "Backus, J., The History of Fortran I, II and III, in History of Programming Languages, ACM/Academic Press, 1978",
+      "url": "https://cse.sc.edu/~mgv/csce330f12/Backus78.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "COBOL was specified by committees set up at a Pentagon meeting in May 1959 and approved in January 1960. On December 6 and 7, 1960, essentially the same program was run on an RCA machine and a Remington-Rand UNIVAC machine, demonstrating compatibility across manufacturers.",
+      "title": "Sammet, J. E., The Early History of COBOL, in History of Programming Languages, ACM SIGPLAN Notices, 1978",
+      "url": "https://dl.acm.org/doi/10.1145/960118.808378",
+      "kind": "primary"
+    },
+    {
+      "claim": "McCarthy’s paper describing LISP appeared in Communications of the ACM in April 1960. It builds everything from atoms and pairs with five elementary operations, contains the first published description of automatic reclamation of unused storage, and represents programs in the same structure as data.",
+      "title": "McCarthy, J., Recursive Functions of Symbolic Expressions and Their Computation by Machine, Part I, Communications of the ACM 3(4), April 1960",
+      "url": "https://www.cs.tufts.edu/~nr/cs257/archive/john-mccarthy/recursive.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "Thirteen representatives conferred in Paris from January 11 to 16, 1960 and produced the ALGOL report, edited by Naur, which describes the syntax in a formal grammar later named Backus-Naur form at Knuth’s suggestion. The language defines no input or output, so implementations supplied their own incompatibly. It gave rise to CPL, Simula, BCPL, B, Pascal and C.",
+      "title": "ALGOL 60: the Paris conference of January 1960, its report, and the naming of Backus-Naur form",
+      "url": "https://en.wikipedia.org/wiki/ALGOL_60",
+      "kind": "secondary"
+    },
+    {
+      "claim": "At 4 a.m. on May 1, 1964 at Dartmouth, John Kemeny and a student typed RUN on neighbouring terminals and both got correct answers. The language had 14 statements and nine built-in functions and ran on the Dartmouth Time-Sharing System.",
+      "title": "BASIC at Dartmouth, Dartmouth College",
+      "url": "https://www.dartmouth.edu/basicfifty/basic.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "Kay’s first version ran on the NOVA in roughly September 1972 and was bootstrapped onto the Interim Dynabook in 1973. It had no inheritance, because the single static inheritance of Simula was judged too limiting; objects were described as little computers, a recursion on the notion of computer itself.",
+      "title": "Kay, A. C., The Early History of Smalltalk, HOPL-II, ACM SIGPLAN Notices 28(3), March 1993",
+      "url": "https://worrydream.com/EarlyHistoryOfSmalltalk/",
+      "kind": "primary"
+    },
+    {
+      "claim": "Ritchie records that by early 1973 the essentials of the language were complete and the Unix kernel was rewritten for the PDP-11 in it that summer, and that Thompson had made a brief attempt in 1972 to produce a system coded in an early version, before structures, and gave up the effort.",
+      "title": "Ritchie, D. M., The Development of the C Language, HOPL-II, SIGPLAN Notices 28(3):201-208, April 1993",
+      "url": "https://dl.acm.org/doi/10.1145/154766.155580",
+      "kind": "primary"
+    },
+    {
+      "claim": "Stroustrup began in 1979 with a pre-processor adding classes in the style of Simula to C, states the design criterion that a facility must not just be useful but affordable, and released the first commercial implementation in October 1985.",
+      "title": "Stroustrup, B., A History of C++: 1979-1991, HOPL-II, ACM SIGPLAN Notices 28(3), March 1993",
+      "url": "https://www.stroustrup.com/hopl2.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "Larry Wall released version 1.0 on 18 December 1987. Its manual page states the niche: a problem that would ordinarily use sed or awk or sh but exceeds their capabilities, where you do not want to write the silly thing in C.",
+      "title": "Wall, L., perl(1) manual page — description text dating from the original 1987 release",
+      "url": "https://perldoc.perl.org/5.005/perl",
+      "kind": "primary"
+    },
+    {
+      "claim": "Guido van Rossum began implementation in December 1989 at CWI as a successor to ABC capable of exception handling and of interfacing with the Amoeba operating system, and published the code to a newsgroup in February 1991.",
+      "title": "History of Python: the December 1989 start at CWI and the February 1991 release",
+      "url": "https://en.wikipedia.org/wiki/History_of_Python",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Rust 1.0 was announced on May 15, 2015 by the Rust Core Team. The announcement states that it \"combines low-level control over performance with high-level convenience and safety guarantees\" and that it achieves these goals \"without requiring a garbage collector or runtime\". It is used here only as a language outside this chain, to test the frame against something the chain does not cover.",
+      "title": "Announcing Rust 1.0, The Rust Core Team, The Rust Programming Language Blog, May 15, 2015",
+      "url": "https://blog.rust-lang.org/2015/05/15/Rust-1.0/",
+      "kind": "primary"
+    }
+  ],
+  "C.1": [
+    {
+      "claim": "EDSAC was the first stored-program computer to operate a regular computing service. Maurice Wilkes led the team responsible for its design and construction, and it ran its first program successfully on May 6, 1949.",
+      "title": "Richards, M., EDSAC Initial Orders and Squares Program, University of Cambridge Computer Laboratory",
+      "url": "https://www.cl.cam.ac.uk/~mr10/Edsac/edsacposter.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "The EDSAC initial orders were written by David Wheeler in May 1949 to load and enter a paper tape representation of a program. They were placed in memory locations 0 to 30 by a mechanism involving uniselectors, before execution started from location 0.",
+      "title": "Richards, M., EDSAC Initial Orders and Squares Program, University of Cambridge Computer Laboratory",
+      "url": "https://www.cl.cam.ac.uk/~mr10/Edsac/edsacposter.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "An EDSAC order was punched on paper tape as a character that directly gave the 5-bit operation code, followed by zero or more decimal digits giving the address, terminated by S or L specifying the operand length bit. R16S assembled to 00100 0 0000010000 0 and T11L to 00101 0 0000001011 1; the characters R and T had codes 4 and 5 respectively.",
+      "title": "Richards, M., EDSAC Initial Orders and Squares Program, University of Cambridge Computer Laboratory",
+      "url": "https://www.cl.cam.ac.uk/~mr10/Edsac/edsacposter.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "The first published description of an assembly language is generally identified as Coding for A.R.C., a 1947 report by Andrew Booth and Kathleen Britten, later Kathleen Booth, produced while visiting the Institute for Advanced Study at Princeton. The report is not readily available in digital form, so the attribution rests on later accounts rather than on a document a reader can inspect.",
+      "title": "Assembly language: history, citing Booth, A. D. and Britten, K. H. V., Coding for A.R.C., Institute for Advanced Study, 1947 — an attribution repeated from secondary accounts rather than an inspectable scan",
+      "url": "https://en.wikipedia.org/wiki/Assembly_language",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The word assembler is generally attributed to Wilkes, Wheeler and Gill, The Preparation of Programs for an Electronic Digital Computer, 1951, where it named a program that assembled several sections into one program rather than one that translated mnemonics.",
+      "title": "In Praise of Wilkes, Wheeler, and Gill, Communications of the ACM, on The Preparation of Programs for an Electronic Digital Computer, 1951",
+      "url": "https://cacm.acm.org/opinion/in-praise-of-wilkes-wheeler-and-gill/",
+      "kind": "secondary"
+    }
+  ],
+  "C.10": [
+    {
+      "claim": "Larry Wall released version 1.0 on 18 December 1987, posting the source to the newsgroup comp.sources.misc. He was working as a programmer at Unisys at the time and needed reports about information being synchronised between two sites.",
+      "title": "Perl: the 18 December 1987 release of version 1.0 to comp.sources.misc, Wall’s employment at Unisys, and the account of the name",
+      "url": "https://en.wikipedia.org/wiki/Perl",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Related material appeared separately in comp.sources.unix volume 13 in February 1988, posted by the moderator Rich Salz: issue 12 carried patches 6 to 10, and issue 13 carried a forwarded explanatory article and a sample program together with patches 11 to 14. The original release and these follow-on postings went to different newsgroups, which is why the release is sometimes misattributed.",
+      "title": "comp.sources.unix, Volume 13, Issue 13: forwarded posting of perl code, February 1988, archived by The Unix Heritage Society",
+      "url": "https://www.tuhs.org/Usenet/comp.sources.unix/1988-February/005937.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "The manual page states the intended niche directly: \"If you have a problem that would ordinarily use sed or awk or sh, but it exceeds their capabilities or must run a little faster, and you don’t want to write the silly thing in C, then perl may be for you.\"",
+      "title": "Wall, L., perl(1) manual page — the description text dating from the original 1987 release, carried forward essentially unchanged into later manuals",
+      "url": "https://perldoc.perl.org/5.005/perl",
+      "kind": "primary"
+    },
+    {
+      "claim": "The same manual page describes it as an interpreted language optimized for scanning arbitrary text files, extracting information from those text files and printing reports based on that information, and as combining some of the best features of C, sed, awk and sh. It states the design preference as being practical — easy to use, efficient, complete — rather than beautiful, meaning tiny, elegant, minimal.",
+      "title": "Wall, L., perl(1) manual page — the description text dating from the original 1987 release, carried forward essentially unchanged into later manuals",
+      "url": "https://perldoc.perl.org/5.005/perl",
+      "kind": "primary"
+    },
+    {
+      "claim": "On the name: it is commonly expanded as Practical Extraction and Report Language, but Wall has said it is a riff on Pearl, from the parable of the pearl, with the letter dropped because a language called Pearl already existed.",
+      "title": "Perl: the 18 December 1987 release of version 1.0 to comp.sources.misc, Wall’s employment at Unisys, and the account of the name",
+      "url": "https://en.wikipedia.org/wiki/Perl",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The tools it set out to subsume — sed, awk and the shell — are the standard text-processing tools of Unix, and the follow-on postings were carried in the comp.sources.unix newsgroup.",
+      "title": "comp.sources.unix, Volume 13, Issue 13: forwarded posting of perl code, February 1988, archived by The Unix Heritage Society",
+      "url": "https://www.tuhs.org/Usenet/comp.sources.unix/1988-February/005937.html",
+      "kind": "primary"
+    }
+  ],
+  "C.11": [
+    {
+      "claim": "Implementation was started in December 1989 by Guido van Rossum at CWI in the Netherlands, as a successor to ABC capable of exception handling and of interfacing with the Amoeba operating system. It was begun over a Christmas holiday.",
+      "title": "History of Python: the December 1989 start at CWI, the ABC and Amoeba context, the Modula-3 module system, and the February 1991 release to alt.sources",
+      "url": "https://en.wikipedia.org/wiki/History_of_Python",
+      "kind": "secondary"
+    },
+    {
+      "claim": "In 1989 van Rossum was working on Amoeba, a microkernel-based distributed system, developing system utilities for it. He found that developing in C took too much time and decided to spend his free time building a language that would let him work faster.",
+      "title": "History of Python: the December 1989 start at CWI, the ABC and Amoeba context, the Modula-3 module system, and the February 1991 release to alt.sources",
+      "url": "https://en.wikipedia.org/wiki/History_of_Python",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Van Rossum had worked in the early 1980s as an implementer on the team at CWI that built ABC, and has said he feels indebted to what he learned on that project, while also remembering his frustration with it.",
+      "title": "History of Python: the December 1989 start at CWI, the ABC and Amoeba context, the Modula-3 module system, and the February 1991 release to alt.sources",
+      "url": "https://en.wikipedia.org/wiki/History_of_Python",
+      "kind": "secondary"
+    },
+    {
+      "claim": "CWI records that the language was designed in December 1989, that the first working draft was finished some months later in 1990, and that the first public release, version 0.9.0, came on 20 February 1991.",
+      "title": "25 Years of Python at CWI — Centrum Wiskunde & Informatica’s own account",
+      "url": "https://www.cwi.nl/en/news/25-years-of-python-at-cwi/",
+      "kind": "primary"
+    },
+    {
+      "claim": "The code was published to the alt.sources newsgroup in February 1991; the interpreter source had to be split into 21 uuencoded messages to be posted there. Accounts differ on whether the version posted was labelled 0.9.0 or 0.9.1.",
+      "title": "History of Python: the December 1989 start at CWI, the ABC and Amoeba context, the Modula-3 module system, and the February 1991 release to alt.sources",
+      "url": "https://en.wikipedia.org/wiki/History_of_Python",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Several features were present in the initial release: classes with inheritance, exception handling, functions, and the core datatypes list, dict and str. The module system was borrowed from Modula-3, and the exception model also resembled that of Modula-3, with the addition of an else clause.",
+      "title": "History of Python: the December 1989 start at CWI, the ABC and Amoeba context, the Modula-3 module system, and the February 1991 release to alt.sources",
+      "url": "https://en.wikipedia.org/wiki/History_of_Python",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The language is named after the British comedy series Monty Python’s Flying Circus.",
+      "title": "History of Python: the December 1989 start at CWI, the ABC and Amoeba context, the Modula-3 module system, and the February 1991 release to alt.sources",
+      "url": "https://en.wikipedia.org/wiki/History_of_Python",
+      "kind": "secondary"
+    }
+  ],
+  "C.12": [
+    {
+      "claim": "James Gosling, Mike Sheridan and Patrick Naughton started the project in June 1991 at Sun Microsystems, chartered to anticipate the next wave in computing. The target was digital consumer devices such as set-top boxes and televisions.",
+      "title": "Java (programming language): the Green Project, the Oak name, the 1994 retarget to the internet, and the SunWorld announcement of 23 May 1995",
+      "url": "https://en.wikipedia.org/wiki/Java_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The language was first called Oak, after a tree outside Gosling’s office. A trademark search found Oak already registered by a video adaptor card manufacturer, so it was renamed. Gosling gave it a syntax in the style of C and C++ so that working programmers would find it familiar.",
+      "title": "Java (programming language): the Green Project, the Oak name, the 1994 retarget to the internet, and the SunWorld announcement of 23 May 1995",
+      "url": "https://en.wikipedia.org/wiki/Java_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "In June and July 1994 the team retargeted the work from consumer devices to the internet, judging that with the arrival of the Mosaic browser the web was moving toward the interactive vision they had had for cable television. On 16 September 1994 work began on a browser called WebRunner, later renamed HotJava, demonstrated to executives on 29 September 1994.",
+      "title": "Java (programming language): the Green Project, the Oak name, the 1994 retarget to the internet, and the SunWorld announcement of 23 May 1995",
+      "url": "https://en.wikipedia.org/wiki/Java_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Sun announced the language and the browser at SunWorld on 23 May 1995. John Gage of Sun and Marc Andreessen of Netscape announced on stage that the technology would be incorporated into Netscape Navigator; Andreessen’s announcement was a surprise. The team numbered fewer than 30 people at the time.",
+      "title": "Java (programming language): the Green Project, the Oak name, the 1994 retarget to the internet, and the SunWorld announcement of 23 May 1995",
+      "url": "https://en.wikipedia.org/wiki/Java_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Programs are compiled to bytecode, which can be executed on any device with a compatible runtime. This is the property summarised by the slogan write once, run anywhere.",
+      "title": "Java (programming language): the Green Project, the Oak name, the 1994 retarget to the internet, and the SunWorld announcement of 23 May 1995",
+      "url": "https://en.wikipedia.org/wiki/Java_(programming_language)",
+      "kind": "secondary"
+    }
+  ],
+  "C.13": [
+    {
+      "claim": "Brendan Eich, recently hired by Netscape Communications, was tasked in May 1995 with producing a scripting language for client-side interactivity in Netscape Navigator, and prototyped it in about ten days.",
+      "title": "Brendan Eich: the ten-day prototype of May 1995 at Netscape, the Mocha and LiveScript names, and the December 1995 renaming under the Sun licensing deal",
+      "url": "https://en.wikipedia.org/wiki/Brendan_Eich",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The design drew on Scheme for its functional elements, Self for prototype-based inheritance, and the syntax of Java for familiarity. Despite the eventual name the two languages differ fundamentally: one is compiled, class-based and statically typed, the other interpreted, prototype-based and dynamically typed, and the main similarity is C-style syntax.",
+      "title": "Brendan Eich: the ten-day prototype of May 1995 at Netscape, the Mocha and LiveScript names, and the December 1995 renaming under the Sun licensing deal",
+      "url": "https://en.wikipedia.org/wiki/Brendan_Eich",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The prototype was codenamed Mocha, renamed LiveScript in September 1995 for the beta of the second version of the browser, and renamed again in December 1995 after Netscape and Sun reached a licensing deal. Eich described it in a later interview: \"in early December Netscape and Sun reached a licensing deal, and the language became JavaScript.\"",
+      "title": "Brendan Eich: the ten-day prototype of May 1995 at Netscape, the Mocha and LiveScript names, and the December 1995 renaming under the Sun licensing deal",
+      "url": "https://en.wikipedia.org/wiki/Brendan_Eich",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The name was chosen to ride on the contemporaneous success of Java, and the resulting confusion between the two has persisted ever since.",
+      "title": "Brendan Eich: the ten-day prototype of May 1995 at Netscape, the Mocha and LiveScript names, and the December 1995 renaming under the Sun licensing deal",
+      "url": "https://en.wikipedia.org/wiki/Brendan_Eich",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Eich also wrote the first engine to execute the language in the browser. When Mozilla inherited the Netscape codebase in 1998, that engine came with it. The language was taken to Ecma in 1996 and 1997 to produce a standard specification.",
+      "title": "Brendan Eich: the ten-day prototype of May 1995 at Netscape, the Mocha and LiveScript names, and the December 1995 renaming under the Sun licensing deal",
+      "url": "https://en.wikipedia.org/wiki/Brendan_Eich",
+      "kind": "secondary"
+    }
+  ],
+  "C.14": [
+    {
+      "claim": "Rasmus Lerdorf released version 1.0, then called Personal Home Page Tools, on 8 June 1995, announcing it on the newsgroup comp.infosystems.www.authoring.cgi under the subject Announce: Personal Home Page Tools.",
+      "title": "History of PHP — the project’s own account of the 1995 Personal Home Page Tools release and the rewrites that followed",
+      "url": "https://www.php.net/manual/en/history.php.php",
+      "kind": "primary"
+    },
+    {
+      "claim": "What was released was a set of small, tightly written CGI binaries in C — a utility library and templating mechanism rather than a scripting language. A complete rewrite followed in October 1995, and the second generation arrived in April 1996.",
+      "title": "History of PHP — the project’s own account of the 1995 Personal Home Page Tools release and the rewrites that followed",
+      "url": "https://www.php.net/manual/en/history.php.php",
+      "kind": "primary"
+    },
+    {
+      "claim": "The name was originally an abbreviation of Personal Home Page, and was later redefined as a recursive abbreviation for Hypertext Preprocessor.",
+      "title": "History of PHP — the project’s own account of the 1995 Personal Home Page Tools release and the rewrites that followed",
+      "url": "https://www.php.net/manual/en/history.php.php",
+      "kind": "primary"
+    },
+    {
+      "claim": "The model is that a file is a document which may contain code, rather than a program which emits a document: the page is served as written except where an escape into code occurs.",
+      "title": "History of PHP — the project’s own account of the 1995 Personal Home Page Tools release and the rewrites that followed",
+      "url": "https://www.php.net/manual/en/history.php.php",
+      "kind": "primary"
+    }
+  ],
+  "C.15": [
+    {
+      "claim": "The name was chosen on 24 February 1993, in a chat between Yukihiro Matsumoto and Keiju Ishitsuka, before any code existed. Coral and Ruby were the two proposals and Matsumoto picked the latter.",
+      "title": "Ruby (programming language): the February 1993 naming, the 0.95 release of 21 December 1995, and the 1.0 release of 25 December 1996",
+      "url": "https://en.wikipedia.org/wiki/Ruby_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The first public release, version 0.95, was announced on Japanese domestic newsgroups on 21 December 1995. Three further versions followed within two days, and the release coincided with the launch of the language’s first mailing list. Version 1.0 followed on 25 December 1996.",
+      "title": "Ruby (programming language): the February 1993 naming, the 0.95 release of 21 December 1995, and the 1.0 release of 25 December 1996",
+      "url": "https://en.wikipedia.org/wiki/Ruby_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "David Heinemeier Hansson extracted the framework from his work on the project management application Basecamp at 37signals. It was created for the company’s internal use first, open-sourced in July 2004, and reached version 1.0 in December 2005. Hansson had discovered the language in 2003.",
+      "title": "Ruby on Rails: extraction from Basecamp at 37signals, the July 2004 open-source release, and version 1.0 in December 2005",
+      "url": "https://en.wikipedia.org/wiki/Ruby_on_Rails",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The framework is built on convention over configuration: defaults derived from names and locations stand in for declarations the developer would otherwise have to write.",
+      "title": "Ruby on Rails: extraction from Basecamp at 37signals, the July 2004 open-source release, and version 1.0 in December 2005",
+      "url": "https://en.wikipedia.org/wiki/Ruby_on_Rails",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The earlier link in this chain that this one is contrasted with is Fortran, whose designers deliberately treated the translator rather than the language as the real challenge — that is, they optimised for the machine rather than for the programmer writing it.",
+      "title": "Backus, J., The History of Fortran I, II and III, in History of Programming Languages, ACM/Academic Press, 1978",
+      "url": "https://cse.sc.edu/~mgv/csce330f12/Backus78.pdf",
+      "kind": "primary"
+    }
+  ],
+  "C.16": [
+    {
+      "claim": "The first version was developed by Joe Armstrong in 1986 at Ericsson, in a Prolog form over 1986 and 1987, with Robert Virding joining to help rewrite the prototype and improve concurrency performance. An early internal document is Armstrong’s Telephony Programming in Prolog, Ericsson internal report T/SU 86 036, dated 3 March 1986.",
+      "title": "Erlang (programming language): the 1986 origin at Ericsson, the February 1998 in-house ban, and the December 1998 open-source release",
+      "url": "https://en.wikipedia.org/wiki/Erlang_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Armstrong describes the language as designed for writing concurrent programs that run indefinitely, structured around lightweight concurrent processes that belong to the language rather than the operating system, with no shared memory and asynchronous message passing, plus mechanisms for changing code while the system runs. He calls the resulting model concurrency-oriented programming.",
+      "title": "Armstrong, J., A History of Erlang, Third ACM SIGPLAN Conference on History of Programming Languages, San Diego, June 2007",
+      "url": "https://dl.acm.org/doi/10.1145/1238844.1238850",
+      "kind": "primary"
+    },
+    {
+      "claim": "In March 1998 Ericsson announced a switch containing over a million lines of the language, reported to achieve an availability of nine nines, alongside an observed four-fold increase in development productivity.",
+      "title": "Armstrong, J., A History of Erlang, Third ACM SIGPLAN Conference on History of Programming Languages, San Diego, June 2007",
+      "url": "https://dl.acm.org/doi/10.1145/1238844.1238850",
+      "kind": "primary"
+    },
+    {
+      "claim": "In February 1998 Ericsson Radio Systems banned in-house use of the language for new products, citing a preference for non-proprietary languages. In December 1998 the implementation was open-sourced and most of the team resigned to form Bluetail AB. The ban was eventually relaxed and Armstrong was re-hired in 2004.",
+      "title": "Erlang (programming language): the 1986 origin at Ericsson, the February 1998 in-house ban, and the December 1998 open-source release",
+      "url": "https://en.wikipedia.org/wiki/Erlang_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Elixir was designed by José Valim and first appeared on 25 May 2012, running on the same virtual machine, influenced by Clojure, Erlang and Ruby. Valim’s stated aim was to increase the extensibility and productivity of that virtual machine while keeping compatibility with its existing tooling and ecosystem.",
+      "title": "Elixir (programming language): design by José Valim, first appearance 25 May 2012, and its relationship to the Erlang virtual machine",
+      "url": "https://en.wikipedia.org/wiki/Elixir_(programming_language)",
+      "kind": "secondary"
+    }
+  ],
+  "C.17": [
+    {
+      "claim": "In January 1999 Anders Hejlsberg formed a team to build a new language, at the time called COOL, standing for C-like Object Oriented Language. The name was not kept for trademark reasons; a naming committee was convened and wanted a reference to the C heritage. Other candidates considered included Safe C.",
+      "title": "C Sharp (programming language): the COOL codename, the July 2000 release with the .NET Framework, and the Ecma standardisation adopted in December 2001",
+      "url": "https://en.wikipedia.org/wiki/C_Sharp_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The principal designers were Anders Hejlsberg, Scott Wiltamuth and Peter Golde. The first widely distributed implementation was released by Microsoft in July 2000 as part of the .NET Framework initiative.",
+      "title": "C Sharp (programming language): the COOL codename, the July 2000 release with the .NET Framework, and the Ecma standardisation adopted in December 2001",
+      "url": "https://en.wikipedia.org/wiki/C_Sharp_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "An Ecma technical committee task group was formed in September 2000 to produce a standard for the language, with a separate group formed at the same time for the common language infrastructure. Development of the standard began in November 2000 and it was adopted as an Ecma standard by the General Assembly of December 2001.",
+      "title": "C Sharp (programming language): the COOL codename, the July 2000 release with the .NET Framework, and the Ecma standardisation adopted in December 2001",
+      "url": "https://en.wikipedia.org/wiki/C_Sharp_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The standard was based on a submission from Hewlett-Packard, Intel and Microsoft, and was later approved by the international standards bodies in 2003.",
+      "title": "C Sharp (programming language): the COOL codename, the July 2000 release with the .NET Framework, and the Ecma standardisation adopted in December 2001",
+      "url": "https://en.wikipedia.org/wiki/C_Sharp_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The precedent for putting a language definition in a document nobody owns is COBOL, whose specifying committees were set up at a Pentagon meeting in May 1959 and whose specification was approved in January 1960, so that the document rather than any vendor’s compiler was the authority.",
+      "title": "Sammet, J. E., The Early History of COBOL, in History of Programming Languages, ACM SIGPLAN Notices, 1978",
+      "url": "https://dl.acm.org/doi/10.1145/960118.808378",
+      "kind": "primary"
+    }
+  ],
+  "C.18": [
+    {
+      "claim": "The language was conceived in September 2007 by Robert Griesemer, Rob Pike and Ken Thompson at Google, as an answer to problems seen while developing software infrastructure there. It first appeared on 10 November 2009 and stabilised at version 1 in early 2012.",
+      "title": "Go (programming language): conception in September 2007 by Griesemer, Pike and Thompson, first appearance 10 November 2009, and Go 1 in early 2012",
+      "url": "https://en.wikipedia.org/wiki/Go_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Pike describes the environment it was designed for: server programs grown to tens of millions of lines of code, worked on by hundreds or thousands of programmers, updated daily, in one source tree with a distributed build system, written mostly in C++ with substantial amounts of Java and Python.",
+      "title": "Pike, R., Go at Google: Language Design in the Service of Software Engineering, keynote at SPLASH 2012, Tucson, 25 October 2012",
+      "url": "https://go.dev/talks/2012/splash.article",
+      "kind": "primary"
+    },
+    {
+      "claim": "Pike states that in that environment build times, even on large compilation clusters, had stretched to many minutes, even hours. The stated goals of the project were to eliminate slowness, eliminate clumsiness, improve effectiveness, and maintain or improve scale.",
+      "title": "Pike, R., Go at Google: Language Design in the Service of Software Engineering, keynote at SPLASH 2012, Tucson, 25 October 2012",
+      "url": "https://go.dev/talks/2012/splash.article",
+      "kind": "primary"
+    },
+    {
+      "claim": "Pike frames the work as being designed by and for people who write, read, debug and maintain large software systems, and says its purpose is improving the working environment rather than programming-language research — that it is more about software engineering than programming language research.",
+      "title": "Pike, R., Go at Google: Language Design in the Service of Software Engineering, keynote at SPLASH 2012, Tucson, 25 October 2012",
+      "url": "https://go.dev/talks/2012/splash.article",
+      "kind": "primary"
+    },
+    {
+      "claim": "The earlier link this argument is drawn from is the time-sharing system built at Dartmouth, demonstrated on 1 May 1964, where the barrier to using a computer was the hours-long turnaround of a single attempt rather than the difficulty of the language.",
+      "title": "BASIC at Dartmouth, Dartmouth College",
+      "url": "https://www.dartmouth.edu/basicfifty/basic.html",
+      "kind": "primary"
+    }
+  ],
+  "C.19": [
+    {
+      "claim": "It was announced publicly on 1 October 2012 as version 0.8, with the source released as open source under the Apache licence the same day, after roughly two years of internal development at Microsoft under the codename Strada. Anders Hejlsberg is among the designers.",
+      "title": "TypeScript: the public release of version 0.8 on 1 October 2012, the internal development from 2010 under the codename Strada, and its gradual, structural typing",
+      "url": "https://en.wikipedia.org/wiki/TypeScript",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Rather than replacing the existing language, it is a superset of it: any existing file in the base language is a valid file in this one, which lets a codebase be converted file by file. Version 1.0 shipped in 2014.",
+      "title": "TypeScript: the public release of version 0.8 on 1 October 2012, the internal development from 2010 under the codename Strada, and its gradual, structural typing",
+      "url": "https://en.wikipedia.org/wiki/TypeScript",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Its typing discipline is gradual and structural: convertibility between types depends on the parts of the type rather than on a declared name, so a value fits a type when its shape matches.",
+      "title": "TypeScript: the public release of version 0.8 on 1 October 2012, the internal development from 2010 under the codename Strada, and its gradual, structural typing",
+      "url": "https://en.wikipedia.org/wiki/TypeScript",
+      "kind": "secondary"
+    },
+    {
+      "claim": "It extends the base language with features aimed at large-scale programming, including optional static type checking, classes, interfaces and modules.",
+      "title": "TypeScript: the public release of version 0.8 on 1 October 2012, the internal development from 2010 under the codename Strada, and its gradual, structural typing",
+      "url": "https://en.wikipedia.org/wiki/TypeScript",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The base language it is a superset of was prototyped in about ten days in May 1995 at Netscape and shipped into a client shared by everyone, which is why it could not subsequently be replaced or corrected.",
+      "title": "Brendan Eich: the ten-day prototype of May 1995 at Netscape",
+      "url": "https://en.wikipedia.org/wiki/Brendan_Eich",
+      "kind": "secondary"
+    }
+  ],
+  "C.2": [
+    {
+      "claim": "The Preliminary Report specifying the system was dated November 10, 1954, and was issued by the Programming Research Group of the Applied Science Division at IBM and distributed to prospective 704 customers.",
+      "title": "Preliminary Report: Specifications for the IBM Mathematical Formula Translating System, IBM Programming Research Group, November 10, 1954",
+      "url": "https://www.historyofinformation.com/detail.php?id=755",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Backus proposed the project to his manager at IBM in 1953 and was given a budget to test its feasibility. The 704 was the target because it had floating-point operations built into the hardware, which Backus had lobbied for.",
+      "title": "Backus, J., The History of Fortran I, II and III, in History of Programming Languages, ACM/Academic Press, 1978",
+      "url": "https://cse.sc.edu/~mgv/csce330f12/Backus78.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "Backus wrote: \"It was our belief that if FORTRAN, during its first months, were to translate any reasonable ‘scientific’ source program into an object program only half as fast as its hand coded counterpart, then acceptance of our system would be in serious danger.\" He continued: \"This belief caused us to regard the design of the translator as the real challenge, not the simple task of designing the language.\"",
+      "title": "Backus, J., The History of Fortran I, II and III, in History of Programming Languages, ACM/Academic Press, 1978",
+      "url": "https://cse.sc.edu/~mgv/csce330f12/Backus78.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "What was planned as roughly a six-month effort took about three years: the language was largely defined by late 1954, the compiler was programmed and tested through 1955 and 1956, and shipment of the system to IBM 704 users began in April 1957.",
+      "title": "Backus, J., The History of Fortran I, II and III, in History of Programming Languages, ACM/Academic Press, 1978",
+      "url": "https://cse.sc.edu/~mgv/csce330f12/Backus78.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "The system was described publicly as Backus et al., The FORTRAN Automatic Coding System, Proceedings of the Western Joint Computer Conference, Los Angeles, February 1957.",
+      "title": "Backus, J. W. et al., The FORTRAN Automatic Coding System, Proc. Western Joint Computer Conference, Los Angeles, February 1957",
+      "url": "https://dl.acm.org/doi/10.1145/1455567.1455599",
+      "kind": "primary"
+    },
+    {
+      "claim": "Customers’ foremost objection to a compiler was that it probably could not turn out object code as good as their best programmers could. Backus’s own retrospective judgement, given at the 1978 History of Programming Languages conference, was that prioritising object program efficiency over language design had been correct.",
+      "title": "Backus, J., The History of Fortran I, II and III, in History of Programming Languages, ACM/Academic Press, 1978",
+      "url": "https://cse.sc.edu/~mgv/csce330f12/Backus78.pdf",
+      "kind": "primary"
+    }
+  ],
+  "C.20": [
+    {
+      "claim": "Rust 1.0 was announced on 15 May 2015 by the Rust Core Team. The announcement states that it \"combines low-level control over performance with high-level convenience and safety guarantees\".",
+      "title": "Announcing Rust 1.0, The Rust Core Team, The Rust Programming Language Blog, 15 May 2015",
+      "url": "https://blog.rust-lang.org/2015/05/15/Rust-1.0/",
+      "kind": "primary"
+    },
+    {
+      "claim": "The announcement states that it achieves these goals \"without requiring a garbage collector or runtime\", which is what allows its libraries to serve as a drop-in substitute for C.",
+      "title": "Announcing Rust 1.0, The Rust Core Team, The Rust Programming Language Blog, 15 May 2015",
+      "url": "https://blog.rust-lang.org/2015/05/15/Rust-1.0/",
+      "kind": "primary"
+    },
+    {
+      "claim": "The announcement attributes the language’s distinctiveness to its type system, described as a refinement and codification of best practices drawn from experience with C and C++. It says newcomers can write low-level code without worrying about minor mistakes leading to mysterious crashes, and that experienced developers save time they would otherwise spend debugging.",
+      "title": "Announcing Rust 1.0, The Rust Core Team, The Rust Programming Language Blog, 15 May 2015",
+      "url": "https://blog.rust-lang.org/2015/05/15/Rust-1.0/",
+      "kind": "primary"
+    },
+    {
+      "claim": "The release marks a stability commitment: the announcement describes the preceding churn as ended and breaking changes as largely out of scope going forward, alongside a six-week release train.",
+      "title": "Announcing Rust 1.0, The Rust Core Team, The Rust Programming Language Blog, 15 May 2015",
+      "url": "https://blog.rust-lang.org/2015/05/15/Rust-1.0/",
+      "kind": "primary"
+    },
+    {
+      "claim": "The language was sponsored by Mozilla, which supported its development in the years before the 1.0 release.",
+      "title": "Rust (programming language): origins and Mozilla sponsorship",
+      "url": "https://en.wikipedia.org/wiki/Rust_(programming_language)",
+      "kind": "secondary"
+    }
+  ],
+  "C.21": [
+    {
+      "claim": "Kotlin was unveiled in July 2011 and open-sourced under the Apache licence in February 2012. Version 1.0 was released on 15 February 2016 and was the first officially stable release, with a commitment to long-term backwards compatibility from that point. It is named after Kotlin Island, off Saint Petersburg.",
+      "title": "Kotlin: unveiled July 2011, open-sourced February 2012, version 1.0 on 15 February 2016, and Google’s Android announcements of 2017 and 2019",
+      "url": "https://en.wikipedia.org/wiki/Kotlin",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Google announced first-class support for Kotlin on Android in 2017, and on 7 May 2019 announced that it was its preferred language for Android application developers.",
+      "title": "Kotlin: unveiled July 2011, open-sourced February 2012, version 1.0 on 15 February 2016, and Google’s Android announcements of 2017 and 2019",
+      "url": "https://en.wikipedia.org/wiki/Kotlin",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Swift was created by Chris Lattner, beginning in 2010, while he was director of the developer tools department at Apple. It was first announced at the company’s developer conference in June 2014 and shipped in the toolchain from Xcode version 6 in September 2014.",
+      "title": "Swift (programming language): created by Chris Lattner from 2010, announced at WWDC in June 2014, shipped in Xcode 6 in September 2014",
+      "url": "https://en.wikipedia.org/wiki/Swift_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "On 2 June 2014 the conference application became the first publicly released application written in Swift.",
+      "title": "Swift (programming language): created by Chris Lattner from 2010, announced at WWDC in June 2014, shipped in Xcode 6 in September 2014",
+      "url": "https://en.wikipedia.org/wiki/Swift_(programming_language)",
+      "kind": "secondary"
+    }
+  ],
+  "C.22": [
+    {
+      "claim": "The relational model it implements was set out by Codd in A Relational Model of Data for Large Shared Data Banks, Communications of the ACM volume 13 number 6, pages 377 to 387, in 1970.",
+      "title": "Codd, E. F., A Relational Model of Data for Large Shared Data Banks, Communications of the ACM 13(6):377-387, 1970",
+      "url": "https://dl.acm.org/doi/10.1145/362384.362685",
+      "kind": "primary"
+    },
+    {
+      "claim": "Donald Chamberlin and Raymond Boyce of the IBM Research Laboratory in San Jose presented SEQUEL at the 1974 ACM SIGFIDET workshop in Ann Arbor, pages 249 to 264. Participants afterwards renamed the group SIGMOD.",
+      "title": "Chamberlin, D. D. and Boyce, R. F., SEQUEL: A Structured English Query Language, Proc. 1974 ACM SIGFIDET Workshop on Data Description, Access and Control, Ann Arbor, May 1974, pp. 249-264",
+      "url": "https://dl.acm.org/doi/10.1145/800296.811515",
+      "kind": "primary"
+    },
+    {
+      "claim": "The paper states that without resorting to the concepts of bound variables and quantifiers, the language identifies a set of simple operations on tabular structures which are shown to be of equivalent power to the first-order predicate calculus. Users are presented with a consistent set of keyword English templates which can be composed to form more complex queries.",
+      "title": "Chamberlin, D. D. and Boyce, R. F., SEQUEL: A Structured English Query Language, Proc. 1974 ACM SIGFIDET Workshop on Data Description, Access and Control, Ann Arbor, May 1974, pp. 249-264",
+      "url": "https://dl.acm.org/doi/10.1145/800296.811515",
+      "kind": "primary"
+    },
+    {
+      "claim": "It was intended as a database sublanguage for both the professional programmer and the more infrequent database user, refining an earlier language the same authors had worked on called SQUARE, and was built for a prototype intended to demonstrate the practicality of relational technology.",
+      "title": "Chamberlin, D. D. and Boyce, R. F., SEQUEL: A Structured English Query Language, Proc. 1974 ACM SIGFIDET Workshop on Data Description, Access and Control, Ann Arbor, May 1974, pp. 249-264",
+      "url": "https://dl.acm.org/doi/10.1145/800296.811515",
+      "kind": "primary"
+    },
+    {
+      "claim": "The name was later changed because SEQUEL was a trademark registered by the Hawker Siddeley aircraft company. Boyce died of a brain aneurysm in 1974, shortly after the work, and Chamberlin continued the development.",
+      "title": "SQL: the renaming from SEQUEL owing to the Hawker Siddeley trademark, and the deaths and continuations around the 1974 work",
+      "url": "https://en.wikipedia.org/wiki/SQL",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The earlier link this trade is compared with is Fortran, shipped to users in April 1957, where a compiler began choosing machine instructions on the programmer’s behalf and the executed program stopped being the written one.",
+      "title": "Backus, J., The History of Fortran I, II and III, in History of Programming Languages, ACM/Academic Press, 1978",
+      "url": "https://cse.sc.edu/~mgv/csce330f12/Backus78.pdf",
+      "kind": "primary"
+    }
+  ],
+  "C.23": [
+    {
+      "claim": "The work began in 2004, when NVIDIA hired Ian Buck and paired him with John Nickolls, then director of architecture for GPU computing, to develop a research language called Brook into a product.",
+      "title": "CUDA: the 2004 origin with Ian Buck and John Nickolls, the February 2007 initial release, and the July 2007 1.0 toolkit",
+      "url": "https://en.wikipedia.org/wiki/CUDA",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The initial public release was in February 2007, and version 1.0 of the toolkit, including the compiler, followed in mid-2007 with availability for the GeForce 8 Series, the Quadro FX 5600 and 4600, and Tesla. The version 1.0 programming guide is dated 23 June 2007.",
+      "title": "CUDA: the 2004 origin with Ian Buck and John Nickolls, the February 2007 initial release, and the July 2007 1.0 toolkit",
+      "url": "https://en.wikipedia.org/wiki/CUDA",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The programming guide presents a model in which the programmer writes functions executed by many threads in parallel, organised into blocks and grids, and in which the distinct memory spaces available to those threads — per-thread, per-block shared, and device-wide — are part of the programming model rather than hidden by it.",
+      "title": "NVIDIA CUDA Compute Unified Device Architecture Programming Guide, Version 1.0, 23 June 2007",
+      "url": "https://developer.download.nvidia.com/compute/cuda/1.0/NVIDIA_CUDA_Programming_Guide_1.0.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "Before this, using the hardware for general computation required expressing the problem in terms of the graphics pipeline — as textures, shaders and rendering passes — whether or not the problem had anything to do with graphics.",
+      "title": "CUDA: the 2004 origin with Ian Buck and John Nickolls, the February 2007 initial release, and the July 2007 1.0 toolkit",
+      "url": "https://en.wikipedia.org/wiki/CUDA",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The coupling deliberately re-accepted here — code written against one manufacturer’s machine — is the one the COBOL committees were set up to remove at a Pentagon meeting in May 1959, by making a written specification rather than any vendor’s product the authority.",
+      "title": "Sammet, J. E., The Early History of COBOL, in History of Programming Languages, ACM SIGPLAN Notices, 1978",
+      "url": "https://dl.acm.org/doi/10.1145/960118.808378",
+      "kind": "primary"
+    }
+  ],
+  "C.3": [
+    {
+      "claim": "A meeting held at the Pentagon on May 28 and 29, 1959 determined the need for three committees — short, intermediate and long range. The steering committee met on June 4, 1959 and named the whole activity the Committee on Data Systems Languages, abbreviated CODASYL. The intermediate range committee was formed but never operational and the long range committee was never formed.",
+      "title": "CODASYL: formation and committee structure, summarising the May 1959 Pentagon meeting and the June 4, 1959 steering committee",
+      "url": "https://en.wikipedia.org/wiki/CODASYL",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The Short Range Committee was tasked with an interim specification for a common business-oriented language and was chaired by Joseph Wegstein of the National Bureau of Standards. Its membership included industry representatives alongside the Air Force, the Navy and the National Bureau of Standards.",
+      "title": "Sammet, J. E., The Early History of COBOL, in History of Programming Languages, ACM SIGPLAN Notices, 1978",
+      "url": "https://dl.acm.org/doi/10.1145/960118.808378",
+      "kind": "primary"
+    },
+    {
+      "claim": "The specifications were inspired to a great extent by FLOW-MATIC, invented by Grace Hopper, which was attractive to the group because it was the only language available to them that had actually been implemented. Its major contributions were long variable names, English words for commands, and the separation of data descriptions from instructions. Hopper served as a technical adviser to the Short Range Committee.",
+      "title": "Sammet, J. E., The Early History of COBOL, in History of Programming Languages, ACM SIGPLAN Notices, 1978",
+      "url": "https://dl.acm.org/doi/10.1145/960118.808378",
+      "kind": "primary"
+    },
+    {
+      "claim": "Attribution of COBOL to Hopper is disputed by a participant: Jean Sammet, one of its lead designers, said that Hopper \"was not the mother, creator, or developer of Cobol\".",
+      "title": "COBOL: naming and attribution, quoting Jean Sammet on Hopper’s role",
+      "url": "https://en.wikipedia.org/wiki/COBOL",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The name COBOL was chosen at a meeting on 18 September 1959; rejected alternatives included BUSY, INFOSYL and COCOSYL. The specifications were approved by the executive committee on January 3, 1960 and printed by the government printing office as COBOL 60.",
+      "title": "CODASYL: formation and committee structure, summarising the May 1959 Pentagon meeting and the June 4, 1959 steering committee",
+      "url": "https://en.wikipedia.org/wiki/CODASYL",
+      "kind": "secondary"
+    },
+    {
+      "claim": "On December 6 and 7, 1960, essentially the same COBOL program was run on two different makes of computer — an RCA machine and a Remington-Rand UNIVAC machine — demonstrating that compatibility across manufacturers could be achieved.",
+      "title": "Sammet, J. E., The Early History of COBOL, in History of Programming Languages, ACM SIGPLAN Notices, 1978",
+      "url": "https://dl.acm.org/doi/10.1145/960118.808378",
+      "kind": "primary"
+    }
+  ],
+  "C.4": [
+    {
+      "claim": "The language was described in McCarthy’s paper Recursive Functions of Symbolic Expressions and Their Computation by Machine, Part I, published in Communications of the ACM in April 1960. The abstract describes LISP, for list processor, as a system developed for the IBM 704 by the Artificial Intelligence group at MIT, designed to facilitate experiments with a proposed system called the Advice Taker.",
+      "title": "McCarthy, J., Recursive Functions of Symbolic Expressions and Their Computation by Machine, Part I, Communications of the ACM 3(4), April 1960",
+      "url": "https://www.cs.tufts.edu/~nr/cs257/archive/john-mccarthy/recursive.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "The paper builds everything from symbolic expressions — atoms and recursively constructed ordered pairs — and five elementary operations: atom, eq, car, cdr and cons. Conditional expressions and recursive definitions then define larger functions such as substitution, structural equality, list append and symbolic differentiation.",
+      "title": "McCarthy, J., Recursive Functions of Symbolic Expressions and Their Computation by Machine, Part I, Communications of the ACM 3(4), April 1960",
+      "url": "https://www.cs.tufts.edu/~nr/cs257/archive/john-mccarthy/recursive.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "In the list-structure representation on that machine, a word is split into an address part and a decrement part, holding the locations of the subexpressions returned by car and cdr.",
+      "title": "McCarthy, J., Recursive Functions of Symbolic Expressions and Their Computation by Machine, Part I, Communications of the ACM 3(4), April 1960",
+      "url": "https://www.cs.tufts.edu/~nr/cs257/archive/john-mccarthy/recursive.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "McCarthy became an assistant professor at MIT in the autumn of 1958, when he and Minsky founded the MIT Artificial Intelligence Project, and implementation of the language began that autumn.",
+      "title": "McCarthy, J., History of Lisp, 12 February 1979, Stanford University — the author’s own account",
+      "url": "http://www-formal.stanford.edu/jmc/history/lisp/node3.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "McCarthy wrote: \"S.R. Russell noticed that eval could serve as an interpreter for LISP, promptly hand coded it, and we now had a programming language with an interpreter.\" He adds that the arrival of the interpreter tended to freeze the form of the language.",
+      "title": "McCarthy, J., History of Lisp, 12 February 1979, Stanford University — the author’s own account",
+      "url": "http://www-formal.stanford.edu/jmc/history/lisp/node3.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "McCarthy wrote that the notation for representing functions as data was created \"for the purposes of the paper with no thought that it would be used to express LISP programs in practice\". The s-expression syntax was intended as an interim measure pending m-expressions, which never caught on.",
+      "title": "McCarthy, J., History of Lisp, 12 February 1979, Stanford University — the author’s own account",
+      "url": "http://www-formal.stanford.edu/jmc/history/lisp/node3.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "Automatic reclamation of unused storage — garbage collection — is among the topics the 1960 paper covers, and the paper is its first published description.",
+      "title": "McCarthy, J., Recursive Functions of Symbolic Expressions and Their Computation by Machine, Part I, Communications of the ACM 3(4), April 1960",
+      "url": "https://www.cs.tufts.edu/~nr/cs257/archive/john-mccarthy/recursive.pdf",
+      "kind": "primary"
+    }
+  ],
+  "C.5": [
+    {
+      "claim": "Thirteen representatives from Denmark, England, France, Germany, Holland, Switzerland and the United States conferred in Paris from January 11 to 16, 1960. Before the meeting Naur had worked out a completely new draft report, and the conference adopted that draft as the basis for its report.",
+      "title": "ALGOL 60: the Paris conference of January 1960, its attendees, and the naming of Backus-Naur form at Knuth’s suggestion",
+      "url": "https://en.wikipedia.org/wiki/ALGOL_60",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Naur was drawn into the international discussions as editor of the ALGOL Bulletin, was selected as a member of the European language design group in November 1959, and in that capacity served as editor of the report resulting from the Paris meeting.",
+      "title": "ALGOL 60: the Paris conference of January 1960, its attendees, and the naming of Backus-Naur form at Knuth’s suggestion",
+      "url": "https://en.wikipedia.org/wiki/ALGOL_60",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The attendees included Bauer, Rutishauser, Samelson, Vauquois, van Wijngaarden and Woodger from Europe, and Backus, Green, Katz, McCarthy, Perlis and Wegstein from the United States.",
+      "title": "ALGOL 60: the Paris conference of January 1960, its attendees, and the naming of Backus-Naur form at Knuth’s suggestion",
+      "url": "https://en.wikipedia.org/wiki/ALGOL_60",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The notation Backus had devised for the earlier ALGOL specification was revised and expanded by Naur, and at Knuth’s suggestion it was renamed Backus-Naur form.",
+      "title": "ALGOL 60: the Paris conference of January 1960, its attendees, and the naming of Backus-Naur form at Knuth’s suggestion",
+      "url": "https://en.wikipedia.org/wiki/ALGOL_60",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The report defines blocks delimited by begin and end, procedures that may be invoked recursively, procedures nested within one another, and lexical scope, in which a name refers to the declaration enclosing it in the text.",
+      "title": "Naur, P. (ed.), Report on the Algorithmic Language ALGOL 60, Communications of the ACM 3(5), May 1960",
+      "url": "https://softwarepreservation.computerhistory.org/ALGOL/report/Algol60_report_CACM_1960_June.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "The language as officially defined contains no input or output facilities, so implementations supplied their own, in largely incompatible ways.",
+      "title": "Naur, P. (ed.), Report on the Algorithmic Language ALGOL 60, Communications of the ACM 3(5), May 1960",
+      "url": "https://softwarepreservation.computerhistory.org/ALGOL/report/Algol60_report_CACM_1960_June.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "Hoare wrote of it, in his 1980 Turing Award lecture: \"Here is a language so far ahead of its time that it was not only an improvement on its predecessors but also on nearly all its successors.\"",
+      "title": "Hoare, C. A. R., The Emperor’s Old Clothes, 1980 Turing Award Lecture, Communications of the ACM 24(2), February 1981",
+      "url": "https://dl.acm.org/doi/10.1145/358549.358561",
+      "kind": "primary"
+    },
+    {
+      "claim": "It gave rise to CPL, Simula, BCPL, B, Pascal and C.",
+      "title": "ALGOL 60: the Paris conference of January 1960, its attendees, and the naming of Backus-Naur form at Knuth’s suggestion",
+      "url": "https://en.wikipedia.org/wiki/ALGOL_60",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The immediately preceding attempt at a vendor-independent language, COBOL, was specified in English words for commands, on the reasoning that the specification should be readable by people who do not program.",
+      "title": "Sammet, J. E., The Early History of COBOL, in History of Programming Languages, ACM SIGPLAN Notices, 1978",
+      "url": "https://dl.acm.org/doi/10.1145/960118.808378",
+      "kind": "primary"
+    }
+  ],
+  "C.6": [
+    {
+      "claim": "At 4 a.m. on May 1, 1964, in the basement of College Hall at Dartmouth, John Kemeny and a student programmer typed RUN on neighbouring terminals and both got back correct answers to simple programs. Dartmouth’s own retrospective describes the scene as Dartmouth legend rather than as a documented record, and other accounts credit Kemeny and Thomas Kurtz jointly.",
+      "title": "BASIC at Dartmouth, Dartmouth College — the institution’s own account of 1 May 1964",
+      "url": "https://www.dartmouth.edu/basicfifty/basic.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "The language was invented by John Kemeny and Thomas Kurtz. Kemeny began work on a draft of it in September 1963, having applied that year for a National Science Foundation grant to bring a GE-225 computer to campus and build a general-purpose time-sharing system; the grant was awarded despite referees’ serious doubts about staffing the work with undergraduates.",
+      "title": "BASIC at Dartmouth, Dartmouth College — the institution’s own account of 1 May 1964",
+      "url": "https://www.dartmouth.edu/basicfifty/basic.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "The language ran on the Dartmouth Time-Sharing System, was implemented by undergraduate students, and opened to general users in June 1964. The original version had 14 statements and nine built-in functions.",
+      "title": "Dartmouth BASIC: the Dartmouth Time-Sharing System, the original statement set, and its compile-and-go implementation",
+      "url": "https://en.wikipedia.org/wiki/Dartmouth_BASIC",
+      "kind": "secondary"
+    },
+    {
+      "claim": "By the autumn of 1964 hundreds of students were using it on 20 terminals around campus, and faculty across disciplines were supplied with teletypes and began writing their own programs.",
+      "title": "BASIC at Dartmouth, Dartmouth College — the institution’s own account of 1 May 1964",
+      "url": "https://www.dartmouth.edu/basicfifty/basic.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "Unlike many of the later implementations that carried the name, the original was a compiler operating compile-and-go: it converted an entire program at once into machine code, rather than translating it line by line at each run.",
+      "title": "Dartmouth BASIC: the Dartmouth Time-Sharing System, the original statement set, and its compile-and-go implementation",
+      "url": "https://en.wikipedia.org/wiki/Dartmouth_BASIC",
+      "kind": "secondary"
+    }
+  ],
+  "C.7": [
+    {
+      "claim": "Ritchie’s own account of the language was presented at the Second History of Programming Languages conference in Cambridge, Massachusetts in April 1993 and published in SIGPLAN Notices volume 28 number 3, pages 201 to 208.",
+      "title": "Ritchie, D. M., The Development of the C Language, Second ACM SIGPLAN Conference on History of Programming Languages, April 1993; SIGPLAN Notices 28(3):201-208",
+      "url": "https://dl.acm.org/doi/10.1145/154766.155580",
+      "kind": "primary"
+    },
+    {
+      "claim": "Ritchie describes B as the parent of the language and BCPL as its grandparent. BCPL was Martin Richards’s language and B was Ken Thompson’s; both were typeless, and the new language derived a type structure from a typeless ancestor.",
+      "title": "Ritchie, D. M., The Development of the C Language, Second ACM SIGPLAN Conference on History of Programming Languages, April 1993; SIGPLAN Notices 28(3):201-208",
+      "url": "https://dl.acm.org/doi/10.1145/154766.155580",
+      "kind": "primary"
+    },
+    {
+      "claim": "The language came into being in the years 1969 to 1973, in parallel with the early development of Unix, with the most creative period during 1972. It was created on a small machine as a tool to improve a meagre programming environment.",
+      "title": "Ritchie, D. M., The Development of the C Language, Second ACM SIGPLAN Conference on History of Programming Languages, April 1993; SIGPLAN Notices 28(3):201-208",
+      "url": "https://dl.acm.org/doi/10.1145/154766.155580",
+      "kind": "primary"
+    },
+    {
+      "claim": "By early 1973 the essentials of the modern language were complete, and the language and compiler were strong enough to permit rewriting the Unix kernel for the PDP-11 in it during the summer of that year. Ritchie notes that Thompson had made a brief attempt in 1972 to produce a system coded in an early version of the language, before structures existed, and gave up the effort.",
+      "title": "Ritchie, D. M., The Development of the C Language, Second ACM SIGPLAN Conference on History of Programming Languages, April 1993; SIGPLAN Notices 28(3):201-208",
+      "url": "https://dl.acm.org/doi/10.1145/154766.155580",
+      "kind": "primary"
+    },
+    {
+      "claim": "A second period of change peaked between 1977 and 1979, when portability of Unix was being demonstrated; the compiler was retargeted to other machines, particularly the Honeywell 635 and the IBM 360 and 370.",
+      "title": "Ritchie, D. M., The Development of the C Language, Second ACM SIGPLAN Conference on History of Programming Languages, April 1993; SIGPLAN Notices 28(3):201-208",
+      "url": "https://dl.acm.org/doi/10.1145/154766.155580",
+      "kind": "primary"
+    },
+    {
+      "claim": "The first widely available description was The C Programming Language, which appeared in 1978 and served as the language reference although it did not describe some additions that soon became common. Beginning in 1983 the ANSI X3J11 committee standardised the language.",
+      "title": "Ritchie, D. M., The Development of the C Language, Second ACM SIGPLAN Conference on History of Programming Languages, April 1993; SIGPLAN Notices 28(3):201-208",
+      "url": "https://dl.acm.org/doi/10.1145/154766.155580",
+      "kind": "primary"
+    },
+    {
+      "claim": "Ritchie’s own assessment is that the most characteristic features — the relationship between arrays and pointers, and the declaration syntax — are also major sources of difficulty, and that the language offers limited support for modularisation, automatic memory management and strong type checking, while its pointer-oriented array model complicates optimisation.",
+      "title": "Ritchie, D. M., The Development of the C Language, Second ACM SIGPLAN Conference on History of Programming Languages, April 1993; SIGPLAN Notices 28(3):201-208",
+      "url": "https://dl.acm.org/doi/10.1145/154766.155580",
+      "kind": "primary"
+    }
+  ],
+  "C.8": [
+    {
+      "claim": "Kay’s own history of the language was published at the Second History of Programming Languages conference in 1993. In it he states that he centres the account on the events leading to the first version and its transition to the modern form, because most of the ideas occurred there.",
+      "title": "Kay, A. C., The Early History of Smalltalk, HOPL-II, ACM SIGPLAN Notices 28(3), March 1993 — the author’s own narrative",
+      "url": "https://worrydream.com/EarlyHistoryOfSmalltalk/",
+      "kind": "primary"
+    },
+    {
+      "claim": "In a hallway conversation with Ted Kaehler and Dan Ingalls about how large a language would have to be to have real power, Kay boasted that he could define \"the most powerful language in the world\" in \"a page of code\". Their reply was \"Put up or shut up.\" No money was wagered. His confidence rested on McCarthy’s self-describing interpreter, which was about a page.",
+      "title": "Kay, A. C., The Early History of Smalltalk, HOPL-II, ACM SIGPLAN Notices 28(3), March 1993 — the author’s own narrative",
+      "url": "https://worrydream.com/EarlyHistoryOfSmalltalk/",
+      "kind": "primary"
+    },
+    {
+      "claim": "Kay worked on it for roughly two weeks, arriving at PARC at 4 a.m. each day and working until 8, when Ingalls, Henry Fuchs, John Shoch and Steve Purcell would arrive to critique the morning’s progress.",
+      "title": "Kay, A. C., The Early History of Smalltalk, HOPL-II, ACM SIGPLAN Notices 28(3), March 1993 — the author’s own narrative",
+      "url": "https://worrydream.com/EarlyHistoryOfSmalltalk/",
+      "kind": "primary"
+    },
+    {
+      "claim": "Kay writes that \"only a few days later, Dan Ingalls showed me the scheme working on the NOVA\". Ingalls had coded it in BASIC, adding a token scanner, a list maker and other details. Kay quotes Ingalls’s attitude as \"You just do it and it’s done.\"",
+      "title": "Kay, A. C., The Early History of Smalltalk, HOPL-II, ACM SIGPLAN Notices 28(3), March 1993 — the author’s own narrative",
+      "url": "https://worrydream.com/EarlyHistoryOfSmalltalk/",
+      "kind": "primary"
+    },
+    {
+      "claim": "The first working version emerged on the NOVA in roughly September 1972. It computed three plus four extremely slowly — Butler Lampson called it glacial — but always returned seven. It was later bootstrapped onto the Interim Dynabook, the ALTO, after the machine known as Bilbo came alive in early April 1973, and for many months was the only software system running on it.",
+      "title": "Kay, A. C., The Early History of Smalltalk, HOPL-II, ACM SIGPLAN Notices 28(3), March 1993 — the author’s own narrative",
+      "url": "https://worrydream.com/EarlyHistoryOfSmalltalk/",
+      "kind": "primary"
+    },
+    {
+      "claim": "The first version did not include inheritance — not because it was thought unimportant, but because the single static inheritance of Simula seemed too limiting. Kay drew on the simplicity of LISP and the classes and objects of Simula, and described objects as little computers, \"a recursion on the notion of computer itself\".",
+      "title": "Kay, A. C., The Early History of Smalltalk, HOPL-II, ACM SIGPLAN Notices 28(3), March 1993 — the author’s own narrative",
+      "url": "https://worrydream.com/EarlyHistoryOfSmalltalk/",
+      "kind": "primary"
+    },
+    {
+      "claim": "The other bet of the period was hardware: Butler Lampson and Chuck Thacker offered to build Kay’s machine using the $230K he had earmarked for other computers. Thacker had his own wager with Bill Vitic that he could build an entire machine in three months; he started on November 22, 1972 and delivered in just over three.",
+      "title": "Kay, A. C., The Early History of Smalltalk, HOPL-II, ACM SIGPLAN Notices 28(3), March 1993 — the author’s own narrative",
+      "url": "https://worrydream.com/EarlyHistoryOfSmalltalk/",
+      "kind": "primary"
+    },
+    {
+      "claim": "The modern form followed after substantial revision, with a development environment containing most of the now-familiar tools including a class library browser and editor; Ingalls described its design and implementation at the fifth symposium on Principles of Programming Languages in Tucson in January 1978. The release version followed between 1980 and 1983.",
+      "title": "Kay, A. C., The Early History of Smalltalk, HOPL-II, ACM SIGPLAN Notices 28(3), March 1993 — the author’s own narrative",
+      "url": "https://worrydream.com/EarlyHistoryOfSmalltalk/",
+      "kind": "primary"
+    }
+  ],
+  "C.9": [
+    {
+      "claim": "Stroustrup states the motivation as wanting to write efficient systems programs in the styles encouraged by Simula, so he added better type checking, data abstraction and object-oriented programming to C. His stated goal was \"to design a language in which I could write programs that were both efficient and elegant\", and the triggering tasks concerned distributing operating system facilities across a network.",
+      "title": "Stroustrup, B., Bjarne Stroustrup’s FAQ — the author’s own answers on motivation, naming and design criteria",
+      "url": "https://www.stroustrup.com/bs_faq.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "Stroustrup gives the design criterion that \"a facility must not just be useful, it must be affordable\".",
+      "title": "Stroustrup, B., Bjarne Stroustrup’s FAQ — the author’s own answers on motivation, naming and design criteria",
+      "url": "https://www.stroustrup.com/bs_faq.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "Work began in 1979. By October 1979 a pre-processor named Cpre added classes in the style of Simula to C, and by March 1980 it had been refined to support one real project and several experiments. The language it accepted was called C with Classes.",
+      "title": "Stroustrup, B., A History of C++: 1979-1991, HOPL-II, ACM SIGPLAN Notices 28(3), March 1993",
+      "url": "https://www.stroustrup.com/hopl2.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "The work and experience with C with Classes from 1979 to 1983 determined the shape of the successor. Cfront, the compiler front end, was designed and implemented between spring 1982 and summer 1983; the features added to C through it included the class, the derived class, strong type checking, inlining and default arguments.",
+      "title": "Stroustrup, B., A History of C++: 1979-1991, HOPL-II, ACM SIGPLAN Notices 28(3), March 1993",
+      "url": "https://www.stroustrup.com/hopl2.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "The first version was used internally at AT&T in August 1983. The name was suggested by Rick Mascitti; it was first used in December 1983, when it was edited into the final copies of the 1984 papers, and signifies evolution from C via the increment operator.",
+      "title": "Stroustrup, B., Bjarne Stroustrup’s FAQ — the author’s own answers on motivation, naming and design criteria",
+      "url": "https://www.stroustrup.com/bs_faq.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "The first commercial implementation was released in October 1985, at the same time as the publication of the first edition of The C++ Programming Language.",
+      "title": "Stroustrup, B., A History of C++: 1979-1991, HOPL-II, ACM SIGPLAN Notices 28(3), March 1993",
+      "url": "https://www.stroustrup.com/hopl2.pdf",
+      "kind": "primary"
+    }
+  ],
+  "E.19": [
+    {
+      "claim": "Dijkstra published 'A note on two problems in connexion with graphs' in Numerische Mathematik volume 1, pages 269 to 271, in 1959.",
+      "title": "Dijkstra, E. W., A note on two problems in connexion with graphs, Numerische Mathematik 1:269-271, 1959, DOI 10.1007/BF01386390",
+      "url": "https://link.springer.com/article/10.1007/BF01386390",
+      "kind": "primary"
+    },
+    {
+      "claim": "The paper presents two problems. Problem 1 is the minimum spanning tree; Problem 2 is the shortest path between two nodes. The shortest path algorithm is the second of the two.",
+      "title": "Dijkstra 1959, original text, CWI institutional repository scan",
+      "url": "https://ir.cwi.nl/pub/9256/9256D.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "Dijkstra's affiliation on the paper is Mathematisch Centrum, Amsterdam.",
+      "title": "Dijkstra 1959, author affiliation as printed",
+      "url": "https://link.springer.com/article/10.1007/BF01386390",
+      "kind": "primary"
+    },
+    {
+      "claim": "Dijkstra later recalled devising the algorithm in about twenty minutes in 1956, at a cafe terrace in Amsterdam, as a demonstration problem for the ARMAC computer, and publishing it three years afterwards. This is his own recollection given decades later, not a contemporaneous record.",
+      "title": "Dijkstra's own later recollection of the ARMAC demonstration; self-reported, recorded long after the event",
+      "url": "https://ir.cwi.nl/pub/9256/9256D.pdf",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The Bellman-Ford algorithm relaxes every edge repeatedly rather than settling nodes, and unlike Dijkstra it tolerates negative edge weights. The name comes from Richard Bellman's 'On A Routing Problem', Quarterly of Applied Mathematics 16.1 (1958), pages 87 to 90, and L. R. Ford Jr's RAND technical report P-923, 'Network Flow Theory', 1956.",
+      "title": "Bellman, R., On A Routing Problem, Quarterly of Applied Mathematics 16.1:87-90, 1958; Ford, L. R. Jr., Network Flow Theory, RAND Technical Report P-923, 1956",
+      "url": "https://www.rand.org/pubs/papers/P923.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "If a negative cycle is reachable from the source, the distance to some vertices is effectively negative infinity, and finding shortest simple paths in that setting is NP-hard. Implementations therefore report that a negative cycle exists rather than attempting to route around it.",
+      "title": "Cherkassky, B. V. and Goldberg, A. V., Negative-cycle detection algorithms, Mathematical Programming 85(2):277-311, 1999",
+      "url": "https://link.springer.com/article/10.1007/s101070050058",
+      "kind": "primary"
+    }
+  ],
+  "E.25": [
+    {
+      "claim": "Timsort is a hybrid of merge sort and insertion sort, implemented by Tim Peters in 2002 for Python, and drawing on Peter McIlroy's 1993 paper 'Optimistic Sorting and Information Theoretic Complexity'. It was Python's default sort from version 2.3.",
+      "title": "Timsort, overview of origin and design",
+      "url": "https://en.wikipedia.org/wiki/Timsort",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Python replaced Timsort with Powersort, by Munro and Wild, from version 3.11 onward. Timsort was the default from 2.3 through 3.10.",
+      "title": "Timsort, adoption and succession by Powersort in CPython",
+      "url": "https://en.wikipedia.org/wiki/Timsort",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Java sorts arrays of non-primitive types with Timsort, with modifications by Josh Bloch, from JDK 7. Arrays of primitives use a dual-pivot quicksort by Vladimir Yaroslavskiy, which does not need to preserve stability.",
+      "title": "Timsort, adoption in Java SE 7 and the primitive-array exception",
+      "url": "https://en.wikipedia.org/wiki/Timsort",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Introsort was introduced by David Musser in 1997 in 'Introspective sorting and selection algorithms', Software: Practice and Experience 27(8):983-993. It runs quicksort and switches to heapsort once recursion depth exceeds a bound, and to insertion sort on small partitions, giving quicksort's average case with a worst case that is still linearithmic.",
+      "title": "Musser, D. R., Introspective sorting and selection algorithms, Software: Practice and Experience 27(8):983-993, 1997",
+      "url": "https://en.wikipedia.org/wiki/Introsort",
+      "kind": "primary"
+    },
+    {
+      "claim": "The C++ standard does not mandate an algorithm for std::sort but requires a worst case of n log n, which a pure quicksort cannot guarantee; libstdc++ implements Musser's introsort. Stability is not required, so std::stable_sort is provided separately.",
+      "title": "Introsort, use in C++ standard library implementations",
+      "url": "https://en.wikipedia.org/wiki/Introsort",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Pattern-defeating quicksort, by Orson Peters, extends introsort to perform better on inputs containing patterns such as already-sorted runs. Rust's sort_unstable uses it, and Go's sort.Sort has used it since Go 1.19.",
+      "title": "Introsort, successors: pattern-defeating quicksort adoption in Rust and Go",
+      "url": "https://en.wikipedia.org/wiki/Introsort",
+      "kind": "secondary"
+    }
+  ]
+};
+
+  // null, never [] — "no seed" and "a seed with nothing in it" must not look
+  // the same to the page, because one is honest absence and the other would
+  // render as a checked lesson with no evidence.
+  window.CurriculumLessons.getSources = function (taskId) {
+    return Object.prototype.hasOwnProperty.call(SOURCES, taskId) ? SOURCES[taskId] : null;
+  };
+
   window.CurriculumLessons.getLesson = function (taskId) {
     return Object.prototype.hasOwnProperty.call(LESSONS, taskId) ? LESSONS[taskId] : null;
   };

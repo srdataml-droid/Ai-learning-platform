@@ -35,6 +35,21 @@ test('ignores a colon inside a string that looks like a key', () => {
   assert.deepEqual(findDuplicateKeys(src, { depth: 1 }), []);
 });
 
+test('does not conflate keys in two sibling object literals at the same depth', () => {
+  // A key repeated ACROSS two objects is not a duplicate: nothing is
+  // discarded. Only a key repeated WITHIN one literal silently loses a value.
+  const src = `const a = {\n  "x": { n: 1 }\n};\nconst b = {\n  "x": { n: 2 }\n};`;
+  assert.deepEqual(findDuplicateKeys(src, { depth: 1 }), []);
+});
+
+test('still reports a duplicate inside the second of two sibling literals', () => {
+  const src = `const a = {\n  "x": { n: 1 }\n};\nconst b = {\n  "x": { n: 2 },\n  "x": { n: 3 }\n};`;
+  const dupes = findDuplicateKeys(src, { depth: 1 });
+  assert.equal(dupes.length, 1);
+  assert.equal(dupes[0].key, 'x');
+  assert.deepEqual(dupes[0].occurrences, [5, 6]);
+});
+
 test('lessons-data.js declares every lesson key exactly once', async () => {
   const { readFile } = await import('node:fs/promises');
   const src = await readFile(new URL('../public/lessons-data.js', import.meta.url), 'utf8');

@@ -2074,3 +2074,110 @@ p, .body-copy {
 }
 
 .problem-practice p { margin: 0; max-inline-size: 70ch; }
+
+/* ---------------------------------------------------------------------------
+   Sources
+   ---------------------------------------------------------------------------
+   The claim leads and the citation sits under it, indented, in the smaller
+   face. That ordering is the argument: the sentence is the thing a reader can
+   disagree with, and the source is what it rests on. A list of links alone
+   would look like a bibliography, which is a gesture at rigour rather than
+   rigour — it shows the evidence and hides what each piece is evidence for.
+--------------------------------------------------------------------------- */
+
+.provenance-link {
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.source-note {
+  max-inline-size: 68ch;
+  font-size: var(--t--1);
+  color: var(--ink-2);
+  margin-bottom: 1.25rem;
+}
+
+.source-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: source;
+}
+
+.source-entry {
+  counter-increment: source;
+  padding: 0.85rem 0 0.85rem 2.5rem;
+  border-top: 1px solid var(--rule);
+  position: relative;
+}
+
+.source-entry:last-child {
+  border-bottom: 1px solid var(--rule);
+}
+
+.source-entry::before {
+  content: counter(source);
+  position: absolute;
+  inset-inline-start: 0;
+  top: 0.9rem;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--t--1);
+  color: var(--ink-2);
+  opacity: 0.6;
+}
+
+.source-claim {
+  max-inline-size: 72ch;
+  margin: 0 0 0.35rem;
+  line-height: 1.55;
+}
+
+.source-cite {
+  max-inline-size: 72ch;
+  margin: 0;
+  font-size: var(--t--1);
+  color: var(--ink-2);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.source-cite a {
+  color: var(--ink-2);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.source-cite a:hover {
+  color: var(--signal);
+}
+
+/* Primary and secondary are not interchangeable, so they do not look alike.
+   Secondary is the one that needs a second look, so it is the one that is
+   marked rather than the one that is merely labelled. */
+.source-kind {
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.7em;
+  padding: 0.1em 0.45em;
+  border: 1px solid var(--rule);
+  white-space: nowrap;
+}
+
+.source-kind-primary {
+  color: var(--ink-2);
+}
+
+.source-kind-secondary {
+  color: #9a5b00;
+  border-color: #9a5b00;
+}
+
+[data-theme="dark"] .source-kind-secondary {
+  color: #e8a33d;
+  border-color: #e8a33d;
+}

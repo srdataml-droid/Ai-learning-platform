@@ -267,6 +267,12 @@
           </section>
         ` : ''}
 
+        <!-- The evidence. Claim first, source second — the same order the gate
+             works in, and the reason a bare list of urls would not do: the
+             checkable thing is the sentence, and the source is evidence for
+             that sentence rather than for the lesson as a whole. -->
+        ${sourcesSection(lesson)}
+
         <!-- Interactive Completion Toggle -->
         <div class="lesson-completion-bar" role="region" aria-label="Task Completion Toggle">
           <div>
@@ -435,12 +441,62 @@
         };
         const state = states[lesson.status];
         if (!state) return '';
+        // A badge that asserts provenance without showing it asks to be taken
+        // on trust. Where the evidence exists, the badge is a route to it.
+        const sources = window.CurriculumLessons.getSources(lesson.id);
+        const link = sources && sources.length
+          ? ` <a class="provenance-link" href="#sources">Read the ${sources.length} claims and their sources ↓</a>`
+          : '';
         return `
           <div class="provenance-banner provenance-${state.tone}" role="note">
             <span class="provenance-label">${state.label}</span>
-            <span class="provenance-text">${state.text}</span>
+            <span class="provenance-text">${state.text}${link}</span>
           </div>
         `;
+      }
+
+      /**
+       * Every claim behind the lesson, with what each one rests on.
+       *
+       * Two claims leaning on the same document stay two entries. Collapsing
+       * them into a reading list would show the evidence and hide what it was
+       * evidence for, and the checkable thing is the sentence, not the url.
+       *
+       * Primary and secondary are marked because they are not interchangeable:
+       * a participant's own account and a later retelling of it fail in
+       * different ways, and a reader deciding how hard to push on a claim
+       * needs to know which one is underneath it.
+       */
+      function sourcesSection(lesson) {
+        const sources = window.CurriculumLessons.getSources(lesson.id);
+        if (!sources || !sources.length) return '';
+
+        const items = sources.map(function (s) {
+          return `
+            <li class="source-entry">
+              <p class="source-claim">${escapeHtml(s.claim)}</p>
+              <p class="source-cite">
+                <a href="${escapeHtml(s.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(s.title)}</a>
+                <span class="source-kind source-kind-${escapeHtml(s.kind)}">${escapeHtml(s.kind)}</span>
+              </p>
+            </li>`;
+        }).join('');
+
+        return `
+          <section id="sources" class="section-block" aria-labelledby="sources-heading">
+            <div class="section-header">
+              <h2 id="sources-heading">Sources</h2>
+              <span class="section-counter">${sources.length} claims</span>
+            </div>
+            <p class="source-note">
+              Each entry is a statement that could be wrong, followed by what it rests on.
+              <strong>Primary</strong> is the document itself or the account of someone who was there;
+              <strong>secondary</strong> is a later retelling. Every date, figure and name in the lesson
+              above is licensed by one of these \u2014 that is what the badge at the top means, and this
+              is the evidence for it.
+            </p>
+            <ol class="source-list">${items}</ol>
+          </section>`;
       }
 
       /**
