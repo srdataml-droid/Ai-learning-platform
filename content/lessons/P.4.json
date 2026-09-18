@@ -1,0 +1,49 @@
+{
+  "id": "P.4",
+  "trackId": "P",
+  "trackName": "Security",
+  "title": "XSS and CSRF",
+  "status": "traced",
+  "seed": "P.4",
+  "story": "They are taught together because they are both web vulnerabilities involving a third-party site, and the pairing obscures that they are opposite confusions. In cross-site scripting, the browser cannot distinguish data you supplied from markup you authored. In request forgery, the server cannot distinguish a request the user intended from a request the user’s browser was induced to make. One is about parsing; the other is about ambient authority.\n\nTake the first. The fix is contextual output encoding, applied on output, at the last moment before the value enters the document — and the word doing the work is contextual. Entity encoding is correct in one place and useless in several others: inside a tag, inside an event handler attribute, inside a stylesheet, or in a URL. The mechanism is worth remembering because it explains most bypasses: the browser decodes entities before the script context runs, so an encoded angle bracket reverts and executes. Getting the context wrong is not a weaker defence than getting it right, it is frequently no defence at all. And two boundaries: where the user is supposed to author markup, encoding would destroy the feature so you sanitise instead; and where the page is built in script rather than on the server, server-side encoding remains necessary and stops being sufficient.\n\nThe second is about credentials being attached by the browser without anyone asking. The cookie goes with the request because the request went to that origin, and the server sees a perfectly authenticated call it has no way to distinguish from an intended one. SameSite constrains this, and the details matter more than the headline. Browsers began defaulting unset cookies to Lax during 2020 — in some browsers, not all; Firefox and Safari do not.\n\nAnd the default is weaker than the explicit setting in a way that catches people. Under the browser default, a cookie up to two minutes old is still sent on a top-level cross-site POST; setting the attribute explicitly removes that exception. Lax also still allows form submissions from your own subdomains, so a scripting flaw on a subdomain reaches the parent. Which is why the standing advice is to set it explicitly rather than inherit it, and to keep a token or an origin check as well — the attribute is partial protection and was never the whole answer.",
+  "problem": {
+    "name": "Trust boundaries in the browser",
+    "aka": [
+      "cross-site scripting",
+      "cross-site request forgery",
+      "ambient authority"
+    ],
+    "shape": "The browser mixes your content with someone else’s input, and attaches your credentials to requests regardless of who caused them.",
+    "tell": [
+      "a value from a user is interpolated into a page anywhere other than plain text",
+      "a state-changing endpoint accepts a request with no evidence of intent beyond the session cookie",
+      "a defence is applied on input, once, for all destinations"
+    ],
+    "move": "For scripting: encode at output, choosing the encoding for the exact context the value lands in, and sanitise instead where markup is intended. For forgery: require evidence of intent — a token the attacker cannot read, or an origin check — and set the cookie attribute explicitly rather than relying on a default.",
+    "invariant": "For scripting, the encoding matches the context at the point of insertion. For forgery, the request carries something only a page from your origin could have supplied. Both are properties of the last step before the boundary, which is why input-time defences do not establish them.",
+    "breaks": "Encoding breaks when the context is misjudged, and a mismatched encoding is usually no protection rather than partial protection — the browser decodes entities before the script context evaluates. The cookie attribute breaks on the gap between the browser default and the explicit setting, on subdomains, and on browsers that do not default at all.",
+    "cost": {
+      "time": "negligible per value; the cost is discipline at every sink",
+      "space": "a token per session or per form for the forgery half",
+      "beats": "input sanitisation, which is applied once and cannot know which context the value will reach"
+    },
+    "worked": {
+      "problem": "Why are these two always taught together when they are not the same problem?",
+      "reasoning": "Because they share a surface and nothing else, and the shared surface is what a curriculum sees.\n\nScripting is a parsing failure. The browser is handed a stream in which your markup and a user’s data are indistinguishable, and it resolves the ambiguity the way a parser does — by parsing. The fix is therefore at the point of insertion and depends on which grammar the value is entering.\n\nForgery is an authority failure. Nothing is misparsed. The request is well formed, arrives at the right endpoint, and carries a valid credential — because the browser attaches credentials based on destination rather than on cause. The fix has nothing to do with encoding: you require something the attacker cannot obtain, which demonstrates that a page of yours produced the request.\n\nKeeping them separate pays immediately, because the defences do not substitute. Perfect encoding does not prevent forgery, and a perfect token does not prevent scripting — and scripting defeats the token anyway, since script on your origin can read it.",
+      "code": "XSS                         CSRF\n---                         ----\nbrowser can't tell          server can't tell\n  your MARKUP from            an INTENDED request\n  their DATA                  from an INDUCED one\n\na parsing problem           an authority problem\nfix at the SINK:            fix at the ENDPOINT:\n  encode for the context      require proof of intent\n  html / attr / js / url      (token, origin check)\n\n  and the contexts are not interchangeable:\n     &lt; inside a script context\n     -> browser decodes entities FIRST\n     -> reverts to <\n     -> runs\n\n  note the dependency, one way only:\n     XSS on your origin can READ the CSRF token\n     -> fixing XSS is a precondition, not an\n        alternative"
+    },
+    "practice": "Find one place where user data reaches a page and identify exactly which context it lands in. Then check whether the encoding applied is the one for that context — and whether the same helper is used for values landing in different contexts."
+  },
+  "beats": {
+    "broke": "The browser cannot tell your markup from a user’s data, and the server cannot tell a request the user intended from one their browser was induced to make. Two different confusions, taught as one topic because they share a surface.",
+    "fix": "Encode on output for the exact context the value enters, sanitising where markup is intended; and require evidence of intent on state-changing requests, setting the cookie attribute explicitly rather than inheriting a default.",
+    "cost": "Encoding for the wrong context is usually no defence at all rather than a weaker one. And the cookie attribute is partial: the browser default permits a cross-site POST with a cookie under two minutes old, subdomains still carry cookies, and not every browser defaults it.",
+    "interview": {
+      "q": "Why are cross-site scripting and request forgery always taught together when they are not the same problem?",
+      "trap": "Answering that both involve a malicious third-party site. True, and it is the shared surface rather than the mechanism — which is exactly what makes the pairing misleading.",
+      "answer": "They share a surface and nothing else. Scripting is a parsing failure: the browser receives a stream in which your markup and a user's data are indistinguishable and resolves it by parsing, so the fix sits at the point of insertion and depends on which grammar the value is entering. Forgery is an authority failure: nothing is misparsed, the request is well formed and carries a valid credential because browsers attach credentials by destination rather than by cause, so the fix is to require something demonstrating that a page of yours produced the request.\n\nKeeping them separate matters because the defences do not substitute for one another. Flawless encoding prevents no forgery; a flawless token prevents no scripting.\n\nAnd there is a dependency in one direction worth stating: script running on your origin can read your token, so scripting defeats the forgery defence while the reverse is not true. That makes fixing the first a precondition for the second rather than an alternative to it."
+    }
+  },
+  "blueprint": "Two confusions, not one:\n\n  XSS   browser: \"is this markup or data?\"  -> PARSING\n  CSRF  server:  \"did the user mean this?\"  -> AUTHORITY\n\n  defences do not substitute:\n\n     perfect encoding -> 0 protection from CSRF\n     perfect token    -> 0 protection from XSS\n     and XSS on your origin READS the token\n       -> one-way dependency: fix XSS first\n\n  the context trap, which is most bypasses:\n\n     &lt;  in a script context\n     -> entities decoded BEFORE the script runs\n     -> becomes <\n     -> wrong context = no defence, not weak defence\n\n  the SameSite trap:\n\n     browser DEFAULT != explicit setting\n       default: cross-site POST allowed if the\n                cookie is < 2 minutes old\n     subdomains still carry cookies\n     not every browser defaults it at all\n     -> set it explicitly AND keep a token",
+  "takeaway": "Scripting is a parsing confusion fixed at the sink with context-specific encoding; forgery is an authority confusion fixed at the endpoint by requiring evidence of intent — and since script on your origin can read your token, one is a precondition for the other rather than a substitute."
+}

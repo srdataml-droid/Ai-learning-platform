@@ -1,0 +1,48 @@
+{
+  "id": "P.9",
+  "trackId": "P",
+  "trackName": "Security",
+  "title": "Dependency vulnerabilities",
+  "status": "traced",
+  "seed": "P.9",
+  "story": "A scan of a dependency tree returns a number, and the number answers a question nobody asked. It tells you how many known vulnerabilities exist in packages present in your tree. It does not tell you how many of them your program can reach, and those are different quantities by a large factor.\n\nThe distinction is a call graph one. A package listed in a manifest is present. A package whose vulnerable function lies on a path from one of your actual entry points — a request handler, a command, a job — is reachable. Manifest analysis, which is what most scanning is, can establish the first and is structurally unable to establish the second. The widely quoted figure is that fewer than 9.5% of dependency vulnerabilities are reachable from application code while practice treats all of them as actionable; that comes from a vendor with an interest in the conclusion, so hold the number loosely and the direction firmly.\n\nNow the part that connects to the rest of this curriculum. Static reachability analysis is conservative: if any path could reach the vulnerable function it reports reachable, even where that path needs conditions that never arise. That is not a defect of the tools, it is F.13 arriving in your build output — deciding what an arbitrary program does is not available, so a terminating analysis must approximate, and it must approximate toward alarm.\n\nThe honest complication is that it is not only conservative. One investigation of a real codebase found exploitable vulnerabilities behind unreachable labels and non-exploitable findings marked reachable — wrong in both directions, which is a different and worse failure than being cautious. Package-level analysis cannot tell an import used for one harmless function from one whose vulnerable function is called; dynamic loading is invisible to it; and reachability drifts as features are added, so today’s unreachable finding is a claim with an expiry date. Academic work on one ecosystem reports 83.3% accuracy across sixty projects, which is useful and is not a guarantee.",
+  "problem": {
+    "name": "Exposure versus inventory",
+    "aka": [
+      "reachability analysis",
+      "vulnerability prioritisation"
+    ],
+    "shape": "A scan reports every known vulnerability in everything you have installed, and you need to know which ones your program can actually be attacked through.",
+    "tell": [
+      "the scanner output is long enough that nobody reads it",
+      "the same findings are deferred every sprint without anyone assessing them",
+      "a package is flagged and nobody can say which of its functions you call"
+    ],
+    "move": "Build a call graph from your real entry points and ask whether a path reaches the vulnerable function. Treat unreachable findings as deprioritised rather than closed, and re-run the analysis as the code changes.",
+    "invariant": "A finding is actionable only if a path exists from an entry point to the vulnerable code. Presence in the tree establishes nothing, which is why the inventory count cannot be used to decide order of work.",
+    "breaks": "It errs in both directions. Being conservative, it reports paths that require conditions that never occur — which is the undecidability result showing up, not a tool defect. But investigations have also found genuinely exploitable issues labelled unreachable, because dynamic loading, reflection and package-level granularity defeat the analysis. And reachability expires: a refactor can make an unreachable finding reachable with nothing in the report changing.",
+    "cost": {
+      "time": "call-graph construction across the dependency tree, repeated as code changes",
+      "space": "the graph, and a record of why each finding was deprioritised",
+      "beats": "counting findings, which is instant, complete, and cannot distinguish exposure from inventory"
+    },
+    "worked": {
+      "problem": "Why is a vulnerability count not a risk measure?",
+      "reasoning": "Because it measures your inventory and risk is about your exposure, and the two are related only loosely.\n\nA count answers: how many known vulnerabilities exist in packages present in my tree. Every term there is about what you have installed. Nothing in it refers to whether your code calls the affected function, whether that call is reachable from an entry point, or whether an attacker can influence the inputs along the way.\n\nYou can see the gap by thinking about what changes the number. Adding a dependency you never call raises it. Deleting an unused transitive package lowers it. Neither action changes what an attacker can do, so the metric moves independently of the thing it is supposed to track — which is the definition of a bad measure.\n\nThe useful reframing is that the scan produces candidates and the call graph produces findings. And then be careful, because the analysis that converts one into the other is conservative by necessity and has been observed to be wrong in both directions, so \"unreachable\" is a reason to look later rather than a reason to stop looking.",
+      "code": "what a scan counts:\n\n   package in the tree + known CVE  -> +1\n\n   add an unused dependency   -> count UP\n   remove an uncalled package -> count DOWN\n   attacker capability        -> unchanged\n\n   a measure that moves independently of the thing\n   it claims to track.\n\nwhat a call graph asks:\n\n   entry point (handler / job / CLI)\n      -> ... -> vulnerable function ?\n\n   reachable    -> a finding\n   unreachable  -> a candidate, deprioritised,\n                   with an expiry date\n\n   and it is wrong BOTH ways:\n     conservative  -> paths that never occur\n                      (= undecidability, not a bug)\n     blind spots   -> dynamic loading, reflection,\n                      package-level granularity\n                      -> exploitable, labelled safe"
+    },
+    "practice": "Take the longest-standing finding in your scanner output and determine by hand whether your code calls the vulnerable function. Then note how long that took, and multiply by the number of findings you are currently ignoring."
+  },
+  "beats": {
+    "broke": "Scanners count known vulnerabilities in packages present in the tree. That is an inventory measure: it rises when you add a dependency you never call and falls when you remove one nobody used, neither of which changes what an attacker can do.",
+    "fix": "Ask whether a path exists from a real entry point to the vulnerable function, which converts the question from what is installed to what is reachable. The frequently quoted figure is that under 9.5% of dependency vulnerabilities are reachable from application code.",
+    "cost": "The analysis must be conservative, so it reports paths that cannot occur — that is undecidability arriving in your build output. Worse, it has been found wrong in both directions, and reachability drifts as the code changes.",
+    "interview": {
+      "q": "Why is a count of dependency vulnerabilities not a measure of risk?",
+      "trap": "Answering that some findings are low severity. Severity is a separate axis; the problem is that the count is measuring the wrong quantity entirely.",
+      "answer": "Because it measures inventory and risk is exposure. The count answers how many known vulnerabilities exist in packages present in your tree — every term is about what you installed, and none refers to whether your code calls the affected function or whether an attacker can reach it.\n\nThe clearest test is what moves the number. Adding a dependency you never call raises it; deleting an unused transitive package lowers it; neither changes what an attacker can do. A metric that moves independently of the thing it claims to track is not measuring that thing.\n\nThe better question is whether a path exists from a real entry point to the vulnerable function, and the widely quoted figure — under 9.5% reachable — comes from a vendor, so take the direction rather than the digits.\n\nThen hold the answer carefully. Static reachability must be conservative, because deciding what an arbitrary program does is not available, so its false alarms are the undecidability result rather than a defect. But it has also been found to mark genuinely exploitable issues unreachable, since dynamic loading and package-level granularity defeat it — so unreachable means look later, not stop looking."
+    }
+  },
+  "blueprint": "Two different questions:\n\n  INVENTORY          EXPOSURE\n  ---------          --------\n  is a vulnerable    is there a path\n  package in my      from MY entry point\n  tree?              to the vulnerable\n                     function?\n\n  what moves the inventory count:\n     add an uncalled dependency   -> up\n     drop an unused transitive    -> down\n     attacker capability          -> unchanged\n\n  so the count tracks something other than risk.\n\n  the analysis that fixes it, and its two failures:\n\n     conservative     -> reports impossible paths\n                         (F.13 in your build output)\n     blind            -> dynamic loading, reflection,\n                         package-level granularity\n                         -> exploitable, marked safe\n\n  therefore: unreachable = deprioritised, with an\n  expiry date. never = closed.",
+  "takeaway": "A vulnerability count measures what you installed rather than what you are exposed to, and the call-graph analysis that fixes it is necessarily conservative and observably wrong in both directions — so unreachable means look later, not stop looking."
+}

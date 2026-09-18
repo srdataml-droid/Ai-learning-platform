@@ -1,0 +1,84 @@
+{
+  "taskId": "P.6",
+  "title": "Roles and row level security",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Saltzer and Schroeder state the principle of least privilege as: every program and every user of the system should operate using the least set of privileges necessary to complete the job.",
+      "type": "quote",
+      "tokens": [
+        "Saltzer",
+        "Schroeder",
+        "1975"
+      ],
+      "source": {
+        "title": "Saltzer, J. H. and Schroeder, M. D., The Protection of Information in Computer Systems, Proceedings of the IEEE 63(9), September 1975",
+        "url": "https://www.cs.virginia.edu/~evans/cs551/saltzer/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "They state complete mediation as: every access to every object must be checked for authority.",
+      "type": "quote",
+      "tokens": [
+        "Saltzer",
+        "Schroeder"
+      ],
+      "source": {
+        "title": "Saltzer, J. H. and Schroeder, M. D., The Protection of Information in Computer Systems, Proceedings of the IEEE 63(9), September 1975",
+        "url": "https://www.cs.virginia.edu/~evans/cs551/saltzer/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "They state fail-safe defaults as: base access decisions on permission rather than exclusion.",
+      "type": "quote",
+      "tokens": [
+        "Saltzer",
+        "Schroeder"
+      ],
+      "source": {
+        "title": "Saltzer, J. H. and Schroeder, M. D., The Protection of Information in Computer Systems, Proceedings of the IEEE 63(9), September 1975",
+        "url": "https://www.cs.virginia.edu/~evans/cs551/saltzer/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "They also state economy of mechanism as keeping the design as simple and small as possible, with the rationale that errors producing unwanted access paths will not be noticed during normal use, so inspection becomes necessary — and for inspection to succeed the design must be small and simple.",
+      "type": "quote",
+      "tokens": [
+        "Saltzer",
+        "Schroeder"
+      ],
+      "source": {
+        "title": "Saltzer, J. H. and Schroeder, M. D., The Protection of Information in Computer Systems, Proceedings of the IEEE 63(9), September 1975",
+        "url": "https://www.cs.virginia.edu/~evans/cs551/saltzer/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "A 2012 retrospective assesses the principles unevenly: separation of privilege and least privilege have become staples of practice, while simplicity and complete mediation have failed to thrive.",
+      "type": "event",
+      "tokens": [
+        "Saltzer",
+        "2012"
+      ],
+      "source": {
+        "title": "Smith, R. E., A Contemporary Look at Saltzer and Schroeder’s 1975 Design Principles, IEEE Security and Privacy, 2012",
+        "url": "https://dl.acm.org/doi/abs/10.1109/MSP.2012.85",
+        "kind": "secondary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "if authorisation is enforced in application code then every path to the data must remember to check, and every path includes the ones written next quarter",
+    "fix": "move the check to where the data is, so that access is mediated structurally rather than by everyone remembering",
+    "cost": "the policy now lives in a different language, far from the code that motivates it, and the store must be told who the user is",
+    "interview": "why complete mediation is the principle that keeps failing"
+  }
+}

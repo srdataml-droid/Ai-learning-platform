@@ -94,18 +94,7 @@ Study order: the sequence first, then the five habits running underneath.
 
 ## Track P — Security
 
-10 of 13 still missing.
-
-- [ ] `P.1` Threat modelling
-- [ ] `P.2` Secrets, and never in git
-- [ ] `P.4` XSS and CSRF
-- [ ] `P.6` Roles and row level security
-- [ ] `P.7` HTTPS and certificates
-- [ ] `P.8` Input validation everywhere
-- [ ] `P.9` Dependency vulnerabilities
-- [ ] `P.10` Rate limiting as defence
-- [ ] `P.12` Prompt injection and tool abuse
-- [ ] `P.13` PII, retention, consent
+**Complete.** All 13 written.
 
 ## Track M — Math for machines
 
@@ -240,7 +229,7 @@ Study order: the sequence first, then the five habits running underneath.
 
 ---
 
-**Total remaining: 151 of 313.**
+**Total remaining: 141 of 313.**
 
 Regenerate: `node tools/missing-lessons.mjs > docs/MISSING-LESSONS.md`
 

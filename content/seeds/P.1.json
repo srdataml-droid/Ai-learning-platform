@@ -1,0 +1,101 @@
+{
+  "taskId": "P.1",
+  "title": "Threat modelling",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The four question framework asks: what are we working on; what can go wrong; what are we going to do about it; and did we do a good enough job. It is methodology-neutral, working with sticky notes, a whiteboard, a formal tool or a model kept in code.",
+      "type": "event",
+      "tokens": [
+        "Shostack"
+      ],
+      "source": {
+        "title": "Shostack, A., The Four Question Framework for Threat Modeling",
+        "url": "https://shostack.org/files/papers/The_Four_Question_Framework.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Shostack describes the second question as both the heart of threat modelling and the hardest part, and notes it can be answered by anything from a brainstorm to a structured method such as STRIDE, kill chains or attack trees.",
+      "type": "event",
+      "tokens": [
+        "Shostack",
+        "STRIDE"
+      ],
+      "source": {
+        "title": "Shostack, A., The Four Question Framework for Threat Modeling",
+        "url": "https://shostack.org/files/papers/The_Four_Question_Framework.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "He argues that the first question does scoping work: it encourages modelling whatever you are working on, narrowing the area to a manageable size, and that systems being actively worked on have change energy, so proposed changes are more likely to land than bugs filed against software in maintenance.",
+      "type": "event",
+      "tokens": [
+        "Shostack"
+      ],
+      "source": {
+        "title": "Shostack, A., The Four Question Framework for Threat Modeling",
+        "url": "https://shostack.org/files/papers/The_Four_Question_Framework.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "STRIDE was introduced by Loren Kohnfelder and Praerit Garg in a document titled The threats to our products, published on 1 April 1999 in an internal Microsoft journal and not publicly available for over a decade. The acronym covers spoofing, tampering, repudiation, information disclosure, denial of service and elevation of privilege, corresponding to authentication, integrity, non-repudiation, confidentiality, availability and authorisation.",
+      "type": "date",
+      "tokens": [
+        "STRIDE",
+        "Loren Kohnfelder",
+        "Kohnfelder",
+        "Praerit Garg",
+        "Garg",
+        "Microsoft",
+        "1999"
+      ],
+      "source": {
+        "title": "Shostack, A., 20 Years of STRIDE: Looking Back, Looking Forward — on Kohnfelder and Garg, The threats to our products, Microsoft Interface, 1 April 1999",
+        "url": "https://shostack.org/blog/20-years-of-stride-looking-back-looking-forward/",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "Shostack cautions that while STRIDE is a good framework for thinking about threats, it makes a poor classification system. Kohnfelder himself concedes that threat modelling with data flow diagrams plus STRIDE enumeration is, as originally envisioned, a major undertaking for large software systems.",
+      "type": "event",
+      "tokens": [
+        "Shostack",
+        "STRIDE",
+        "Kohnfelder"
+      ],
+      "source": {
+        "title": "Shostack, A., 20 Years of STRIDE: Looking Back, Looking Forward — on Kohnfelder and Garg, The threats to our products, Microsoft Interface, 1 April 1999",
+        "url": "https://shostack.org/blog/20-years-of-stride-looking-back-looking-forward/",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c6",
+      "text": "Saltzer and Schroeder introduce their design principles by observing that in the absence of methodical techniques, experience has provided some useful principles that can guide the design, and caution that these are warnings rather than absolute rules: a violation signals possible trouble warranting careful review.",
+      "type": "quote",
+      "tokens": [
+        "Saltzer",
+        "Schroeder"
+      ],
+      "source": {
+        "title": "Saltzer, J. H. and Schroeder, M. D., The Protection of Information in Computer Systems, Proceedings of the IEEE 63(9), September 1975",
+        "url": "https://www.cs.virginia.edu/~evans/cs551/saltzer/",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "security review has no definition of done, so it expands until someone stops it and nobody can say whether it was adequate",
+    "fix": "four questions that bound the activity: what are we building, what can go wrong, what will we do, and did we do enough",
+    "cost": "the second question is the hard one and no framework makes it easy — the structured methods are prompts rather than procedures",
+    "interview": "why threat modelling needs a fourth question at all"
+  }
+}

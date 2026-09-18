@@ -1,0 +1,101 @@
+{
+  "taskId": "P.4",
+  "title": "XSS and CSRF",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Contextual output encoding is the technique for stopping cross-site scripting. The defence is applied on output, at the last moment before untrusted data is added to a document, and the encoding required depends on where in the document the value lands — entity, attribute, script and URL contexts each differ.",
+      "type": "event",
+      "tokens": [
+        "XSS"
+      ],
+      "source": {
+        "title": "Cross Site Scripting Prevention Cheat Sheet, OWASP Cheat Sheet Series",
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Entity encoding does not work if untrusted data is placed inside a tag, inside an event handler attribute, inside a stylesheet, or in a URL. The browser decodes entities first, so an encoded angle bracket reverts within a script execution context and the script runs. Failing to match the context is a primary reason filters are bypassed.",
+      "type": "event",
+      "tokens": [
+        "XSS"
+      ],
+      "source": {
+        "title": "Cross Site Scripting Prevention Cheat Sheet, OWASP Cheat Sheet Series",
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Where user-authored markup is intended, encoding would break the feature, so sanitisation is used instead. Where applications construct the document in script rather than on the server, server-side output encoding remains necessary and is no longer sufficient.",
+      "type": "event",
+      "tokens": [
+        "XSS"
+      ],
+      "source": {
+        "title": "Cross Site Scripting Prevention Cheat Sheet, OWASP Cheat Sheet Series",
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "Chrome set SameSite=Lax as the default for cookies that do not specify the attribute, announced for Chrome 80 in February 2020, delayed and completed in 2020. Lax is the default in Chrome, Edge and Opera, and not in Firefox or Safari.",
+      "type": "date",
+      "tokens": [
+        "SameSite",
+        "Lax",
+        "Chrome",
+        "Edge",
+        "Opera",
+        "Firefox",
+        "Safari",
+        "2020"
+      ],
+      "source": {
+        "title": "SameSite, OWASP Foundation community page — browser defaults and the limits of the attribute",
+        "url": "https://owasp.org/www-community/SameSite",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "The browser default is not the same as setting the attribute explicitly: under the default, a cookie at most two minutes old is still sent on a top-level cross-site POST request. Setting the value explicitly removes that exception. Lax also still permits form submissions from subdomains of the primary domain to carry cookies.",
+      "type": "event",
+      "tokens": [
+        "Lax",
+        "SameSite",
+        "POST"
+      ],
+      "source": {
+        "title": "SameSite, OWASP Foundation community page — browser defaults and the limits of the attribute",
+        "url": "https://owasp.org/www-community/SameSite",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c6",
+      "text": "The attribute provides only partial protection against cross-site attacks, and the standing recommendation is to set it explicitly and to use a token as well, or to check the origin header.",
+      "type": "event",
+      "tokens": [
+        "SameSite",
+        "CSRF"
+      ],
+      "source": {
+        "title": "SameSite, OWASP Foundation community page — browser defaults and the limits of the attribute",
+        "url": "https://owasp.org/www-community/SameSite",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a browser cannot tell your data from your markup, and a server cannot tell a user’s intent from a user’s browser — two different confusions taught as one topic",
+    "fix": "encode on output for the specific context the value lands in, and authenticate the request’s intent rather than only its sender",
+    "cost": "the encoding is context-dependent so the wrong one is worse than none, and the cookie attribute that mostly fixes the second is not a browser guarantee",
+    "interview": "why these two are always taught together when they are not the same problem"
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "taskId": "P.13",
+  "title": "PII, retention, consent",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Article 5 sets out the principles for processing personal data: lawfulness, fairness and transparency; purpose limitation; data minimisation; accuracy; storage limitation; integrity and confidentiality; and accountability.",
+      "type": "event",
+      "tokens": [
+        "Article",
+        "GDPR"
+      ],
+      "source": {
+        "title": "Regulation (EU) 2016/679, Article 5: Principles relating to processing of personal data",
+        "url": "https://gdpr-text.com/read/article-5/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Purpose limitation requires that personal data be collected for specified, explicit and legitimate purposes and not further processed in a manner incompatible with those purposes.",
+      "type": "quote",
+      "tokens": [
+        "Article"
+      ],
+      "source": {
+        "title": "Regulation (EU) 2016/679, Article 5: Principles relating to processing of personal data",
+        "url": "https://gdpr-text.com/read/article-5/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Data minimisation requires that data be adequate, relevant and limited to what is necessary in relation to the purposes for which they are processed. The same requirement is reiterated as a technical and organisational measure, obliging controllers to process only the personal data necessary for each specific purpose.",
+      "type": "quote",
+      "tokens": [
+        "Article"
+      ],
+      "source": {
+        "title": "Regulation (EU) 2016/679, Article 5: Principles relating to processing of personal data",
+        "url": "https://gdpr-text.com/read/article-5/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "Storage limitation requires that personal data be kept in a form which permits identification of data subjects for no longer than is necessary for the purposes for which the personal data are processed. Once the purpose is fulfilled the data must be erased, anonymised, or archived under specified safeguards.",
+      "type": "quote",
+      "tokens": [
+        "Article"
+      ],
+      "source": {
+        "title": "Regulation (EU) 2016/679, Article 5: Principles relating to processing of personal data",
+        "url": "https://gdpr-text.com/read/article-5/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "There is no universal table of retention periods. The specific record, the processing purpose, the country and the applicable sector rule all have to be identified before a period can be chosen.",
+      "type": "event",
+      "tokens": [
+        "GDPR"
+      ],
+      "source": {
+        "title": "Regulation (EU) 2016/679, Article 5: Principles relating to processing of personal data",
+        "url": "https://gdpr-text.com/read/article-5/",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "systems collect what is available and keep it indefinitely, because collecting is cheap, deleting is work, and nothing in the design forces either question to be asked",
+    "fix": "make the purpose explicit first, because what may be collected and how long it may be kept are both derived from it and neither is computable without it",
+    "cost": "deletion is genuinely hard once data has spread into backups, derived tables, caches and third parties, so this is a design property rather than a later operation",
+    "interview": "why a vague purpose statement is an engineering problem and not a legal one"
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "id": "P.1",
+  "trackId": "P",
+  "trackName": "Security",
+  "title": "Threat modelling",
+  "status": "traced",
+  "seed": "P.1",
+  "story": "The reason security review goes badly is rarely that nobody can imagine an attack. It is that the activity has no edges. There is no statement of what is in scope, no criterion for having found enough, and no way to tell afterwards whether it was worth doing — so it either expands until someone calls time, or it is skipped because nobody can estimate it.\n\nThe four question framework is a response to that shapelessness rather than a method for finding threats. What are we working on. What can go wrong. What are we going to do about it. Did we do a good enough job. It is deliberately methodology-neutral: it works with sticky notes, a whiteboard, a formal tool, or a model kept alongside the code, because it is not telling you how to answer, only what has to be answered.\n\nTwo of the questions are doing quiet structural work. The first is scoping — model the thing you are working on, which narrows the area to something finishable, and which Shostack argues also matters because a system under active development has change energy, so the fixes you propose ride along with work already happening rather than arriving as bugs against something in maintenance. The fourth is the one people leave out and the only one that makes the exercise improvable: without it you never learn whether your threat modelling is any good.\n\nThe second question is the hard one, and the honest version of this lesson says so. STRIDE, introduced by Kohnfelder and Garg in 1999 in an internal Microsoft document that stayed unpublished for over a decade, gives you six categories to prompt with — spoofing, tampering, repudiation, information disclosure, denial of service, elevation of privilege — mapping to authentication, integrity, non-repudiation, confidentiality, availability and authorisation. Shostack cautions that it is a good framework for thinking and a poor classification system, and Kohnfelder concedes that diagrams plus full enumeration is a major undertaking on a large system. So the prompts help and the imagination is still yours. Saltzer and Schroeder said the same thing about their own principles: warnings rather than rules, where a violation signals possible trouble warranting review.",
+  "problem": {
+    "name": "Bounding a security review",
+    "aka": [
+      "threat modelling",
+      "the four questions"
+    ],
+    "shape": "You need to find the ways a system can be attacked, and the search space is unbounded, so the activity has no natural stopping point.",
+    "tell": [
+      "the security review has been running for weeks and nobody can say what remains",
+      "a design document has a security section that lists mitigations without naming threats",
+      "nobody can answer whether last quarter’s threat model was any good"
+    ],
+    "move": "Answer four questions in order: what are we working on, what can go wrong, what are we going to do about it, and did we do a good enough job. Scope with the first, use prompts such as STRIDE for the second, and record the fourth so the exercise can improve.",
+    "invariant": "The scope is something currently being worked on. That keeps the space finishable, and it means the mitigations arrive while the design is still moving rather than as bugs against code nobody is touching.",
+    "breaks": "The second question does not get easier. Structured methods are prompts, not procedures: they suggest categories and cannot enumerate what you failed to imagine, and Shostack himself says the best-known of them makes a poor classification system. Full enumeration over a large system is also a major undertaking, which is precisely the cost the lighter framework exists to avoid.",
+    "cost": {
+      "time": "bounded by the scope you chose, which is the point",
+      "space": "a record of decisions and assumptions, which the fourth question depends on",
+      "beats": "unstructured review, which has no scope, no prompts and no way to assess itself"
+    },
+    "worked": {
+      "problem": "Why does threat modelling need a fourth question at all?",
+      "reasoning": "Because without it the activity cannot improve, and an activity that cannot improve will be judged on how it feels rather than on what it caught.\n\nThe first three questions produce an output: a scope, a list of threats, a set of mitigations. None of them ask whether the output was any good, and nothing else in the process will — an incident six months later is attributed to something else, and an absence of incidents is attributed to the review whether or not it was earned.\n\nAsking it explicitly forces the things that make assessment possible: recording what you decided, what you assumed, and what you knowingly left. Then when something does go wrong you can ask whether it was on the list, whether the assumption that excluded it was reasonable at the time, and whether the method would have surfaced it.\n\nThat is the difference between a practice and a ritual, and it is the same distinction as D.11’s: an activity justified by an outcome nobody measures drifts toward whatever is easiest to perform.",
+      "code": "1. what are we working on?\n     -> SCOPE. something being actively worked on.\n        finishable, and the fixes ride along with\n        work already happening.\n\n2. what can go wrong?\n     -> the hard one. prompts help:\n        S poofing        -> authentication\n        T ampering       -> integrity\n        R epudiation     -> non-repudiation\n        I nfo disclosure -> confidentiality\n        D enial of svc   -> availability\n        E of privilege   -> authorisation\n\n3. what are we going to do about it?\n     -> mitigate / accept / transfer, and record it\n\n4. did we do a good enough job?\n     -> the only question that makes 1-3 improvable\n        without it: judged on how it felt"
+    },
+    "practice": "Take one feature you are currently building and answer all four questions in under an hour, writing the answers down. Then look at question four honestly: what would have to be true for you to find out that your answer to question two was incomplete?"
+  },
+  "beats": {
+    "broke": "Security review has no natural boundary. Without a stated scope it expands until someone stops it; without a completion criterion nobody can say whether it was adequate; and without a record nobody can tell later whether it helped.",
+    "fix": "Four questions that bound and structure the activity: what are we working on, what can go wrong, what are we going to do about it, did we do a good enough job — deliberately independent of any particular method.",
+    "cost": "The second question remains hard. Structured prompts like STRIDE suggest categories and cannot supply imagination, its own author calls it a poor classification system, and full enumeration over a large system is a major undertaking.",
+    "interview": {
+      "q": "Why does threat modelling need a fourth question about whether you did a good job?",
+      "trap": "Treating it as a retrospective nicety. It is the only question that makes the other three assessable, which is what separates a practice from a ritual.",
+      "answer": "Because without it the activity cannot improve, and anything that cannot be assessed gets judged on how it felt to perform.\n\nThe first three questions produce a scope, a list of threats and a set of mitigations. Nothing in them asks whether that output was good, and nothing else will: a later incident gets attributed elsewhere, and an absence of incidents gets credited to the review whether or not it earned it.\n\nAsking explicitly forces the practices that make assessment possible — recording decisions, assumptions, and what you knowingly left out. Then when something does go wrong you can check whether it was on the list, whether the assumption that excluded it was defensible at the time, and whether your method would have surfaced it.\n\nIt is the same failure as measuring code review on defects found: an activity justified by an outcome nobody measures drifts toward whatever is cheapest to perform, which for threat modelling is producing a document that lists mitigations without naming the threats they mitigate."
+    }
+  },
+  "blueprint": "Four questions, and what each one is actually for:\n\n  1. what are we working on?      -> BOUNDS it\n  2. what can go wrong?           -> the work\n  3. what will we do about it?    -> the output\n  4. did we do a good job?        -> makes 1-3\n                                     improvable\n\n  drop 1 -> unbounded, never finishes\n  drop 4 -> unassessable, becomes ritual\n\n  and be honest about 2: the prompts are prompts.\n\n     STRIDE gives six categories to think WITH\n     it does not enumerate what you failed to imagine\n     its own author: good framework, poor taxonomy\n\n  same caution Saltzer and Schroeder gave for their\n  principles: warnings, not rules. a violation means\n  look carefully, not stop.",
+  "takeaway": "Threat modelling fails from shapelessness rather than lack of imagination, so the framework’s value is bounding the activity — and the fourth question is the only one that makes the other three improvable rather than ritual."
+}

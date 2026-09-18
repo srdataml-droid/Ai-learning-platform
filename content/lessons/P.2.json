@@ -1,0 +1,48 @@
+{
+  "id": "P.2",
+  "trackId": "P",
+  "trackName": "Security",
+  "title": "Secrets, and never in git",
+  "status": "traced",
+  "seed": "P.2",
+  "story": "The scale is worth having in front of you before the advice. Meli, McNiece and Reaves scanned billions of files across a six-month window of live public commits plus a snapshot covering 13% of open-source repositories, and found leakage affecting over 100,000 repositories with thousands of new unique secrets appearing every day. That is not a handful of careless people; it is a steady rate, which means the cause is in the process rather than in the participants.\n\nTheir account of the cause is structural and worth repeating exactly: public code has to manage authentication secrets that must stay private, and the ordinary way to make a secret available to a program is to put it where the program is — which is the tree that gets shared. The default action satisfies the immediate requirement and violates the standing one, and nothing objects at the time.\n\nThe property that makes this worse than an ordinary mistake is that a repository is not a file, it is a history, and the history is distributed. Committing a secret and removing it in the next commit leaves it in the previous one. Rewriting history removes it from your copy and not from clones, forks, caches, or anything that mirrored you in between. So the operation people reach for — delete it and push — changes what is visible without changing what is available, and the credential remains as valid as it was.\n\nWhich is why the remedy is rotation, not deletion, and why the thing to internalise is the asymmetry: committing takes a second, and undoing it means replacing a live credential in every system that uses it, which is an operation with real downtime risk. Saltzer and Schroeder have the other half of the discomfort. They describe compromise recording — knowing that a compromise occurred as a substitute for preventing it — and note that it is rarely usable in computing because discovery is hard to guarantee. Here that bites directly: you will usually not be able to establish whether anyone took the key, only that they could have.",
+  "problem": {
+    "name": "Secret handling",
+    "aka": [
+      "credentials out of the tree",
+      "secret leakage"
+    ],
+    "shape": "A running program needs a credential, and the artefact that carries the program to the machine is also the artefact that is shared.",
+    "tell": [
+      "a configuration file with a real value in it is tracked, or was once",
+      "onboarding instructions say to copy a key into a file",
+      "nobody can say when a given credential was last changed"
+    ],
+    "move": "Keep the secret out of the tree entirely — supplied by the environment, a secret manager, or a mounted file that is never tracked — so that no revision has ever contained it. Commit an example file with placeholder values instead.",
+    "invariant": "No revision of the repository has ever contained the secret. It is the whole history that matters rather than the current state, because that is what is distributed and that is what is searched.",
+    "breaks": "It breaks the moment one is committed, and it breaks permanently. History is distributed, so rewriting yours does not reach clones, forks or caches, and you cannot enumerate who has a copy. From that point the only action that restores the property is rotating the credential — and you generally cannot determine whether anyone used it, only that they could have.",
+    "cost": {
+      "time": "more setup: something must inject the value at run time",
+      "space": "a second system to run and secure, which now holds everything",
+      "beats": "a file in the repository, which is simpler, works immediately, and fails silently and permanently"
+    },
+    "worked": {
+      "problem": "Why does deleting a committed secret not fix anything?",
+      "reasoning": "Because you are deleting it from the current state of something whose value is that it keeps every previous state, and because copies of those states are not yours.\n\nRemove it in a new commit and it sits in the old one, retrievable by anyone with the repository. Rewrite the history and your copy no longer has it — but clones taken before the rewrite do, forks do, mirrors do, and any cache or scanner that fetched in the interval does. Public hosts are scanned continuously precisely because this is so common, and the study measured thousands of new secrets appearing daily, which tells you how well-attended that search is.\n\nSo the question is not whether the secret is visible but whether it is still valid, and those are independent. The only operation that changes the second is rotating it.\n\nThe uncomfortable part is what you cannot learn. You will usually have no way to establish whether the credential was taken, which means the decision to rotate has to be made on the possibility rather than on evidence.",
+      "code": "committed a key, then deleted it:\n\n  commit A   key present        <- still there\n  commit B   key removed        <- current state clean\n\n  git log -p / git show A       -> key\n  any clone taken at A          -> key\n  any fork                      -> key\n  any scanner that fetched      -> key\n\n  rewrite history?\n     your copy: clean\n     clones, forks, mirrors, caches: not yours\n\n  visible  and  valid  are independent.\n  deletion changes the first.\n  only ROTATION changes the second.\n\n  and compromise recording doesn't save you here:\n  you can rarely establish whether it was taken,\n  only that it could have been."
+    },
+    "practice": "Run a history search for a credential pattern across your repositories, not just a scan of the current tree. For anything you find, note the date of the commit and then ask what it would take to rotate that credential today."
+  },
+  "beats": {
+    "broke": "A program needs a credential available where it runs, and the easiest way to arrange that is to put it in the tree that gets shared. The default action satisfies the immediate need and violates the standing rule, with nothing objecting at the time.",
+    "fix": "Keep the value out of the tree entirely so that no revision has ever contained it — environment, secret manager, or an untracked mount — with a placeholder example file committed in its place.",
+    "cost": "It is a second system to run and secure, and it now holds everything. And once a secret is committed the remedy is rotating a live credential rather than deleting a line, which carries real operational risk.",
+    "interview": {
+      "q": "Why does deleting a committed secret not fix the problem?",
+      "trap": "Answering that you must also rewrite the history. That is necessary hygiene and still does not make the credential safe, because the copies are not yours.",
+      "answer": "Because visibility and validity are independent, and deletion only touches the first.\n\nA repository is a history, not a file. Removing the value in a new commit leaves it in the old one. Rewriting history cleans your copy and cannot reach clones taken beforehand, forks, mirrors, or any scanner that fetched in the interval — and public hosts are scanned continuously, which is why one study measured thousands of new unique secrets appearing every day across more than a hundred thousand repositories.\n\nSo the only operation that restores the property is rotating the credential. Everything else changes what is easy to see while leaving what is usable exactly as it was.\n\nThe genuinely uncomfortable part is what you cannot learn. Saltzer and Schroeder describe compromise recording — knowing a compromise happened instead of preventing it — and note it is rarely usable in computing because discovery is hard to guarantee. Here you will usually be unable to establish whether the key was taken, only that it could have been, so the decision to rotate is made on possibility rather than evidence."
+    }
+  },
+  "blueprint": "The two properties, and which one you can change:\n\n              visible?      valid?\n  commit it    yes           yes\n  delete it    less          yes   <-- unchanged\n  rewrite      your copy     yes   <-- unchanged\n               only\n  ROTATE       whatever      NO\n\n  because a repo is a HISTORY, and the history is\n  distributed: clones, forks, mirrors, caches,\n  scanners. none of them are yours to edit.\n\n  measured backdrop:\n     >100,000 repositories affected\n     thousands of NEW unique secrets per day\n     one common scanner caught 25-29% of them\n\n  so the rule is about the whole history:\n     no revision has EVER contained it.",
+  "takeaway": "A repository is a distributed history, so deleting a committed secret changes how visible it is and not whether it works — only rotation does that, and you will usually never learn whether it was taken."
+}

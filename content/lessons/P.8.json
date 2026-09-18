@@ -1,0 +1,49 @@
+{
+  "id": "P.8",
+  "trackId": "P",
+  "trackName": "Security",
+  "title": "Input validation everywhere",
+  "status": "traced",
+  "seed": "P.8",
+  "story": "The title is the conventional advice and it hides a conflation worth taking apart, because the two things it merges have different purposes, different locations and different failure modes.\n\nThe first job is validation. It asks whether a value is the kind of thing you expect — is this a date, is this quantity positive, is this identifier one of ours — and the correct response to failure is refusal. It belongs at the boundary, it is a business question rather than a security one, and doing it once is right because the answer does not change as the value travels.\n\nThe second job is escaping or parameterising, and it asks something completely different: how do I hand this value to that interpreter without part of it being read as instruction. That question has no single answer, because the answer depends on which interpreter — a database, a document, a shell, a template. It belongs at the sink, at the last moment before the value crosses, and the guidance is explicit that encoders go just before rendering rather than at input time, to avoid misuse and double-encoding.\n\nMerging them produces the classic failure. A value passes validation — it really is a plausible surname — and is then interpolated into a query, where the apostrophe in it does what apostrophes do. Nothing was wrong with the validation; it answered its own question correctly. It simply cannot answer the other one, because at the boundary you do not yet know which interpreter the value will reach, and frequently it reaches several. Read against Saltzer and Schroeder, escaping is complete mediation applied to interpretation: every value reaching every interpreter, checked for that interpreter. And the fail-safe version of the whole lesson is to prefer mechanisms where data cannot be read as instruction at all — parameterised queries rather than careful quoting — because then correctness does not depend on getting an encoding right every single time.",
+  "problem": {
+    "name": "Validation versus encoding",
+    "aka": [
+      "input validation",
+      "output encoding",
+      "parameterisation"
+    ],
+    "shape": "Untrusted values must be judged acceptable and must also be handed to interpreters that may read parts of them as instructions, and those are different problems.",
+    "tell": [
+      "a single sanitise function is called at the edge and trusted everywhere after",
+      "values are escaped when they arrive rather than when they are used",
+      "a field displays with visible backslashes or doubled entities, which means it was encoded twice"
+    ],
+    "move": "Validate at the boundary against what the value is supposed to be, rejecting what fails. Separately, at each sink, use the mechanism that keeps data from being parsed as instruction for that interpreter — parameters for queries, context-appropriate encoding for documents, argument arrays for processes.",
+    "invariant": "Every value reaching an interpreter has been made safe for that interpreter, at the point it is handed over. Neither half of that can be established at the boundary, because the boundary does not know which interpreters the value will reach.",
+    "breaks": "It breaks when validation is treated as the security control. A value can be entirely valid and still contain the apostrophe, angle bracket or newline that matters to some downstream parser — and legitimate data contains exactly those characters, so rejecting them is not available. It also breaks in the other direction: encode at input and the value arrives at every sink already transformed, producing double-encoding and mangled display.",
+    "cost": {
+      "time": "the per-sink discipline never goes away, and every new sink needs it",
+      "space": "none",
+      "beats": "a single sanitisation at the edge, which is one line, feels complete, and cannot know where the value is going"
+    },
+    "worked": {
+      "problem": "Why can validating input not be the defence against injection?",
+      "reasoning": "Because validation and injection are answering different questions, and the injection question is not askable at the boundary.\n\nValidation asks: is this the kind of value I expect? Injection asks: when this value is handed to a particular interpreter, can any part of it be read as instruction rather than data? The second question has a different answer for a database, a document, a shell and a template — so it cannot be answered once, at the edge, before the destination is known.\n\nThe decisive case is the one that keeps happening. A surname containing an apostrophe is valid. It is exactly the value a customer is entitled to have. Rejecting it is not an option, and accepting it means the apostrophe travels — harmless in a document, harmful in a string-concatenated query. No amount of validation resolves that, because the character is legitimate in the domain and dangerous in one destination.\n\nWhich is why the durable answer is not better filtering but parameterisation: send the data on a channel where it cannot be parsed as instruction at all. Then correctness stops depending on getting an encoding right on every path, every time.",
+      "code": "two questions, often merged:\n\n  validation  \"is this the kind of value I expect?\"\n              at the BOUNDARY, once\n              answer on failure: REJECT\n              it is a business question\n\n  encoding    \"can this be read as instruction by\n               THAT interpreter?\"\n              at the SINK, per destination\n              answer: TRANSFORM (or don't concatenate)\n              it is a parsing question\n\n  the case that settles it:\n\n     O'Brien    -> valid surname. cannot reject.\n                -> harmless in a document\n                -> harmful in a concatenated query\n\n     no validation resolves this: the character is\n     legitimate in the domain and dangerous in one\n     destination.\n\n  fail-safe version: choose mechanisms where data\n  CANNOT be instruction.\n     parameterised query   > careful quoting\n     argument array        > a shell string"
+    },
+    "practice": "Find a value in your system that reaches two different interpreters — a page and a query, say. Check what is done to it on each path, and whether the same helper is used for both."
+  },
+  "beats": {
+    "broke": "Two jobs get merged under one name. Deciding whether a value is acceptable and making it safe for a particular interpreter have different purposes, happen in different places, and fail differently — so merging them means neither gets done properly.",
+    "fix": "Separate them. Validate at the boundary against what the value should be and reject what fails; escape or parameterise at each sink for the interpreter about to read it, applied at the last moment rather than on arrival.",
+    "cost": "You do both, and the second is per-destination and permanent — every new sink needs it. Doing it at input instead produces values that arrive pre-transformed, with double-encoding and mangled display.",
+    "interview": {
+      "q": "Why can input validation not be the defence against injection?",
+      "trap": "Answering that validation can be bypassed or is incomplete. It can be perfect and still not help, which is the stronger and more useful claim.",
+      "answer": "Because the two are answering different questions, and the injection question cannot be asked at the boundary.\n\nValidation asks whether a value is the kind of thing you expect. Injection asks whether, when handed to a particular interpreter, any part of it can be read as instruction rather than data — and that has different answers for a database, a document, a shell and a template. At the edge you often do not know which of those the value will reach, and frequently it reaches several.\n\nThe decisive case is a surname containing an apostrophe. It is valid, the customer is entitled to it, rejecting it is not an option — and it is harmless in a document and harmful in a concatenated query. No amount of validation resolves that, because the character is legitimate in the domain and dangerous in exactly one destination.\n\nWhich is why the durable answer is parameterisation rather than better filtering: put the data on a channel where it cannot be parsed as instruction at all. Then correctness stops depending on choosing the right encoding on every path, forever."
+    }
+  },
+  "blueprint": "Separate the questions or you answer neither:\n\n  VALIDATE                  ENCODE / PARAMETERISE\n  --------                  ---------------------\n  \"expected kind of value?\" \"readable as instruction\n                             by THIS interpreter?\"\n  at the boundary           at the sink\n  once                      once per destination\n  on failure: reject        on use: transform\n  business question         parsing question\n\n  the case that proves they're different:\n\n     O'Brien  -- valid, and you may not reject it\n              -- harmless in HTML\n              -- harmful in a concatenated query\n\n  and the fail-safe move, better than either:\n\n     choose channels where data CANNOT be code\n        parameterised query  >  careful quoting\n        argument array       >  a shell string\n     -> correctness stops depending on remembering",
+  "takeaway": "Validation asks whether a value is what you expected and injection asks whether an interpreter will read part of it as instruction — the second cannot be answered at the boundary, which is why parameterisation beats filtering."
+}

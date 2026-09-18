@@ -1,0 +1,53 @@
+{
+  "taskId": "P.8",
+  "title": "Input validation everywhere",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Guidance on preventing injection into documents is explicit that encoders should be applied just before rendering rather than at input time, to avoid misuse or double-encoding, and that the transformation required depends on the context the value is entering.",
+      "type": "event",
+      "tokens": [
+        "OWASP"
+      ],
+      "source": {
+        "title": "Cross Site Scripting Prevention Cheat Sheet, OWASP Cheat Sheet Series — on encoding at output and matching the context",
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The same guidance notes that where user-authored markup is intended, encoding would break the intended functionality, so sanitisation is used instead — a different operation with a different failure mode.",
+      "type": "event",
+      "tokens": [
+        "OWASP"
+      ],
+      "source": {
+        "title": "Cross Site Scripting Prevention Cheat Sheet, OWASP Cheat Sheet Series — on encoding at output and matching the context",
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Saltzer and Schroeder state complete mediation as: every access to every object must be checked for authority; and fail-safe defaults as: base access decisions on permission rather than exclusion.",
+      "type": "quote",
+      "tokens": [
+        "Saltzer",
+        "Schroeder"
+      ],
+      "source": {
+        "title": "Saltzer, J. H. and Schroeder, M. D., The Protection of Information in Computer Systems, Proceedings of the IEEE 63(9), September 1975",
+        "url": "https://www.cs.virginia.edu/~evans/cs551/saltzer/",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "two different jobs — deciding whether a value is acceptable, and handing it safely to an interpreter — get merged into one activity called validation, and neither is then done properly",
+    "fix": "separate them: validate at the boundary against what you expect, and escape or parameterise at each sink for the interpreter that will read it",
+    "cost": "you now do both, and the second is per-destination rather than once",
+    "interview": "why validating input cannot be the defence against injection"
+  }
+}

@@ -1,0 +1,107 @@
+{
+  "taskId": "P.7",
+  "title": "HTTPS and certificates",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Certificate Transparency describes a protocol for publicly logging the existence of certificates as they are issued or observed, so that anyone can audit certificate authority activity and notice the issuance of suspect certificates, and audit the logs themselves.",
+      "type": "event",
+      "tokens": [
+        "Certificate Transparency",
+        "RFC"
+      ],
+      "source": {
+        "title": "Laurie, B., Langley, A. and Kasper, E., RFC 6962: Certificate Transparency, IETF, June 2013 (Experimental)",
+        "url": "https://datatracker.ietf.org/doc/html/rfc6962",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The specification is explicit about what the mechanism does not do: the logs do not themselves prevent misissue, but they ensure that interested parties, particularly those named in certificates, can detect such misissuance.",
+      "type": "quote",
+      "tokens": [
+        "RFC"
+      ],
+      "source": {
+        "title": "Laurie, B., Langley, A. and Kasper, E., RFC 6962: Certificate Transparency, IETF, June 2013 (Experimental)",
+        "url": "https://datatracker.ietf.org/doc/html/rfc6962",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Those concerned about misissue can monitor the logs, asking regularly for all new entries, and thereby check whether domains they are responsible for have had certificates issued that they did not expect. What they do about it is outside the scope of the document.",
+      "type": "event",
+      "tokens": [
+        "RFC"
+      ],
+      "source": {
+        "title": "Laurie, B., Langley, A. and Kasper, E., RFC 6962: Certificate Transparency, IETF, June 2013 (Experimental)",
+        "url": "https://datatracker.ietf.org/doc/html/rfc6962",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "On misissued certificates, the security considerations state that those which have not been publicly logged, and thus lack a valid signed certificate timestamp, will be rejected by clients; those which do carry one will appear in the public log within the maximum merge delay, assuming the log operates correctly. That delay bounds the period during which a misissued certificate can be used without being available for audit.",
+      "type": "event",
+      "tokens": [
+        "RFC"
+      ],
+      "source": {
+        "title": "Laurie, B., Langley, A. and Kasper, E., RFC 6962: Certificate Transparency, IETF, June 2013 (Experimental)",
+        "url": "https://datatracker.ietf.org/doc/html/rfc6962",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "The guarantee is bounded: a signed timestamp is not a guarantee that a certificate is not misissued, since the subject might not have checked the logs, or the authority might have refused to revoke.",
+      "type": "quote",
+      "tokens": [
+        "RFC"
+      ],
+      "source": {
+        "title": "Laurie, B., Langley, A. and Kasper, E., RFC 6962: Certificate Transparency, IETF, June 2013 (Experimental)",
+        "url": "https://datatracker.ietf.org/doc/html/rfc6962",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c6",
+      "text": "The original specification is Experimental and has been superseded: version 2.0 was published in December 2021 and obsoletes it, though logs in the earlier style remain widely deployed.",
+      "type": "date",
+      "tokens": [
+        "RFC",
+        "2021"
+      ],
+      "source": {
+        "title": "RFC 9162: Certificate Transparency Version 2.0, IETF, December 2021 — obsoletes RFC 6962",
+        "url": "https://www.rfc-editor.org/rfc/rfc9162.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c7",
+      "text": "Saltzer and Schroeder describe compromise recording as the idea that mechanisms which reliably record that a compromise of information has occurred can be used in place of more elaborate mechanisms that completely prevent loss, and note it is rarely used in computing since it is difficult to guarantee discovery once security is broken.",
+      "type": "quote",
+      "tokens": [
+        "Saltzer",
+        "Schroeder"
+      ],
+      "source": {
+        "title": "Saltzer, J. H. and Schroeder, M. D., The Protection of Information in Computer Systems, Proceedings of the IEEE 63(9), September 1975",
+        "url": "https://www.cs.virginia.edu/~evans/cs551/saltzer/",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "an encrypted channel is worthless unless you know who is at the other end, and the binding of a name to a key has to be vouched for by somebody",
+    "fix": "a certificate binds the name to a key and is signed by an authority your client already trusts, so the chain terminates in a decision made before you arrived",
+    "cost": "trust in that store is unscoped — any authority in it can vouch for any name — so the weakest member sets the security of every name",
+    "interview": "what a certificate actually proves"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "id": "P.7",
+  "trackId": "P",
+  "trackName": "Security",
+  "title": "HTTPS and certificates",
+  "status": "traced",
+  "seed": "P.7",
+  "story": "Encryption on its own buys you a private conversation with whoever answered, which is no use if the wrong party answered. So the hard part was never the cipher; it is establishing that the key you are about to encrypt to belongs to the name you typed. A certificate is that binding written down and signed by somebody, and the chain of signatures terminates at a root your client already trusted before you made the request.\n\nThat last clause is where the interesting property lives. You are not deciding whom to trust; your operating system or browser vendor decided, and shipped the list. And the trust is not scoped: in the classical model any authority in the store can issue for any name, so the security of your domain is set by the least careful member of a list you did not curate. That is not a bug in a particular authority, it is the shape of the model.\n\nCertificate Transparency is the response, and it is unusually honest about what it is. The specification says plainly that the logs do not themselves prevent misissue, but ensure that interested parties, particularly those named in certificates, can detect it. Certificates without a signed timestamp are rejected; those with one appear in a public log within the maximum merge delay, which bounds how long a misissued certificate can be used without being available for audit. Anyone can ask a log for new entries and check whether names they are responsible for have had certificates issued they did not expect.\n\nSo the move is exactly the one Saltzer and Schroeder called compromise recording — a mechanism that records that a compromise occurred, standing in for one that prevents it — and they doubted it applied to computing because discovery is hard to guarantee. Here it works because the log is append-only and publicly auditable, which is what makes discovery something other than a hope. The limits are stated too: a timestamp is not a guarantee a certificate is legitimate, since the subject may never have looked and the authority may refuse to revoke. And a detail to keep current: the original specification is Experimental and was obsoleted by version 2.0 in December 2021, though earlier-style logs remain widely deployed.",
+  "problem": {
+    "name": "Name-to-key binding",
+    "aka": [
+      "the public key infrastructure",
+      "certificate authorities",
+      "transparency logs"
+    ],
+    "shape": "You can encrypt to a key, and you need to know that the key belongs to the party you meant to reach.",
+    "tell": [
+      "the security argument stops at \"the connection is encrypted\"",
+      "nobody can say which parties are able to issue a certificate for your domain",
+      "a certificate error is routinely clicked through"
+    ],
+    "move": "Bind the name to the key in a certificate signed by an authority the client already trusts, and — because that trust is unscoped — log every issuance publicly so the party named can detect one they did not request.",
+    "invariant": "Every certificate a client will accept is present in a public, append-only log within a bounded delay. That is what makes detection possible at all, and it is a property of the logs rather than of any authority’s diligence.",
+    "breaks": "It is detection, not prevention, and the specification says so. Misissuance still happens; the guarantee is that it becomes visible within a bounded window to someone who is looking. If the named party never looks, or the authority declines to revoke, a logged certificate is as usable as an unlogged one would have been. Trust in the root store also remains unscoped.",
+    "cost": {
+      "time": "an extra artefact per certificate and log infrastructure to operate",
+      "space": "public logs that only grow, by design",
+      "beats": "authority signatures alone, which are cheaper and make misissuance undetectable"
+    },
+    "worked": {
+      "problem": "What does a certificate actually prove?",
+      "reasoning": "That some authority in your client’s trust store was willing to assert, at some point, that this key belongs to this name. That is all, and each qualifier in it matters.\n\nSome authority: not one you chose. The list came with your operating system or browser, and any member of it can issue for any name, so your domain’s security is bounded by the least careful of them.\n\nWas willing to assert: a statement about their process, not a fact about the key. If their process was subverted, the certificate is perfectly valid and completely wrong.\n\nAt some point: which is why revocation and expiry exist and why both are awkward.\n\nRead that way, what transparency adds is precise. It does not make the assertion more reliable. It makes assertions about your name visible to you, which converts an undetectable failure into a detectable one — and detection is worth having because the party best placed to notice a bad certificate for your domain is you.",
+      "code": "what the padlock means:\n\n  \"some CA in a list I did not choose was willing\n   to assert, at some point, that this key goes\n   with this name\"\n\n  some CA        -> any member can issue for ANY name\n                    -> weakest member sets your\n                       security\n  was willing    -> a fact about their process,\n                    not about the key\n  at some point  -> hence expiry and revocation\n\n  what Certificate Transparency adds:\n\n     not: a better assertion\n     but: assertions about YOUR name become visible\n          to YOU, within a bounded delay\n\n     no SCT        -> client rejects\n     has an SCT    -> in a public log within the MMD\n\n  = compromise recording (Saltzer & Schroeder).\n    it works here because the log is append-only\n    and publicly auditable -- so discovery is\n    guaranteed rather than hoped for."
+    },
+    "practice": "Search a public transparency log for your own domain and read the list of certificates issued for it. Then decide who in your organisation would notice, and how quickly, if an unexpected one appeared tomorrow."
+  },
+  "beats": {
+    "broke": "An encrypted channel to the wrong party is worthless, so someone has to vouch that a key belongs to a name — and whoever does becomes a party you must trust without having chosen them.",
+    "fix": "A certificate binding name to key, signed by an authority already in the client’s trust store; plus public append-only logging of every issuance, so the party named can detect certificates they never requested.",
+    "cost": "It is detection rather than prevention, and the specification says so outright. Trust in the root store stays unscoped, a logged misissued certificate is still usable, and the guarantee lapses entirely if the named party never looks.",
+    "interview": {
+      "q": "What does a certificate actually prove?",
+      "trap": "Answering that it proves you are talking to the real site. It proves something narrower, and the gap between the two is where the interesting failures live.",
+      "answer": "That some authority in your client's trust store was willing to assert, at some point, that this key belongs to this name. Every qualifier in that sentence is load-bearing.\n\nTake each qualifier. The authority is not one you chose. The list shipped with your operating system or browser, and in the classical model any member can issue for any name, so your domain's security is bounded by the least careful of them. It was willing to assert — a statement about their process rather than a fact about the key; if the process was subverted the certificate is entirely valid and entirely wrong. And at some point — which is why expiry and revocation exist and why both are awkward.\n\nCertificate Transparency does not improve the assertion. It makes assertions about your name visible to you within a bounded delay, so misissuance moves from undetectable to detectable — which matters because the party best placed to notice a bad certificate for your domain is you.\n\nAnd it is honest about the limit: a signed timestamp is not a guarantee a certificate is legitimate, since the subject may never check the logs and the authority may refuse to revoke."
+    }
+  },
+  "blueprint": "The chain, and where the trust decision was made:\n\n   your browser\n      |  trusts (a list it shipped with)\n   root CA\n      |  signs\n   intermediate\n      |  signs\n   leaf: \"this key belongs to example.com\"\n\n  you did not make any of those trust decisions.\n  and the trust is UNSCOPED:\n     any CA in the store -> any name\n     -> weakest member sets everyone's security\n\n  Certificate Transparency does not fix that.\n  it changes what is DETECTABLE:\n\n     no SCT     -> rejected by clients\n     has SCT    -> public, append-only log,\n                   within the Maximum Merge Delay\n\n  i.e. compromise recording, which Saltzer and\n  Schroeder doubted for computing because discovery\n  is hard to guarantee -- and which works here\n  precisely because the log is publicly auditable.\n\n  note: the original spec is Experimental and was\n  obsoleted by version 2.0 in December 2021.",
+  "takeaway": "A certificate proves only that some authority in a list you did not choose was willing to assert a name-to-key binding — and transparency logs do not make that assertion better, they make misissuance against your name detectable within a bounded delay."
+}

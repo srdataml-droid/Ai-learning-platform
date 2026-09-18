@@ -1,0 +1,79 @@
+{
+  "taskId": "P.9",
+  "title": "Dependency vulnerabilities",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "A dependency declared in a manifest but never called is merely present; one whose vulnerable functions lie on a call-graph path starting from a real entry point is reachable. Manifest analysis tells you whether a vulnerable package is in the tree and nothing about whether your code uses the vulnerable part.",
+      "type": "event",
+      "tokens": [
+        "CVE"
+      ],
+      "source": {
+        "title": "Reachability analysis in software composition analysis — vendor and practitioner accounts of call-graph based vulnerability prioritisation, including the frequently quoted figure that under 9.5% of dependency CVEs are reachable",
+        "url": "https://www.oligo.security/academy/reachability-analysis-5-techniques-and-5-critical-best-practices",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "A widely quoted figure holds that fewer than 9.5% of vulnerabilities in open-source dependencies are reachable from the application’s own code, while the surrounding practice treats all of them as actionable. The figure comes from a vendor study rather than independent replication and should be held loosely.",
+      "type": "number",
+      "tokens": [
+        "CVE",
+        "9.5%"
+      ],
+      "source": {
+        "title": "Reachability analysis in software composition analysis — vendor and practitioner accounts of call-graph based vulnerability prioritisation, including the frequently quoted figure that under 9.5% of dependency CVEs are reachable",
+        "url": "https://www.oligo.security/academy/reachability-analysis-5-techniques-and-5-critical-best-practices",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Academic work studies function-call reachability for packages in one ecosystem, distinguishing clients that merely list a vulnerable dependency from those whose code calls its functions; the tool reported 83.3% accuracy across 60 studied projects.",
+      "type": "number",
+      "tokens": [
+        "83.3%"
+      ],
+      "source": {
+        "title": "SōjiTantei: Function-Call Reachability Detection of Vulnerable Code for npm Packages, arXiv:2109.08931",
+        "url": "https://arxiv.org/pdf/2109.08931",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "Static reachability overapproximates: if any path could reach the vulnerable function it reports reachable, even where that path requires conditions that never occur. It can also miss genuinely exploitable paths reached only through dynamic loading, and package-level analysis cannot distinguish a package imported for one harmless function from one whose vulnerable function is called.",
+      "type": "event",
+      "tokens": [
+        "CVE"
+      ],
+      "source": {
+        "title": "Reachability analysis in software composition analysis — vendor and practitioner accounts of call-graph based vulnerability prioritisation, including the frequently quoted figure that under 9.5% of dependency CVEs are reachable",
+        "url": "https://www.oligo.security/academy/reachability-analysis-5-techniques-and-5-critical-best-practices",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "One investigation of a real codebase found exploitable vulnerabilities hidden behind unreachable labels and non-exploitable findings flagged as reachable — errors in both directions. And reachability drifts: as features are added and dependencies swapped, previously unreachable vulnerabilities can become reachable, so the analysis has to be continuous.",
+      "type": "event",
+      "tokens": [
+        "CVE"
+      ],
+      "source": {
+        "title": "Reachability analysis in software composition analysis — vendor and practitioner accounts of call-graph based vulnerability prioritisation, including the frequently quoted figure that under 9.5% of dependency CVEs are reachable",
+        "url": "https://www.oligo.security/academy/reachability-analysis-5-techniques-and-5-critical-best-practices",
+        "kind": "secondary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a vulnerability count over a dependency tree measures what you have installed rather than what you are exposed to, so the number is large, unfalsifiable and useless for deciding what to do first",
+    "fix": "ask whether your code can reach the vulnerable function at all, which turns an inventory question into a question about call paths",
+    "cost": "the analysis has to be conservative, so it reports paths that cannot occur — and in practice it errs in both directions",
+    "interview": "why a vulnerability count is not a risk measure"
+  }
+}

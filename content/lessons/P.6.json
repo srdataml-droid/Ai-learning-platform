@@ -1,0 +1,49 @@
+{
+  "id": "P.6",
+  "trackId": "P",
+  "trackName": "Security",
+  "title": "Roles and row level security",
+  "status": "traced",
+  "seed": "P.6",
+  "story": "Saltzer and Schroeder give two principles that pull in the same direction here. Least privilege: every program and every user should operate using the least set of privileges necessary to complete the job. Complete mediation: every access to every object must be checked for authority. Roles serve the first — they are a compression of an unmanageable permission matrix into a handful of named bundles — and the second is the one that quietly fails.\n\nIt fails for a structural reason rather than a careless one. If authorisation is enforced in application code, then complete mediation means every path that can reach the data performs the check. That set is not fixed. It includes the endpoint written next quarter, the admin tool, the export job, the migration someone runs by hand, and the reporting query that goes straight to a replica. Each of those is written by someone solving a different problem, and the check is a convention they have to remember rather than a thing the system requires.\n\nRow level security is the move that makes mediation structural. The policy is attached to the table, so the check happens because of where the data is rather than because of how it was reached — and a path that forgets to filter returns nothing rather than everything. That inverts the failure mode, which is the whole point: a mistake now produces a missing row instead of a leaked one, which is fail-safe defaults applied to the layer that actually holds the data.\n\nThe costs are real and should be stated. The database must be told who the user is, which means connection handling has to carry identity properly rather than using one pooled superuser. The policy is expressed in a different language, in a different file, from the code whose requirements motivated it — so it can drift, and reviewing a feature no longer shows you its access rules. And against economy of mechanism there is a genuine tension: you now have authorisation in two places, and the retrospective assessment of these principles is blunt — least privilege became a staple of practice while complete mediation and simplicity did not thrive.",
+  "problem": {
+    "name": "Authorisation placement",
+    "aka": [
+      "row level security",
+      "complete mediation",
+      "least privilege"
+    ],
+    "shape": "Access rules must hold on every path to the data, and the set of paths grows without the rules being consulted.",
+    "tell": [
+      "the same filtering clause is repeated across many queries, and one of them lacks it",
+      "a reporting or admin path reaches the data without going through the usual service layer",
+      "the application connects to the store as one account with rights over everything"
+    ],
+    "move": "Express the policy where the data lives, so that access is mediated by the store rather than by each caller, and give the store the identity it needs to evaluate the policy. Keep roles as the compression of who gets what.",
+    "invariant": "A path that fails to apply the policy returns less rather than more. That inversion is the entire value: it converts forgetting into a visible absence rather than a silent disclosure.",
+    "breaks": "It breaks when the store cannot tell who is asking — a shared pooled account with broad rights defeats it completely — and it breaks against simplicity, since the rules now live in two languages and two files, and reviewing a feature no longer shows you its access rules. Superuser paths and maintenance connections routinely bypass it, which is exactly where incidents come from.",
+    "cost": {
+      "time": "policy evaluation per row, which is real and usually acceptable",
+      "space": "the policy and the identity plumbing to support it",
+      "beats": "checks in application code, which are easier to read next to the feature and rely on everyone remembering forever"
+    },
+    "worked": {
+      "problem": "Why is complete mediation the principle that keeps failing?",
+      "reasoning": "Because it quantifies over a set nobody controls. The demand that every access to every object be checked is a claim about all current and future paths to the data, and new paths are added by people whose task is something else entirely.\n\nCompare it with least privilege, which succeeded. Least privilege is a property you can establish at a point in time by looking at a grant: this account has these rights. It is checkable and it stays checked. Complete mediation is a property of every future line of code, so it degrades continuously and silently — nothing fails when someone adds the twelfth query and omits the filter, except that it returns more rows than it should.\n\nSo the only durable way to get it is to stop relying on callers. Put the check where the access physically happens, and the quantifier collapses: you are no longer claiming something about all paths, you are claiming something about one gate they all pass through.\n\nThat is also why the retrospective finds least privilege thriving and complete mediation not. One is a property of a configuration, the other a property of a codebase’s entire future.",
+      "code": "complete mediation in app code:\n\n   every path must remember\n     endpoint A      filter  ok\n     endpoint B      filter  ok\n     admin tool      filter  ok\n     export job      ...         <- written by someone\n     migration       ...            solving a different\n     report query    ...            problem\n   -> a claim about every FUTURE path\n\npolicy at the data:\n\n   the gate is the table.\n   forgetting -> 0 rows, not all rows\n\n   failure mode inverted:\n     app-layer  omission -> silent DISCLOSURE\n     data-layer omission -> visible ABSENCE\n\n  and the reason least privilege succeeded where\n  this did not:\n\n     least privilege    : a property of a GRANT\n                          checkable at a moment\n     complete mediation : a property of every line\n                          not yet written"
+    },
+    "practice": "List every way your data can be reached — including admin tools, jobs, migrations and direct replica queries — and mark which of them apply the access rules. The ones that do not are not exceptions; they are the current state of your mediation."
+  },
+  "beats": {
+    "broke": "Access rules enforced in application code must be applied on every path to the data, and that set keeps growing — endpoints, admin tools, export jobs, migrations — each written by someone whose task was something else.",
+    "fix": "Put the policy where the data lives so mediation is structural, and keep roles as the compression of who gets what. Least privilege and complete mediation are Saltzer and Schroeder’s, stated in 1975.",
+    "cost": "The store must know who is asking, so a shared privileged connection defeats it. The policy lives in another language and another file, so reviewing a feature no longer shows its access rules — a direct tension with economy of mechanism.",
+    "interview": {
+      "q": "Why is complete mediation the security principle that keeps failing in practice?",
+      "trap": "Answering that developers forget. They do, and the interesting question is why this principle in particular is so vulnerable to forgetting when others are not.",
+      "answer": "Because it quantifies over a set nobody controls. The requirement that every access to every object be checked is a claim about all paths to the data, including the ones not yet written — and new paths get added by people whose task is a feature, a report or a migration, not authorisation.\n\nContrast least privilege, which did become standard practice. That is a property you establish by inspecting a grant at a moment in time: this account holds these rights. It is checkable and it stays checked. Complete mediation is a property of a codebase's entire future, so it degrades silently — nothing breaks when the twelfth query omits the filter, it just returns rows it should not.\n\nSo the durable way to get it is to stop depending on callers. Put the check where the access physically occurs and the quantifier collapses from \"all paths\" to \"one gate they all pass through.\"\n\nThat also inverts the failure mode, which is the real prize: an omission at the data layer returns nothing instead of everything, so a mistake shows up as a missing row rather than a disclosure."
+    }
+  },
+  "blueprint": "Two principles, one succeeded and one didn't:\n\n  least privilege      a property of a GRANT\n                       checkable now, stays checked\n                       -> became standard practice\n\n  complete mediation   a property of every path,\n                       including ones not yet written\n                       -> degrades silently forever\n\n  so stop quantifying over callers:\n\n     app-layer check   \"all paths remember\"\n     data-layer policy \"one gate they all cross\"\n\n  and the failure mode inverts, which is the prize:\n\n     forgot the filter, app layer  -> ALL rows\n     forgot the filter, data layer -> NO rows\n\n  what it costs:\n     the store must know who is asking\n       (a pooled superuser defeats it entirely)\n     policy in a second language, away from the\n       feature that motivated it",
+  "takeaway": "Complete mediation fails because it is a claim about every path that will ever exist — so move the check to the data, where the quantifier collapses to one gate and a forgotten filter returns nothing instead of everything."
+}

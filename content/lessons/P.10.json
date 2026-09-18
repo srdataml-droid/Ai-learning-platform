@@ -1,0 +1,49 @@
+{
+  "id": "P.10",
+  "trackId": "P",
+  "trackName": "Security",
+  "title": "Rate limiting as defence",
+  "status": "traced",
+  "seed": "P.10",
+  "story": "Most controls in this track make something impossible. Rate limiting makes something expensive, which sounds weaker and is the only available answer to a specific class of attack: the ones that work by repetition, where each individual attempt is legitimate-looking and only the volume is hostile. A password guess is a login. An enumeration is a series of lookups. No per-request check distinguishes them, because there is nothing wrong with any one request.\n\nSaltzer and Schroeder have the concept: work factor, which they state as comparing the cost of circumventing the mechanism with the resources of a potential attacker. Rate limiting is the control that manipulates that comparison directly — it does not change whether an attack can succeed, it changes how long success takes. An attempt that cost microseconds now costs a second, and an attack needing a million attempts moves from an afternoon to a decade.\n\nThey also give the caveat, and it is unusually relevant. They note that many computer protection mechanisms are not susceptible to direct work factor calculation, because breaking them systematically may be logically impossible, leaving only indirect routes whose timing is hard to estimate. Here you can do the arithmetic, which is what makes this one of the few places the principle is usable as stated — you know the attempt rate and you can estimate the space being searched.\n\nThe cost is that you have built a mechanism whose whole purpose is refusing requests, and an attacker who cannot guess your password may be delighted to make you refuse the real user. That is why the design is almost entirely in the choice of key. Limit by source address and an attacker with many addresses is unaffected while a shared office is throttled. Limit by account and you have handed anyone a way to lock out any user by failing logins on their behalf. Limit by credential-and-source, add a global ceiling, treat the limits as different for reads and for password attempts — the arithmetic is easy and the keying is the entire problem.",
+  "problem": {
+    "name": "Raising the work factor",
+    "aka": [
+      "rate limiting",
+      "throttling",
+      "attempt budgets"
+    ],
+    "shape": "An attack succeeds through volume rather than cleverness, and no single request in it is distinguishable from ordinary use.",
+    "tell": [
+      "the attack is guessing, enumerating, scraping or exhausting",
+      "each request looks legitimate and only the pattern is hostile",
+      "the cost of one attempt to the attacker is far lower than the cost of serving it"
+    ],
+    "move": "Price the attempt. Impose a budget per unit of time, keyed to something the attacker cannot cheaply vary, and size it by arithmetic: how many attempts does the attack need, and how long does your limit make that take?",
+    "invariant": "The key is something the attacker cannot cheaply change. Everything else in the design is adjustable; if the key is cheap to vary, the limit imposes cost on the wrong party and no amount of tuning the numbers fixes it.",
+    "breaks": "The mechanism refuses requests, so it is a denial of service you built and handed an interface to. Keyed by account, it lets anyone lock out any user; keyed by address, it punishes shared networks and misses distributed attackers. And it does not prevent anything — an attacker who only needs a handful of attempts is unaffected by a limit sized against millions.",
+    "cost": {
+      "time": "a check and a counter on every request, plus shared state if you have more than one server",
+      "space": "a counter per key, which is a cardinality question before it is a storage one",
+      "beats": "per-request validation, which cannot see volume, and blocking, which cannot tell attacker from customer"
+    },
+    "worked": {
+      "problem": "What are you actually choosing when you choose the key to limit on?",
+      "reasoning": "You are choosing who pays, and the arithmetic of the limit is secondary to it.\n\nBy source address: the cost falls on whoever shares that address. An attacker with a pool of addresses divides their cost by the size of the pool and is essentially unaffected; a company behind one outbound address is throttled as a unit. You have priced the attack cheaply and the bystander expensively.\n\nBy account: the cost falls on the account holder. This defends the guessing attack well and creates a new one — anybody can exhaust anyone’s budget by failing logins on their behalf, so your defence against credential guessing is an offence against availability.\n\nBy something the attacker must pay for — a verified identity, a proof of work, a paid key — the cost falls on them, which is the only arrangement that works as intended.\n\nSo the design question is not what number to pick. It is what the attacker cannot cheaply vary, and if the answer is nothing, rate limiting is not your control.",
+      "code": "work factor = cost to the attacker vs their resources\nrate limiting moves the first term. that's all it does.\n\n  1,000,000 guesses needed\n     unlimited:   minutes\n     10/second:   ~28 hours\n     5/minute:    ~4 years\n\n  the arithmetic is the easy part.\n\n  the key decides who pays:\n\n    by IP        attacker with a pool: cost / N\n                 shared office: throttled as one\n                 -> wrong party pays\n\n    by account   defends guessing well\n                 ...and lets ANYONE lock out ANYONE\n                 -> your defence is someone's DoS\n\n    by something the attacker must buy\n                 -> the intended arrangement\n\n  if nothing is expensive for them to vary,\n  rate limiting is not your control."
+    },
+    "practice": "Take one rate limit in your system and work out, in one line of arithmetic, how long the attack it defends against would now take. Then ask who else is counted under the same key, and what it costs them."
+  },
+  "beats": {
+    "broke": "Attacks that work by repetition cannot be stopped by inspecting a request, because each attempt is indistinguishable from legitimate use and only the volume is hostile.",
+    "fix": "Price the attempt, raising what Saltzer and Schroeder call the work factor — the cost of circumventing the mechanism measured against the attacker’s resources. The attack stays possible and becomes arithmetically infeasible.",
+    "cost": "You have built a mechanism that refuses requests and exposed it to the internet. Keyed badly it becomes a denial of service against your own users, and it does nothing against an attacker who needs only a few attempts.",
+    "interview": {
+      "q": "What are you actually choosing when you choose the key to rate limit on?",
+      "trap": "Treating the key as an implementation detail and the threshold as the design. The threshold is arithmetic; the key decides whether the arithmetic applies to the attacker or to your customers.",
+      "answer": "You are choosing who pays the cost.\n\nBy source address, the cost falls on whoever shares that address: an attacker with a pool divides their cost by its size and is barely affected, while a company behind one outbound address is throttled as a unit. You have priced the attack cheaply and the bystander dearly.\n\nBy account, the cost falls on the account holder. That defends credential guessing well and creates a new attack — anyone can exhaust anyone's budget by failing logins on their behalf, so a defence against guessing becomes an availability attack on users.\n\nBy something the attacker must actually buy — a verified identity, proof of work, a paid key — the cost lands on them, which is the only arrangement that behaves as intended.\n\nSo the threshold is the easy part: how many attempts does the attack need, how long does the limit make that take. The design question is what the attacker cannot cheaply vary, and if the honest answer is nothing, rate limiting is not the right control for that threat."
+    }
+  },
+  "blueprint": "The one control that prices rather than forbids:\n\n   work factor = attacker's cost vs their resources\n   rate limiting moves the first term.\n\n   1,000,000 attempts:\n      unlimited   minutes\n      10/sec      ~28 hours\n      5/min       ~4 years\n\n   arithmetic: easy.  keying: the whole design.\n\n   key        who pays                verdict\n   ---        --------                -------\n   IP         shared networks;        wrong party\n              attacker divides by\n              their pool size\n   account    the account holder      you built a\n                                      user-targeted\n                                      DoS\n   paid /     the attacker            as intended\n   verified\n\n   and note what it never does:\n      an attack needing 3 attempts is unaffected\n      by a limit sized against a million.",
+  "takeaway": "Rate limiting is the control that raises the attacker’s work factor rather than forbidding anything, so the threshold is simple arithmetic and the real design is the key — which decides whether the cost lands on the attacker or on your own users."
+}

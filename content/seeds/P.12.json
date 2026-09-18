@@ -1,0 +1,81 @@
+{
+  "taskId": "P.12",
+  "title": "Prompt injection and tool abuse",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Prompt injection is ranked first in the OWASP list of risks for applications built on large language models, and has held that position across consecutive editions. It allows an attacker to manipulate a model’s behaviour by supplying input that changes its intended output.",
+      "type": "event",
+      "tokens": [
+        "OWASP",
+        "LLM"
+      ],
+      "source": {
+        "title": "LLM Prompt Injection Prevention Cheat Sheet, OWASP Cheat Sheet Series",
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Unlike traditional injection attacks, it exploits the common design in which natural language instructions and data are processed together without clear separation. Every input — from a user, a document, a web page or a database record — is processed through the same mechanism, with no separation between system instruction and content of the kind an operating system maintains between privileged and unprivileged execution.",
+      "type": "event",
+      "tokens": [
+        "LLM"
+      ],
+      "source": {
+        "title": "LLM Prompt Injection Prevention Cheat Sheet, OWASP Cheat Sheet Series",
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Direct injection occurs when a user includes instructions in their own input. Indirect injection is subtler: an attacker embeds instructions in documents, web pages or other content the model later processes, so summarising a page containing hidden instructions may cause the model to follow them. Instructions can also be hidden in images and other non-text inputs.",
+      "type": "event",
+      "tokens": [
+        "LLM"
+      ],
+      "source": {
+        "title": "LLM Prompt Injection Prevention Cheat Sheet, OWASP Cheat Sheet Series",
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "The recommended defences are architectural rather than textual: treat all user input and retrieved content as untrusted, clearly separate system instructions from user input and external content, refuse to let retrieved documents override system instructions, restrict tool access, sandbox execution, and require human approval for sensitive or irreversible actions.",
+      "type": "event",
+      "tokens": [
+        "OWASP",
+        "LLM"
+      ],
+      "source": {
+        "title": "LLM Prompt Injection Prevention Cheat Sheet, OWASP Cheat Sheet Series",
+        "url": "https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "Saltzer and Schroeder state least privilege as every program and every user of the system operating with the least set of privileges necessary to complete the job.",
+      "type": "quote",
+      "tokens": [
+        "Saltzer",
+        "Schroeder"
+      ],
+      "source": {
+        "title": "Saltzer, J. H. and Schroeder, M. D., The Protection of Information in Computer Systems, Proceedings of the IEEE 63(9), September 1975",
+        "url": "https://www.cs.virginia.edu/~evans/cs551/saltzer/",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a model receives instructions and data on one channel and cannot distinguish them, so anything it reads can instruct it",
+    "fix": "stop trying to win the argument in the prompt and constrain what the model is able to do, since the reachable damage is the part you control",
+    "cost": "this is a mitigation rather than a solution, and every capability you grant is granted to whoever can get text in front of the model",
+    "interview": "why parameterisation solves injection for databases and has no analogue here"
+  }
+}

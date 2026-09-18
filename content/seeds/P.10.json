@@ -1,0 +1,55 @@
+{
+  "taskId": "P.10",
+  "title": "Rate limiting as defence",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Saltzer and Schroeder describe work factor as: compare the cost of circumventing the mechanism with the resources of a potential attacker.",
+      "type": "quote",
+      "tokens": [
+        "Saltzer",
+        "Schroeder"
+      ],
+      "source": {
+        "title": "Saltzer, J. H. and Schroeder, M. D., The Protection of Information in Computer Systems, Proceedings of the IEEE 63(9), September 1975",
+        "url": "https://www.cs.virginia.edu/~evans/cs551/saltzer/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "They note the difficulty of applying it in computing: many computer protection mechanisms are not susceptible to direct work factor calculation, because breaking them systematically may be logically impossible, leaving only indirect routes such as hardware failure or implementation bugs, whose timing is hard to estimate.",
+      "type": "quote",
+      "tokens": [
+        "Saltzer",
+        "Schroeder"
+      ],
+      "source": {
+        "title": "Saltzer, J. H. and Schroeder, M. D., The Protection of Information in Computer Systems, Proceedings of the IEEE 63(9), September 1975",
+        "url": "https://www.cs.virginia.edu/~evans/cs551/saltzer/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "They state the principle of least privilege as every program and every user operating with the least set of privileges necessary to complete the job, and fail-safe defaults as basing access decisions on permission rather than exclusion.",
+      "type": "quote",
+      "tokens": [
+        "Saltzer",
+        "Schroeder"
+      ],
+      "source": {
+        "title": "Saltzer, J. H. and Schroeder, M. D., The Protection of Information in Computer Systems, Proceedings of the IEEE 63(9), September 1975",
+        "url": "https://www.cs.virginia.edu/~evans/cs551/saltzer/",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "some attacks are not defeated by any single check because they work by repetition — guessing, enumerating, exhausting — and each individual attempt is indistinguishable from legitimate use",
+    "fix": "make each attempt cost time, so that an attack requiring many attempts becomes arithmetically infeasible rather than logically impossible",
+    "cost": "a limit that refuses attempts is a denial of service you built yourself, and the key you count by decides whom it denies",
+    "interview": "what you are actually choosing when you choose the key to rate limit on"
+  }
+}

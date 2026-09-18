@@ -1,0 +1,84 @@
+{
+  "taskId": "P.2",
+  "title": "Secrets, and never in git",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Meli, McNiece and Reaves report the first large-scale longitudinal analysis of secret leakage on a public code host, examining billions of files by two complementary means: a nearly six-month scan of real-time public commits, and a snapshot covering 13% of open-source repositories.",
+      "type": "event",
+      "tokens": [
+        "Meli",
+        "McNiece",
+        "Reaves",
+        "13%"
+      ],
+      "source": {
+        "title": "Meli, M., McNiece, M. R. and Reaves, B., How Bad Can It Git? Characterizing Secret Leakage in Public GitHub Repositories, NDSS 2019",
+        "url": "https://www.ndss-symposium.org/wp-content/uploads/2019/02/ndss2019_04B-3_Meli_paper.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "They find that secret leakage is pervasive, affecting over 100,000 repositories, and that thousands of new, unique secrets are leaked every day — concluding that leakage on public repository platforms is rampant and far from a solved problem.",
+      "type": "event",
+      "tokens": [
+        "Meli",
+        "Reaves"
+      ],
+      "source": {
+        "title": "Meli, M., McNiece, M. R. and Reaves, B., How Bad Can It Git? Characterizing Secret Leakage in Public GitHub Repositories, NDSS 2019",
+        "url": "https://www.ndss-symposium.org/wp-content/uploads/2019/02/ndss2019_04B-3_Meli_paper.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The root cause they identify is structural rather than careless: public code must manage authentication secrets that have to stay private, and ordinary development practices such as putting those secrets in code make accidental leakage frequent.",
+      "type": "event",
+      "tokens": [
+        "Meli"
+      ],
+      "source": {
+        "title": "Meli, M., McNiece, M. R. and Reaves, B., How Bad Can It Git? Characterizing Secret Leakage in Public GitHub Repositories, NDSS 2019",
+        "url": "https://www.ndss-symposium.org/wp-content/uploads/2019/02/ndss2019_04B-3_Meli_paper.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "Detection at the time was weak: a widely used scanner was measured as detecting only 25 to 29% of the secrets the study identified.",
+      "type": "number",
+      "tokens": [
+        "25%",
+        "29%"
+      ],
+      "source": {
+        "title": "Meli, M., McNiece, M. R. and Reaves, B., How Bad Can It Git? Characterizing Secret Leakage in Public GitHub Repositories, NDSS 2019",
+        "url": "https://www.ndss-symposium.org/wp-content/uploads/2019/02/ndss2019_04B-3_Meli_paper.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "Saltzer and Schroeder describe compromise recording as the idea that mechanisms which reliably record that a compromise of information has occurred can be used in place of more elaborate mechanisms that completely prevent loss, and note it is rarely used in computing, since it is difficult to guarantee discovery once security is broken.",
+      "type": "quote",
+      "tokens": [
+        "Saltzer",
+        "Schroeder"
+      ],
+      "source": {
+        "title": "Saltzer, J. H. and Schroeder, M. D., The Protection of Information in Computer Systems, Proceedings of the IEEE 63(9), September 1975",
+        "url": "https://www.cs.virginia.edu/~evans/cs551/saltzer/",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a credential has to be available to the running program and absent from the artefact that is shared, and the easiest way to satisfy the first is to violate the second",
+    "fix": "keep secrets out of the tree entirely — environment, a secret store, a mount — so that no revision of the repository has ever contained one",
+    "cost": "once one is committed the remedy is rotation rather than deletion, because history is distributed and you cannot know who has a copy",
+    "interview": "why deleting a committed secret does not fix anything"
+  }
+}
