@@ -1,0 +1,48 @@
+{
+  "id": "C.27.3",
+  "trackId": "C",
+  "trackName": "Languages: the chain of walls",
+  "title": "Static versus dynamic typing, and what each buys at what cost",
+  "status": "traced",
+  "seed": "C.27.3",
+  "story": "Start with a definition sharp enough to have consequences. A static type system decides a question about every possible execution of a program, using only the text, before any execution happens. A dynamic one answers a question about this execution, at the moment the value is used. Everything else follows from that difference, including the parts that feel like matters of taste.\n\nThe first consequence is that a static system must refuse correct programs. Deciding a property of all executions from the text alone is undecidable in general, so any checker that always terminates has to approximate, and it must approximate toward refusal — a checker that sometimes accepted unsafe programs would guarantee nothing. That is why the gap is structural: better analysis moves the boundary and never removes it. The Rust announcement locates the language’s distinctiveness in exactly this machinery, and the price is paid by the author, at writing time, every time.\n\nThe second consequence is that a dynamic system accepts everything until it doesn’t. You get expressiveness with no argument and no restructuring, and you find out about the mistake when the value arrives — in production, on the path nobody exercised. LISP is the pure form: one kind of thing, examined when used.\n\nTwo complications the binary hides. Types can describe layout rather than restrict use, which is what Ritchie means when he names the array-and-pointer relationship as both characteristic and a major difficulty — those are declarations the compiler believes rather than checks. And types can be erased: TypeScript’s are gradual and structural and vanish before execution, so the checking is real for the code you wrote and absent for the data you received. So the honest axis is three questions, not one — when is it checked, is it checked or merely believed, and does anything remain at run time.",
+  "problem": {
+    "name": "Type discipline",
+    "aka": [
+      "static versus dynamic typing",
+      "when the check happens"
+    ],
+    "shape": "You want to know that operations are applied to values that support them, and you must choose when that is established.",
+    "tell": [
+      "the bug that hurt was a value of the wrong shape reaching code that assumed otherwise",
+      "you are deciding how much to state up front about data you have not seen yet",
+      "the codebase is large enough that nobody can hold the shape of it in their head"
+    ],
+    "move": "Decide where the check happens: before execution over all executions, at the moment of use for this one, or in between. Then ask whether the declarations are verified or merely trusted, and whether anything survives to run time.",
+    "invariant": "A check before execution covers every execution, including the ones you never run. That is the entire value proposition, and it holds only for the region the checker actually saw.",
+    "breaks": "The static side refuses correct programs it cannot prove, and no amount of analysis closes that gap, because the underlying question is undecidable. The dynamic side accepts programs that fail later, on inputs you did not try. And both are undone at boundaries: types that describe layout are believed rather than checked, and types that are erased cannot compare a claim to a value at run time.",
+    "cost": {
+      "time": "static costs author time and compile time; dynamic costs a check per use and an unknown amount of debugging",
+      "space": "static may carry no run-time representation at all; dynamic tags every value",
+      "beats": "nothing outright — each is the better answer under a different constraint, which is why both persist"
+    },
+    "worked": {
+      "problem": "What does a static type system necessarily cost, and why can better analysis not remove it?",
+      "reasoning": "It costs correct programs, and the cost is a theorem rather than an engineering shortfall.\n\nThe checker answers a question about all possible executions using only the text. That question is undecidable in general, so any checker guaranteed to terminate must approximate. It has to approximate toward refusal: one that occasionally accepted a bad program would provide no guarantee at all, which is the only reason to run it.\n\nSo the set of programs that type-check is strictly smaller than the set that are correct, and some correct programs fall in the gap. Better inference moves the boundary outward; nothing puts it on top of the truth.\n\nRecognising that reframes the practical complaint. When the checker rejects working code, the question is not \"why is this tool bad\" but \"am I in the gap, or is my code actually wrong\" — and in the first case the fix is to make explicit something the checker cannot see.",
+      "code": "        all programs\n  +---------------------------+\n  |   incorrect               |\n  |     +-------------------+ |\n  |     | correct           | |\n  |     |   +-----------+   | |\n  |     |   | PROVABLY  |   | |  <- type-checks\n  |     |   | correct   |   | |\n  |     |   +-----------+   | |\n  |     |      ^ the gap    | |\n  |     +------|------------+ |\n  +------------|--------------+\n\n  static:  refuses the gap. covers every execution,\n           including the ones you never run.\n  dynamic: accepts everything. covers exactly the\n           executions you actually ran.\n\n  and two more questions the binary hides:\n\n     checked, or merely believed?  (layout types)\n     anything left at run time?    (erased types)"
+    },
+    "practice": "Find a place where your type checker rejected code you knew was correct. Decide whether you were in the gap or actually wrong — and if you were in the gap, name the fact the checker could not see that you could have written down."
+  },
+  "beats": {
+    "broke": "The question is argued as though one discipline were correct. That framing hides that the two answer different questions — about all executions, or about this one — and therefore pay in different currencies.",
+    "fix": "Define it by when the check happens. Static decides a property of every possible execution from the text before anything runs; dynamic decides a property of this execution at the moment of use.",
+    "cost": "Static necessarily refuses correct programs, because deciding the property in general is undecidable and the approximation must err toward refusal. Dynamic necessarily discovers the problem on the execution that hits it, which may be the one in front of a user.",
+    "interview": {
+      "q": "What does a static type system necessarily cost, and why can better analysis not remove that cost?",
+      "trap": "Answering that it costs developer time or verbosity. Those are real and incidental; the structural cost is about which programs are admitted at all.",
+      "answer": "It costs correct programs, and that is a theorem rather than a limitation of current checkers. Deciding a property of all possible executions from the text alone is undecidable in general, so any checker that always terminates must approximate — and it must approximate toward refusal, since one that sometimes accepted bad programs would provide no guarantee, which is the only reason to have it.\n\nSo the set that type-checks is strictly inside the set that is correct, and better inference moves that boundary without ever closing it.\n\nTwo refinements matter in practice, because the binary hides them. Types can describe layout rather than restrict use, in which case the compiler believes the declaration instead of checking it. And types can be erased, in which case the guarantee is real for the code you wrote and absent for data arriving from outside, since nothing at run time compares the claim to the value.\n\nWhich is why the useful question is three questions: when is it checked, is it checked or believed, and does anything survive to run time."
+    }
+  },
+  "blueprint": "One definition, and everything follows:\n\n  static  = a property of ALL executions, decided\n            from the text, BEFORE any execution\n  dynamic = a property of THIS execution, decided\n            at the moment of use\n\n  therefore, without further argument:\n\n    static  must refuse some correct programs\n            (undecidable -> approximate -> err safe)\n    dynamic must discover the fault on the run\n            that hits it\n\n  two questions the binary hides:\n\n    DESCRIBES layout or RESTRICTS use?\n      -> believed, or checked\n    ERASED or present at run time?\n      -> sound about code, silent about data",
+  "takeaway": "A static system decides a property of every execution before any of them happen, so it must refuse some correct programs; a dynamic one decides at the point of use, so it must find out on the run that breaks — and both are undone wherever types are believed rather than checked, or erased."
+}

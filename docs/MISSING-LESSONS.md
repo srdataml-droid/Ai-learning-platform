@@ -10,19 +10,7 @@ Study order: the sequence first, then the five habits running underneath.
 
 ## Track C — Languages: the chain of walls
 
-10 of 34 still missing.
-
-- [ ] `C.24` HTML and CSS
-- [ ] `C.25` Bash and the shell
-- [ ] `C.26` Regular expressions
-- [ ] `C.27.1` Write year, wall, solved and blueprint for each language above, from memory
-- [ ] `C.27.2` Compiler versus interpreter, properly
-- [ ] `C.27.3` Static versus dynamic typing, and what each buys at what cost
-- [ ] `C.27.4` Memory management: manual, reference counting, garbage collection, ownership
-- [ ] `C.27.5` Why Python is slow, precisely, not vaguely
-      <br>_note: the interpreter loop and the global interpreter lock_
-- [ ] `C.27.6` Write the same small program in Python, JavaScript and Go
-- [ ] `C.27.7` Defend a language choice for three different hypothetical systems
+**Complete.** All 34 written.
 
 ## Track D — Software development craft
 
@@ -275,7 +263,7 @@ Study order: the sequence first, then the five habits running underneath.
 
 ---
 
-**Total remaining: 181 of 313.**
+**Total remaining: 171 of 313.**
 
 Regenerate: `node tools/missing-lessons.mjs > docs/MISSING-LESSONS.md`
 

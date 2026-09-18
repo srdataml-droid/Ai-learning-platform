@@ -1,0 +1,48 @@
+{
+  "id": "C.27.2",
+  "trackId": "C",
+  "trackName": "Languages: the chain of walls",
+  "title": "Compiler versus interpreter, properly",
+  "status": "traced",
+  "seed": "C.27.2",
+  "story": "The distinction is real and is almost always attached to the wrong thing. It is a property of an implementation, not of a language, and the track already contains the counterexample that proves it: the original Dartmouth implementation of BASIC was a compiler, translating a whole program at once, while the versions that later made the name famous on home machines were interpreters. Same language, opposite answer.\n\nAsk a better question and it becomes tractable. When does translation happen relative to execution, and what does the translation produce? Fortran translates once, before anything runs, and emits machine instructions — and Backus is explicit that the quality of those instructions was the condition the whole project had to meet, which is what made the translator rather than the language the hard part. LISP sits at the other end by accident: the evaluator was written to describe the language on paper, Russell hand coded it, and the language acquired an interpreter it was never designed to have.\n\nOnce the axis is time rather than category, the intermediate points stop being anomalies. Java compiles ahead of time to bytecode and then has that bytecode executed at run time by a second piece of software — so the same program is compiled and interpreted, by different components, and both descriptions are accurate. Add a just-in-time compiler and translation happens during execution, informed by what the program is actually doing, which is a capability neither end of the axis has.\n\nThat is the useful form of the distinction. Earlier translation means more time to optimise, more checking before anything runs, and less knowledge of the actual inputs. Later translation means the opposite: you know the types that really turned up and the branches really taken, and you must pay for the translation while the user waits. Every design in this track sits somewhere on that line, and a statement about where a language sits is only ever a statement about one of its implementations.",
+  "problem": {
+    "name": "Translation time",
+    "aka": [
+      "ahead-of-time versus just-in-time",
+      "compiled versus interpreted"
+    ],
+    "shape": "A program is written in one notation and executed by a machine that consumes another, and you must decide when the gap is closed.",
+    "tell": [
+      "someone is describing a language, rather than an implementation, as compiled or interpreted",
+      "the performance question is really a question about when work happens",
+      "the same source is known to run under two very different execution models"
+    ],
+    "move": "Place the implementation on the axis of when translation happens relative to execution — fully before, partly before into an intermediate form, or during — and say what the translation emits at each stage.",
+    "invariant": "Meaning is preserved wherever translation happens. Only the timing and the available information change, which is why the same language can sit at several points on the axis without becoming a different language.",
+    "breaks": "It breaks as a binary question. There is no fact of the matter about whether a language is compiled, because languages do not execute — implementations do, and a language with several implementations has several answers. Insisting on a yes or no forces a false statement about everything else sharing the name.",
+    "cost": {
+      "time": "earlier translation costs build time and saves run time; later translation reverses it",
+      "space": "an intermediate form, plus the translator itself resident at run time for the later designs",
+      "beats": "nothing, since this is an axis rather than a technique: the trade is what you get"
+    },
+    "worked": {
+      "problem": "Is language X compiled or interpreted?",
+      "reasoning": "The question has no answer, and the reason it has no answer is instructive rather than pedantic.\n\nLanguages do not execute. Implementations do, and the same language routinely has several. Dartmouth’s original BASIC compiled whole programs; the home-computer versions interpreted line by line. Any single-word answer about BASIC is false about half of the things called BASIC.\n\nReframe it as: for this implementation, when does translation happen and what does it emit? Now every case answers cleanly. Ahead of time to machine code. Ahead of time to bytecode, then interpreted. Ahead of time to bytecode, then compiled again during execution. Parsed and evaluated directly, with no separate artefact.\n\nAnd the reframed question is the one you actually wanted, because what you were trying to learn was about start-up cost, optimisation opportunity, and when errors surface — all of which follow from timing, and none of which follow from the label.",
+      "code": "                  translation happens\n  execution  <-------------------------------> source\n     |                                            |\n  [ machine code ]  ahead of time, to instructions\n  [ bytecode + VM ] ahead of time, to an intermediate\n                    form; interpreted at run time\n  [ bytecode + JIT ]...and translated AGAIN while\n                    running, using real types\n  [ walk the tree ] at run time, every time\n\n  earlier: more optimisation time\n           more checking before anything runs\n           knows nothing about real inputs\n  later:   knows the types that turned up\n           pays for translation while you wait\n\n  \"Is X compiled?\" -- X doesn't execute. Ask which\n  implementation, and you get an answer every time."
+    },
+    "practice": "Take one language you use and find two implementations of it that sit at different points on this axis. Then name one thing that is true of a program under the first and false under the second."
+  },
+  "beats": {
+    "broke": "The two words are used as properties of languages. That makes an accurate description of one implementation into a false claim about every other implementation sharing the name — and BASIC, compiled at Dartmouth and interpreted everywhere afterwards, is the counterexample sitting inside this track.",
+    "fix": "Ask when translation happens relative to execution, and what it emits. Fortran translated once, ahead of time, to instructions whose quality was the project’s acceptance condition; LISP acquired an interpreter because an evaluator written for a paper was hand coded.",
+    "cost": "The honest answer is a position on an axis rather than one of two labels, so it does not fit the shape the question is normally asked in, and it takes a sentence rather than a word.",
+    "interview": {
+      "q": "Is this language compiled or interpreted?",
+      "trap": "Answering with one of the two words. The question presupposes something false, and picking a side confirms the false part.",
+      "answer": "Languages are not compiled or interpreted — implementations are, and most languages have more than one. The clean example is inside the history: the original Dartmouth BASIC was a compiler that translated a whole program at once, and the home-computer versions that made the name famous were interpreters. Any one-word answer about that language is wrong about half of it.\n\nThe question worth asking is when translation happens relative to execution, and what it emits. That gives you ahead-of-time to machine code; ahead-of-time to bytecode then interpreted; bytecode plus a just-in-time compiler that translates again during execution; or direct evaluation with no separate artefact.\n\nThat reframing also answers whatever you were really asking, because start-up cost, optimisation opportunity and when errors surface all follow from timing. Earlier translation buys optimisation time and pre-execution checking and knows nothing about real inputs; later translation knows the types that actually turned up and charges the user for the work."
+    }
+  },
+  "blueprint": "The axis, with the track's own examples on it:\n\n  ahead of time -> machine code        Fortran, C\n  ahead of time -> bytecode -> VM      Java\n  ...plus translation DURING execution JIT\n  no artefact, evaluate directly       LISP's eval\n\n  and the counterexample that kills the binary:\n\n     Dartmouth BASIC   = compiler (compile-and-go)\n     home-machine BASIC = interpreter\n     -> same name, opposite answer\n\n  What actually varies along the axis:\n\n     earlier: optimisation time, checking before\n              running, ignorance of real inputs\n     later:   real types and branches, cost paid\n              while the user waits",
+  "takeaway": "Compiled and interpreted describe implementations, never languages — the real axis is when translation happens relative to execution, which is what determines optimisation opportunity, when errors surface, and who waits."
+}

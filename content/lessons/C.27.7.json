@@ -1,0 +1,48 @@
+{
+  "id": "C.27.7",
+  "trackId": "C",
+  "trackName": "Languages: the chain of walls",
+  "title": "Defend a language choice for three different hypothetical systems",
+  "status": "traced",
+  "seed": "C.27.7",
+  "story": "This is the last task in the track and it tests the one claim the track has been making throughout: that every language trades one scarcity for another, so a choice is only defensible when you can say what you gave up.\n\nThe usual defence is a list of strengths. It is fast, it has good libraries, the team knows it, it has strong typing. Every item may be true and the whole thing is still not an argument, because you could write an equally true list for three other candidates, and nothing in the list explains why this one rather than those. A defence that no competing option could fail is not a defence.\n\nA real one has three parts. First: which constraint actually binds in this system — not everything that matters, the one thing that will decide whether it succeeds. The designers in this track are unusually explicit about theirs. Stroustrup: a facility must not just be useful, it must be affordable. Pike: tens of millions of lines, thousands of programmers, one source tree, daily updates. The Rust announcement: safety guarantees without requiring a garbage collector or runtime. Armstrong: programs that run indefinitely, with code changed while they run. Each is a statement about what was scarce.\n\nSecond: what you gave up. If you cannot name it, you have not understood the option, because C.0 says there is always something. Third, and the part almost always missing: the condition under which your choice becomes wrong. That sentence is what converts an opinion into a decision someone can check later — and it is the reason people leave it out.\n\nThree systems to defend, and they are chosen so that a single answer cannot cover them. A payment ledger that must not lose a transaction, maintained by forty people, expected to run for fifteen years. The inner render loop of a game engine, on fixed console memory, with a frame budget it cannot exceed. A data pipeline maintained by two people against an upstream schema that changes most weeks. Different scarcities: correctness over a long life with many hands; run-time cost with no runtime available; speed of change. Pick for each, say what you surrendered, and say what would have to be true for you to have been wrong.",
+  "problem": {
+    "name": "Defensible technology choice",
+    "aka": [
+      "naming the binding constraint",
+      "stating the falsifier"
+    ],
+    "shape": "A decision must be made between options that are all defensible, and the reasons offered are lists of strengths that apply to all of them.",
+    "tell": [
+      "the justification would remain true if you swapped in a different option",
+      "no cost is mentioned anywhere in the argument",
+      "nobody can state what would make the decision wrong"
+    ],
+    "move": "Name the one constraint that decides whether this system succeeds, name what the choice gives up, and state the condition under which it becomes the wrong choice.",
+    "invariant": "The argument must be capable of losing. If no competing option could fail it, it is a description of the option rather than a reason for it — and the third part, the falsifying condition, is what makes it checkable by someone other than you.",
+    "breaks": "It breaks when the binding constraint is misidentified, which is the common failure and is invisible at the time: you will defend the choice well against the wrong criterion and be wrong for a reason nobody argued about. It also breaks where the constraint changes under you — which is why the falsifying condition is worth writing down rather than merely thinking.",
+    "cost": {
+      "time": "slower than listing strengths, and produces a written commitment",
+      "space": "three sentences instead of a bullet list",
+      "beats": "the strengths list, which is faster, sounds more confident, and cannot be wrong because it says nothing"
+    },
+    "worked": {
+      "problem": "What separates a defensible choice from a merely justified one?",
+      "reasoning": "A justification explains why an option is acceptable. A defence explains why it beats the others here, which requires saying something that could have come out differently.\n\nTest any argument by substitution: replace the chosen option with a rival and see whether the words still hold. \"It is fast, well supported and the team knows it\" survives substitution for most mainstream options, so it distinguishes nothing and cannot be what decided it — which means the real reason is unstated and therefore unexamined.\n\nNow add the two parts that cannot survive substitution. What you gave up is specific to the option. The condition under which you were wrong is specific to the system. Together they identify one choice rather than a family of acceptable ones.\n\nThe third part does the work people dislike. It is the only part that can be checked later, and it converts \"we chose this\" into something that can be revisited on evidence instead of on preference.",
+      "code": "not a defence                defence\n-------------                -------\n\"it's fast, well supported,  binding constraint:\n the team knows it\"            <the one thing that\n                                decides success here>\n  -> substitute any rival:\n     still true               gave up:\n  -> distinguished nothing      <specific to the option>\n  -> real reason unstated\n                             wrong if:\n                               <specific to the system,\n                                checkable later>\n\n  Test: could a competing option FAIL this argument?\n  If not, it isn't an argument."
+    },
+    "practice": "Defend a choice for each: (1) a payment ledger that must not lose a transaction, forty maintainers, fifteen-year life; (2) a game engine’s inner render loop on fixed console memory with a hard frame budget; (3) a data pipeline maintained by two people against an upstream schema that changes weekly. For each, write the binding constraint, what you gave up, and what would have to be true for you to be wrong."
+  },
+  "beats": {
+    "broke": "Choices get defended with lists of strengths. Those lists survive substitution of any mainstream alternative, so they distinguish nothing and the actual reason for the decision goes unstated and unexamined.",
+    "fix": "Three sentences: the constraint that binds in this system, what the choice gives up, and the condition under which it becomes wrong. The designers in this track state their own constraints plainly — affordability, systems of tens of millions of lines, safety without a runtime, programs that never stop.",
+    "cost": "The third sentence makes you accountable to a criterion later, on evidence rather than on preference, which is exactly why it is the part that goes missing.",
+    "interview": {
+      "q": "What makes a technology choice defensible rather than merely justified?",
+      "trap": "Answering with a better or longer list of criteria. More criteria that all options satisfy is still not an argument that distinguishes them.",
+      "answer": "That it could have come out differently. A justification says an option is acceptable; a defence says it beats the others here, and that requires claims a rival could fail.\n\nThe test is substitution. Take your stated reasons and swap in a competing option — if the sentences remain true, they did not decide anything, and whatever actually decided it is unstated and therefore unreviewed.\n\nThree parts survive that test. The binding constraint: the one thing that determines whether this system succeeds, not everything that matters. What you gave up, which is specific to the option and, by the argument this whole track makes, always exists. And the condition under which the choice becomes wrong, which is specific to the system.\n\nThe last one does the real work, because it is the only part anyone can check later. It turns a decision into something revisitable on evidence rather than on preference — and it is the part people leave out, since writing it down is what makes you accountable to it."
+    }
+  },
+  "blueprint": "The test, and the shape that passes it:\n\n  substitute a rival into your reasons.\n  still true? -> you haven't given a reason.\n\n  what passes:\n\n     1. binding constraint\n        the ONE thing that decides success here\n     2. what you gave up\n        specific to the option; always exists (C.0)\n     3. wrong if...\n        specific to the system; checkable later\n\n  the three systems, chosen so one answer can't cover:\n\n     ledger    | 40 people, 15 years, lose nothing\n               |   -> correctness over a long life\n     render    | fixed memory, hard frame budget\n               |   -> run-time cost, no runtime\n     pipeline  | 2 people, schema moves weekly\n               |   -> speed of change\n\n  Part 3 is the one that goes missing, because it is\n  the only one that can convict you later.",
+  "takeaway": "A defence must be capable of losing: name the constraint that binds, what the choice gave up, and what would have to be true for you to be wrong — a list of strengths that any rival would also pass decided nothing."
+}

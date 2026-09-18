@@ -1510,6 +1510,486 @@
     "blueprint": "The track's direction, and this one reversing it:\n\n  1949 -> 2015   more distance from the machine\n                 (names, generated code, a VM, a\n                  collector, a borrow checker)\n\n  2007           LESS distance -- on purpose\n\n  Why, in one line:\n\n     hide what the reader isn't there to decide\n\n  ordinary code: came for the RESULT -> hide it\n  this code:     came for the SPEED  -> exposing the\n                 memory hierarchy IS the feature\n\n  The price, knowingly paid:\n\n     one vendor's model of a machine\n     = the exact coupling 1959 existed to remove,\n       rebuilt because speed was worth more here",
     "takeaway": "It reverses the track’s direction and exposes the memory hierarchy because performance is the only reason anyone is there — an abstraction should hide what you are not there to decide, and that answer changes with why you came."
   },
+  "C.24": {
+    "id": "C.24",
+    "trackId": "C",
+    "trackName": "Languages: the chain of walls",
+    "title": "HTML and CSS",
+    "status": "traced",
+    "seed": "C.24",
+    "story": "The markup language began as a way to describe what a piece of text is — a heading, a paragraph, a link — and the first description of it, in late 1991, took most of its elements from an existing documentation format, adding the hyperlink. Thirteen of those elements survived into the fourth version, which is a good rate for a first attempt at anything.\n\nThe pressure that arrived next was presentational, and by 1994 the consortium’s own account says it plainly: the language had become a universal document format, and it was clear that even with extensions it would not satisfy what authors wanted from presentation. The available move was to add elements that describe appearance rather than meaning. That move works, and on this substrate it is irreversible — C.13 explains why, and the tags added in that period are still specified today.\n\nThe proposal dated 10 October 1994 does something more interesting than separating content from presentation, which had been proposed before. Its distinctive idea is in the word that names it. Sheets cascade: the reader or browser states initial preferences, and hands the remaining influence to the sheets that arrive with the document. Presentation is not transferred from author to reader or reader to author; it is negotiated, with the document’s own environment — screen size, and whatever else is true where it is being read — a participant. The proposal is explicit that decisions can depend on that environment.\n\nThe cost is the same property. If no single place decides an outcome, then no single place explains one. What a rule does depends on every other rule that could apply, on their origins, on their specificity, and on a reader’s context you cannot see. The complaint that styling is hard to reason about is correct, and it is not a defect of the syntax: it is what negotiation costs, and the alternative — the author deciding absolutely — is the thing the design deliberately refused.",
+    "problem": {
+      "name": "Separation of content and presentation",
+      "aka": [
+        "the cascade",
+        "style sheets"
+      ],
+      "shape": "A document’s meaning and its appearance are being expressed in the same place, so changing one requires editing the other, and neither can vary independently for different readers.",
+      "tell": [
+        "appearance is achieved by adding elements that describe appearance rather than meaning",
+        "the same visual change must be made in many documents by hand",
+        "the document cannot adapt to who is reading it or on what"
+      ],
+      "move": "Describe meaning in the document and appearance in a separate sheet, and let several sheets with different origins — reader, author, browser — combine by defined precedence rather than one replacing the others.",
+      "invariant": "The document remains meaningful with no sheet at all. That is what allows the reader’s environment to keep influence, and it is why the separation has to be real rather than a convention about where you put your styles.",
+      "breaks": "Outcomes stop being locally explainable. A rule’s effect depends on every other applicable rule, their origins and their specificity, plus a reader context the author cannot observe — so debugging appearance means reconstructing a negotiation rather than reading a value. This is the cost of the design, not a flaw in it.",
+      "cost": {
+        "time": "the browser resolves the cascade per element, per render",
+        "space": "a separate sheet, usually cached and shared across many documents",
+        "beats": "presentational markup, which is locally obvious and cannot adapt or be changed in one place"
+      },
+      "worked": {
+        "problem": "What is the cascade actually for? It is usually described as a fallback mechanism, which does not explain its name.",
+        "reasoning": "A fallback would be: use the author’s value, and if there isn’t one, use a default. That is a lookup with a default, and it would not need a special word.\n\nRead the 1994 proposal instead. The reader or browser states preferences first and then hands the remaining influence to the author’s sheets, with decisions able to depend on the reader’s environment. Both parties contribute to every outcome; neither is merely a backstop for the other.\n\nThat is why the document must still mean something with no sheet applied. If it did not, the reader’s side of the negotiation would be worthless, because refusing the author’s presentation would leave nothing readable.\n\nSo the cascade is a mechanism for divided authority, and the difficulty of predicting any single outcome is the direct consequence of dividing it.",
+        "code": "fallback (what people describe)\n  author value ?: default            <- one decider\n\ncascade (what it is)\n  reader/browser preferences\n        + author sheet\n        + element context (screen, medium, state)\n        -> resolved by origin, specificity, order\n\n  no single decider\n    -> adapts to readers the author never met\n    -> and no outcome is locally explainable\n\n  Both bullets are the same mechanism. You cannot\n  keep the first and refuse the second."
+      },
+      "practice": "Take a styling bug you could not explain quickly and write down every rule that applied to the element and why each won or lost. Then decide which part of that was accidental complexity and which was the cascade doing exactly what it is for."
+    },
+    "beats": {
+      "broke": "Authors wanted control of appearance, and the only mechanism available was adding presentational elements to a document format — a change that could never be reversed once documents depended on it.",
+      "fix": "Presentation in a separate sheet, with sheets that cascade: the reader or browser states preferences and hands remaining influence to the author’s sheets. Proposed 10 October 1994 and a W3C Recommendation on 17 December 1996.",
+      "cost": "No single place decides an outcome, so no single place explains one. A rule’s effect depends on every other applicable rule and on reader context the author cannot see.",
+      "interview": {
+        "q": "What is the cascade for, and why is it not just a fallback mechanism?",
+        "trap": "Describing it as defaults that apply when the author has not specified something. That is a lookup with a default and would not have needed a new word.",
+        "answer": "It is a mechanism for dividing authority over presentation between parties who never meet. The 1994 proposal has the reader or browser state preferences and then hand the remaining influence to the sheets arriving with the document, with decisions permitted to depend on the reader's environment. Both sides contribute to every outcome rather than one standing in for the other.\n\nThat is also why the separation has to be genuine — the document must still mean something with no sheet applied. Otherwise the reader's ability to decline or override the author's presentation would be worthless, and the negotiation would be a formality.\n\nAnd it explains the cost honestly. Because no single party decides, no single rule explains an outcome: you get adaptation to readers the author never anticipated, and you lose local explainability. Those are the same property, so the familiar complaint that styling is hard to reason about is accurate and is not a defect in the syntax."
+      }
+    },
+    "blueprint": "Who decides how this looks?\n\n  presentational markup   author, absolutely\n                          -> obvious locally\n                          -> same for every reader\n                          -> irreversible on this substrate\n\n  the cascade             reader/browser preferences\n                          + author sheet\n                          + context\n                          -> adapts to unknown readers\n                          -> no outcome locally explained\n\n  Precondition that makes the reader's half real:\n\n     the document must MEAN something with no sheet\n\n  otherwise \"decline the author's styling\" leaves\n  nothing to read, and the negotiation is theatre.",
+    "takeaway": "The cascade divides authority over presentation between author, reader and context rather than transferring it — which is why documents adapt to readers nobody anticipated, and why no single rule ever explains an outcome."
+  },
+  "C.25": {
+    "id": "C.25",
+    "trackId": "C",
+    "trackName": "Languages: the chain of walls",
+    "title": "Bash and the shell",
+    "status": "traced",
+    "seed": "C.25",
+    "story": "The shell began in 1971 as a command interpreter and not a language — a way to say which program to run. Its one memorable early idea was the compactness of redirection: on Multics, sending output somewhere else needed separate commands to start and stop doing so, and here you appended a symbol and a filename to the line you were already typing. That is a small thing that tells you what the design was for, which was a person typing.\n\nThe larger idea had been waiting nine years. McIlroy wrote in a memo in 1964 about coupling programs like garden hose, so that when data needed massaging another way you screwed in another segment, and he raised it repeatedly until Thompson implemented it in 1973. Note that the idea was never the obstacle. The obstacle was that it needed to be cheap in the operating system and cheap to write down, and McIlroy credits Thompson with the second of those — the vertical bar — as much as the first.\n\nThat pairing is the whole lesson. A system call alone would have made composition possible and left it as a programming task; the notation made composition something you do while thinking. McIlroy’s description of what followed — an unforgettable orgy of one-liners — is evidence about the notation rather than about the mechanism, because the mechanism had existed for a few weeks and the mechanism alone had not produced it.\n\nThe rest is consolidation. The Bourne shell of 1979 turned the interpreter into a scripting language proper, and Bash, begun in 1988 and released as a beta in June 1989, reimplemented that as free software for the GNU Project. What none of them changed is the bargain underneath: the universal interface that makes everything composable is untyped text, so every join between two programs is a parsing problem, nothing checks that the left-hand side produces what the right-hand side expects, and a pipeline that silently produces wrong output is the normal failure mode rather than an unusual one.",
+    "problem": {
+      "name": "Composition through a universal interface",
+      "aka": [
+        "pipes and filters",
+        "the Unix philosophy"
+      ],
+      "shape": "You have many small tools that each do one thing, and combining two of them requires building something new rather than connecting what exists.",
+      "tell": [
+        "the capability you need already exists, split across two programs",
+        "connecting them currently means writing code, a temporary file, or both",
+        "each tool has its own input and output conventions"
+      ],
+      "move": "Agree one interface that every tool speaks — here, a stream of bytes read as text — and provide an operator that connects one tool’s output to the next one’s input, so that composition is written rather than programmed.",
+      "invariant": "Every tool reads the interface and writes the interface, so any output is a legal input. That universality is what makes the set of possible combinations the product of the tools rather than a fixed list someone maintained.",
+      "breaks": "The interface carries no structure, so nothing checks that what the left side emits is what the right side expects. A mismatch does not fail; it parses differently and produces plausible wrong output. The same untypedness that makes everything connectable makes no connection verifiable, and the cost grows with the length of the pipeline.",
+      "cost": {
+        "time": "serialising to text and parsing it again at every stage",
+        "space": "streams, so the pipeline does not materialise intermediate results",
+        "beats": "writing a program to combine two tools, which is checked and is not something you do at a prompt"
+      },
+      "worked": {
+        "problem": "Why did the pipe need a notation? The system call already made composition possible.",
+        "reasoning": "Separate the two things that arrived within weeks of each other.\n\nThe system call makes composition possible: a program can now arrange for another program’s output to be its input. That is a capability, and using it means writing a program — so composing two tools costs an edit-compile-run cycle and a file somewhere.\n\nThe notation makes composition thinkable. When connecting two tools costs three characters typed into a line you were already typing, the cost drops below the threshold at which you stop to consider whether it is worth it. You compose speculatively, and speculative composition is where the unexpected combinations come from.\n\nThe evidence is in the timing. The mechanism existed and produced nothing remarkable; the notation arrived and produced what McIlroy called an orgy of one-liners. The same capability, priced differently, is a different tool.",
+        "code": "capability, no notation\n  write a program:\n      pipe(fds); fork(); dup2(); exec(); ...\n  cost per composition: an edit-compile-run cycle\n  -> you compose when you already know it's worth it\n\ncapability + notation\n  sort | uniq -c | sort -rn | head\n  cost per composition: 3 characters\n  -> you compose to FIND OUT whether it's worth it\n\n  Same system call underneath. The second one is\n  where the one-liners came from -- and that is an\n  observation about price, not about power."
+      },
+      "practice": "Take a pipeline you use and find the stage where the text format is silently assumed — a column position, a separator, a sort order. Then feed it input that violates the assumption and see whether you get an error or an answer."
+    },
+    "beats": {
+      "broke": "Tools each did one thing well, and combining two of them meant writing a third program or shuttling data through a temporary file. The capability existed, split across programs that could not be joined.",
+      "fix": "One universal interface — a text stream every tool reads and writes — plus an operator to connect them. Proposed in a memo in 1964, implemented in 1973, and made into a full scripting language by the Bourne shell in 1979 and by Bash from 1988.",
+      "cost": "The universal interface carries no structure. Nothing checks that the left side produces what the right side expects, so a mismatched pipeline parses differently and returns plausible wrong output rather than failing.",
+      "interview": {
+        "q": "Why did the pipe need a notation rather than just a system call?",
+        "trap": "Treating the notation as convenience or syntactic sugar over the real mechanism. That gets the causation backwards relative to what actually happened.",
+        "answer": "Because the two change different things. The system call makes composition possible: one program can feed another. Using it means writing a program, so composing two tools costs an edit-compile-run cycle — which you only pay when you already believe the combination is worth having.\n\nThe notation changes the price to about three characters typed into a line you were already typing. Below that threshold you compose speculatively, to find out whether something is worth having rather than because you know it is. That is where unanticipated combinations come from.\n\nThe timing is the evidence. The mechanism existed first and produced nothing memorable; the notation followed and produced what McIlroy called an unforgettable orgy of one-liners. Same capability, different price, different tool — which generalises: if you want people to use a capability exploratively, the cost of one attempt has to fall below the cost of deciding whether to attempt."
+      }
+    },
+    "blueprint": "Two arrivals, weeks apart, doing different jobs:\n\n  system call     -> composition is POSSIBLE\n                     price: edit-compile-run\n                     you compose when you already know\n\n  |               -> composition is THINKABLE\n                     price: 3 characters\n                     you compose to find out\n\n  and the bargain that never changed:\n\n     every tool reads text, writes text\n       -> any output is a legal input\n       -> combinations = product of the tools\n       -> and NOTHING checks the join\n\n  A mismatched pipeline does not fail. It parses\n  differently and answers you.",
+    "takeaway": "A universal untyped interface makes every tool composable with every other and makes no composition checkable — and it was the notation, not the system call, that dropped the price far enough for people to compose speculatively."
+  },
+  "C.26": {
+    "id": "C.26",
+    "trackId": "C",
+    "trackName": "Languages: the chain of walls",
+    "title": "Regular expressions",
+    "status": "traced",
+    "seed": "C.26",
+    "story": "The notation is older than the computing use of it and was invented for something else. Kleene’s 1951 memorandum describes regular events while working on the behaviour of nerve nets, and the name is admittedly a placeholder — he offered it as an alternative to an existing term and said he would welcome a better suggestion. Nobody supplied one, which is why a notation used daily by people with no interest in automata is called regular.\n\nWhat makes the notation valuable is not brevity. It is that every expression in it denotes a finite automaton, and a finite automaton can be walked mechanically with a bounded amount of state. Thompson’s paper of June 1968 is the construction that makes this practical: simulate the automaton in lockstep, advancing every state at once through the input.\n\nThe property that makes it fast is worth stating precisely, because it is the whole idea. You track the set of states currently reachable and you do not track how you got to them. An automaton with n nodes has at most n reachable states at any step, even though there may be two-to-the-n distinct paths through it — so keeping the set is cheap while keeping the paths is not. Cox’s demonstration uses a pattern of n optional letters followed by n required ones: a backtracking matcher explores two-to-the-n possibilities of which only the last matches, and stops being usable somewhere around n of twenty-five, while the lockstep simulation stays quadratic.\n\nSo why is the slow behaviour the common one? Because the popular implementations do not implement this notation. They implement a larger one — backreferences most of all — whose expressions do not denote finite automata, and for which the efficient algorithm simply does not apply. That is the honest framing: it is not that regular expressions are exponential, it is that the things called regular expressions are a superset in which the guarantee was traded away, usually for a feature the user never asked for. Cox’s remark is the one to keep: a slow implementation of a linear algorithm beats a fast implementation of an exponential one, once the exponent is large enough.",
+    "problem": {
+      "name": "Regular languages",
+      "aka": [
+        "finite automata",
+        "pattern matching",
+        "the regular expression"
+      ],
+      "shape": "You need to describe a set of strings precisely enough to be decided mechanically, without writing a program for each set.",
+      "tell": [
+        "the rule you want is about shape rather than content — what characters, in what order, how many",
+        "the alternative is a hand-written scanner you will have to maintain",
+        "you need to decide membership, not to understand meaning"
+      ],
+      "move": "Use a notation in which every expression corresponds to a finite automaton, then decide membership by simulating that automaton over the input, advancing all currently reachable states together.",
+      "invariant": "The machine needs only the set of currently reachable states, never the paths taken to reach them. Since an automaton of n nodes has at most n states, the working set is bounded by the pattern and not by the input or the number of paths.",
+      "breaks": "It breaks the moment the notation is extended past what a finite automaton can express — backreferences being the usual culprit — because then the path taken matters, the set of states no longer summarises the computation, and matching falls back to search with exponential worst cases. The guarantee belongs to the notation, and most implementations do not restrict themselves to it.",
+      "cost": {
+        "time": "quadratic in the worst case for the lockstep simulation; exponential for backtracking on adversarial patterns",
+        "space": "state proportional to the pattern, not the input",
+        "beats": "a hand-written scanner, which is faster still and must be rewritten for every new pattern"
+      },
+      "worked": {
+        "problem": "If the theory gives a linear-time algorithm, why do real regular expressions take exponential time?",
+        "reasoning": "Because the guarantee is a property of the notation, and the thing you are using is a bigger notation.\n\nThe efficient simulation works by keeping the set of reachable states and discarding how each was reached. That is sound only while the answer cannot depend on the path — which is exactly what a finite automaton guarantees.\n\nAdd backreferences and the answer does depend on the path: to know whether \\1 matches, you must know what the first group actually captured on this route, so two routes arriving at the same position are no longer interchangeable. The set no longer summarises the computation, so the algorithm cannot be used and the implementation searches instead.\n\nWhich is why the fix is not a faster backtracker. It is to use an engine that restricts itself to the notation, or to stop using the feature that left it.",
+        "code": "set of reachable states       a search over paths\n---------------------------   -------------------\n  {2, 5, 7}  after 'a'          try this branch...\n  {3, 5}     after 'ab'           ...backtrack\n  ...                             ...try that one\n  <= n states, always           2^n paths, possibly\n\n  sound when: the answer can't depend on HOW you\n              got here  (= a finite automaton)\n\n  broken by: backreferences -- \\1 depends on what\n             THIS path captured, so two routes to the\n             same position are no longer the same\n\n  a?a?a?aaa  vs  aaa   -> 2^n tried, last one wins\n  n ~ 25 and it stops being usable."
+      },
+      "practice": "Write the pattern with n optional letters followed by n required ones and run it against n letters in a language you use, raising n by one at a time. Find the n where it stops returning, then check whether your language’s engine is backtracking or automaton-based."
+    },
+    "beats": {
+      "broke": "Describing a set of strings meant enumerating them or writing a scanner. Neither is a description you can reason about, and a scanner has to be rewritten for every new rule.",
+      "fix": "A notation from Kleene’s 1951 memorandum in which every expression denotes a finite automaton, plus Thompson’s 1968 construction that simulates the automaton in lockstep — advancing every reachable state at once.",
+      "cost": "The guarantee belongs to the notation, and the widely used implementations accept a larger one. Backreferences make the answer depend on the path taken, which removes the property the fast algorithm rests on.",
+      "interview": {
+        "q": "Why can a regular expression take exponential time when the theory gives a linear-time algorithm?",
+        "trap": "Answering that some engines are badly implemented, or that the pattern was badly written. Both can be true and neither is the reason.",
+        "answer": "Because the guarantee is a property of the notation, and most engines accept a strictly larger notation than the one it applies to.\n\nThe efficient method keeps the set of currently reachable states and throws away how each was reached. That is valid only while the answer cannot depend on the path, which is precisely what a finite automaton gives you: an n-node automaton has at most n reachable states even though it may have two-to-the-n paths, so the set stays small.\n\nBackreferences break that. Whether \\1 matches depends on what this particular route captured, so two routes reaching the same position are no longer interchangeable, the set stops summarising the computation, and the engine must search instead. Cox's pattern — n optional letters then n required ones — makes the search explore two-to-the-n possibilities with only the last succeeding, and it becomes unusable around n of twenty-five.\n\nSo the remedy is not a faster backtracker but an engine restricted to the notation, and Cox's own summary is the thing to remember: a slow implementation of a linear algorithm beats a fast implementation of an exponential one once the exponent is large enough."
+      }
+    },
+    "blueprint": "Where the guarantee actually lives:\n\n  the NOTATION  -> every expression is a finite automaton\n                -> answer can't depend on the path\n                -> keep the SET of reachable states\n                -> <= n states, though 2^n paths\n                -> lockstep simulation, quadratic\n\n  the SUPERSET  -> backreferences\n                -> \\1 depends on THIS path's capture\n                -> two routes to one position differ\n                -> the set no longer summarises\n                -> search, exponential\n\n  So the usual sentence is wrong in a specific way:\n\n     not \"regex is exponential\"\n     but \"the thing called regex is a superset in which\n          the guarantee was traded away\"",
+    "takeaway": "The speed guarantee belongs to the notation — an expression that denotes a finite automaton can be matched by tracking reachable states and discarding paths — and features like backreferences leave that notation, which is where the exponential behaviour comes from."
+  },
+  "C.27.1": {
+    "id": "C.27.1",
+    "trackId": "C",
+    "trackName": "Languages: the chain of walls",
+    "title": "Write year, wall, solved and blueprint for each language above, from memory",
+    "status": "traced",
+    "seed": "C.27.1",
+    "story": "This is the first task in the track that asks you to produce rather than read, and the reason is a result that is genuinely counterintuitive rather than merely motivational.\n\nRoediger and Karpicke had students study prose and then either take recall tests with no feedback or restudy the same number of times. At five minutes, restudying won. At two days and at one week, testing won substantially. The direction of the effect reverses across exactly the interval you care about, which means a short-run measurement of your own learning will recommend the method that is worse over the period that matters.\n\nTwo details make it hard to explain away. The restudy group saw all of the material again; the tested group saw again only what it managed to recall, which is less. Testing still produced better retention at a week, so the benefit is not extra exposure. And restudying increased students’ confidence while lowering their retention — so the internal signal you would naturally use to choose a method points the wrong way.\n\nTake the limits seriously too, because this is the kind of claim that gets over-applied. These were undergraduates in a laboratory recalling prose passages of around 250 words, using free recall. It is not a study of recognition versus recall as question formats, and it is not a study of this exercise. What it supports is the method — produce first, check after — and the warning that your sense of how well it is going is not evidence.\n\nSo: close the track. Write out, for every language from machine code to CUDA, the year, the wall it was built against, what it solved, and the one-line blueprint. Then open the lessons and mark it. The gaps are the output of the exercise; the parts you got right were already yours.",
+    "problem": {
+      "name": "Retrieval practice",
+      "aka": [
+        "the testing effect",
+        "produce before you check"
+      ],
+      "shape": "You need material to be available later, under recall, and your sense of whether it is available now is unreliable.",
+      "tell": [
+        "you can follow the explanation completely while reading it",
+        "your study method is rereading, reviewing, or highlighting",
+        "you have never once tried to produce the material with the source closed"
+      ],
+      "move": "Produce the whole thing from memory first, in writing, with nothing open. Only then check, and treat the gaps rather than the successes as the result.",
+      "invariant": "The retrieval happens before the exposure. Looking first turns the exercise into recognition, which is the mode that generates the confidence without the retention.",
+      "breaks": "It gets measured wrong. Immediately after study, restudying scores better, so anyone evaluating a study method on a short horizon will pick the worse one — and confidence rises under restudy too, so both the objective and subjective signals available at the time are misleading. The effect is also evidenced on lab recall of prose; applying it to a task like this one is reasonable inference rather than a demonstrated result.",
+      "cost": {
+        "time": "slower per pass, and it produces less re-exposure than rereading does",
+        "space": "you must write the output down, or you will grade yourself on what you recognise",
+        "beats": "rereading, which is faster, more pleasant, better in the first five minutes and worse thereafter"
+      },
+      "worked": {
+        "problem": "Why is the method that feels most effective the one to distrust?",
+        "reasoning": "Ask what the feeling is actually measuring. Fluency — how easily the material goes down while you are looking at it. Rereading maximises fluency by construction, because the material is right there.\n\nRetention is a different quantity: whether you can produce it later with the material absent. Nothing about the first quantity predicts the second, and in this experiment they move in opposite directions — restudying raised confidence and lowered retention at a week.\n\nSo the signal is not merely noisy, it is inverted, which is worse than having no signal because it will actively choose for you. The practical consequence is that you cannot evaluate a learning method from the inside, and you have to substitute a proxy that is measurable: what came out on the page with the book shut.",
+        "code": "what you feel          what you want\n-------------          -------------\nfluency while          production later,\nreading                with the source gone\n\nreread   -> fluency HIGH -> confidence HIGH\n                         -> retention at 1 week LOW\n\nrecall   -> fluency LOW  -> confidence LOW\n                         -> retention at 1 week HIGH\n\n  and the crossover:\n\n    5 min:   reread wins   <- when you'd measure\n    2 days:  recall wins\n    1 week:  recall wins   <- when it matters\n\n  Not a noisy signal. An inverted one."
+      },
+      "practice": "Write out the whole chain from memory now: for each of machine code, Fortran, COBOL, LISP, ALGOL, BASIC, C, Smalltalk, C++, Perl, Python, Java, JavaScript, PHP, Ruby, Erlang, C#, Go, TypeScript, Rust, Kotlin, Swift, SQL and CUDA — the year, the wall, what it solved, and one line of blueprint. Then check, and list only what you missed."
+    },
+    "beats": {
+      "broke": "Rereading is the method almost everyone chooses. It raises confidence, produces more re-exposure than testing does, and gives the worst retention of the available options at any interval longer than a few minutes.",
+      "fix": "Produce the material from memory before looking at it. In Roediger and Karpicke’s experiments, recall testing without feedback beat restudying substantially at two days and at one week.",
+      "cost": "It is slower, less pleasant, and measurably worse immediately after study — so any short-horizon evaluation rejects it. And the evidence is laboratory recall of prose, which makes applying it here an inference rather than a demonstrated result.",
+      "interview": {
+        "q": "Why should you distrust the study method that feels most effective?",
+        "trap": "Answering that people are lazy and prefer the easy method. The problem is not preference; the signal itself points the wrong way.",
+        "answer": "Because the feeling measures fluency — how easily material goes down while it is in front of you — and what you want is production later with the material absent. Those are different quantities, and in this experiment they moved in opposite directions: restudying raised confidence while lowering retention at a week.\n\nThat makes the internal signal inverted rather than merely noisy, which is worse than having none, because an inverted signal will confidently choose for you. The objective short-run measurement misleads in the same direction: at five minutes restudying genuinely wins, so testing yourself immediately after studying also recommends the wrong method.\n\nThe practical consequence is that you cannot evaluate learning from the inside and need an external proxy — what you actually produced on the page with the source closed. The honest caveat is that this was undergraduates recalling prose in a lab, so it supports the method rather than proving anything about this particular exercise."
+      }
+    },
+    "blueprint": "The exercise, and why the order is not negotiable:\n\n  1. close everything\n  2. write the table:  language | year | wall | solved | blueprint\n  3. ONLY THEN open the lessons\n  4. record the gaps; ignore what you got right\n\n  Step 3 is the whole design. Looking first converts\n  recall into recognition, which produces the\n  confidence and not the retention.\n\n  What you will notice while doing it:\n\n     the years come back first  (cheapest, least useful)\n     the walls come back last   (dearest, most useful)\n\n  That ordering is the argument for the whole track.",
+    "takeaway": "Produce before you check: retrieval is what strengthens memory, rereading raises confidence while lowering retention, and the short-run measurement recommends the worse method — so the feeling of learning cannot be used to choose how to learn."
+  },
+  "C.27.2": {
+    "id": "C.27.2",
+    "trackId": "C",
+    "trackName": "Languages: the chain of walls",
+    "title": "Compiler versus interpreter, properly",
+    "status": "traced",
+    "seed": "C.27.2",
+    "story": "The distinction is real and is almost always attached to the wrong thing. It is a property of an implementation, not of a language, and the track already contains the counterexample that proves it: the original Dartmouth implementation of BASIC was a compiler, translating a whole program at once, while the versions that later made the name famous on home machines were interpreters. Same language, opposite answer.\n\nAsk a better question and it becomes tractable. When does translation happen relative to execution, and what does the translation produce? Fortran translates once, before anything runs, and emits machine instructions — and Backus is explicit that the quality of those instructions was the condition the whole project had to meet, which is what made the translator rather than the language the hard part. LISP sits at the other end by accident: the evaluator was written to describe the language on paper, Russell hand coded it, and the language acquired an interpreter it was never designed to have.\n\nOnce the axis is time rather than category, the intermediate points stop being anomalies. Java compiles ahead of time to bytecode and then has that bytecode executed at run time by a second piece of software — so the same program is compiled and interpreted, by different components, and both descriptions are accurate. Add a just-in-time compiler and translation happens during execution, informed by what the program is actually doing, which is a capability neither end of the axis has.\n\nThat is the useful form of the distinction. Earlier translation means more time to optimise, more checking before anything runs, and less knowledge of the actual inputs. Later translation means the opposite: you know the types that really turned up and the branches really taken, and you must pay for the translation while the user waits. Every design in this track sits somewhere on that line, and a statement about where a language sits is only ever a statement about one of its implementations.",
+    "problem": {
+      "name": "Translation time",
+      "aka": [
+        "ahead-of-time versus just-in-time",
+        "compiled versus interpreted"
+      ],
+      "shape": "A program is written in one notation and executed by a machine that consumes another, and you must decide when the gap is closed.",
+      "tell": [
+        "someone is describing a language, rather than an implementation, as compiled or interpreted",
+        "the performance question is really a question about when work happens",
+        "the same source is known to run under two very different execution models"
+      ],
+      "move": "Place the implementation on the axis of when translation happens relative to execution — fully before, partly before into an intermediate form, or during — and say what the translation emits at each stage.",
+      "invariant": "Meaning is preserved wherever translation happens. Only the timing and the available information change, which is why the same language can sit at several points on the axis without becoming a different language.",
+      "breaks": "It breaks as a binary question. There is no fact of the matter about whether a language is compiled, because languages do not execute — implementations do, and a language with several implementations has several answers. Insisting on a yes or no forces a false statement about everything else sharing the name.",
+      "cost": {
+        "time": "earlier translation costs build time and saves run time; later translation reverses it",
+        "space": "an intermediate form, plus the translator itself resident at run time for the later designs",
+        "beats": "nothing, since this is an axis rather than a technique: the trade is what you get"
+      },
+      "worked": {
+        "problem": "Is language X compiled or interpreted?",
+        "reasoning": "The question has no answer, and the reason it has no answer is instructive rather than pedantic.\n\nLanguages do not execute. Implementations do, and the same language routinely has several. Dartmouth’s original BASIC compiled whole programs; the home-computer versions interpreted line by line. Any single-word answer about BASIC is false about half of the things called BASIC.\n\nReframe it as: for this implementation, when does translation happen and what does it emit? Now every case answers cleanly. Ahead of time to machine code. Ahead of time to bytecode, then interpreted. Ahead of time to bytecode, then compiled again during execution. Parsed and evaluated directly, with no separate artefact.\n\nAnd the reframed question is the one you actually wanted, because what you were trying to learn was about start-up cost, optimisation opportunity, and when errors surface — all of which follow from timing, and none of which follow from the label.",
+        "code": "                  translation happens\n  execution  <-------------------------------> source\n     |                                            |\n  [ machine code ]  ahead of time, to instructions\n  [ bytecode + VM ] ahead of time, to an intermediate\n                    form; interpreted at run time\n  [ bytecode + JIT ]...and translated AGAIN while\n                    running, using real types\n  [ walk the tree ] at run time, every time\n\n  earlier: more optimisation time\n           more checking before anything runs\n           knows nothing about real inputs\n  later:   knows the types that turned up\n           pays for translation while you wait\n\n  \"Is X compiled?\" -- X doesn't execute. Ask which\n  implementation, and you get an answer every time."
+      },
+      "practice": "Take one language you use and find two implementations of it that sit at different points on this axis. Then name one thing that is true of a program under the first and false under the second."
+    },
+    "beats": {
+      "broke": "The two words are used as properties of languages. That makes an accurate description of one implementation into a false claim about every other implementation sharing the name — and BASIC, compiled at Dartmouth and interpreted everywhere afterwards, is the counterexample sitting inside this track.",
+      "fix": "Ask when translation happens relative to execution, and what it emits. Fortran translated once, ahead of time, to instructions whose quality was the project’s acceptance condition; LISP acquired an interpreter because an evaluator written for a paper was hand coded.",
+      "cost": "The honest answer is a position on an axis rather than one of two labels, so it does not fit the shape the question is normally asked in, and it takes a sentence rather than a word.",
+      "interview": {
+        "q": "Is this language compiled or interpreted?",
+        "trap": "Answering with one of the two words. The question presupposes something false, and picking a side confirms the false part.",
+        "answer": "Languages are not compiled or interpreted — implementations are, and most languages have more than one. The clean example is inside the history: the original Dartmouth BASIC was a compiler that translated a whole program at once, and the home-computer versions that made the name famous were interpreters. Any one-word answer about that language is wrong about half of it.\n\nThe question worth asking is when translation happens relative to execution, and what it emits. That gives you ahead-of-time to machine code; ahead-of-time to bytecode then interpreted; bytecode plus a just-in-time compiler that translates again during execution; or direct evaluation with no separate artefact.\n\nThat reframing also answers whatever you were really asking, because start-up cost, optimisation opportunity and when errors surface all follow from timing. Earlier translation buys optimisation time and pre-execution checking and knows nothing about real inputs; later translation knows the types that actually turned up and charges the user for the work."
+      }
+    },
+    "blueprint": "The axis, with the track's own examples on it:\n\n  ahead of time -> machine code        Fortran, C\n  ahead of time -> bytecode -> VM      Java\n  ...plus translation DURING execution JIT\n  no artefact, evaluate directly       LISP's eval\n\n  and the counterexample that kills the binary:\n\n     Dartmouth BASIC   = compiler (compile-and-go)\n     home-machine BASIC = interpreter\n     -> same name, opposite answer\n\n  What actually varies along the axis:\n\n     earlier: optimisation time, checking before\n              running, ignorance of real inputs\n     later:   real types and branches, cost paid\n              while the user waits",
+    "takeaway": "Compiled and interpreted describe implementations, never languages — the real axis is when translation happens relative to execution, which is what determines optimisation opportunity, when errors surface, and who waits."
+  },
+  "C.27.3": {
+    "id": "C.27.3",
+    "trackId": "C",
+    "trackName": "Languages: the chain of walls",
+    "title": "Static versus dynamic typing, and what each buys at what cost",
+    "status": "traced",
+    "seed": "C.27.3",
+    "story": "Start with a definition sharp enough to have consequences. A static type system decides a question about every possible execution of a program, using only the text, before any execution happens. A dynamic one answers a question about this execution, at the moment the value is used. Everything else follows from that difference, including the parts that feel like matters of taste.\n\nThe first consequence is that a static system must refuse correct programs. Deciding a property of all executions from the text alone is undecidable in general, so any checker that always terminates has to approximate, and it must approximate toward refusal — a checker that sometimes accepted unsafe programs would guarantee nothing. That is why the gap is structural: better analysis moves the boundary and never removes it. The Rust announcement locates the language’s distinctiveness in exactly this machinery, and the price is paid by the author, at writing time, every time.\n\nThe second consequence is that a dynamic system accepts everything until it doesn’t. You get expressiveness with no argument and no restructuring, and you find out about the mistake when the value arrives — in production, on the path nobody exercised. LISP is the pure form: one kind of thing, examined when used.\n\nTwo complications the binary hides. Types can describe layout rather than restrict use, which is what Ritchie means when he names the array-and-pointer relationship as both characteristic and a major difficulty — those are declarations the compiler believes rather than checks. And types can be erased: TypeScript’s are gradual and structural and vanish before execution, so the checking is real for the code you wrote and absent for the data you received. So the honest axis is three questions, not one — when is it checked, is it checked or merely believed, and does anything remain at run time.",
+    "problem": {
+      "name": "Type discipline",
+      "aka": [
+        "static versus dynamic typing",
+        "when the check happens"
+      ],
+      "shape": "You want to know that operations are applied to values that support them, and you must choose when that is established.",
+      "tell": [
+        "the bug that hurt was a value of the wrong shape reaching code that assumed otherwise",
+        "you are deciding how much to state up front about data you have not seen yet",
+        "the codebase is large enough that nobody can hold the shape of it in their head"
+      ],
+      "move": "Decide where the check happens: before execution over all executions, at the moment of use for this one, or in between. Then ask whether the declarations are verified or merely trusted, and whether anything survives to run time.",
+      "invariant": "A check before execution covers every execution, including the ones you never run. That is the entire value proposition, and it holds only for the region the checker actually saw.",
+      "breaks": "The static side refuses correct programs it cannot prove, and no amount of analysis closes that gap, because the underlying question is undecidable. The dynamic side accepts programs that fail later, on inputs you did not try. And both are undone at boundaries: types that describe layout are believed rather than checked, and types that are erased cannot compare a claim to a value at run time.",
+      "cost": {
+        "time": "static costs author time and compile time; dynamic costs a check per use and an unknown amount of debugging",
+        "space": "static may carry no run-time representation at all; dynamic tags every value",
+        "beats": "nothing outright — each is the better answer under a different constraint, which is why both persist"
+      },
+      "worked": {
+        "problem": "What does a static type system necessarily cost, and why can better analysis not remove it?",
+        "reasoning": "It costs correct programs, and the cost is a theorem rather than an engineering shortfall.\n\nThe checker answers a question about all possible executions using only the text. That question is undecidable in general, so any checker guaranteed to terminate must approximate. It has to approximate toward refusal: one that occasionally accepted a bad program would provide no guarantee at all, which is the only reason to run it.\n\nSo the set of programs that type-check is strictly smaller than the set that are correct, and some correct programs fall in the gap. Better inference moves the boundary outward; nothing puts it on top of the truth.\n\nRecognising that reframes the practical complaint. When the checker rejects working code, the question is not \"why is this tool bad\" but \"am I in the gap, or is my code actually wrong\" — and in the first case the fix is to make explicit something the checker cannot see.",
+        "code": "        all programs\n  +---------------------------+\n  |   incorrect               |\n  |     +-------------------+ |\n  |     | correct           | |\n  |     |   +-----------+   | |\n  |     |   | PROVABLY  |   | |  <- type-checks\n  |     |   | correct   |   | |\n  |     |   +-----------+   | |\n  |     |      ^ the gap    | |\n  |     +------|------------+ |\n  +------------|--------------+\n\n  static:  refuses the gap. covers every execution,\n           including the ones you never run.\n  dynamic: accepts everything. covers exactly the\n           executions you actually ran.\n\n  and two more questions the binary hides:\n\n     checked, or merely believed?  (layout types)\n     anything left at run time?    (erased types)"
+      },
+      "practice": "Find a place where your type checker rejected code you knew was correct. Decide whether you were in the gap or actually wrong — and if you were in the gap, name the fact the checker could not see that you could have written down."
+    },
+    "beats": {
+      "broke": "The question is argued as though one discipline were correct. That framing hides that the two answer different questions — about all executions, or about this one — and therefore pay in different currencies.",
+      "fix": "Define it by when the check happens. Static decides a property of every possible execution from the text before anything runs; dynamic decides a property of this execution at the moment of use.",
+      "cost": "Static necessarily refuses correct programs, because deciding the property in general is undecidable and the approximation must err toward refusal. Dynamic necessarily discovers the problem on the execution that hits it, which may be the one in front of a user.",
+      "interview": {
+        "q": "What does a static type system necessarily cost, and why can better analysis not remove that cost?",
+        "trap": "Answering that it costs developer time or verbosity. Those are real and incidental; the structural cost is about which programs are admitted at all.",
+        "answer": "It costs correct programs, and that is a theorem rather than a limitation of current checkers. Deciding a property of all possible executions from the text alone is undecidable in general, so any checker that always terminates must approximate — and it must approximate toward refusal, since one that sometimes accepted bad programs would provide no guarantee, which is the only reason to have it.\n\nSo the set that type-checks is strictly inside the set that is correct, and better inference moves that boundary without ever closing it.\n\nTwo refinements matter in practice, because the binary hides them. Types can describe layout rather than restrict use, in which case the compiler believes the declaration instead of checking it. And types can be erased, in which case the guarantee is real for the code you wrote and absent for data arriving from outside, since nothing at run time compares the claim to the value.\n\nWhich is why the useful question is three questions: when is it checked, is it checked or believed, and does anything survive to run time."
+      }
+    },
+    "blueprint": "One definition, and everything follows:\n\n  static  = a property of ALL executions, decided\n            from the text, BEFORE any execution\n  dynamic = a property of THIS execution, decided\n            at the moment of use\n\n  therefore, without further argument:\n\n    static  must refuse some correct programs\n            (undecidable -> approximate -> err safe)\n    dynamic must discover the fault on the run\n            that hits it\n\n  two questions the binary hides:\n\n    DESCRIBES layout or RESTRICTS use?\n      -> believed, or checked\n    ERASED or present at run time?\n      -> sound about code, silent about data",
+    "takeaway": "A static system decides a property of every execution before any of them happen, so it must refuse some correct programs; a dynamic one decides at the point of use, so it must find out on the run that breaks — and both are undone wherever types are believed rather than checked, or erased."
+  },
+  "C.27.4": {
+    "id": "C.27.4",
+    "trackId": "C",
+    "trackName": "Languages: the chain of walls",
+    "title": "Memory management: manual, reference counting, garbage collection, ownership",
+    "status": "traced",
+    "seed": "C.27.4",
+    "story": "Four techniques that look like four unrelated inventions are four answers to one question: who decides that a value is dead, and when. Put that way they line up on the same axis as C.27.2 and C.27.3, and the same trade appears — the earlier the decision, the less you can express; the later, the more you pay while running.\n\nManual management puts the decision in the programmer’s hands at a point in the program. It costs nothing at run time and needs nothing underneath, which is precisely why the systems languages have it; Ritchie lists the absence of automatic memory management among the things his language does not provide. The failure modes are the familiar ones, and they are silent: release too early and you have a reference to reused storage, release twice and you corrupt the allocator, release never and the program grows.\n\nReference counting hands the decision to the runtime but keeps the timing exact: the object dies at the instant its last reference goes. That promptness is a real property — files close when you expect — and it costs a write on every reference change. PEP 703 spells out the consequence that most people meet without recognising: a count update is a read-modify-write, so concurrent updates can be lost, which gives either a premature free or a leak. That is the whole reason a lock existed around it.\n\nTracing collection moves the timing to the runtime as well. The collector finds what is reachable and reclaims the rest, at a moment it chooses, which is what lets it handle cycles that counting cannot — and the price is that you do not know when, and something must be resident to do it. McCarthy’s 1960 paper contains the first published description, and it appears there not as a convenience but as a requirement, because a design that builds structures freely at run time has no other option.\n\nOwnership moves the decision earlier than any of them: to the compiler, before execution. The Rust announcement is explicit that the safety comes without requiring a garbage collector or runtime, which is what the systems case needed and could not previously have. The cost is the one from C.20 — the checker must be satisfied, so some correct programs are refused, and the work moves to the author.",
+    "problem": {
+      "name": "Reclamation",
+      "aka": [
+        "memory management",
+        "lifetime management"
+      ],
+      "shape": "Storage is allocated while the program runs and outlives the code that created it, so something must decide when it is no longer needed.",
+      "tell": [
+        "the object is created in one place and used in several, with no obvious owner",
+        "the process grows steadily under load and does not shrink",
+        "a crash appears far from the code that caused it, in reused memory"
+      ],
+      "move": "Choose who decides a value is dead and when: the programmer at a chosen point, the runtime at the instant the last reference drops, the runtime at a moment it selects, or the compiler before anything runs.",
+      "invariant": "Nothing is reclaimed while it is still reachable, and everything unreachable is eventually reclaimed. Every one of the four techniques is an attempt to guarantee both halves; they differ only in who establishes them and when.",
+      "breaks": "Each breaks differently and the failure tells you which you are using. Manual breaks on the programmer being wrong, silently. Counting breaks on cycles, which are unreachable but never reach zero. Tracing breaks on timing — you cannot say when, and something must be resident. Ownership breaks on expressiveness, refusing correct programs whose lifetimes it cannot prove.",
+      "cost": {
+        "time": "manual: nothing. counting: a write per reference change. tracing: pauses at unpredictable moments. ownership: compile time and author time",
+        "space": "counting: a counter per object. tracing: headroom, since collection is not immediate. ownership: nothing",
+        "beats": "each other, under different constraints — which is why all four are still in use"
+      },
+      "worked": {
+        "problem": "Why can reference counting not collect a cycle, and why is that not a bug to be fixed?",
+        "reasoning": "A counter records how many references point at an object. It is a local fact: each object knows its own count and nothing about the shape of the graph.\n\nNow take two objects referring to each other, with nothing else referring to either. They are unreachable — no path from the program’s roots gets to them — so they should be collected. But each still has a count of one, because the other one points at it. Both counts are correct, and both are above zero.\n\nThe information needed to see the problem is global: reachability from the roots. A counter cannot represent it, because no local number can answer a question about paths. So this is not an implementation shortfall that a better counter would close — it is the difference between a local property and a global one.\n\nWhich also tells you the two real fixes: add a tracing pass that computes reachability, or make certain references not contribute to the count, so the cycle is broken by construction.",
+        "code": "  A.count = 1     B.count = 1\n  +---+           +---+\n  | A | --------> | B |\n  +---+ <-------- +---+\n\n  roots ---X  nothing reaches A or B\n\n  both counts CORRECT. both non-zero. neither freed.\n\n  a count answers: \"how many point at me?\"   (local)\n  the question is: \"is there a path to me?\"  (global)\n\n  no local number can answer a path question.\n  -> not a bug. a category difference.\n\n  fixes:  add tracing (compute reachability), or\n          make some references not counted, so no\n          cycle can form in the counted graph."
+      },
+      "practice": "Take a language you use and determine which of the four it uses — then find the observable consequence: when a file handle closes, whether the process pauses, or what the compiler refuses."
+    },
+    "beats": {
+      "broke": "Storage created at run time outlives the code that created it, so something must decide when it is dead. Getting that wrong gives a crash in reused memory or a process that grows until the machine gives out, and both are silent at the point of the mistake.",
+      "fix": "Four answers on one axis of when the decision is made: the programmer at a chosen point, the runtime at the instant the last reference drops, the runtime at a moment of its choosing, or the compiler before execution. The third was first described in 1960, as a requirement rather than a convenience.",
+      "cost": "Earlier decisions constrain what you can express; later ones charge you while the program runs. Manual costs correctness, counting costs a write per reference and cannot see cycles, tracing costs predictability, ownership costs programs the checker cannot prove.",
+      "interview": {
+        "q": "Why can reference counting not collect a cycle, and why is that not an implementation gap?",
+        "trap": "Saying the counts are wrong, or that the implementation forgot to decrement something. The counts are exactly right, which is the point.",
+        "answer": "Because a count is a local fact and reachability is a global one. Each object knows how many references point at it and nothing about the shape of the graph.\n\nTwo objects that refer only to each other, with nothing else referring to either, are unreachable from the program's roots and ought to be collected. But each has a count of one, because the other points at it, and both counts are correct. No amount of care in maintaining them changes that, because the question \"is there a path from a root to me\" cannot be answered by a number stored on me.\n\nSo it is a category difference rather than a defect, and that is why the two real remedies are what they are: add a tracing pass that actually computes reachability, or arrange that some references do not contribute to the count so no cycle can form in the counted graph.\n\nIt also explains a thing people meet without recognising it — reference counts are read-modify-write, so concurrent updates can be lost, which is precisely why Python's interpreter lock existed."
+      }
+    },
+    "blueprint": "One question, four answers, one axis:\n\n  WHO decides, and WHEN?\n\n  compiler,    before running   -> ownership\n  runtime,     at the instant   -> reference counting\n  runtime,     when it chooses  -> tracing collection\n  programmer,  at a point       -> manual\n\n  earlier <------------------------------> later\n  less expressible                 more paid at run time\n  (refuses correct programs)       (pauses, writes, size)\n\n  and each fails in its own signature way:\n\n     manual   -> silent corruption\n     counting -> cycles (local fact, global question)\n     tracing  -> you can't say when\n     ownership-> correct programs refused",
+    "takeaway": "The four techniques are one question — who decides a value is dead, and when — and they sit on the same axis as every other choice in this track: decide earlier and express less, decide later and pay while running."
+  },
+  "C.27.5": {
+    "id": "C.27.5",
+    "trackId": "C",
+    "trackName": "Languages: the chain of walls",
+    "title": "Why Python is slow, precisely, not vaguely",
+    "status": "traced",
+    "seed": "C.27.5",
+    "story": "Two different costs get collapsed into one sentence, and separating them is the whole exercise. One is why a single-threaded loop is slow. The other is why threads do not help. They have different mechanisms, different fixes, and different futures, and the popular explanation names the second as the cause of the first.\n\nThe single-threaded cost is dynamic dispatch over boxed values. The evaluation loop is a loop around a switch over opcodes, and the opcodes are type-agnostic — one generic binary operation covers addition across integers, strings and lists — so the interpreter inspects the types at run time and dispatches, paying a fixed overhead on every instruction. Underneath that, objects live on the heap with headers; an integer is not a machine word in a register, it is a pointer to a structure. Adding two numbers is therefore pointer-chase, type-check, dispatch, allocate, rather than one instruction.\n\nThat cost is attackable without changing the language. Version 3.11 added a specialising adaptive interpreter that watches the types flowing through hot code and replaces generic operations with type-specific ones, which is how recent releases gained 10 to 25 percent with no just-in-time compiler. But there is a ceiling, and it is worth stating: specialisation removes work that turned out to be redundant, and cannot remove work the semantics require, because somewhere someone may override the behaviour the fast path assumed.\n\nThe second cost is the lock, and its purpose is the thing usually left out. It exists to make reference counting safe. A count update is a read-modify-write, so two threads updating concurrently can lose an update, giving a premature free or a leak — so the lock is a consequence of the memory-management choice in C.27.4, not an interpreter design decision. PEP 703 attacks it at that level: biased reference counting, on the observation that most objects are only ever touched by one thread, plus immortalisation and deferred counting, plus a thread-safe allocator. Accepted on 24 October 2023, experimental in 3.13, supported in 3.14, opt-in, and not binary-compatible with the standard build.\n\nWhich gives the precise answer the task title asks for. Removing the lock does not make your single-threaded loop faster — it was never what made it slow.",
+    "problem": {
+      "name": "Attributing a performance cost",
+      "aka": [
+        "interpreter overhead versus lock contention"
+      ],
+      "shape": "A system is slow, several plausible mechanisms exist, and the popular explanation names one that does not account for the observation.",
+      "tell": [
+        "the stated cause and the observed symptom involve different resources — one is throughput, the other is parallelism",
+        "the proposed fix has been shipped somewhere and the symptom persisted",
+        "nobody can say how much of the cost the named mechanism accounts for"
+      ],
+      "move": "Separate the costs by the resource each consumes and test each against a case where the other is absent. A single-threaded benchmark isolates dispatch overhead; a multi-threaded one on independent work isolates the lock.",
+      "invariant": "A mechanism can only explain a cost it is capable of causing. A lock that serialises threads cannot slow a program that has one thread, and no amount of confidence about it changes that.",
+      "breaks": "It breaks where the mechanisms are genuinely coupled, which is the interesting case here: the lock exists to protect reference counts, and reference counting is part of the object model that also makes values boxed. So the two costs are independent in their effects and share an origin — which is why the accurate account implicates the memory model rather than the interpreter alone.",
+      "cost": {
+        "time": "you must build two measurements instead of accepting one story",
+        "space": "nothing, beyond keeping two mechanisms in mind at once",
+        "beats": "a single-cause explanation, which is easier to repeat and routinely aims the fix at the wrong thing"
+      },
+      "worked": {
+        "problem": "Does removing the interpreter lock make single-threaded code faster?",
+        "reasoning": "No, and the reason is available before any measurement.\n\nThe lock serialises threads. A program with one thread is never waiting for it, so there is no time it could be giving back. Whatever makes that program slow has to be a mechanism that operates within a single thread.\n\nThose mechanisms are the ones above: type-agnostic bytecode requiring a run-time type check and dispatch on every instruction, and objects on the heap with headers so that an integer is a pointer to a structure rather than a machine word. Neither has anything to do with threads.\n\nIf anything the direction is slightly against you. Making counting safe without a global lock means per-object work — biased counting with a fast path for the owning thread and a slower atomic path for others — which is cheap but not free, and the build is opt-in partly for that reason.\n\nThe general lesson is the useful one: check that the mechanism you are blaming is capable of producing the symptom you have.",
+        "code": "symptom                    candidate mechanism\n-------                    -------------------\none thread, slow loop      lock?  -> never waited on it\n                                    CANNOT be the cause\n                           dispatch + boxing -> yes\n\nmany threads, no speedup   dispatch? -> would slow each\n                                        thread equally,\n                                        not prevent\n                                        parallelism\n                           lock -> yes\n\n  and the shared origin, which is the real answer:\n\n     reference counting  -> needs the lock\n     object model        -> needs the boxing\n\n  so \"why is it slow\" resolves to the MEMORY MODEL,\n  by two separate routes."
+      },
+      "practice": "Run a tight arithmetic loop in one thread, then the same total work across four threads. Note which number the interpreter lock could possibly have affected, and then check what the free-threaded build actually changes."
+    },
+    "beats": {
+      "broke": "Two independent costs — slow single-threaded execution and the absence of thread parallelism — get explained by one mechanism, and the one usually named cannot account for the first of them.",
+      "fix": "Separate them. Single-threaded cost is type-agnostic bytecode requiring a run-time check and dispatch per instruction, over objects that live on the heap with headers. The lock is a separate thing that protects reference counts, because a count update is a read-modify-write that concurrent threads can lose.",
+      "cost": "The accurate account needs two mechanisms rather than a slogan, and it points at the object model rather than the interpreter — which is a harder thing to change and the reason both fixes took so long.",
+      "interview": {
+        "q": "Does removing the global interpreter lock make single-threaded code faster?",
+        "trap": "Answering yes, or answering \"it depends\". The question is decidable from what the lock does, before any benchmark.",
+        "answer": "No. The lock serialises threads, so a single-threaded program never waits on it and there is no time for its removal to give back.\n\nWhat makes that program slow is separate: bytecode instructions are type-agnostic, so a generic operation checks object types at run time and dispatches on every instruction, and values are heap objects with headers rather than machine words — so adding two integers is a pointer chase, a type check, a dispatch and an allocation. The specialising interpreter added in 3.11 attacks exactly this, which is where recent double-digit gains came from, and it has a ceiling because it can only remove redundant work, never work the semantics require.\n\nThe lock exists because reference counting needs it: a count update is a read-modify-write, and a lost update means a premature free or a leak. PEP 703 replaces the global lock with biased reference counting on the observation that most objects are touched by only one thread — accepted in October 2023, experimental in 3.13, supported in 3.14, opt-in and not binary-compatible.\n\nThe transferable move is to check that the mechanism you are blaming is capable of producing the symptom you have."
+      }
+    },
+    "blueprint": "Two costs, one shared origin:\n\n  single-threaded slowness        no thread parallelism\n  ------------------------        ---------------------\n  type-agnostic opcodes           one mutex over all\n  run-time type check             object access\n  dispatch per instruction\n  heap objects with headers       exists to protect\n  (an int is a pointer)           reference counts\n\n  fix: specialising interpreter   fix: biased refcounting\n       (3.11, +10-25%)                 (PEP 703, opt-in)\n       ceiling: can't remove           ABI-incompatible\n       required work\n\n  the lock CANNOT slow a one-thread program.\n  it was never what made your loop slow.\n\n  and both roads lead back to the same place:\n  the object model of C.27.4.",
+    "takeaway": "Two separate costs get named as one: dispatch over boxed objects is what makes single-threaded code slow, and the lock — which exists only to protect reference counts — costs parallelism and nothing else."
+  },
+  "C.27.6": {
+    "id": "C.27.6",
+    "trackId": "C",
+    "trackName": "Languages: the chain of walls",
+    "title": "Write the same small program in Python, JavaScript and Go",
+    "status": "traced",
+    "seed": "C.27.6",
+    "story": "Every lesson in this track has told you what a language was built against. This exercise checks a different thing, which reading cannot give you: what the language makes you say when you sit down to use it.\n\nThe instrument is a single program written three times. Not three programs solving the problem idiomatically — one specification, implemented three times, so that the differences are attributable to the languages rather than to your choices. What you are producing is not three programs. It is two lists, per language: what you were compelled to state, and what the language decided on your behalf without mentioning it.\n\nThose lists are the language’s opinion, stated as a constraint rather than as documentation. Being made to declare a type, handle an error at the call site, or name a return value explicitly is the designers saying that this is a thing which must not be left implicit in a system of the size they had in mind — Pike is direct about the third language here being for people who write, read, debug and maintain large systems rather than for language research. Being allowed to leave something out is the opposite claim: that at the scale this was designed for, the cost of saying it exceeds the cost of getting it wrong.\n\nBoth are bets, and neither is free. A language that makes you handle the missing-file case at every call is more tedious and has fewer unhandled failures; a language that lets the exception fly gets you to a working prototype faster and lets a failure travel further from its cause than you would like.\n\nThe honest limit: a small program exercises a small part of a language. You will learn nothing here about how any of them behaves at fifty thousand lines, with six contributors and a four-year history, which is the case that actually decided most of their designs. Treat the result as evidence about ergonomics and about what each refuses to let you skip — not as a verdict.",
+    "problem": {
+      "name": "Comparing languages by what they compel",
+      "aka": [
+        "the same program three times",
+        "controlled comparison"
+      ],
+      "shape": "You need to compare tools whose advocates describe them in incomparable terms, and the published descriptions are written by the people who chose the trade-offs.",
+      "tell": [
+        "every comparison you can find changes the problem along with the language",
+        "the claims are about philosophy rather than about what the code has to contain",
+        "you can read the documentation fluently and still not know what using it is like"
+      ],
+      "move": "Fix the specification exactly, implement it in each language without adapting the problem, and record two things per language: what you were forced to state, and what was decided for you silently.",
+      "invariant": "The specification does not change between implementations. That is the only thing making the differences attributable to the languages, and it is the discipline the exercise usually loses — the moment you make it idiomatic, you are comparing your own judgement three times.",
+      "breaks": "A small program exercises a small part of a language. Nothing here reaches the properties that most language design is actually about: behaviour at scale, across a team, over years — which is exactly what the designers say they optimised for. So the result is evidence about ergonomics and compulsion, and not about suitability.",
+      "cost": {
+        "time": "three implementations of something you already know how to write",
+        "space": "the two lists per language, which are the actual output",
+        "beats": "reading comparisons, which tells you what each designer valued and not what the language requires of you"
+      },
+      "worked": {
+        "problem": "What is a language telling you when it forces you to state something?",
+        "reasoning": "Read the compulsion as a claim about frequency and cost.\n\nRequiring you to state something is expensive: it is friction on every use, forever, including the thousands of cases where it was obvious. A designer accepts that cost only if they believe the alternative — leaving it implicit and being wrong sometimes — is more expensive at the scale they care about.\n\nSo each compulsion is a bet with two numbers behind it: how often the thing is left wrong when optional, and what it costs when it is. Requiring error handling at the call site is a bet that unhandled errors are common and expensive. Requiring a type is a bet that the misunderstanding is common and expensive over a long-lived codebase.\n\nThat reframing lets you judge the bet rather than the taste. The question is not whether the friction annoys you — it will — but whether the frequency and cost hold for your system.",
+        "code": "program (identical in all three):\n  read a text file, count word frequencies,\n  print the ten most common with counts,\n  and behave sensibly when the file is absent\n\nrecord, per language:\n\n  FORCED TO STATE          DECIDED FOR ME\n  ---------------          --------------\n  ...                      ...\n\n  each row on the left = a bet:\n     \"this is left wrong often enough, and costs\n      enough when wrong, to be worth the friction\"\n\n  judge the BET, not the friction. the friction is\n  real in every language that took the bet."
+      },
+      "practice": "Implement this exactly: read a text file, count word frequencies, print the ten most common with their counts, and behave sensibly if the file does not exist. Write it three times without changing the specification, then write the two lists for each and decide which compulsions you would want in a system you maintain for five years."
+    },
+    "beats": {
+      "broke": "Reading about a language tells you what its designers valued. It does not tell you what the language will require of you, and published comparisons change the problem along with the language.",
+      "fix": "One fixed specification, implemented three times without adaptation, producing two lists per language: what you were compelled to state, and what was silently decided for you.",
+      "cost": "A small program exercises a small part of a language, and reaches none of the properties at scale, across a team and over years that most of these designs were actually optimised for — Pike says as much about the third of them directly.",
+      "interview": {
+        "q": "What is a language telling you when it forces you to state something explicitly?",
+        "trap": "Reading it as a statement about safety or about the designers’ taste. It is a claim with two numbers behind it, and those numbers may not hold for you.",
+        "answer": "That the designer is betting the thing is left wrong often enough, and costs enough when wrong, to be worth friction on every single use forever — including the overwhelming majority of cases where it was obvious.\n\nThat is an expensive thing to impose, so it is only imposed against a belief about frequency and cost at a particular scale. Requiring errors to be handled at the call site is a bet that unhandled errors are common and expensive. Requiring a type is a bet that the misunderstanding is common and expensive in a codebase that outlives the people who wrote it.\n\nFraming it that way lets you evaluate the bet rather than your irritation. The friction is real and will not go away; the question is whether the frequency and the cost hold in your system. A bet that is correct for a codebase of millions of lines and thousands of contributors can be plainly wrong for a script you will delete this week, and neither fact says anything about the language being good."
+      }
+    },
+    "blueprint": "The instrument, and the thing it measures:\n\n  ONE specification, THREE implementations\n  (not three idiomatic programs -- that measures you)\n\n  output is not the programs. it is:\n\n     FORCED TO STATE     |  DECIDED FOR ME\n     --------------------+-------------------\n     types?              |  memory?\n     errors at the call? |  when it's freed?\n     the return value?   |  number types?\n     concurrency?        |  string encoding?\n\n  each left-hand entry = a bet about frequency x cost\n  at the scale that language was designed for\n\n  and the limit, stated plainly:\n\n     a small program tests a small part. nothing here\n     reaches \"50k lines, six people, four years\",\n     which is what these designs were arguing about.",
+    "takeaway": "Write one specification three times and record what each language compels and what it silently decides — every compulsion is a bet about how often the thing is got wrong and what that costs, at a scale that may not be yours."
+  },
+  "C.27.7": {
+    "id": "C.27.7",
+    "trackId": "C",
+    "trackName": "Languages: the chain of walls",
+    "title": "Defend a language choice for three different hypothetical systems",
+    "status": "traced",
+    "seed": "C.27.7",
+    "story": "This is the last task in the track and it tests the one claim the track has been making throughout: that every language trades one scarcity for another, so a choice is only defensible when you can say what you gave up.\n\nThe usual defence is a list of strengths. It is fast, it has good libraries, the team knows it, it has strong typing. Every item may be true and the whole thing is still not an argument, because you could write an equally true list for three other candidates, and nothing in the list explains why this one rather than those. A defence that no competing option could fail is not a defence.\n\nA real one has three parts. First: which constraint actually binds in this system — not everything that matters, the one thing that will decide whether it succeeds. The designers in this track are unusually explicit about theirs. Stroustrup: a facility must not just be useful, it must be affordable. Pike: tens of millions of lines, thousands of programmers, one source tree, daily updates. The Rust announcement: safety guarantees without requiring a garbage collector or runtime. Armstrong: programs that run indefinitely, with code changed while they run. Each is a statement about what was scarce.\n\nSecond: what you gave up. If you cannot name it, you have not understood the option, because C.0 says there is always something. Third, and the part almost always missing: the condition under which your choice becomes wrong. That sentence is what converts an opinion into a decision someone can check later — and it is the reason people leave it out.\n\nThree systems to defend, and they are chosen so that a single answer cannot cover them. A payment ledger that must not lose a transaction, maintained by forty people, expected to run for fifteen years. The inner render loop of a game engine, on fixed console memory, with a frame budget it cannot exceed. A data pipeline maintained by two people against an upstream schema that changes most weeks. Different scarcities: correctness over a long life with many hands; run-time cost with no runtime available; speed of change. Pick for each, say what you surrendered, and say what would have to be true for you to have been wrong.",
+    "problem": {
+      "name": "Defensible technology choice",
+      "aka": [
+        "naming the binding constraint",
+        "stating the falsifier"
+      ],
+      "shape": "A decision must be made between options that are all defensible, and the reasons offered are lists of strengths that apply to all of them.",
+      "tell": [
+        "the justification would remain true if you swapped in a different option",
+        "no cost is mentioned anywhere in the argument",
+        "nobody can state what would make the decision wrong"
+      ],
+      "move": "Name the one constraint that decides whether this system succeeds, name what the choice gives up, and state the condition under which it becomes the wrong choice.",
+      "invariant": "The argument must be capable of losing. If no competing option could fail it, it is a description of the option rather than a reason for it — and the third part, the falsifying condition, is what makes it checkable by someone other than you.",
+      "breaks": "It breaks when the binding constraint is misidentified, which is the common failure and is invisible at the time: you will defend the choice well against the wrong criterion and be wrong for a reason nobody argued about. It also breaks where the constraint changes under you — which is why the falsifying condition is worth writing down rather than merely thinking.",
+      "cost": {
+        "time": "slower than listing strengths, and produces a written commitment",
+        "space": "three sentences instead of a bullet list",
+        "beats": "the strengths list, which is faster, sounds more confident, and cannot be wrong because it says nothing"
+      },
+      "worked": {
+        "problem": "What separates a defensible choice from a merely justified one?",
+        "reasoning": "A justification explains why an option is acceptable. A defence explains why it beats the others here, which requires saying something that could have come out differently.\n\nTest any argument by substitution: replace the chosen option with a rival and see whether the words still hold. \"It is fast, well supported and the team knows it\" survives substitution for most mainstream options, so it distinguishes nothing and cannot be what decided it — which means the real reason is unstated and therefore unexamined.\n\nNow add the two parts that cannot survive substitution. What you gave up is specific to the option. The condition under which you were wrong is specific to the system. Together they identify one choice rather than a family of acceptable ones.\n\nThe third part does the work people dislike. It is the only part that can be checked later, and it converts \"we chose this\" into something that can be revisited on evidence instead of on preference.",
+        "code": "not a defence                defence\n-------------                -------\n\"it's fast, well supported,  binding constraint:\n the team knows it\"            <the one thing that\n                                decides success here>\n  -> substitute any rival:\n     still true               gave up:\n  -> distinguished nothing      <specific to the option>\n  -> real reason unstated\n                             wrong if:\n                               <specific to the system,\n                                checkable later>\n\n  Test: could a competing option FAIL this argument?\n  If not, it isn't an argument."
+      },
+      "practice": "Defend a choice for each: (1) a payment ledger that must not lose a transaction, forty maintainers, fifteen-year life; (2) a game engine’s inner render loop on fixed console memory with a hard frame budget; (3) a data pipeline maintained by two people against an upstream schema that changes weekly. For each, write the binding constraint, what you gave up, and what would have to be true for you to be wrong."
+    },
+    "beats": {
+      "broke": "Choices get defended with lists of strengths. Those lists survive substitution of any mainstream alternative, so they distinguish nothing and the actual reason for the decision goes unstated and unexamined.",
+      "fix": "Three sentences: the constraint that binds in this system, what the choice gives up, and the condition under which it becomes wrong. The designers in this track state their own constraints plainly — affordability, systems of tens of millions of lines, safety without a runtime, programs that never stop.",
+      "cost": "The third sentence makes you accountable to a criterion later, on evidence rather than on preference, which is exactly why it is the part that goes missing.",
+      "interview": {
+        "q": "What makes a technology choice defensible rather than merely justified?",
+        "trap": "Answering with a better or longer list of criteria. More criteria that all options satisfy is still not an argument that distinguishes them.",
+        "answer": "That it could have come out differently. A justification says an option is acceptable; a defence says it beats the others here, and that requires claims a rival could fail.\n\nThe test is substitution. Take your stated reasons and swap in a competing option — if the sentences remain true, they did not decide anything, and whatever actually decided it is unstated and therefore unreviewed.\n\nThree parts survive that test. The binding constraint: the one thing that determines whether this system succeeds, not everything that matters. What you gave up, which is specific to the option and, by the argument this whole track makes, always exists. And the condition under which the choice becomes wrong, which is specific to the system.\n\nThe last one does the real work, because it is the only part anyone can check later. It turns a decision into something revisitable on evidence rather than on preference — and it is the part people leave out, since writing it down is what makes you accountable to it."
+      }
+    },
+    "blueprint": "The test, and the shape that passes it:\n\n  substitute a rival into your reasons.\n  still true? -> you haven't given a reason.\n\n  what passes:\n\n     1. binding constraint\n        the ONE thing that decides success here\n     2. what you gave up\n        specific to the option; always exists (C.0)\n     3. wrong if...\n        specific to the system; checkable later\n\n  the three systems, chosen so one answer can't cover:\n\n     ledger    | 40 people, 15 years, lose nothing\n               |   -> correctness over a long life\n     render    | fixed memory, hard frame budget\n               |   -> run-time cost, no runtime\n     pipeline  | 2 people, schema moves weekly\n               |   -> speed of change\n\n  Part 3 is the one that goes missing, because it is\n  the only one that can convict you later.",
+    "takeaway": "A defence must be capable of losing: name the constraint that binds, what the choice gave up, and what would have to be true for you to be wrong — a list of strengths that any rival would also pass decided nothing."
+  },
   "C.3": {
     "id": "C.3",
     "trackId": "C",
@@ -4361,6 +4841,344 @@
       "claim": "The coupling deliberately re-accepted here — code written against one manufacturer’s machine — is the one the COBOL committees were set up to remove at a Pentagon meeting in May 1959, by making a written specification rather than any vendor’s product the authority.",
       "title": "Sammet, J. E., The Early History of COBOL, in History of Programming Languages, ACM SIGPLAN Notices, 1978",
       "url": "https://dl.acm.org/doi/10.1145/960118.808378",
+      "kind": "primary"
+    }
+  ],
+  "C.24": [
+    {
+      "claim": "The first publicly available description of the markup language was a document called HTML Tags, first mentioned on the internet by Berners-Lee in late 1991. Apart from the hyperlink, its elements were strongly influenced by an in-house documentation format at CERN. Thirteen of those elements still existed in the fourth version of the language.",
+      "title": "Raggett, D., A history of HTML, in Raggett on HTML 4, published by the World Wide Web Consortium",
+      "url": "https://www.w3.org/People/Raggett/book4/ch02.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "The proposal titled Cascading HTML style sheets is dated 10 October 1994, version 0.92, by Wium Lie, and describes itself as work in progress. It proposes a mapping between elements and presentation hints, with logic to make presentation decisions based on the user’s environment, such as screen size.",
+      "title": "Lie, H. W., Cascading HTML style sheets — a proposal, version 0.92, 10 October 1994",
+      "url": "https://w3.org/People/howcome/p/cascade.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "The proposal’s defining property is in its name: sheets are designed to cascade, so that the user or browser specifies initial preferences and hands the remaining influence to the sheets referenced in the incoming document. Presentation is therefore negotiated between author and reader rather than dictated by either.",
+      "title": "Lie, H. W., Cascading HTML style sheets — a proposal, version 0.92, 10 October 1994",
+      "url": "https://w3.org/People/howcome/p/cascade.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "Level 1 became a W3C Recommendation on 17 December 1996, authored by Wium Lie and Bert Bos. The work began in October 1994 while Lie was at CERN and continued from July 1995 at INRIA, the European host of the consortium, where Bos joined the project.",
+      "title": "The World Wide Web Consortium Issues Cascading Style Sheets Recommendation, W3C press release, 17 December 1996",
+      "url": "https://www.w3.org/press-releases/1996/css1-rec/",
+      "kind": "primary"
+    },
+    {
+      "claim": "The consortium’s account records that by 1994 the markup language had established itself as a universal document format, but that it was clear the language even with extensions would not meet authors’ demands for presentational capability.",
+      "title": "The World Wide Web Consortium Issues Cascading Style Sheets Recommendation, W3C press release, 17 December 1996",
+      "url": "https://www.w3.org/press-releases/1996/css1-rec/",
+      "kind": "primary"
+    }
+  ],
+  "C.25": [
+    {
+      "claim": "The first Unix shell was written by Ken Thompson and introduced with the first version of Unix in 1971. It was a command interpreter rather than a scripting language, and it was distributed with versions one through six, from 1971 to 1975.",
+      "title": "Thompson shell: the first Unix shell, its 1971 introduction, and its redirection syntax against Multics",
+      "url": "https://en.wikipedia.org/wiki/Thompson_shell",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Its redirection syntax was notably compact by comparison with Multics, where redirecting input or output required separate commands to start and stop the redirection; here one appended a symbol and a filename to the command line.",
+      "title": "Thompson shell: the first Unix shell, its 1971 introduction, and its redirection syntax against Multics",
+      "url": "https://en.wikipedia.org/wiki/Thompson_shell",
+      "kind": "secondary"
+    },
+    {
+      "claim": "In a typewritten memo of 1964 Douglas McIlroy wrote about coupling programs like garden hose, so that a programmer could screw in another segment when data needed massaging another way. He raised the idea repeatedly over about nine years before Thompson implemented it, and credits Thompson with the vertical bar notation. McIlroy described the aftermath as an unforgettable orgy of one-liners.",
+      "title": "The Origin of Unix Pipes, collecting McIlroy’s own accounts of the 1964 memo and the 1973 implementation",
+      "url": "http://doc.cat-v.org/unix/pipes/",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Accounts of when the implementation happened conflict. Some place Thompson’s overnight work in the autumn of 1973, but a notice circulated on 15 January 1973 already described the pipe system call, and pipes appear in the Version 3 manual of February 1973. The January dating is the better documented.",
+      "title": "Pipes, Unix Heritage Society wiki — the dating evidence, including the notice of 15 January 1973 and the Version 3 manual",
+      "url": "https://wiki.tuhs.org/doku.php?id=features%3Apipes",
+      "kind": "primary"
+    },
+    {
+      "claim": "The Bourne shell, written by Stephen Bourne at Bell Laboratories, was released in 1979 as the default shell of the seventh edition, replacing the earlier shell of the same name. Unlike its predecessor it was intended as a scripting language as well as an interactive interpreter.",
+      "title": "Bourne shell: its authorship, its 1979 release with the seventh edition, and its scripting intent",
+      "url": "https://en.wikipedia.org/wiki/Bourne_shell",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Bash was written by Brian Fox for the GNU Project with support from the Free Software Foundation, as a free replacement for the Bourne shell. Coding began on 10 January 1988 and it was released as a beta, version 0.99, on 8 June 1989.",
+      "title": "Bash (Unix shell): authorship by Brian Fox for the GNU Project, and the beta release of 8 June 1989",
+      "url": "https://en.wikipedia.org/wiki/Bash_(Unix_shell)",
+      "kind": "secondary"
+    }
+  ],
+  "C.26": [
+    {
+      "claim": "Kleene introduced the notion of regular events in Representation of Events in Nerve Nets and Finite Automata, a RAND research memorandum of 1951, published in 1956 in Automata Studies, Annals of Mathematics Studies 34, pages 3 to 41, Princeton University Press. He offered the term as an alternative to an existing one and said he would welcome a more descriptive suggestion.",
+      "title": "Kleene, S. C., Representation of Events in Nerve Nets and Finite Automata, RAND Research Memorandum RM-704, 1951; published in Automata Studies, Annals of Mathematics Studies 34, pp. 3-41, Princeton University Press, 1956",
+      "url": "https://www.rand.org/pubs/research_memoranda/RM704.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "Thompson published Regular expression search algorithm in Communications of the ACM volume 11 number 6, June 1968, pages 419 to 422, in the journal’s programming techniques department. The construction simulates a nondeterministic finite automaton in lockstep.",
+      "title": "Thompson, K., Regular expression search algorithm, Communications of the ACM 11(6):419-422, June 1968",
+      "url": "https://dl.acm.org/doi/10.1145/363347.363387",
+      "kind": "primary"
+    },
+    {
+      "claim": "Cox demonstrates the difference with the pattern formed of n optional letters followed by n required ones, matched against a string of n letters. A backtracking implementation tries one-then-zero for each optional element, giving two-to-the-n possibilities of which only the last leads to a match, so it requires exponential time and does not scale much beyond n of about 25.",
+      "title": "Cox, R., Regular Expression Matching Can Be Simple And Fast (but is slow in Java, Perl, PHP, Python, Ruby, ...), January 2007",
+      "url": "https://swtch.com/~rsc/regexp/regexp1.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "Thompson’s algorithm instead maintains state lists of length approximately n over a string of length n, giving quadratic total time. The efficiency comes from tracking the set of reachable states without tracking which paths reached them: an automaton of n nodes has at most n reachable states at each step, although there may be two-to-the-n paths.",
+      "title": "Cox, R., Regular Expression Matching Can Be Simple And Fast (but is slow in Java, Perl, PHP, Python, Ruby, ...), January 2007",
+      "url": "https://swtch.com/~rsc/regexp/regexp1.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "Cox observes that a slow implementation of a linear-time algorithm easily outperforms a fast implementation of an exponential-time one once the exponent is large enough.",
+      "title": "Cox, R., Regular Expression Matching Can Be Simple And Fast (but is slow in Java, Perl, PHP, Python, Ruby, ...), January 2007",
+      "url": "https://swtch.com/~rsc/regexp/regexp1.html",
+      "kind": "primary"
+    }
+  ],
+  "C.27.1": [
+    {
+      "claim": "Roediger and Karpicke report two experiments in which students studied prose passages and then either took free-recall tests without feedback or restudied the material the same number of times.",
+      "title": "Roediger, H. L. and Karpicke, J. D., Test-Enhanced Learning: Taking Memory Tests Improves Long-Term Retention, Psychological Science 17(3):249-255, 2006",
+      "url": "https://journals.sagepub.com/doi/10.1111/j.1467-9280.2006.01693.x",
+      "kind": "primary"
+    },
+    {
+      "claim": "When the final test came five minutes after study, repeated studying produced better recall than repeated testing. On delayed tests at two days and one week, prior testing produced substantially greater retention than studying did.",
+      "title": "Roediger, H. L. and Karpicke, J. D., Test-Enhanced Learning: Taking Memory Tests Improves Long-Term Retention, Psychological Science 17(3):249-255, 2006",
+      "url": "https://journals.sagepub.com/doi/10.1111/j.1467-9280.2006.01693.x",
+      "kind": "primary"
+    },
+    {
+      "claim": "Repeated studying increased students’ confidence in their ability to remember the material, while producing worse retention at the intervals that mattered.",
+      "title": "Roediger, H. L. and Karpicke, J. D., Test-Enhanced Learning: Taking Memory Tests Improves Long-Term Retention, Psychological Science 17(3):249-255, 2006",
+      "url": "https://journals.sagepub.com/doi/10.1111/j.1467-9280.2006.01693.x",
+      "kind": "primary"
+    },
+    {
+      "claim": "The result is not explained by extra exposure. The restudy group was re-exposed to the entire set of material, while the tested group was re-exposed only to what it could recall, and testing still produced greater retention at one week.",
+      "title": "Roediger, H. L. and Karpicke, J. D., Test-Enhanced Learning: Taking Memory Tests Improves Long-Term Retention, Psychological Science 17(3):249-255, 2006",
+      "url": "https://journals.sagepub.com/doi/10.1111/j.1467-9280.2006.01693.x",
+      "kind": "primary"
+    },
+    {
+      "claim": "The design used free recall rather than recognition, so the finding speaks to recall-based retrieval practice and is not a comparison of recognition against recall as question formats. It was run on prose passages of roughly 250 words with undergraduates in a laboratory.",
+      "title": "Roediger, H. L. and Karpicke, J. D., Test-Enhanced Learning: Taking Memory Tests Improves Long-Term Retention, Psychological Science 17(3):249-255, 2006",
+      "url": "https://journals.sagepub.com/doi/10.1111/j.1467-9280.2006.01693.x",
+      "kind": "primary"
+    },
+    {
+      "claim": "The chain this exercise covers is documented at the History of Programming Languages conferences by the designers themselves: Backus on Fortran, Sammet on COBOL, McCarthy on LISP, Ritchie on C, Kay on Smalltalk, Stroustrup on C++ and Armstrong on Erlang.",
+      "title": "History of Programming Languages, the ACM SIGPLAN conference series whose papers are written by the languages’ own designers",
+      "url": "https://dl.acm.org/conference/hopl",
+      "kind": "primary"
+    },
+    {
+      "claim": "ALGOL was defined by the report of the Paris conference of January 1960 and BASIC was first run at Dartmouth on 1 May 1964.",
+      "title": "Report on the Algorithmic Language ALGOL 60, Communications of the ACM 3(5), May 1960; and BASIC at Dartmouth, Dartmouth College",
+      "url": "https://softwarepreservation.computerhistory.org/ALGOL/report/Algol60_report_CACM_1960_June.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "Perl 1.0 was released on 18 December 1987 and Python was published to a newsgroup in February 1991 after being begun in December 1989.",
+      "title": "Perl: the 18 December 1987 release; History of Python: the December 1989 start and February 1991 release",
+      "url": "https://en.wikipedia.org/wiki/Perl",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Java was announced in May 1995, PHP was released in June 1995, and Ruby was first released in December 1995.",
+      "title": "Java (programming language); History of PHP; Ruby (programming language) — the three 1995 releases",
+      "url": "https://en.wikipedia.org/wiki/Java_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Rust reached version 1.0 on 15 May 2015, Kotlin was unveiled in July 2011, and Swift was announced in June 2014.",
+      "title": "Announcing Rust 1.0, 15 May 2015; Kotlin; Swift (programming language)",
+      "url": "https://blog.rust-lang.org/2015/05/15/Rust-1.0/",
+      "kind": "primary"
+    },
+    {
+      "claim": "CUDA was released by NVIDIA in 2007, and the query language presented as SEQUEL in 1974 was later renamed SQL.",
+      "title": "CUDA; and Chamberlin and Boyce, SEQUEL: A Structured English Query Language, ACM SIGFIDET 1974",
+      "url": "https://dl.acm.org/doi/10.1145/800296.811515",
+      "kind": "primary"
+    }
+  ],
+  "C.27.2": [
+    {
+      "claim": "Backus wrote that the acceptance condition for the first widely used compiler was the quality of the object program it produced, and that this made the design of the translator the real challenge rather than the design of the language. Translation happened once, ahead of execution, and the output was machine instructions.",
+      "title": "Backus, J., The History of Fortran I, II and III, in History of Programming Languages, ACM/Academic Press, 1978",
+      "url": "https://cse.sc.edu/~mgv/csce330f12/Backus78.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "McCarthy records that the evaluator for LISP was written to describe the language on paper, and that Russell noticed it could serve as an interpreter and hand coded it — at which point the language had an interpreter. McCarthy adds that the interpreter’s arrival tended to freeze the form of the language.",
+      "title": "McCarthy, J., History of Lisp, 12 February 1979, Stanford University",
+      "url": "http://www-formal.stanford.edu/jmc/history/lisp/node3.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "The original Dartmouth implementation of BASIC was a compiler operating compile-and-go: it converted an entire program at once into machine code rather than translating it line by line at each run. Many later implementations bearing the same name were interpreters.",
+      "title": "Dartmouth BASIC: the original compile-and-go implementation, which translated a whole program at once rather than line by line",
+      "url": "https://en.wikipedia.org/wiki/Dartmouth_BASIC",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Java programs are compiled to bytecode, which is then executed on any device carrying a compatible runtime — so the same program is both compiled, ahead of time, and interpreted, at run time, by two different pieces of software.",
+      "title": "Java (programming language): compilation to bytecode executed by a runtime on any compatible device",
+      "url": "https://en.wikipedia.org/wiki/Java_(programming_language)",
+      "kind": "secondary"
+    }
+  ],
+  "C.27.3": [
+    {
+      "claim": "Ritchie writes that the relationship between arrays and pointers and the declaration syntax are among the language’s most characteristic features and also major sources of difficulty, and that it offers limited support for strong type checking — its types describe storage layout rather than restricting how a value may be used.",
+      "title": "Ritchie, D. M., The Development of the C Language, HOPL-II, SIGPLAN Notices 28(3):201-208, April 1993",
+      "url": "https://dl.acm.org/doi/10.1145/154766.155580",
+      "kind": "primary"
+    },
+    {
+      "claim": "The Rust 1.0 announcement attributes the language’s distinctiveness to its type system, and states that it combines low-level control over performance with high-level convenience and safety guarantees without requiring a garbage collector or runtime.",
+      "title": "Announcing Rust 1.0, The Rust Core Team, The Rust Programming Language Blog, 15 May 2015",
+      "url": "https://blog.rust-lang.org/2015/05/15/Rust-1.0/",
+      "kind": "primary"
+    },
+    {
+      "claim": "TypeScript’s typing discipline is gradual and structural: annotations are optional, and convertibility depends on the parts of a type rather than on a declared name, so a value fits a type when its shape matches. The types are erased, so what executes is the base language.",
+      "title": "TypeScript: its gradual and structural typing discipline, and its status as a superset that erases to the base language",
+      "url": "https://en.wikipedia.org/wiki/TypeScript",
+      "kind": "secondary"
+    },
+    {
+      "claim": "LISP as described in 1960 builds everything from atoms and pairs with five elementary operations, with the kind of a value established when it is examined rather than declared in advance.",
+      "title": "McCarthy, J., Recursive Functions of Symbolic Expressions and Their Computation by Machine, Part I, Communications of the ACM 3(4), April 1960",
+      "url": "https://www.cs.tufts.edu/~nr/cs257/archive/john-mccarthy/recursive.pdf",
+      "kind": "primary"
+    }
+  ],
+  "C.27.4": [
+    {
+      "claim": "Automatic reclamation of unused storage is among the topics covered by McCarthy’s 1960 paper, which is its first published description. It arrived as a requirement of the design rather than a convenience: if structures are built freely while the program runs, something must reclaim them.",
+      "title": "McCarthy, J., Recursive Functions of Symbolic Expressions and Their Computation by Machine, Part I, Communications of the ACM 3(4), April 1960",
+      "url": "https://www.cs.tufts.edu/~nr/cs257/archive/john-mccarthy/recursive.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "Ritchie writes that the language provides limited support for automatic memory management, among other things — so deciding when storage is dead is the program’s own job.",
+      "title": "Ritchie, D. M., The Development of the C Language, HOPL-II, SIGPLAN Notices 28(3):201-208, April 1993",
+      "url": "https://dl.acm.org/doi/10.1145/154766.155580",
+      "kind": "primary"
+    },
+    {
+      "claim": "The Rust 1.0 announcement states that the language achieves low-level control over performance together with safety guarantees \"without requiring a garbage collector or runtime\", which is what allows its libraries to serve as a drop-in substitute for C.",
+      "title": "Announcing Rust 1.0, The Rust Core Team, The Rust Programming Language Blog, 15 May 2015",
+      "url": "https://blog.rust-lang.org/2015/05/15/Rust-1.0/",
+      "kind": "primary"
+    },
+    {
+      "claim": "PEP 703 describes the role of the global interpreter lock as making reference counting safe: incrementing or decrementing a reference count is a read-modify-write operation, and uncoordinated concurrent updates can be lost, leading to either a premature free or a leak.",
+      "title": "PEP 703 — Making the Global Interpreter Lock Optional in CPython, Sam Gross, Python Enhancement Proposals",
+      "url": "https://peps.python.org/pep-0703/",
+      "kind": "primary"
+    },
+    {
+      "claim": "PEP 703 proposes biased reference counting, which rests on the observation that most objects are accessed by only a single thread even in multi-threaded programs: each object has an owning thread that updates the count by a fast non-atomic path, while other threads take a slower atomic path.",
+      "title": "PEP 703 — Making the Global Interpreter Lock Optional in CPython, Sam Gross, Python Enhancement Proposals",
+      "url": "https://peps.python.org/pep-0703/",
+      "kind": "primary"
+    }
+  ],
+  "C.27.5": [
+    {
+      "claim": "The interpreter is a stack-based bytecode interpreter written in C, whose evaluation loop is essentially a loop containing a switch over all possible opcodes, with each opcode handled in its own case.",
+      "title": "Python behind the scenes #4: how Python bytecode is executed — a walkthrough of the evaluation loop and its dispatch",
+      "url": "https://tenthousandmeters.com/blog/python-behind-the-scenes-4-how-python-bytecode-is-executed/",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Bytecode instructions are type-agnostic: a single generic binary operation handles addition, subtraction, multiplication and division across integers, strings and lists alike, so the interpreter must check object types at run time and then dispatch to the appropriate function, paying a constant per-instruction overhead. Objects are almost all on the heap, and even integers and floats carry object headers rather than being raw machine words.",
+      "title": "Python behind the scenes #4: how Python bytecode is executed — a walkthrough of the evaluation loop and its dispatch",
+      "url": "https://tenthousandmeters.com/blog/python-behind-the-scenes-4-how-python-bytecode-is-executed/",
+      "kind": "secondary"
+    },
+    {
+      "claim": "A specialising adaptive interpreter added in version 3.11 observes the types flowing through hot bytecode and swaps generic operations for type-specific ones, which is how recent releases became 10 to 25 percent faster without a just-in-time compiler. Specialisation removes redundant work but cannot remove work the language semantics require.",
+      "title": "Python behind the scenes #4: how Python bytecode is executed — a walkthrough of the evaluation loop and its dispatch",
+      "url": "https://tenthousandmeters.com/blog/python-behind-the-scenes-4-how-python-bytecode-is-executed/",
+      "kind": "secondary"
+    },
+    {
+      "claim": "PEP 703 describes the global interpreter lock as a single mutex protecting access to Python objects, whose job is to make reference counting safe in a multi-threaded interpreter: a count update is a read-modify-write, and uncoordinated concurrent updates can be lost, causing a premature free or a leak.",
+      "title": "PEP 703 — Making the Global Interpreter Lock Optional in CPython, Sam Gross, Python Enhancement Proposals",
+      "url": "https://peps.python.org/pep-0703/",
+      "kind": "primary"
+    },
+    {
+      "claim": "PEP 703 proposes biased reference counting, immortalisation and a limited form of deferred reference counting, and replaces the small-object allocator with mimalloc because the existing one is not thread-safe without the lock. The steering council accepted it on 24 October 2023, with a phased rollout: experimental in 3.13 and officially supported in 3.14.",
+      "title": "PEP 703 — Making the Global Interpreter Lock Optional in CPython, Sam Gross, Python Enhancement Proposals",
+      "url": "https://peps.python.org/pep-0703/",
+      "kind": "primary"
+    },
+    {
+      "claim": "The free-threaded build is opt-in and installs alongside the regular interpreter. Because removing the lock changes the object header to support biased reference counting, it is not compatible at the binary interface level with the standard build, and some third-party extension modules may re-enable the lock.",
+      "title": "Python support for free threading, Python documentation",
+      "url": "https://docs.python.org/3/howto/free-threading-python.html",
+      "kind": "primary"
+    }
+  ],
+  "C.27.6": [
+    {
+      "claim": "Pike describes the third of these as designed by and for people who write, read, debug and maintain large software systems, and says its purpose is improving the working environment rather than programming-language research — that it is more about software engineering than programming language research.",
+      "title": "Pike, R., Go at Google: Language Design in the Service of Software Engineering, keynote at SPLASH 2012, Tucson, 25 October 2012",
+      "url": "https://go.dev/talks/2012/splash.article",
+      "kind": "primary"
+    },
+    {
+      "claim": "In the first of these, bytecode instructions are type-agnostic, so the interpreter checks object types at run time and dispatches accordingly, and values are heap objects carrying headers rather than raw machine words.",
+      "title": "Python behind the scenes #4: how Python bytecode is executed — type-agnostic opcodes, run-time dispatch, and heap-allocated objects",
+      "url": "https://tenthousandmeters.com/blog/python-behind-the-scenes-4-how-python-bytecode-is-executed/",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The second was prototyped in about ten days in May 1995 and shipped into a client shared by everyone, which is why its early design decisions could never be corrected.",
+      "title": "Brendan Eich: the ten-day prototype of May 1995 at Netscape, and the language’s deployment into the browser",
+      "url": "https://en.wikipedia.org/wiki/Brendan_Eich",
+      "kind": "secondary"
+    }
+  ],
+  "C.27.7": [
+    {
+      "claim": "Stroustrup states the design criterion that \"a facility must not just be useful, it must be affordable\", and gives his goal as designing a language in which he could write programs that were both efficient and elegant.",
+      "title": "Stroustrup, B., Bjarne Stroustrup’s FAQ — the author’s own answers on motivation and design criteria",
+      "url": "https://www.stroustrup.com/bs_faq.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "Pike describes the environment his language was designed for — server programs of tens of millions of lines, hundreds or thousands of programmers, daily updates, one source tree — and states its purpose as improving that working environment rather than programming-language research.",
+      "title": "Pike, R., Go at Google: Language Design in the Service of Software Engineering, keynote at SPLASH 2012, Tucson, 25 October 2012",
+      "url": "https://go.dev/talks/2012/splash.article",
+      "kind": "primary"
+    },
+    {
+      "claim": "The Rust 1.0 announcement states that the language combines low-level control over performance with high-level convenience and safety guarantees, and achieves this without requiring a garbage collector or runtime.",
+      "title": "Announcing Rust 1.0, The Rust Core Team, 15 May 2015",
+      "url": "https://blog.rust-lang.org/2015/05/15/Rust-1.0/",
+      "kind": "primary"
+    },
+    {
+      "claim": "Armstrong describes his language as designed for writing concurrent programs that run indefinitely, built on lightweight processes belonging to the language rather than the operating system, sharing no memory, with mechanisms for changing code while the system runs.",
+      "title": "Armstrong, J., A History of Erlang, HOPL-III, San Diego, June 2007",
+      "url": "https://dl.acm.org/doi/10.1145/1238844.1238850",
       "kind": "primary"
     }
   ],

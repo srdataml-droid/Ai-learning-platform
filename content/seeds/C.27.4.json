@@ -1,0 +1,83 @@
+{
+  "taskId": "C.27.4",
+  "title": "Memory management: manual, reference counting, garbage collection, ownership",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Automatic reclamation of unused storage is among the topics covered by McCarthy’s 1960 paper, which is its first published description. It arrived as a requirement of the design rather than a convenience: if structures are built freely while the program runs, something must reclaim them.",
+      "type": "date",
+      "tokens": [
+        "McCarthy",
+        "LISP",
+        "1960"
+      ],
+      "source": {
+        "title": "McCarthy, J., Recursive Functions of Symbolic Expressions and Their Computation by Machine, Part I, Communications of the ACM 3(4), April 1960",
+        "url": "https://www.cs.tufts.edu/~nr/cs257/archive/john-mccarthy/recursive.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Ritchie writes that the language provides limited support for automatic memory management, among other things — so deciding when storage is dead is the program’s own job.",
+      "type": "quote",
+      "tokens": [
+        "Ritchie"
+      ],
+      "source": {
+        "title": "Ritchie, D. M., The Development of the C Language, HOPL-II, SIGPLAN Notices 28(3):201-208, April 1993",
+        "url": "https://dl.acm.org/doi/10.1145/154766.155580",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The Rust 1.0 announcement states that the language achieves low-level control over performance together with safety guarantees \"without requiring a garbage collector or runtime\", which is what allows its libraries to serve as a drop-in substitute for C.",
+      "type": "quote",
+      "tokens": [
+        "Rust"
+      ],
+      "source": {
+        "title": "Announcing Rust 1.0, The Rust Core Team, The Rust Programming Language Blog, 15 May 2015",
+        "url": "https://blog.rust-lang.org/2015/05/15/Rust-1.0/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "PEP 703 describes the role of the global interpreter lock as making reference counting safe: incrementing or decrementing a reference count is a read-modify-write operation, and uncoordinated concurrent updates can be lost, leading to either a premature free or a leak.",
+      "type": "event",
+      "tokens": [
+        "PEP",
+        "GIL",
+        "Python"
+      ],
+      "source": {
+        "title": "PEP 703 — Making the Global Interpreter Lock Optional in CPython, Sam Gross, Python Enhancement Proposals",
+        "url": "https://peps.python.org/pep-0703/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "PEP 703 proposes biased reference counting, which rests on the observation that most objects are accessed by only a single thread even in multi-threaded programs: each object has an owning thread that updates the count by a fast non-atomic path, while other threads take a slower atomic path.",
+      "type": "event",
+      "tokens": [
+        "PEP",
+        "Python"
+      ],
+      "source": {
+        "title": "PEP 703 — Making the Global Interpreter Lock Optional in CPython, Sam Gross, Python Enhancement Proposals",
+        "url": "https://peps.python.org/pep-0703/",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "storage that outlives the routine that made it has to be released by somebody, and getting it wrong gives you either a crash or a program that slowly consumes the machine",
+    "fix": "four answers, distinguished by who decides a value is dead and when — the programmer at a point, the runtime at the instant, the runtime at a time of its choosing, or the compiler before anything runs",
+    "cost": "the earlier the decision, the less you can express; the later it is, the more you pay while running",
+    "interview": "why reference counting cannot collect a cycle, and why that is not an implementation gap"
+  }
+}

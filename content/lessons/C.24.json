@@ -1,0 +1,48 @@
+{
+  "id": "C.24",
+  "trackId": "C",
+  "trackName": "Languages: the chain of walls",
+  "title": "HTML and CSS",
+  "status": "traced",
+  "seed": "C.24",
+  "story": "The markup language began as a way to describe what a piece of text is — a heading, a paragraph, a link — and the first description of it, in late 1991, took most of its elements from an existing documentation format, adding the hyperlink. Thirteen of those elements survived into the fourth version, which is a good rate for a first attempt at anything.\n\nThe pressure that arrived next was presentational, and by 1994 the consortium’s own account says it plainly: the language had become a universal document format, and it was clear that even with extensions it would not satisfy what authors wanted from presentation. The available move was to add elements that describe appearance rather than meaning. That move works, and on this substrate it is irreversible — C.13 explains why, and the tags added in that period are still specified today.\n\nThe proposal dated 10 October 1994 does something more interesting than separating content from presentation, which had been proposed before. Its distinctive idea is in the word that names it. Sheets cascade: the reader or browser states initial preferences, and hands the remaining influence to the sheets that arrive with the document. Presentation is not transferred from author to reader or reader to author; it is negotiated, with the document’s own environment — screen size, and whatever else is true where it is being read — a participant. The proposal is explicit that decisions can depend on that environment.\n\nThe cost is the same property. If no single place decides an outcome, then no single place explains one. What a rule does depends on every other rule that could apply, on their origins, on their specificity, and on a reader’s context you cannot see. The complaint that styling is hard to reason about is correct, and it is not a defect of the syntax: it is what negotiation costs, and the alternative — the author deciding absolutely — is the thing the design deliberately refused.",
+  "problem": {
+    "name": "Separation of content and presentation",
+    "aka": [
+      "the cascade",
+      "style sheets"
+    ],
+    "shape": "A document’s meaning and its appearance are being expressed in the same place, so changing one requires editing the other, and neither can vary independently for different readers.",
+    "tell": [
+      "appearance is achieved by adding elements that describe appearance rather than meaning",
+      "the same visual change must be made in many documents by hand",
+      "the document cannot adapt to who is reading it or on what"
+    ],
+    "move": "Describe meaning in the document and appearance in a separate sheet, and let several sheets with different origins — reader, author, browser — combine by defined precedence rather than one replacing the others.",
+    "invariant": "The document remains meaningful with no sheet at all. That is what allows the reader’s environment to keep influence, and it is why the separation has to be real rather than a convention about where you put your styles.",
+    "breaks": "Outcomes stop being locally explainable. A rule’s effect depends on every other applicable rule, their origins and their specificity, plus a reader context the author cannot observe — so debugging appearance means reconstructing a negotiation rather than reading a value. This is the cost of the design, not a flaw in it.",
+    "cost": {
+      "time": "the browser resolves the cascade per element, per render",
+      "space": "a separate sheet, usually cached and shared across many documents",
+      "beats": "presentational markup, which is locally obvious and cannot adapt or be changed in one place"
+    },
+    "worked": {
+      "problem": "What is the cascade actually for? It is usually described as a fallback mechanism, which does not explain its name.",
+      "reasoning": "A fallback would be: use the author’s value, and if there isn’t one, use a default. That is a lookup with a default, and it would not need a special word.\n\nRead the 1994 proposal instead. The reader or browser states preferences first and then hands the remaining influence to the author’s sheets, with decisions able to depend on the reader’s environment. Both parties contribute to every outcome; neither is merely a backstop for the other.\n\nThat is why the document must still mean something with no sheet applied. If it did not, the reader’s side of the negotiation would be worthless, because refusing the author’s presentation would leave nothing readable.\n\nSo the cascade is a mechanism for divided authority, and the difficulty of predicting any single outcome is the direct consequence of dividing it.",
+      "code": "fallback (what people describe)\n  author value ?: default            <- one decider\n\ncascade (what it is)\n  reader/browser preferences\n        + author sheet\n        + element context (screen, medium, state)\n        -> resolved by origin, specificity, order\n\n  no single decider\n    -> adapts to readers the author never met\n    -> and no outcome is locally explainable\n\n  Both bullets are the same mechanism. You cannot\n  keep the first and refuse the second."
+    },
+    "practice": "Take a styling bug you could not explain quickly and write down every rule that applied to the element and why each won or lost. Then decide which part of that was accidental complexity and which was the cascade doing exactly what it is for."
+  },
+  "beats": {
+    "broke": "Authors wanted control of appearance, and the only mechanism available was adding presentational elements to a document format — a change that could never be reversed once documents depended on it.",
+    "fix": "Presentation in a separate sheet, with sheets that cascade: the reader or browser states preferences and hands remaining influence to the author’s sheets. Proposed 10 October 1994 and a W3C Recommendation on 17 December 1996.",
+    "cost": "No single place decides an outcome, so no single place explains one. A rule’s effect depends on every other applicable rule and on reader context the author cannot see.",
+    "interview": {
+      "q": "What is the cascade for, and why is it not just a fallback mechanism?",
+      "trap": "Describing it as defaults that apply when the author has not specified something. That is a lookup with a default and would not have needed a new word.",
+      "answer": "It is a mechanism for dividing authority over presentation between parties who never meet. The 1994 proposal has the reader or browser state preferences and then hand the remaining influence to the sheets arriving with the document, with decisions permitted to depend on the reader's environment. Both sides contribute to every outcome rather than one standing in for the other.\n\nThat is also why the separation has to be genuine — the document must still mean something with no sheet applied. Otherwise the reader's ability to decline or override the author's presentation would be worthless, and the negotiation would be a formality.\n\nAnd it explains the cost honestly. Because no single party decides, no single rule explains an outcome: you get adaptation to readers the author never anticipated, and you lose local explainability. Those are the same property, so the familiar complaint that styling is hard to reason about is accurate and is not a defect in the syntax."
+    }
+  },
+  "blueprint": "Who decides how this looks?\n\n  presentational markup   author, absolutely\n                          -> obvious locally\n                          -> same for every reader\n                          -> irreversible on this substrate\n\n  the cascade             reader/browser preferences\n                          + author sheet\n                          + context\n                          -> adapts to unknown readers\n                          -> no outcome locally explained\n\n  Precondition that makes the reader's half real:\n\n     the document must MEAN something with no sheet\n\n  otherwise \"decline the author's styling\" leaves\n  nothing to read, and the negotiation is theatre.",
+  "takeaway": "The cascade divides authority over presentation between author, reader and context rather than transferring it — which is why documents adapt to readers nobody anticipated, and why no single rule ever explains an outcome."
+}

@@ -1,0 +1,90 @@
+{
+  "taskId": "C.26",
+  "title": "Regular expressions",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Kleene introduced the notion of regular events in Representation of Events in Nerve Nets and Finite Automata, a RAND research memorandum of 1951, published in 1956 in Automata Studies, Annals of Mathematics Studies 34, pages 3 to 41, Princeton University Press. He offered the term as an alternative to an existing one and said he would welcome a more descriptive suggestion.",
+      "type": "date",
+      "tokens": [
+        "Kleene",
+        "RAND",
+        "Automata Studies",
+        "Automata",
+        "Annals",
+        "Mathematics Studies",
+        "Princeton",
+        "1951",
+        "1956"
+      ],
+      "source": {
+        "title": "Kleene, S. C., Representation of Events in Nerve Nets and Finite Automata, RAND Research Memorandum RM-704, 1951; published in Automata Studies, Annals of Mathematics Studies 34, pp. 3-41, Princeton University Press, 1956",
+        "url": "https://www.rand.org/pubs/research_memoranda/RM704.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Thompson published Regular expression search algorithm in Communications of the ACM volume 11 number 6, June 1968, pages 419 to 422, in the journal’s programming techniques department. The construction simulates a nondeterministic finite automaton in lockstep.",
+      "type": "date",
+      "tokens": [
+        "Thompson",
+        "Communications",
+        "ACM",
+        "1968"
+      ],
+      "source": {
+        "title": "Thompson, K., Regular expression search algorithm, Communications of the ACM 11(6):419-422, June 1968",
+        "url": "https://dl.acm.org/doi/10.1145/363347.363387",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Cox demonstrates the difference with the pattern formed of n optional letters followed by n required ones, matched against a string of n letters. A backtracking implementation tries one-then-zero for each optional element, giving two-to-the-n possibilities of which only the last leads to a match, so it requires exponential time and does not scale much beyond n of about 25.",
+      "type": "event",
+      "tokens": [
+        "Cox"
+      ],
+      "source": {
+        "title": "Cox, R., Regular Expression Matching Can Be Simple And Fast (but is slow in Java, Perl, PHP, Python, Ruby, ...), January 2007",
+        "url": "https://swtch.com/~rsc/regexp/regexp1.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "Thompson’s algorithm instead maintains state lists of length approximately n over a string of length n, giving quadratic total time. The efficiency comes from tracking the set of reachable states without tracking which paths reached them: an automaton of n nodes has at most n reachable states at each step, although there may be two-to-the-n paths.",
+      "type": "event",
+      "tokens": [
+        "Thompson",
+        "Cox"
+      ],
+      "source": {
+        "title": "Cox, R., Regular Expression Matching Can Be Simple And Fast (but is slow in Java, Perl, PHP, Python, Ruby, ...), January 2007",
+        "url": "https://swtch.com/~rsc/regexp/regexp1.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "Cox observes that a slow implementation of a linear-time algorithm easily outperforms a fast implementation of an exponential-time one once the exponent is large enough.",
+      "type": "quote",
+      "tokens": [
+        "Cox"
+      ],
+      "source": {
+        "title": "Cox, R., Regular Expression Matching Can Be Simple And Fast (but is slow in Java, Perl, PHP, Python, Ruby, ...), January 2007",
+        "url": "https://swtch.com/~rsc/regexp/regexp1.html",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "describing a set of strings required either an enumeration or a program, and neither can be reasoned about as a description",
+    "fix": "a notation whose every expression denotes a finite automaton, so matching is a mechanical walk and the cost is bounded",
+    "cost": "the popular implementations accept features outside that notation, and those features put matching in a different complexity class entirely",
+    "interview": "why a regular expression can take exponential time when the theory says linear"
+  }
+}

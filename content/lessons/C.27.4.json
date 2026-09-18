@@ -1,0 +1,48 @@
+{
+  "id": "C.27.4",
+  "trackId": "C",
+  "trackName": "Languages: the chain of walls",
+  "title": "Memory management: manual, reference counting, garbage collection, ownership",
+  "status": "traced",
+  "seed": "C.27.4",
+  "story": "Four techniques that look like four unrelated inventions are four answers to one question: who decides that a value is dead, and when. Put that way they line up on the same axis as C.27.2 and C.27.3, and the same trade appears — the earlier the decision, the less you can express; the later, the more you pay while running.\n\nManual management puts the decision in the programmer’s hands at a point in the program. It costs nothing at run time and needs nothing underneath, which is precisely why the systems languages have it; Ritchie lists the absence of automatic memory management among the things his language does not provide. The failure modes are the familiar ones, and they are silent: release too early and you have a reference to reused storage, release twice and you corrupt the allocator, release never and the program grows.\n\nReference counting hands the decision to the runtime but keeps the timing exact: the object dies at the instant its last reference goes. That promptness is a real property — files close when you expect — and it costs a write on every reference change. PEP 703 spells out the consequence that most people meet without recognising: a count update is a read-modify-write, so concurrent updates can be lost, which gives either a premature free or a leak. That is the whole reason a lock existed around it.\n\nTracing collection moves the timing to the runtime as well. The collector finds what is reachable and reclaims the rest, at a moment it chooses, which is what lets it handle cycles that counting cannot — and the price is that you do not know when, and something must be resident to do it. McCarthy’s 1960 paper contains the first published description, and it appears there not as a convenience but as a requirement, because a design that builds structures freely at run time has no other option.\n\nOwnership moves the decision earlier than any of them: to the compiler, before execution. The Rust announcement is explicit that the safety comes without requiring a garbage collector or runtime, which is what the systems case needed and could not previously have. The cost is the one from C.20 — the checker must be satisfied, so some correct programs are refused, and the work moves to the author.",
+  "problem": {
+    "name": "Reclamation",
+    "aka": [
+      "memory management",
+      "lifetime management"
+    ],
+    "shape": "Storage is allocated while the program runs and outlives the code that created it, so something must decide when it is no longer needed.",
+    "tell": [
+      "the object is created in one place and used in several, with no obvious owner",
+      "the process grows steadily under load and does not shrink",
+      "a crash appears far from the code that caused it, in reused memory"
+    ],
+    "move": "Choose who decides a value is dead and when: the programmer at a chosen point, the runtime at the instant the last reference drops, the runtime at a moment it selects, or the compiler before anything runs.",
+    "invariant": "Nothing is reclaimed while it is still reachable, and everything unreachable is eventually reclaimed. Every one of the four techniques is an attempt to guarantee both halves; they differ only in who establishes them and when.",
+    "breaks": "Each breaks differently and the failure tells you which you are using. Manual breaks on the programmer being wrong, silently. Counting breaks on cycles, which are unreachable but never reach zero. Tracing breaks on timing — you cannot say when, and something must be resident. Ownership breaks on expressiveness, refusing correct programs whose lifetimes it cannot prove.",
+    "cost": {
+      "time": "manual: nothing. counting: a write per reference change. tracing: pauses at unpredictable moments. ownership: compile time and author time",
+      "space": "counting: a counter per object. tracing: headroom, since collection is not immediate. ownership: nothing",
+      "beats": "each other, under different constraints — which is why all four are still in use"
+    },
+    "worked": {
+      "problem": "Why can reference counting not collect a cycle, and why is that not a bug to be fixed?",
+      "reasoning": "A counter records how many references point at an object. It is a local fact: each object knows its own count and nothing about the shape of the graph.\n\nNow take two objects referring to each other, with nothing else referring to either. They are unreachable — no path from the program’s roots gets to them — so they should be collected. But each still has a count of one, because the other one points at it. Both counts are correct, and both are above zero.\n\nThe information needed to see the problem is global: reachability from the roots. A counter cannot represent it, because no local number can answer a question about paths. So this is not an implementation shortfall that a better counter would close — it is the difference between a local property and a global one.\n\nWhich also tells you the two real fixes: add a tracing pass that computes reachability, or make certain references not contribute to the count, so the cycle is broken by construction.",
+      "code": "  A.count = 1     B.count = 1\n  +---+           +---+\n  | A | --------> | B |\n  +---+ <-------- +---+\n\n  roots ---X  nothing reaches A or B\n\n  both counts CORRECT. both non-zero. neither freed.\n\n  a count answers: \"how many point at me?\"   (local)\n  the question is: \"is there a path to me?\"  (global)\n\n  no local number can answer a path question.\n  -> not a bug. a category difference.\n\n  fixes:  add tracing (compute reachability), or\n          make some references not counted, so no\n          cycle can form in the counted graph."
+    },
+    "practice": "Take a language you use and determine which of the four it uses — then find the observable consequence: when a file handle closes, whether the process pauses, or what the compiler refuses."
+  },
+  "beats": {
+    "broke": "Storage created at run time outlives the code that created it, so something must decide when it is dead. Getting that wrong gives a crash in reused memory or a process that grows until the machine gives out, and both are silent at the point of the mistake.",
+    "fix": "Four answers on one axis of when the decision is made: the programmer at a chosen point, the runtime at the instant the last reference drops, the runtime at a moment of its choosing, or the compiler before execution. The third was first described in 1960, as a requirement rather than a convenience.",
+    "cost": "Earlier decisions constrain what you can express; later ones charge you while the program runs. Manual costs correctness, counting costs a write per reference and cannot see cycles, tracing costs predictability, ownership costs programs the checker cannot prove.",
+    "interview": {
+      "q": "Why can reference counting not collect a cycle, and why is that not an implementation gap?",
+      "trap": "Saying the counts are wrong, or that the implementation forgot to decrement something. The counts are exactly right, which is the point.",
+      "answer": "Because a count is a local fact and reachability is a global one. Each object knows how many references point at it and nothing about the shape of the graph.\n\nTwo objects that refer only to each other, with nothing else referring to either, are unreachable from the program's roots and ought to be collected. But each has a count of one, because the other points at it, and both counts are correct. No amount of care in maintaining them changes that, because the question \"is there a path from a root to me\" cannot be answered by a number stored on me.\n\nSo it is a category difference rather than a defect, and that is why the two real remedies are what they are: add a tracing pass that actually computes reachability, or arrange that some references do not contribute to the count so no cycle can form in the counted graph.\n\nIt also explains a thing people meet without recognising it — reference counts are read-modify-write, so concurrent updates can be lost, which is precisely why Python's interpreter lock existed."
+    }
+  },
+  "blueprint": "One question, four answers, one axis:\n\n  WHO decides, and WHEN?\n\n  compiler,    before running   -> ownership\n  runtime,     at the instant   -> reference counting\n  runtime,     when it chooses  -> tracing collection\n  programmer,  at a point       -> manual\n\n  earlier <------------------------------> later\n  less expressible                 more paid at run time\n  (refuses correct programs)       (pauses, writes, size)\n\n  and each fails in its own signature way:\n\n     manual   -> silent corruption\n     counting -> cycles (local fact, global question)\n     tracing  -> you can't say when\n     ownership-> correct programs refused",
+  "takeaway": "The four techniques are one question — who decides a value is dead, and when — and they sit on the same axis as every other choice in this track: decide earlier and express less, decide later and pay while running."
+}

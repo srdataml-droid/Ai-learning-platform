@@ -1,0 +1,110 @@
+{
+  "taskId": "C.25",
+  "title": "Bash and the shell",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The first Unix shell was written by Ken Thompson and introduced with the first version of Unix in 1971. It was a command interpreter rather than a scripting language, and it was distributed with versions one through six, from 1971 to 1975.",
+      "type": "date",
+      "tokens": [
+        "Ken Thompson",
+        "Thompson",
+        "Unix",
+        "1971",
+        "1975"
+      ],
+      "source": {
+        "title": "Thompson shell: the first Unix shell, its 1971 introduction, and its redirection syntax against Multics",
+        "url": "https://en.wikipedia.org/wiki/Thompson_shell",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Its redirection syntax was notably compact by comparison with Multics, where redirecting input or output required separate commands to start and stop the redirection; here one appended a symbol and a filename to the command line.",
+      "type": "event",
+      "tokens": [
+        "Multics"
+      ],
+      "source": {
+        "title": "Thompson shell: the first Unix shell, its 1971 introduction, and its redirection syntax against Multics",
+        "url": "https://en.wikipedia.org/wiki/Thompson_shell",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "In a typewritten memo of 1964 Douglas McIlroy wrote about coupling programs like garden hose, so that a programmer could screw in another segment when data needed massaging another way. He raised the idea repeatedly over about nine years before Thompson implemented it, and credits Thompson with the vertical bar notation. McIlroy described the aftermath as an unforgettable orgy of one-liners.",
+      "type": "quote",
+      "tokens": [
+        "Douglas McIlroy",
+        "McIlroy",
+        "Thompson",
+        "1964"
+      ],
+      "source": {
+        "title": "The Origin of Unix Pipes, collecting McIlroy’s own accounts of the 1964 memo and the 1973 implementation",
+        "url": "http://doc.cat-v.org/unix/pipes/",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "Accounts of when the implementation happened conflict. Some place Thompson’s overnight work in the autumn of 1973, but a notice circulated on 15 January 1973 already described the pipe system call, and pipes appear in the Version 3 manual of February 1973. The January dating is the better documented.",
+      "type": "date",
+      "tokens": [
+        "Thompson",
+        "Version",
+        "1973"
+      ],
+      "source": {
+        "title": "Pipes, Unix Heritage Society wiki — the dating evidence, including the notice of 15 January 1973 and the Version 3 manual",
+        "url": "https://wiki.tuhs.org/doku.php?id=features%3Apipes",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "The Bourne shell, written by Stephen Bourne at Bell Laboratories, was released in 1979 as the default shell of the seventh edition, replacing the earlier shell of the same name. Unlike its predecessor it was intended as a scripting language as well as an interactive interpreter.",
+      "type": "date",
+      "tokens": [
+        "Stephen Bourne",
+        "Bourne",
+        "Bell Laboratories",
+        "1979"
+      ],
+      "source": {
+        "title": "Bourne shell: its authorship, its 1979 release with the seventh edition, and its scripting intent",
+        "url": "https://en.wikipedia.org/wiki/Bourne_shell",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c6",
+      "text": "Bash was written by Brian Fox for the GNU Project with support from the Free Software Foundation, as a free replacement for the Bourne shell. Coding began on 10 January 1988 and it was released as a beta, version 0.99, on 8 June 1989.",
+      "type": "date",
+      "tokens": [
+        "Bash",
+        "Brian Fox",
+        "Fox",
+        "GNU",
+        "Free Software Foundation",
+        "Bourne",
+        "1988",
+        "1989"
+      ],
+      "source": {
+        "title": "Bash (Unix shell): authorship by Brian Fox for the GNU Project, and the beta release of 8 June 1989",
+        "url": "https://en.wikipedia.org/wiki/Bash_(Unix_shell)",
+        "kind": "secondary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "each program did one thing well, and combining two of them meant writing a third program",
+    "fix": "one universal interface — a stream of text — plus an operator that connects the output of one program to the input of the next, so combination becomes notation",
+    "cost": "the universal interface is untyped text, so every join is a parsing problem and nothing about it is checked",
+    "interview": "why the pipe needed a notation and not merely a system call"
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "taskId": "C.27.5",
+  "title": "Why Python is slow, precisely, not vaguely",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The interpreter is a stack-based bytecode interpreter written in C, whose evaluation loop is essentially a loop containing a switch over all possible opcodes, with each opcode handled in its own case.",
+      "type": "event",
+      "tokens": [
+        "Python"
+      ],
+      "source": {
+        "title": "Python behind the scenes #4: how Python bytecode is executed — a walkthrough of the evaluation loop and its dispatch",
+        "url": "https://tenthousandmeters.com/blog/python-behind-the-scenes-4-how-python-bytecode-is-executed/",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Bytecode instructions are type-agnostic: a single generic binary operation handles addition, subtraction, multiplication and division across integers, strings and lists alike, so the interpreter must check object types at run time and then dispatch to the appropriate function, paying a constant per-instruction overhead. Objects are almost all on the heap, and even integers and floats carry object headers rather than being raw machine words.",
+      "type": "event",
+      "tokens": [
+        "Python"
+      ],
+      "source": {
+        "title": "Python behind the scenes #4: how Python bytecode is executed — a walkthrough of the evaluation loop and its dispatch",
+        "url": "https://tenthousandmeters.com/blog/python-behind-the-scenes-4-how-python-bytecode-is-executed/",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "A specialising adaptive interpreter added in version 3.11 observes the types flowing through hot bytecode and swaps generic operations for type-specific ones, which is how recent releases became 10 to 25 percent faster without a just-in-time compiler. Specialisation removes redundant work but cannot remove work the language semantics require.",
+      "type": "number",
+      "tokens": [
+        "Python"
+      ],
+      "source": {
+        "title": "Python behind the scenes #4: how Python bytecode is executed — a walkthrough of the evaluation loop and its dispatch",
+        "url": "https://tenthousandmeters.com/blog/python-behind-the-scenes-4-how-python-bytecode-is-executed/",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "PEP 703 describes the global interpreter lock as a single mutex protecting access to Python objects, whose job is to make reference counting safe in a multi-threaded interpreter: a count update is a read-modify-write, and uncoordinated concurrent updates can be lost, causing a premature free or a leak.",
+      "type": "event",
+      "tokens": [
+        "PEP",
+        "GIL",
+        "Python"
+      ],
+      "source": {
+        "title": "PEP 703 — Making the Global Interpreter Lock Optional in CPython, Sam Gross, Python Enhancement Proposals",
+        "url": "https://peps.python.org/pep-0703/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "PEP 703 proposes biased reference counting, immortalisation and a limited form of deferred reference counting, and replaces the small-object allocator with mimalloc because the existing one is not thread-safe without the lock. The steering council accepted it on 24 October 2023, with a phased rollout: experimental in 3.13 and officially supported in 3.14.",
+      "type": "date",
+      "tokens": [
+        "PEP",
+        "Python",
+        "2023"
+      ],
+      "source": {
+        "title": "PEP 703 — Making the Global Interpreter Lock Optional in CPython, Sam Gross, Python Enhancement Proposals",
+        "url": "https://peps.python.org/pep-0703/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c6",
+      "text": "The free-threaded build is opt-in and installs alongside the regular interpreter. Because removing the lock changes the object header to support biased reference counting, it is not compatible at the binary interface level with the standard build, and some third-party extension modules may re-enable the lock.",
+      "type": "event",
+      "tokens": [
+        "Python",
+        "ABI"
+      ],
+      "source": {
+        "title": "Python support for free threading, Python documentation",
+        "url": "https://docs.python.org/3/howto/free-threading-python.html",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "the language is described as slow with one cause named, and the named cause is usually the wrong one",
+    "fix": "separate two independent costs — dynamic dispatch over boxed objects, which is the single-threaded cost, and a lock protecting reference counts, which costs parallelism and nothing else",
+    "cost": "the accurate account is two mechanisms rather than a slogan, and it implicates the memory model rather than the interpreter alone",
+    "interview": "whether removing the interpreter lock makes single-threaded code faster"
+  }
+}

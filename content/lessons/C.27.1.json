@@ -1,0 +1,48 @@
+{
+  "id": "C.27.1",
+  "trackId": "C",
+  "trackName": "Languages: the chain of walls",
+  "title": "Write year, wall, solved and blueprint for each language above, from memory",
+  "status": "traced",
+  "seed": "C.27.1",
+  "story": "This is the first task in the track that asks you to produce rather than read, and the reason is a result that is genuinely counterintuitive rather than merely motivational.\n\nRoediger and Karpicke had students study prose and then either take recall tests with no feedback or restudy the same number of times. At five minutes, restudying won. At two days and at one week, testing won substantially. The direction of the effect reverses across exactly the interval you care about, which means a short-run measurement of your own learning will recommend the method that is worse over the period that matters.\n\nTwo details make it hard to explain away. The restudy group saw all of the material again; the tested group saw again only what it managed to recall, which is less. Testing still produced better retention at a week, so the benefit is not extra exposure. And restudying increased students’ confidence while lowering their retention — so the internal signal you would naturally use to choose a method points the wrong way.\n\nTake the limits seriously too, because this is the kind of claim that gets over-applied. These were undergraduates in a laboratory recalling prose passages of around 250 words, using free recall. It is not a study of recognition versus recall as question formats, and it is not a study of this exercise. What it supports is the method — produce first, check after — and the warning that your sense of how well it is going is not evidence.\n\nSo: close the track. Write out, for every language from machine code to CUDA, the year, the wall it was built against, what it solved, and the one-line blueprint. Then open the lessons and mark it. The gaps are the output of the exercise; the parts you got right were already yours.",
+  "problem": {
+    "name": "Retrieval practice",
+    "aka": [
+      "the testing effect",
+      "produce before you check"
+    ],
+    "shape": "You need material to be available later, under recall, and your sense of whether it is available now is unreliable.",
+    "tell": [
+      "you can follow the explanation completely while reading it",
+      "your study method is rereading, reviewing, or highlighting",
+      "you have never once tried to produce the material with the source closed"
+    ],
+    "move": "Produce the whole thing from memory first, in writing, with nothing open. Only then check, and treat the gaps rather than the successes as the result.",
+    "invariant": "The retrieval happens before the exposure. Looking first turns the exercise into recognition, which is the mode that generates the confidence without the retention.",
+    "breaks": "It gets measured wrong. Immediately after study, restudying scores better, so anyone evaluating a study method on a short horizon will pick the worse one — and confidence rises under restudy too, so both the objective and subjective signals available at the time are misleading. The effect is also evidenced on lab recall of prose; applying it to a task like this one is reasonable inference rather than a demonstrated result.",
+    "cost": {
+      "time": "slower per pass, and it produces less re-exposure than rereading does",
+      "space": "you must write the output down, or you will grade yourself on what you recognise",
+      "beats": "rereading, which is faster, more pleasant, better in the first five minutes and worse thereafter"
+    },
+    "worked": {
+      "problem": "Why is the method that feels most effective the one to distrust?",
+      "reasoning": "Ask what the feeling is actually measuring. Fluency — how easily the material goes down while you are looking at it. Rereading maximises fluency by construction, because the material is right there.\n\nRetention is a different quantity: whether you can produce it later with the material absent. Nothing about the first quantity predicts the second, and in this experiment they move in opposite directions — restudying raised confidence and lowered retention at a week.\n\nSo the signal is not merely noisy, it is inverted, which is worse than having no signal because it will actively choose for you. The practical consequence is that you cannot evaluate a learning method from the inside, and you have to substitute a proxy that is measurable: what came out on the page with the book shut.",
+      "code": "what you feel          what you want\n-------------          -------------\nfluency while          production later,\nreading                with the source gone\n\nreread   -> fluency HIGH -> confidence HIGH\n                         -> retention at 1 week LOW\n\nrecall   -> fluency LOW  -> confidence LOW\n                         -> retention at 1 week HIGH\n\n  and the crossover:\n\n    5 min:   reread wins   <- when you'd measure\n    2 days:  recall wins\n    1 week:  recall wins   <- when it matters\n\n  Not a noisy signal. An inverted one."
+    },
+    "practice": "Write out the whole chain from memory now: for each of machine code, Fortran, COBOL, LISP, ALGOL, BASIC, C, Smalltalk, C++, Perl, Python, Java, JavaScript, PHP, Ruby, Erlang, C#, Go, TypeScript, Rust, Kotlin, Swift, SQL and CUDA — the year, the wall, what it solved, and one line of blueprint. Then check, and list only what you missed."
+  },
+  "beats": {
+    "broke": "Rereading is the method almost everyone chooses. It raises confidence, produces more re-exposure than testing does, and gives the worst retention of the available options at any interval longer than a few minutes.",
+    "fix": "Produce the material from memory before looking at it. In Roediger and Karpicke’s experiments, recall testing without feedback beat restudying substantially at two days and at one week.",
+    "cost": "It is slower, less pleasant, and measurably worse immediately after study — so any short-horizon evaluation rejects it. And the evidence is laboratory recall of prose, which makes applying it here an inference rather than a demonstrated result.",
+    "interview": {
+      "q": "Why should you distrust the study method that feels most effective?",
+      "trap": "Answering that people are lazy and prefer the easy method. The problem is not preference; the signal itself points the wrong way.",
+      "answer": "Because the feeling measures fluency — how easily material goes down while it is in front of you — and what you want is production later with the material absent. Those are different quantities, and in this experiment they moved in opposite directions: restudying raised confidence while lowering retention at a week.\n\nThat makes the internal signal inverted rather than merely noisy, which is worse than having none, because an inverted signal will confidently choose for you. The objective short-run measurement misleads in the same direction: at five minutes restudying genuinely wins, so testing yourself immediately after studying also recommends the wrong method.\n\nThe practical consequence is that you cannot evaluate learning from the inside and need an external proxy — what you actually produced on the page with the source closed. The honest caveat is that this was undergraduates recalling prose in a lab, so it supports the method rather than proving anything about this particular exercise."
+    }
+  },
+  "blueprint": "The exercise, and why the order is not negotiable:\n\n  1. close everything\n  2. write the table:  language | year | wall | solved | blueprint\n  3. ONLY THEN open the lessons\n  4. record the gaps; ignore what you got right\n\n  Step 3 is the whole design. Looking first converts\n  recall into recognition, which produces the\n  confidence and not the retention.\n\n  What you will notice while doing it:\n\n     the years come back first  (cheapest, least useful)\n     the walls come back last   (dearest, most useful)\n\n  That ordering is the argument for the whole track.",
+  "takeaway": "Produce before you check: retrieval is what strengthens memory, rereading raises confidence while lowering retention, and the short-run measurement recommends the worse method — so the feeling of learning cannot be used to choose how to learn."
+}

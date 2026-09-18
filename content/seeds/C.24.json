@@ -1,0 +1,97 @@
+{
+  "taskId": "C.24",
+  "title": "HTML and CSS",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The first publicly available description of the markup language was a document called HTML Tags, first mentioned on the internet by Berners-Lee in late 1991. Apart from the hyperlink, its elements were strongly influenced by an in-house documentation format at CERN. Thirteen of those elements still existed in the fourth version of the language.",
+      "type": "date",
+      "tokens": [
+        "HTML",
+        "Berners-Lee",
+        "CERN",
+        "1991"
+      ],
+      "source": {
+        "title": "Raggett, D., A history of HTML, in Raggett on HTML 4, published by the World Wide Web Consortium",
+        "url": "https://www.w3.org/People/Raggett/book4/ch02.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The proposal titled Cascading HTML style sheets is dated 10 October 1994, version 0.92, by Wium Lie, and describes itself as work in progress. It proposes a mapping between elements and presentation hints, with logic to make presentation decisions based on the user’s environment, such as screen size.",
+      "type": "date",
+      "tokens": [
+        "HTML",
+        "Wium Lie",
+        "Wium",
+        "Lie",
+        "1994"
+      ],
+      "source": {
+        "title": "Lie, H. W., Cascading HTML style sheets — a proposal, version 0.92, 10 October 1994",
+        "url": "https://w3.org/People/howcome/p/cascade.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The proposal’s defining property is in its name: sheets are designed to cascade, so that the user or browser specifies initial preferences and hands the remaining influence to the sheets referenced in the incoming document. Presentation is therefore negotiated between author and reader rather than dictated by either.",
+      "type": "event",
+      "tokens": [
+        "CSS"
+      ],
+      "source": {
+        "title": "Lie, H. W., Cascading HTML style sheets — a proposal, version 0.92, 10 October 1994",
+        "url": "https://w3.org/People/howcome/p/cascade.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "Level 1 became a W3C Recommendation on 17 December 1996, authored by Wium Lie and Bert Bos. The work began in October 1994 while Lie was at CERN and continued from July 1995 at INRIA, the European host of the consortium, where Bos joined the project.",
+      "type": "date",
+      "tokens": [
+        "CSS",
+        "W3C",
+        "Wium Lie",
+        "Wium",
+        "Lie",
+        "Bert Bos",
+        "Bos",
+        "CERN",
+        "INRIA",
+        "1994",
+        "1995",
+        "1996"
+      ],
+      "source": {
+        "title": "The World Wide Web Consortium Issues Cascading Style Sheets Recommendation, W3C press release, 17 December 1996",
+        "url": "https://www.w3.org/press-releases/1996/css1-rec/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "The consortium’s account records that by 1994 the markup language had established itself as a universal document format, but that it was clear the language even with extensions would not meet authors’ demands for presentational capability.",
+      "type": "event",
+      "tokens": [
+        "HTML",
+        "1994"
+      ],
+      "source": {
+        "title": "The World Wide Web Consortium Issues Cascading Style Sheets Recommendation, W3C press release, 17 December 1996",
+        "url": "https://www.w3.org/press-releases/1996/css1-rec/",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "authors wanted control of presentation and the only way to get it was to add presentational elements to a document format — which, on this substrate, could never be removed again",
+    "fix": "put presentation in a separate sheet, and make the sheets cascade so the reader’s environment keeps a say rather than being overridden",
+    "cost": "if no single place decides, then what any one rule does depends on every other rule and on the reader’s context",
+    "interview": "what the cascade is actually for, and why it is not a fallback mechanism"
+  }
+}

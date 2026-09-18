@@ -1,0 +1,65 @@
+{
+  "taskId": "C.27.3",
+  "title": "Static versus dynamic typing, and what each buys at what cost",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Ritchie writes that the relationship between arrays and pointers and the declaration syntax are among the language’s most characteristic features and also major sources of difficulty, and that it offers limited support for strong type checking — its types describe storage layout rather than restricting how a value may be used.",
+      "type": "quote",
+      "tokens": [
+        "Ritchie"
+      ],
+      "source": {
+        "title": "Ritchie, D. M., The Development of the C Language, HOPL-II, SIGPLAN Notices 28(3):201-208, April 1993",
+        "url": "https://dl.acm.org/doi/10.1145/154766.155580",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The Rust 1.0 announcement attributes the language’s distinctiveness to its type system, and states that it combines low-level control over performance with high-level convenience and safety guarantees without requiring a garbage collector or runtime.",
+      "type": "quote",
+      "tokens": [
+        "Rust"
+      ],
+      "source": {
+        "title": "Announcing Rust 1.0, The Rust Core Team, The Rust Programming Language Blog, 15 May 2015",
+        "url": "https://blog.rust-lang.org/2015/05/15/Rust-1.0/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "TypeScript’s typing discipline is gradual and structural: annotations are optional, and convertibility depends on the parts of a type rather than on a declared name, so a value fits a type when its shape matches. The types are erased, so what executes is the base language.",
+      "type": "event",
+      "tokens": [
+        "Strada"
+      ],
+      "source": {
+        "title": "TypeScript: its gradual and structural typing discipline, and its status as a superset that erases to the base language",
+        "url": "https://en.wikipedia.org/wiki/TypeScript",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "LISP as described in 1960 builds everything from atoms and pairs with five elementary operations, with the kind of a value established when it is examined rather than declared in advance.",
+      "type": "event",
+      "tokens": [
+        "LISP"
+      ],
+      "source": {
+        "title": "McCarthy, J., Recursive Functions of Symbolic Expressions and Their Computation by Machine, Part I, Communications of the ACM 3(4), April 1960",
+        "url": "https://www.cs.tufts.edu/~nr/cs257/archive/john-mccarthy/recursive.pdf",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "the argument is conducted as though one discipline were correct, which hides that the two answer different questions and pay in different currencies",
+    "fix": "read a type system as a decision made before execution about every execution, and ask what it therefore must refuse",
+    "cost": "stating it that way removes the possibility of a winner, which is what most people want from the question",
+    "interview": "what a static type system necessarily costs, and why more analysis cannot remove it"
+  }
+}

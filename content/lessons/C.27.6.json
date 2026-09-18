@@ -1,0 +1,48 @@
+{
+  "id": "C.27.6",
+  "trackId": "C",
+  "trackName": "Languages: the chain of walls",
+  "title": "Write the same small program in Python, JavaScript and Go",
+  "status": "traced",
+  "seed": "C.27.6",
+  "story": "Every lesson in this track has told you what a language was built against. This exercise checks a different thing, which reading cannot give you: what the language makes you say when you sit down to use it.\n\nThe instrument is a single program written three times. Not three programs solving the problem idiomatically — one specification, implemented three times, so that the differences are attributable to the languages rather than to your choices. What you are producing is not three programs. It is two lists, per language: what you were compelled to state, and what the language decided on your behalf without mentioning it.\n\nThose lists are the language’s opinion, stated as a constraint rather than as documentation. Being made to declare a type, handle an error at the call site, or name a return value explicitly is the designers saying that this is a thing which must not be left implicit in a system of the size they had in mind — Pike is direct about the third language here being for people who write, read, debug and maintain large systems rather than for language research. Being allowed to leave something out is the opposite claim: that at the scale this was designed for, the cost of saying it exceeds the cost of getting it wrong.\n\nBoth are bets, and neither is free. A language that makes you handle the missing-file case at every call is more tedious and has fewer unhandled failures; a language that lets the exception fly gets you to a working prototype faster and lets a failure travel further from its cause than you would like.\n\nThe honest limit: a small program exercises a small part of a language. You will learn nothing here about how any of them behaves at fifty thousand lines, with six contributors and a four-year history, which is the case that actually decided most of their designs. Treat the result as evidence about ergonomics and about what each refuses to let you skip — not as a verdict.",
+  "problem": {
+    "name": "Comparing languages by what they compel",
+    "aka": [
+      "the same program three times",
+      "controlled comparison"
+    ],
+    "shape": "You need to compare tools whose advocates describe them in incomparable terms, and the published descriptions are written by the people who chose the trade-offs.",
+    "tell": [
+      "every comparison you can find changes the problem along with the language",
+      "the claims are about philosophy rather than about what the code has to contain",
+      "you can read the documentation fluently and still not know what using it is like"
+    ],
+    "move": "Fix the specification exactly, implement it in each language without adapting the problem, and record two things per language: what you were forced to state, and what was decided for you silently.",
+    "invariant": "The specification does not change between implementations. That is the only thing making the differences attributable to the languages, and it is the discipline the exercise usually loses — the moment you make it idiomatic, you are comparing your own judgement three times.",
+    "breaks": "A small program exercises a small part of a language. Nothing here reaches the properties that most language design is actually about: behaviour at scale, across a team, over years — which is exactly what the designers say they optimised for. So the result is evidence about ergonomics and compulsion, and not about suitability.",
+    "cost": {
+      "time": "three implementations of something you already know how to write",
+      "space": "the two lists per language, which are the actual output",
+      "beats": "reading comparisons, which tells you what each designer valued and not what the language requires of you"
+    },
+    "worked": {
+      "problem": "What is a language telling you when it forces you to state something?",
+      "reasoning": "Read the compulsion as a claim about frequency and cost.\n\nRequiring you to state something is expensive: it is friction on every use, forever, including the thousands of cases where it was obvious. A designer accepts that cost only if they believe the alternative — leaving it implicit and being wrong sometimes — is more expensive at the scale they care about.\n\nSo each compulsion is a bet with two numbers behind it: how often the thing is left wrong when optional, and what it costs when it is. Requiring error handling at the call site is a bet that unhandled errors are common and expensive. Requiring a type is a bet that the misunderstanding is common and expensive over a long-lived codebase.\n\nThat reframing lets you judge the bet rather than the taste. The question is not whether the friction annoys you — it will — but whether the frequency and cost hold for your system.",
+      "code": "program (identical in all three):\n  read a text file, count word frequencies,\n  print the ten most common with counts,\n  and behave sensibly when the file is absent\n\nrecord, per language:\n\n  FORCED TO STATE          DECIDED FOR ME\n  ---------------          --------------\n  ...                      ...\n\n  each row on the left = a bet:\n     \"this is left wrong often enough, and costs\n      enough when wrong, to be worth the friction\"\n\n  judge the BET, not the friction. the friction is\n  real in every language that took the bet."
+    },
+    "practice": "Implement this exactly: read a text file, count word frequencies, print the ten most common with their counts, and behave sensibly if the file does not exist. Write it three times without changing the specification, then write the two lists for each and decide which compulsions you would want in a system you maintain for five years."
+  },
+  "beats": {
+    "broke": "Reading about a language tells you what its designers valued. It does not tell you what the language will require of you, and published comparisons change the problem along with the language.",
+    "fix": "One fixed specification, implemented three times without adaptation, producing two lists per language: what you were compelled to state, and what was silently decided for you.",
+    "cost": "A small program exercises a small part of a language, and reaches none of the properties at scale, across a team and over years that most of these designs were actually optimised for — Pike says as much about the third of them directly.",
+    "interview": {
+      "q": "What is a language telling you when it forces you to state something explicitly?",
+      "trap": "Reading it as a statement about safety or about the designers’ taste. It is a claim with two numbers behind it, and those numbers may not hold for you.",
+      "answer": "That the designer is betting the thing is left wrong often enough, and costs enough when wrong, to be worth friction on every single use forever — including the overwhelming majority of cases where it was obvious.\n\nThat is an expensive thing to impose, so it is only imposed against a belief about frequency and cost at a particular scale. Requiring errors to be handled at the call site is a bet that unhandled errors are common and expensive. Requiring a type is a bet that the misunderstanding is common and expensive in a codebase that outlives the people who wrote it.\n\nFraming it that way lets you evaluate the bet rather than your irritation. The friction is real and will not go away; the question is whether the frequency and the cost hold in your system. A bet that is correct for a codebase of millions of lines and thousands of contributors can be plainly wrong for a script you will delete this week, and neither fact says anything about the language being good."
+    }
+  },
+  "blueprint": "The instrument, and the thing it measures:\n\n  ONE specification, THREE implementations\n  (not three idiomatic programs -- that measures you)\n\n  output is not the programs. it is:\n\n     FORCED TO STATE     |  DECIDED FOR ME\n     --------------------+-------------------\n     types?              |  memory?\n     errors at the call? |  when it's freed?\n     the return value?   |  number types?\n     concurrency?        |  string encoding?\n\n  each left-hand entry = a bet about frequency x cost\n  at the scale that language was designed for\n\n  and the limit, stated plainly:\n\n     a small program tests a small part. nothing here\n     reaches \"50k lines, six people, four years\",\n     which is what these designs were arguing about.",
+  "takeaway": "Write one specification three times and record what each language compels and what it silently decides — every compulsion is a bet about how often the thing is got wrong and what that costs, at a scale that may not be yours."
+}

@@ -1,0 +1,49 @@
+{
+  "id": "C.26",
+  "trackId": "C",
+  "trackName": "Languages: the chain of walls",
+  "title": "Regular expressions",
+  "status": "traced",
+  "seed": "C.26",
+  "story": "The notation is older than the computing use of it and was invented for something else. Kleene’s 1951 memorandum describes regular events while working on the behaviour of nerve nets, and the name is admittedly a placeholder — he offered it as an alternative to an existing term and said he would welcome a better suggestion. Nobody supplied one, which is why a notation used daily by people with no interest in automata is called regular.\n\nWhat makes the notation valuable is not brevity. It is that every expression in it denotes a finite automaton, and a finite automaton can be walked mechanically with a bounded amount of state. Thompson’s paper of June 1968 is the construction that makes this practical: simulate the automaton in lockstep, advancing every state at once through the input.\n\nThe property that makes it fast is worth stating precisely, because it is the whole idea. You track the set of states currently reachable and you do not track how you got to them. An automaton with n nodes has at most n reachable states at any step, even though there may be two-to-the-n distinct paths through it — so keeping the set is cheap while keeping the paths is not. Cox’s demonstration uses a pattern of n optional letters followed by n required ones: a backtracking matcher explores two-to-the-n possibilities of which only the last matches, and stops being usable somewhere around n of twenty-five, while the lockstep simulation stays quadratic.\n\nSo why is the slow behaviour the common one? Because the popular implementations do not implement this notation. They implement a larger one — backreferences most of all — whose expressions do not denote finite automata, and for which the efficient algorithm simply does not apply. That is the honest framing: it is not that regular expressions are exponential, it is that the things called regular expressions are a superset in which the guarantee was traded away, usually for a feature the user never asked for. Cox’s remark is the one to keep: a slow implementation of a linear algorithm beats a fast implementation of an exponential one, once the exponent is large enough.",
+  "problem": {
+    "name": "Regular languages",
+    "aka": [
+      "finite automata",
+      "pattern matching",
+      "the regular expression"
+    ],
+    "shape": "You need to describe a set of strings precisely enough to be decided mechanically, without writing a program for each set.",
+    "tell": [
+      "the rule you want is about shape rather than content — what characters, in what order, how many",
+      "the alternative is a hand-written scanner you will have to maintain",
+      "you need to decide membership, not to understand meaning"
+    ],
+    "move": "Use a notation in which every expression corresponds to a finite automaton, then decide membership by simulating that automaton over the input, advancing all currently reachable states together.",
+    "invariant": "The machine needs only the set of currently reachable states, never the paths taken to reach them. Since an automaton of n nodes has at most n states, the working set is bounded by the pattern and not by the input or the number of paths.",
+    "breaks": "It breaks the moment the notation is extended past what a finite automaton can express — backreferences being the usual culprit — because then the path taken matters, the set of states no longer summarises the computation, and matching falls back to search with exponential worst cases. The guarantee belongs to the notation, and most implementations do not restrict themselves to it.",
+    "cost": {
+      "time": "quadratic in the worst case for the lockstep simulation; exponential for backtracking on adversarial patterns",
+      "space": "state proportional to the pattern, not the input",
+      "beats": "a hand-written scanner, which is faster still and must be rewritten for every new pattern"
+    },
+    "worked": {
+      "problem": "If the theory gives a linear-time algorithm, why do real regular expressions take exponential time?",
+      "reasoning": "Because the guarantee is a property of the notation, and the thing you are using is a bigger notation.\n\nThe efficient simulation works by keeping the set of reachable states and discarding how each was reached. That is sound only while the answer cannot depend on the path — which is exactly what a finite automaton guarantees.\n\nAdd backreferences and the answer does depend on the path: to know whether \\1 matches, you must know what the first group actually captured on this route, so two routes arriving at the same position are no longer interchangeable. The set no longer summarises the computation, so the algorithm cannot be used and the implementation searches instead.\n\nWhich is why the fix is not a faster backtracker. It is to use an engine that restricts itself to the notation, or to stop using the feature that left it.",
+      "code": "set of reachable states       a search over paths\n---------------------------   -------------------\n  {2, 5, 7}  after 'a'          try this branch...\n  {3, 5}     after 'ab'           ...backtrack\n  ...                             ...try that one\n  <= n states, always           2^n paths, possibly\n\n  sound when: the answer can't depend on HOW you\n              got here  (= a finite automaton)\n\n  broken by: backreferences -- \\1 depends on what\n             THIS path captured, so two routes to the\n             same position are no longer the same\n\n  a?a?a?aaa  vs  aaa   -> 2^n tried, last one wins\n  n ~ 25 and it stops being usable."
+    },
+    "practice": "Write the pattern with n optional letters followed by n required ones and run it against n letters in a language you use, raising n by one at a time. Find the n where it stops returning, then check whether your language’s engine is backtracking or automaton-based."
+  },
+  "beats": {
+    "broke": "Describing a set of strings meant enumerating them or writing a scanner. Neither is a description you can reason about, and a scanner has to be rewritten for every new rule.",
+    "fix": "A notation from Kleene’s 1951 memorandum in which every expression denotes a finite automaton, plus Thompson’s 1968 construction that simulates the automaton in lockstep — advancing every reachable state at once.",
+    "cost": "The guarantee belongs to the notation, and the widely used implementations accept a larger one. Backreferences make the answer depend on the path taken, which removes the property the fast algorithm rests on.",
+    "interview": {
+      "q": "Why can a regular expression take exponential time when the theory gives a linear-time algorithm?",
+      "trap": "Answering that some engines are badly implemented, or that the pattern was badly written. Both can be true and neither is the reason.",
+      "answer": "Because the guarantee is a property of the notation, and most engines accept a strictly larger notation than the one it applies to.\n\nThe efficient method keeps the set of currently reachable states and throws away how each was reached. That is valid only while the answer cannot depend on the path, which is precisely what a finite automaton gives you: an n-node automaton has at most n reachable states even though it may have two-to-the-n paths, so the set stays small.\n\nBackreferences break that. Whether \\1 matches depends on what this particular route captured, so two routes reaching the same position are no longer interchangeable, the set stops summarising the computation, and the engine must search instead. Cox's pattern — n optional letters then n required ones — makes the search explore two-to-the-n possibilities with only the last succeeding, and it becomes unusable around n of twenty-five.\n\nSo the remedy is not a faster backtracker but an engine restricted to the notation, and Cox's own summary is the thing to remember: a slow implementation of a linear algorithm beats a fast implementation of an exponential one once the exponent is large enough."
+    }
+  },
+  "blueprint": "Where the guarantee actually lives:\n\n  the NOTATION  -> every expression is a finite automaton\n                -> answer can't depend on the path\n                -> keep the SET of reachable states\n                -> <= n states, though 2^n paths\n                -> lockstep simulation, quadratic\n\n  the SUPERSET  -> backreferences\n                -> \\1 depends on THIS path's capture\n                -> two routes to one position differ\n                -> the set no longer summarises\n                -> search, exponential\n\n  So the usual sentence is wrong in a specific way:\n\n     not \"regex is exponential\"\n     but \"the thing called regex is a superset in which\n          the guarantee was traded away\"",
+  "takeaway": "The speed guarantee belongs to the notation — an expression that denotes a finite automaton can be matched by tracking reachable states and discarding paths — and features like backreferences leave that notation, which is where the exponential behaviour comes from."
+}

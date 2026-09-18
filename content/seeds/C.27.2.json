@@ -1,0 +1,70 @@
+{
+  "taskId": "C.27.2",
+  "title": "Compiler versus interpreter, properly",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Backus wrote that the acceptance condition for the first widely used compiler was the quality of the object program it produced, and that this made the design of the translator the real challenge rather than the design of the language. Translation happened once, ahead of execution, and the output was machine instructions.",
+      "type": "quote",
+      "tokens": [
+        "Backus",
+        "Fortran",
+        "FORTRAN"
+      ],
+      "source": {
+        "title": "Backus, J., The History of Fortran I, II and III, in History of Programming Languages, ACM/Academic Press, 1978",
+        "url": "https://cse.sc.edu/~mgv/csce330f12/Backus78.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "McCarthy records that the evaluator for LISP was written to describe the language on paper, and that Russell noticed it could serve as an interpreter and hand coded it — at which point the language had an interpreter. McCarthy adds that the interpreter’s arrival tended to freeze the form of the language.",
+      "type": "quote",
+      "tokens": [
+        "McCarthy",
+        "LISP",
+        "Russell"
+      ],
+      "source": {
+        "title": "McCarthy, J., History of Lisp, 12 February 1979, Stanford University",
+        "url": "http://www-formal.stanford.edu/jmc/history/lisp/node3.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The original Dartmouth implementation of BASIC was a compiler operating compile-and-go: it converted an entire program at once into machine code rather than translating it line by line at each run. Many later implementations bearing the same name were interpreters.",
+      "type": "event",
+      "tokens": [
+        "Dartmouth",
+        "BASIC"
+      ],
+      "source": {
+        "title": "Dartmouth BASIC: the original compile-and-go implementation, which translated a whole program at once rather than line by line",
+        "url": "https://en.wikipedia.org/wiki/Dartmouth_BASIC",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "Java programs are compiled to bytecode, which is then executed on any device carrying a compatible runtime — so the same program is both compiled, ahead of time, and interpreted, at run time, by two different pieces of software.",
+      "type": "event",
+      "tokens": [
+        "Java"
+      ],
+      "source": {
+        "title": "Java (programming language): compilation to bytecode executed by a runtime on any compatible device",
+        "url": "https://en.wikipedia.org/wiki/Java_(programming_language)",
+        "kind": "secondary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "the words compiler and interpreter get used as properties of languages, which makes a true statement about an implementation into a false statement about everything that shares its name",
+    "fix": "ask instead when translation happens relative to execution, and what the output of the translation is",
+    "cost": "the honest answer is a spectrum rather than a pair, so it does not fit the shape the question is usually asked in",
+    "interview": "whether a given language is compiled or interpreted, and why the question is malformed"
+  }
+}

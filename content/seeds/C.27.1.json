@@ -1,0 +1,197 @@
+{
+  "taskId": "C.27.1",
+  "title": "Write year, wall, solved and blueprint for each language above, from memory",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Roediger and Karpicke report two experiments in which students studied prose passages and then either took free-recall tests without feedback or restudied the material the same number of times.",
+      "type": "event",
+      "tokens": [
+        "Roediger",
+        "Karpicke",
+        "Psychological Science",
+        "2006"
+      ],
+      "source": {
+        "title": "Roediger, H. L. and Karpicke, J. D., Test-Enhanced Learning: Taking Memory Tests Improves Long-Term Retention, Psychological Science 17(3):249-255, 2006",
+        "url": "https://journals.sagepub.com/doi/10.1111/j.1467-9280.2006.01693.x",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "When the final test came five minutes after study, repeated studying produced better recall than repeated testing. On delayed tests at two days and one week, prior testing produced substantially greater retention than studying did.",
+      "type": "event",
+      "tokens": [
+        "Roediger",
+        "Karpicke"
+      ],
+      "source": {
+        "title": "Roediger, H. L. and Karpicke, J. D., Test-Enhanced Learning: Taking Memory Tests Improves Long-Term Retention, Psychological Science 17(3):249-255, 2006",
+        "url": "https://journals.sagepub.com/doi/10.1111/j.1467-9280.2006.01693.x",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Repeated studying increased students’ confidence in their ability to remember the material, while producing worse retention at the intervals that mattered.",
+      "type": "event",
+      "tokens": [
+        "Roediger",
+        "Karpicke"
+      ],
+      "source": {
+        "title": "Roediger, H. L. and Karpicke, J. D., Test-Enhanced Learning: Taking Memory Tests Improves Long-Term Retention, Psychological Science 17(3):249-255, 2006",
+        "url": "https://journals.sagepub.com/doi/10.1111/j.1467-9280.2006.01693.x",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "The result is not explained by extra exposure. The restudy group was re-exposed to the entire set of material, while the tested group was re-exposed only to what it could recall, and testing still produced greater retention at one week.",
+      "type": "event",
+      "tokens": [
+        "Roediger",
+        "Karpicke"
+      ],
+      "source": {
+        "title": "Roediger, H. L. and Karpicke, J. D., Test-Enhanced Learning: Taking Memory Tests Improves Long-Term Retention, Psychological Science 17(3):249-255, 2006",
+        "url": "https://journals.sagepub.com/doi/10.1111/j.1467-9280.2006.01693.x",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "The design used free recall rather than recognition, so the finding speaks to recall-based retrieval practice and is not a comparison of recognition against recall as question formats. It was run on prose passages of roughly 250 words with undergraduates in a laboratory.",
+      "type": "event",
+      "tokens": [
+        "Roediger",
+        "Karpicke"
+      ],
+      "source": {
+        "title": "Roediger, H. L. and Karpicke, J. D., Test-Enhanced Learning: Taking Memory Tests Improves Long-Term Retention, Psychological Science 17(3):249-255, 2006",
+        "url": "https://journals.sagepub.com/doi/10.1111/j.1467-9280.2006.01693.x",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c6",
+      "text": "The chain this exercise covers is documented at the History of Programming Languages conferences by the designers themselves: Backus on Fortran, Sammet on COBOL, McCarthy on LISP, Ritchie on C, Kay on Smalltalk, Stroustrup on C++ and Armstrong on Erlang.",
+      "type": "event",
+      "tokens": [
+        "Backus",
+        "Fortran",
+        "Sammet",
+        "COBOL",
+        "McCarthy",
+        "LISP",
+        "Ritchie",
+        "Kay",
+        "Smalltalk",
+        "Stroustrup",
+        "Armstrong",
+        "Erlang",
+        "History of Programming Languages"
+      ],
+      "source": {
+        "title": "History of Programming Languages, the ACM SIGPLAN conference series whose papers are written by the languages’ own designers",
+        "url": "https://dl.acm.org/conference/hopl",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c7",
+      "text": "ALGOL was defined by the report of the Paris conference of January 1960 and BASIC was first run at Dartmouth on 1 May 1964.",
+      "type": "event",
+      "tokens": [
+        "ALGOL",
+        "BASIC",
+        "Dartmouth",
+        "Paris",
+        "1960",
+        "1964"
+      ],
+      "source": {
+        "title": "Report on the Algorithmic Language ALGOL 60, Communications of the ACM 3(5), May 1960; and BASIC at Dartmouth, Dartmouth College",
+        "url": "https://softwarepreservation.computerhistory.org/ALGOL/report/Algol60_report_CACM_1960_June.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c8",
+      "text": "Perl 1.0 was released on 18 December 1987 and Python was published to a newsgroup in February 1991 after being begun in December 1989.",
+      "type": "event",
+      "tokens": [
+        "Perl",
+        "Python",
+        "1987",
+        "1989",
+        "1991"
+      ],
+      "source": {
+        "title": "Perl: the 18 December 1987 release; History of Python: the December 1989 start and February 1991 release",
+        "url": "https://en.wikipedia.org/wiki/Perl",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c9",
+      "text": "Java was announced in May 1995, PHP was released in June 1995, and Ruby was first released in December 1995.",
+      "type": "event",
+      "tokens": [
+        "Java",
+        "PHP",
+        "Ruby",
+        "1995"
+      ],
+      "source": {
+        "title": "Java (programming language); History of PHP; Ruby (programming language) — the three 1995 releases",
+        "url": "https://en.wikipedia.org/wiki/Java_(programming_language)",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c10",
+      "text": "Rust reached version 1.0 on 15 May 2015, Kotlin was unveiled in July 2011, and Swift was announced in June 2014.",
+      "type": "event",
+      "tokens": [
+        "Rust",
+        "Kotlin",
+        "Swift",
+        "2011",
+        "2014",
+        "2015"
+      ],
+      "source": {
+        "title": "Announcing Rust 1.0, 15 May 2015; Kotlin; Swift (programming language)",
+        "url": "https://blog.rust-lang.org/2015/05/15/Rust-1.0/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c11",
+      "text": "CUDA was released by NVIDIA in 2007, and the query language presented as SEQUEL in 1974 was later renamed SQL.",
+      "type": "event",
+      "tokens": [
+        "CUDA",
+        "NVIDIA",
+        "SEQUEL",
+        "SQL",
+        "2007",
+        "1974"
+      ],
+      "source": {
+        "title": "CUDA; and Chamberlin and Boyce, SEQUEL: A Structured English Query Language, ACM SIGFIDET 1974",
+        "url": "https://dl.acm.org/doi/10.1145/800296.811515",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "reading the chain again feels like learning it and is the study method people choose, while producing the least durable result of the ones available",
+    "fix": "produce the whole table from memory before checking anything, because retrieval is the operation that strengthens what it retrieves",
+    "cost": "it feels worse and scores worse immediately, which is why almost nobody chooses it",
+    "interview": "why the method that feels most effective is the one to distrust"
+  }
+}

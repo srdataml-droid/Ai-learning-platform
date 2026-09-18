@@ -1,0 +1,48 @@
+{
+  "id": "C.25",
+  "trackId": "C",
+  "trackName": "Languages: the chain of walls",
+  "title": "Bash and the shell",
+  "status": "traced",
+  "seed": "C.25",
+  "story": "The shell began in 1971 as a command interpreter and not a language — a way to say which program to run. Its one memorable early idea was the compactness of redirection: on Multics, sending output somewhere else needed separate commands to start and stop doing so, and here you appended a symbol and a filename to the line you were already typing. That is a small thing that tells you what the design was for, which was a person typing.\n\nThe larger idea had been waiting nine years. McIlroy wrote in a memo in 1964 about coupling programs like garden hose, so that when data needed massaging another way you screwed in another segment, and he raised it repeatedly until Thompson implemented it in 1973. Note that the idea was never the obstacle. The obstacle was that it needed to be cheap in the operating system and cheap to write down, and McIlroy credits Thompson with the second of those — the vertical bar — as much as the first.\n\nThat pairing is the whole lesson. A system call alone would have made composition possible and left it as a programming task; the notation made composition something you do while thinking. McIlroy’s description of what followed — an unforgettable orgy of one-liners — is evidence about the notation rather than about the mechanism, because the mechanism had existed for a few weeks and the mechanism alone had not produced it.\n\nThe rest is consolidation. The Bourne shell of 1979 turned the interpreter into a scripting language proper, and Bash, begun in 1988 and released as a beta in June 1989, reimplemented that as free software for the GNU Project. What none of them changed is the bargain underneath: the universal interface that makes everything composable is untyped text, so every join between two programs is a parsing problem, nothing checks that the left-hand side produces what the right-hand side expects, and a pipeline that silently produces wrong output is the normal failure mode rather than an unusual one.",
+  "problem": {
+    "name": "Composition through a universal interface",
+    "aka": [
+      "pipes and filters",
+      "the Unix philosophy"
+    ],
+    "shape": "You have many small tools that each do one thing, and combining two of them requires building something new rather than connecting what exists.",
+    "tell": [
+      "the capability you need already exists, split across two programs",
+      "connecting them currently means writing code, a temporary file, or both",
+      "each tool has its own input and output conventions"
+    ],
+    "move": "Agree one interface that every tool speaks — here, a stream of bytes read as text — and provide an operator that connects one tool’s output to the next one’s input, so that composition is written rather than programmed.",
+    "invariant": "Every tool reads the interface and writes the interface, so any output is a legal input. That universality is what makes the set of possible combinations the product of the tools rather than a fixed list someone maintained.",
+    "breaks": "The interface carries no structure, so nothing checks that what the left side emits is what the right side expects. A mismatch does not fail; it parses differently and produces plausible wrong output. The same untypedness that makes everything connectable makes no connection verifiable, and the cost grows with the length of the pipeline.",
+    "cost": {
+      "time": "serialising to text and parsing it again at every stage",
+      "space": "streams, so the pipeline does not materialise intermediate results",
+      "beats": "writing a program to combine two tools, which is checked and is not something you do at a prompt"
+    },
+    "worked": {
+      "problem": "Why did the pipe need a notation? The system call already made composition possible.",
+      "reasoning": "Separate the two things that arrived within weeks of each other.\n\nThe system call makes composition possible: a program can now arrange for another program’s output to be its input. That is a capability, and using it means writing a program — so composing two tools costs an edit-compile-run cycle and a file somewhere.\n\nThe notation makes composition thinkable. When connecting two tools costs three characters typed into a line you were already typing, the cost drops below the threshold at which you stop to consider whether it is worth it. You compose speculatively, and speculative composition is where the unexpected combinations come from.\n\nThe evidence is in the timing. The mechanism existed and produced nothing remarkable; the notation arrived and produced what McIlroy called an orgy of one-liners. The same capability, priced differently, is a different tool.",
+      "code": "capability, no notation\n  write a program:\n      pipe(fds); fork(); dup2(); exec(); ...\n  cost per composition: an edit-compile-run cycle\n  -> you compose when you already know it's worth it\n\ncapability + notation\n  sort | uniq -c | sort -rn | head\n  cost per composition: 3 characters\n  -> you compose to FIND OUT whether it's worth it\n\n  Same system call underneath. The second one is\n  where the one-liners came from -- and that is an\n  observation about price, not about power."
+    },
+    "practice": "Take a pipeline you use and find the stage where the text format is silently assumed — a column position, a separator, a sort order. Then feed it input that violates the assumption and see whether you get an error or an answer."
+  },
+  "beats": {
+    "broke": "Tools each did one thing well, and combining two of them meant writing a third program or shuttling data through a temporary file. The capability existed, split across programs that could not be joined.",
+    "fix": "One universal interface — a text stream every tool reads and writes — plus an operator to connect them. Proposed in a memo in 1964, implemented in 1973, and made into a full scripting language by the Bourne shell in 1979 and by Bash from 1988.",
+    "cost": "The universal interface carries no structure. Nothing checks that the left side produces what the right side expects, so a mismatched pipeline parses differently and returns plausible wrong output rather than failing.",
+    "interview": {
+      "q": "Why did the pipe need a notation rather than just a system call?",
+      "trap": "Treating the notation as convenience or syntactic sugar over the real mechanism. That gets the causation backwards relative to what actually happened.",
+      "answer": "Because the two change different things. The system call makes composition possible: one program can feed another. Using it means writing a program, so composing two tools costs an edit-compile-run cycle — which you only pay when you already believe the combination is worth having.\n\nThe notation changes the price to about three characters typed into a line you were already typing. Below that threshold you compose speculatively, to find out whether something is worth having rather than because you know it is. That is where unanticipated combinations come from.\n\nThe timing is the evidence. The mechanism existed first and produced nothing memorable; the notation followed and produced what McIlroy called an unforgettable orgy of one-liners. Same capability, different price, different tool — which generalises: if you want people to use a capability exploratively, the cost of one attempt has to fall below the cost of deciding whether to attempt."
+    }
+  },
+  "blueprint": "Two arrivals, weeks apart, doing different jobs:\n\n  system call     -> composition is POSSIBLE\n                     price: edit-compile-run\n                     you compose when you already know\n\n  |               -> composition is THINKABLE\n                     price: 3 characters\n                     you compose to find out\n\n  and the bargain that never changed:\n\n     every tool reads text, writes text\n       -> any output is a legal input\n       -> combinations = product of the tools\n       -> and NOTHING checks the join\n\n  A mismatched pipeline does not fail. It parses\n  differently and answers you.",
+  "takeaway": "A universal untyped interface makes every tool composable with every other and makes no composition checkable — and it was the notation, not the system call, that dropped the price far enough for people to compose speculatively."
+}

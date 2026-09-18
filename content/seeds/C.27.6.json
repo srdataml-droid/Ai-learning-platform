@@ -1,0 +1,53 @@
+{
+  "taskId": "C.27.6",
+  "title": "Write the same small program in Python, JavaScript and Go",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Pike describes the third of these as designed by and for people who write, read, debug and maintain large software systems, and says its purpose is improving the working environment rather than programming-language research — that it is more about software engineering than programming language research.",
+      "type": "quote",
+      "tokens": [
+        "Pike"
+      ],
+      "source": {
+        "title": "Pike, R., Go at Google: Language Design in the Service of Software Engineering, keynote at SPLASH 2012, Tucson, 25 October 2012",
+        "url": "https://go.dev/talks/2012/splash.article",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "In the first of these, bytecode instructions are type-agnostic, so the interpreter checks object types at run time and dispatches accordingly, and values are heap objects carrying headers rather than raw machine words.",
+      "type": "event",
+      "tokens": [
+        "Python"
+      ],
+      "source": {
+        "title": "Python behind the scenes #4: how Python bytecode is executed — type-agnostic opcodes, run-time dispatch, and heap-allocated objects",
+        "url": "https://tenthousandmeters.com/blog/python-behind-the-scenes-4-how-python-bytecode-is-executed/",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The second was prototyped in about ten days in May 1995 and shipped into a client shared by everyone, which is why its early design decisions could never be corrected.",
+      "type": "date",
+      "tokens": [
+        "Netscape",
+        "1995"
+      ],
+      "source": {
+        "title": "Brendan Eich: the ten-day prototype of May 1995 at Netscape, and the language’s deployment into the browser",
+        "url": "https://en.wikipedia.org/wiki/Brendan_Eich",
+        "kind": "secondary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "reading about a language tells you what its designers valued; it does not tell you what the language will make you say",
+    "fix": "write one identical program in three of them and compare the diffs rather than the programs",
+    "cost": "a small program exercises a small part of a language, so the comparison is real but narrow",
+    "interview": "what a language forcing you to state something is actually telling you"
+  }
+}

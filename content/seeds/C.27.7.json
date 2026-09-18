@@ -1,0 +1,66 @@
+{
+  "taskId": "C.27.7",
+  "title": "Defend a language choice for three different hypothetical systems",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Stroustrup states the design criterion that \"a facility must not just be useful, it must be affordable\", and gives his goal as designing a language in which he could write programs that were both efficient and elegant.",
+      "type": "quote",
+      "tokens": [
+        "Stroustrup"
+      ],
+      "source": {
+        "title": "Stroustrup, B., Bjarne Stroustrup’s FAQ — the author’s own answers on motivation and design criteria",
+        "url": "https://www.stroustrup.com/bs_faq.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Pike describes the environment his language was designed for — server programs of tens of millions of lines, hundreds or thousands of programmers, daily updates, one source tree — and states its purpose as improving that working environment rather than programming-language research.",
+      "type": "quote",
+      "tokens": [
+        "Pike"
+      ],
+      "source": {
+        "title": "Pike, R., Go at Google: Language Design in the Service of Software Engineering, keynote at SPLASH 2012, Tucson, 25 October 2012",
+        "url": "https://go.dev/talks/2012/splash.article",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The Rust 1.0 announcement states that the language combines low-level control over performance with high-level convenience and safety guarantees, and achieves this without requiring a garbage collector or runtime.",
+      "type": "quote",
+      "tokens": [
+        "Rust"
+      ],
+      "source": {
+        "title": "Announcing Rust 1.0, The Rust Core Team, 15 May 2015",
+        "url": "https://blog.rust-lang.org/2015/05/15/Rust-1.0/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "Armstrong describes his language as designed for writing concurrent programs that run indefinitely, built on lightweight processes belonging to the language rather than the operating system, sharing no memory, with mechanisms for changing code while the system runs.",
+      "type": "event",
+      "tokens": [
+        "Armstrong",
+        "Erlang"
+      ],
+      "source": {
+        "title": "Armstrong, J., A History of Erlang, HOPL-III, San Diego, June 2007",
+        "url": "https://dl.acm.org/doi/10.1145/1238844.1238850",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "language choices get defended by listing what the language is good at, which is an argument no choice can lose and therefore no argument at all",
+    "fix": "name the constraint that binds in this system, what you gave up to satisfy it, and the condition under which the choice becomes wrong",
+    "cost": "stating the condition under which you are wrong makes you accountable to it later, which is why people avoid doing it",
+    "interview": "what makes a technology choice defensible rather than merely justified"
+  }
+}
