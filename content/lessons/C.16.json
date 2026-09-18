@@ -1,0 +1,49 @@
+{
+  "id": "C.16",
+  "trackId": "C",
+  "trackName": "Languages: the chain of walls",
+  "title": "1986 and 2012. Erlang, then Elixir. Ericsson",
+  "status": "traced",
+  "seed": "C.16",
+  "story": "Every language above this one assumes a program can stop. A telephone exchange cannot. It handles enormous numbers of independent conversations, a fault in any one of them must not disturb the others, and it has to be upgraded while running, because there is no window in which nobody is making a call. Those three requirements, taken literally, rule out almost every structure the chain has offered so far.\n\nThe design that came out of Ericsson from 1986 takes them literally. Processes are lightweight and belong to the language rather than the operating system, so you can have vast numbers of them. They share no memory, so a corrupted one cannot corrupt a neighbour. They communicate only by asynchronous messages, so a slow or dead process blocks nobody. Other processes watch them and restart them, so recovery is part of the program’s structure rather than a procedure someone follows. And code can be replaced while the system runs. Armstrong’s name for the resulting style is concurrency-oriented programming, which is a claim that concurrency is the organising principle and not a feature.\n\nThe evidence is unusually good for this kind of claim, and it needs stating with its provenance. A switch announced in March 1998 contained over a million lines of it and was reported to reach nine nines of availability, with a four-fold productivity increase observed. That figure is reported by the people who built it rather than independently audited, which is worth holding a little more loosely than the fact that the switch existed and shipped.\n\nThen the second act, which is the part that generalises. In February 1998 Ericsson Radio Systems banned in-house use of the language for new products, preferring non-proprietary ones; in December it was open-sourced and most of the team left. Fourteen years later Elixir arrived on the same virtual machine — a different surface with the same runtime, explicitly aiming to keep compatibility with the existing tooling and ecosystem. The judgement embedded in that is precise: the runtime was right and the surface was the barrier, so replace the surface and keep everything underneath.",
+  "problem": {
+    "name": "Fault isolation through process isolation",
+    "aka": [
+      "let it crash",
+      "concurrency-oriented programming",
+      "supervision trees"
+    ],
+    "shape": "The system must keep serving everyone while any part of it is failing, and failures cannot be prevented in advance.",
+    "tell": [
+      "the work is naturally many independent activities rather than one computation",
+      "an error while serving one request currently risks the process serving all of them",
+      "there is no maintenance window, because there is no moment when nobody is using it"
+    ],
+    "move": "Make the unit of failure the same as the unit of work: a process per activity, sharing nothing, reachable only by message. Let a failing process die and have a supervisor restart it from a known state, rather than trying to make each process handle every error.",
+    "invariant": "No process can observe or corrupt another’s state. That is what makes a crash local, and therefore what makes restarting a legitimate recovery strategy instead of a euphemism for losing data.",
+    "breaks": "It breaks where the work does not decompose — a single large computation over shared state gets nothing from this and pays for it in copying, since no sharing means messages carry data rather than references. It also breaks where restarting does not restore correctness, because the state that matters is outside the process and was left half-changed.",
+    "cost": {
+      "time": "message passing and copying instead of shared references",
+      "space": "per-process state, duplicated rather than shared",
+      "beats": "shared-memory concurrency, which is faster and makes one fault everyone’s fault"
+    },
+    "worked": {
+      "problem": "Why does isolation have to be enforced by the language rather than achieved by disciplined programming?",
+      "reasoning": "Discipline is a property that holds until someone does not have it, and the thing you are buying here is a guarantee about the worst case. A convention that processes do not touch shared state gives you isolation everywhere the convention was followed, which is exactly no help, because the fault you are worried about is the one in the code that broke the rule.\n\nThere is a sharper version. Restarting is only a sane recovery strategy if you know what a crashed component could have damaged. Under enforced isolation the answer is \"itself\", and it is the same answer every time, so a supervisor can be written once and trusted. Under discipline the answer is \"whatever it touched\", which is unknowable at restart time and different for every failure.\n\nSo the language-level guarantee is not a convenience over the disciplined version. It is the precondition that makes the whole recovery model available at all.",
+      "code": "shared memory + discipline      enforced isolation\n--------------------------      ------------------\nprocess A --\\                   A [state]  B [state]\n             > shared state        |          |\nprocess B --/                      +--msg---->+\n\n  A crashes mid-write:            A crashes:\n    shared state is now             A's state is gone\n    half-updated                    B is untouched\n    B reads garbage                 supervisor restarts A\n    blast radius: unknown           blast radius: A\n\n  \"restart it\" is only a recovery strategy if the\n  blast radius is KNOWN. Discipline can't tell you\n  what the broken code touched -- that's why it broke."
+    },
+    "practice": "Take a service you run and write down what a crash mid-request can leave half-done. Then ask whether restarting it is actually a recovery, or whether it just moves the damage somewhere you will find later."
+  },
+  "beats": {
+    "broke": "A telephone exchange handles many independent conversations, cannot let a fault in one disturb the others, and has no window in which to be taken down for an upgrade. Almost no ordinary program structure satisfies all three.",
+    "fix": "Lightweight processes owned by the language, sharing no memory, communicating by asynchronous message, supervised and restarted by other processes, with code replaceable while running. Developed at Ericsson from 1986.",
+    "cost": "Sharing nothing means copying, and the model only pays where the work genuinely decomposes into independent activities. A single computation over shared state gains nothing and pays the message-passing cost anyway.",
+    "interview": {
+      "q": "Why must isolation be enforced by the language rather than achieved by disciplined programming?",
+      "trap": "Answering that programmers make mistakes, so enforcement is safer. True but weak — it treats enforcement as insurance rather than as the thing that makes the recovery model possible.",
+      "answer": "Because the recovery strategy depends on knowing the blast radius, and only enforcement makes that knowable.\n\nUnder enforced isolation, a crashed process can have damaged exactly itself, and that answer is the same for every process and every fault. So a supervisor can be written once, and restarting is genuinely a recovery. Under convention, the answer is \"whatever that code touched\" — unknowable at restart time, different every time, and least knowable precisely in the code that misbehaved, since breaking the convention is how it went wrong.\n\nThat is why this is a precondition rather than a safeguard. Without the guarantee you cannot let anything crash, so you are back to handling every error at the point it occurs, which is the structure the design exists to escape.\n\nThe honest limit is that it buys nothing where the work does not decompose into independent activities — there you pay the copying and get no isolation you needed."
+    }
+  },
+  "blueprint": "Three requirements, taken literally:\n\n  can't stop        -> replace code in place\n  fault must be     -> share nothing; crash is local\n    local\n  huge concurrency  -> processes owned by the LANGUAGE,\n                       not the OS\n\n  and then the move that makes it usable:\n\n     don't handle every error -> let it crash\n     because blast radius is KNOWN = itself\n     -> supervisor restarts from a known state\n\n  Second act, 2012: same virtual machine, new surface,\n  compatible tooling. The judgement: the RUNTIME was\n  right, the SURFACE was the barrier. Replace only the\n  part that was wrong.",
+  "takeaway": "Making the unit of failure the unit of work lets a crash be a recovery strategy — but only because isolation is enforced, which is what makes the blast radius knowable and a supervisor writable once."
+}

@@ -1,0 +1,49 @@
+{
+  "id": "C.19",
+  "trackId": "C",
+  "trackName": "Languages: the chain of walls",
+  "title": "2012. TypeScript. Microsoft",
+  "status": "traced",
+  "seed": "C.19",
+  "story": "C.13 left a language frozen by its deployment channel: a client shared by everyone, no way to break anything, so the design shipped in 1995 is the design you keep. By the early 2010s people were building very large systems in it, and the missing thing was not a feature but a way to state what a piece of code expects so that a machine can check it. The obvious answer — use a better language — was unavailable for exactly the reason C.13 gives.\n\nThe move is to add without replacing. Make the new language a superset, so every existing file is already valid, and make the output the original language, so nothing about deployment changes. Announced on 1 October 2012 after about two years of internal work, it lets a codebase be converted one file at a time, with each conversion independently useful and independently reversible. That is the property that made it adoptable: there is no moment at which you have committed.\n\nThe type system is structural rather than nominal, which is not an aesthetic choice but a consequence of the same constraint. The values being described already exist — objects from libraries, parsed responses, things written years ago — and none of them were declared as belonging to anything. A type system that asked values to announce their membership would have nothing to work with. Asking instead whether a value has the right shape describes code that was written before the type system existed, which is all of it.\n\nThe cost is that the types are erased. What ships is the base language, so a type is a claim checked when you build and entirely absent when you run — and at every boundary where data enters from outside, the checker is trusting a description that nothing verified. A parsed response annotated as a particular shape is not checked to be that shape; it is asserted to be, and the checker will reason confidently from the assertion. The system is sound about the code you wrote and silent about the data you received, which is a useful thing to be exactly as long as you remember which is which.",
+  "problem": {
+    "name": "Gradual typing over an immovable substrate",
+    "aka": [
+      "erased types",
+      "superset language",
+      "file-by-file migration"
+    ],
+    "shape": "You need the guarantees of a checked language in a codebase written in an unchecked one, and replacing the language is not available.",
+    "tell": [
+      "the runtime or deployment target is fixed by something outside your control",
+      "the codebase is too large to convert in one step and too valuable to rewrite",
+      "the intent of a function is documented in comments, or nowhere"
+    ],
+    "move": "Define a strict superset whose compiler erases back to the original language. Let annotations be optional so conversion proceeds file by file, and make the type system structural so it can describe values that already exist.",
+    "invariant": "Every program in the base language is a valid program here, and every output is a valid program in the base language. That two-way property is what makes adoption incremental and reversible — and it is the entire adoption strategy, not a convenience.",
+    "breaks": "It breaks at every boundary where data arrives from outside the checked region: parsed input, untyped libraries, anything asserted rather than derived. The types are erased, so nothing at run time compares the claim to the value, and the checker will reason soundly from a false premise. The guarantee covers the code you wrote, not the data you were given.",
+    "cost": {
+      "time": "a build step where previously there was none; nothing at run time",
+      "space": "type declarations that ship to nobody",
+      "beats": "a full rewrite in a checked language, which gives stronger guarantees and requires a substrate you do not control"
+    },
+    "worked": {
+      "problem": "If the types are erased, what exactly do they guarantee?",
+      "reasoning": "Split the program into the part the checker saw and the part it did not.\n\nInside the checked part, the guarantee is real and worth having: if the annotations are accurate, the checker has verified that every use is consistent with them, and it did so across the whole region without anyone running anything. Whole classes of mistakes become impossible to commit.\n\nAt the boundary, the guarantee is different in kind, not merely weaker. When you annotate incoming data, you are not checking that it has the shape — you are telling the checker to assume it does. Everything downstream is then verified against an assumption nobody tested, and since the types are gone at run time, nothing will ever notice if the assumption was wrong. The failure appears far from the boundary, as a value of the wrong kind in code that was proved correct.\n\nSo: sound about the code, silent about the data. The engineering consequence is that boundaries deserve run-time validation, and the type system’s job is to make sure you only have to do it there.",
+      "code": "        outside                 |  checked region\n  ------------------------------+------------------------\n  JSON from the network         |\n  a library with no types       |\n  a value you asserted          |\n            |                   |\n            v                   |\n      [ annotation ]  <--- a CLAIM, not a check\n            |                   |\n            +-------------------> everything downstream\n                                  is verified against it\n\n  erased at run time -> nothing ever compares the\n  claim to the value\n\n  sound about the code you wrote\n  silent about the data you received\n\n  -> validate AT the boundary; that is what buys the\n     rest of the region."
+    },
+    "practice": "Find a place in a typed codebase where external data enters and is annotated rather than validated. Then trace how far a wrong assumption would travel before anything noticed, and what the error would look like when it did."
+  },
+  "beats": {
+    "broke": "Large systems were being written in a language that cannot state intent, and it could not be replaced because the substrate it runs on belongs to everyone. The usual answer — choose a better language — was unavailable by construction.",
+    "fix": "A strict superset that erases back to the original: every existing file already valid, every output still the base language, so a codebase converts one file at a time. Announced 1 October 2012 after about two years of internal work, structural rather than nominal so it can describe values that already existed.",
+    "cost": "Types are erased, so they are build-time claims with no run-time existence. Wherever data crosses in from outside, an annotation is an assumption rather than a check, and the checker will reason correctly from it whether or not it is true.",
+    "interview": {
+      "q": "If the types are erased before the program runs, what do they actually guarantee?",
+      "trap": "Answering \"type safety\" without distinguishing the region the checker saw from the data it did not. The two guarantees differ in kind, not degree.",
+      "answer": "Within the checked region, they guarantee consistency: given accurate annotations, every use has been verified against them across the whole codebase, statically, without running anything. That removes entire classes of error and it is the bulk of the value.\n\nAt the boundary the situation inverts. Annotating incoming data does not check it — it instructs the checker to assume a shape. Everything downstream is then correctly verified against an untested premise, and because the types do not exist at run time, nothing will ever compare the claim to the value. When it is wrong, the failure surfaces far from the boundary, inside code that was proved consistent.\n\nSo the system is sound about the code you wrote and silent about the data you received. The practical consequence is a rule rather than a caveat: validate at the boundaries, and treat the type system's real job as guaranteeing that the boundaries are the only place you have to."
+    }
+  },
+  "blueprint": "The two-way property that makes adoption possible:\n\n     every base-language file  ->  already valid here\n     every output              ->  valid base language\n\n  therefore: convert one file, stop, ship. Repeat or\n  don't. There is no moment of commitment -- which is\n  the whole adoption strategy, not a nicety.\n\n  Why STRUCTURAL and not nominal:\n\n     the values already exist and were never declared\n     as belonging to anything\n     -> ask about SHAPE, not membership\n     -> otherwise there is nothing to describe\n\n  Why the guarantee has an edge:\n\n     erased  ->  no run-time existence\n             ->  annotation at a boundary = assumption\n             ->  sound reasoning, false premise",
+  "takeaway": "A superset that erases makes adoption incremental and reversible, and its type system is sound about the code you wrote while saying nothing about the data you received — so boundaries need validation and everything inside them does not."
+}

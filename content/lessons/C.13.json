@@ -1,0 +1,48 @@
+{
+  "id": "C.13",
+  "trackId": "C",
+  "trackName": "Languages: the chain of walls",
+  "title": "1995. JavaScript. Eich, Netscape, about ten days",
+  "status": "traced",
+  "seed": "C.13",
+  "story": "A page was a document. Anything a reader did to it — checking a field, revealing a section, reacting to a click — had to travel to a server and come back as a new document, which is a design in which no interaction can be faster than the network. The fix is obvious once stated: put an interpreter in the client, so computation can happen where the person is rather than where the data is.\n\nWhat is not obvious is the timescale. Eich, newly hired, was given the task in May 1995 and had a prototype in about ten days, assembled from the functional elements of Scheme, the prototype-based inheritance of Self, and a syntax borrowed from Java for familiarity. It was called Mocha, then LiveScript in September, and got its final name in December after Netscape and Sun reached a licensing deal — a naming chosen to ride on Java’s success, from which three decades of confusion follow. The two are not variants of one another: one is compiled, class-based and statically typed; the other interpreted, prototype-based and dynamically typed.\n\nTen days is the famous part and the least interesting. Plenty of languages were designed quickly. What makes this one different is where it was deployed: into a client that belongs to everybody, running pages nobody has an inventory of. From the moment those pages existed, no mistake in the language could be corrected, because correcting it would break documents whose authors are unreachable and often no longer alive to the problem.\n\nSo the durable lesson is not about the ten days, it is about the substrate. The language went to a standards body in 1996 and 1997, and everything since has been addition, never removal — the same constraint noted in C.9, arrived at from the opposite direction. There it came from a deliberate criterion about what adoption costs. Here it came free with the deployment channel, and nobody chose it.",
+  "problem": {
+    "name": "Shipping into an immovable substrate",
+    "aka": [
+      "backward compatibility as a design constraint",
+      "the install base problem"
+    ],
+    "shape": "Your work is deployed into an environment shared by everyone, where the things depending on it cannot be enumerated, contacted or updated.",
+    "tell": [
+      "you cannot list your callers, let alone coordinate with them",
+      "the deployed versions of your thing will all be running simultaneously, indefinitely",
+      "a change that is obviously an improvement would still break something you cannot see"
+    ],
+    "move": "Accept that every observable behaviour becomes permanent on release, and design accordingly: add rather than change, keep the surface small enough that you can afford to keep all of it, and treat anything observable as a commitment whether or not you intended it.",
+    "invariant": "Nothing observable is ever removed. This is not a policy that can be relaxed for good reasons, because the cost of relaxing it falls on parties who are not in the conversation and cannot object until they have already broken.",
+    "breaks": "The constraint itself does not break — it is the environment. What breaks is any plan that assumes a deprecation path, a migration window, or a major version that cleans things up. Those assume a knowable set of dependents, which is precisely what is missing, so a design made under a deadline is a design you keep.",
+    "cost": {
+      "time": "every future implementation carries every past decision, forever",
+      "space": "the specification only grows, and complexity accumulates as compatibility layers",
+      "beats": "a controlled rollout, which is far better and is not available here"
+    },
+    "worked": {
+      "problem": "Why could the early mistakes never be fixed, when plenty of languages have made breaking changes?",
+      "reasoning": "Breaking changes are affordable when you can identify who breaks. A library knows its dependents through a package manager; a service knows its callers through logs; a compiler breaks a build and someone reads the error.\n\nNone of that exists here. The dependents are documents on the open web, written by people who are unreachable and often no longer maintaining anything, and the failure appears to a reader who has no idea what changed. There is no build to fail, no version to pin, and no one to notify.\n\nSo the usual mechanism for paying down a mistake is simply absent, and correctness in the abstract loses to a broken page in the concrete every time. Under that condition the only sustainable policy is additive, and that policy is imposed by the deployment channel rather than chosen by the designers.",
+      "code": "who can you break?\n\nlibrary      -> dependents in a registry, semver, a\n                changelog people read           -> fixable\nservice      -> callers in your logs, you can\n                deprecate with a deadline       -> fixable\nshared client-> documents on the open web,\n                authors unreachable, failure\n                shows up to a READER            -> not fixable\n\n  no build to fail\n  no version to pin\n  no one to notify\n  -> the only move left is: ADD, never change\n\n  Ten days of design, kept for thirty years -- not\n  because it was right, because the channel had no\n  mechanism for paying it down."
+    },
+    "practice": "Find something in a system you work on that you cannot change because you do not know who depends on it. Then work out what it would take to know — and whether the reason you cannot is technical or organisational."
+  },
+  "beats": {
+    "broke": "A page was a document, so every interaction cost a round trip to a server. Nothing responsive was possible, because responsiveness was bounded by the network.",
+    "fix": "An interpreter in the client, so computation happens where the user is. Prototyped in about ten days in May 1995, from the functional parts of Scheme, the prototype inheritance of Self and a syntax borrowed for familiarity.",
+    "cost": "It shipped into a substrate shared by everyone, so every observable behaviour became permanent as soon as pages relied on it. The design made under a deadline is the design that was kept, and everything since has been addition.",
+    "interview": {
+      "q": "Why were the early design mistakes never fixed, when other languages make breaking changes routinely?",
+      "trap": "Explaining it as inertia, or as the language being too popular to change. Popularity is not the mechanism — plenty of widely used languages have broken compatibility deliberately.",
+      "answer": "Because a breaking change requires knowing who breaks, and here nobody does. A library has dependents in a registry and a changelog people read; a service has callers in its logs and can set a deadline; a compiler at least fails a build in front of a developer.\n\nThe dependents here are documents on the open web, written by people who are unreachable and mostly no longer involved, and the failure surfaces to a reader who has no idea anything changed. There is no build to fail, no version to pin, and no one to notify — so the ordinary mechanism for paying down a mistake does not exist at all.\n\nThe lesson generalises past this language. When you ship into a substrate shared by everyone, the compatibility constraint arrives with the channel rather than being chosen, and the practical consequence is that you should keep the initial surface small — because you are going to keep all of it."
+    }
+  },
+  "blueprint": "Two routes to the same constraint:\n\n  C++ (1983)              this (1995)\n  ----------              -----------\n  \"must be affordable\"    \"pages already depend on it\"\n  a CHOSEN criterion      a PROPERTY of the channel\n  -> can't remove         -> can't remove\n\n  Same outcome, opposite origin. One was reasoned\n  toward; the other arrived free with the deployment\n  target and nobody decided it.\n\n  Which is why the practical advice is the same, and\n  why it is about launch rather than maintenance:\n\n     the surface you ship is the surface you keep\n     -> so ship a small one",
+  "takeaway": "The ten days matter less than the deployment target: shipping into a client shared by everyone makes every observable behaviour permanent, because there is no one to notify and no build to fail."
+}

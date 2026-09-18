@@ -1,0 +1,83 @@
+{
+  "taskId": "C.21",
+  "title": "2011 and 2014. Kotlin and Swift",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Kotlin was unveiled in July 2011 and open-sourced under the Apache licence in February 2012. Version 1.0 was released on 15 February 2016 and was the first officially stable release, with a commitment to long-term backwards compatibility from that point. It is named after Kotlin Island, off Saint Petersburg.",
+      "type": "date",
+      "tokens": [
+        "Kotlin",
+        "Kotlin Island",
+        "Apache",
+        "Saint Petersburg",
+        "Petersburg",
+        "2011",
+        "2012",
+        "2016"
+      ],
+      "source": {
+        "title": "Kotlin: unveiled July 2011, open-sourced February 2012, version 1.0 on 15 February 2016, and Google’s Android announcements of 2017 and 2019",
+        "url": "https://en.wikipedia.org/wiki/Kotlin",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Google announced first-class support for Kotlin on Android in 2017, and on 7 May 2019 announced that it was its preferred language for Android application developers.",
+      "type": "date",
+      "tokens": [
+        "Google",
+        "Kotlin",
+        "Android",
+        "2017",
+        "2019"
+      ],
+      "source": {
+        "title": "Kotlin: unveiled July 2011, open-sourced February 2012, version 1.0 on 15 February 2016, and Google’s Android announcements of 2017 and 2019",
+        "url": "https://en.wikipedia.org/wiki/Kotlin",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Swift was created by Chris Lattner, beginning in 2010, while he was director of the developer tools department at Apple. It was first announced at the company’s developer conference in June 2014 and shipped in the toolchain from Xcode version 6 in September 2014.",
+      "type": "date",
+      "tokens": [
+        "Swift",
+        "Chris Lattner",
+        "Lattner",
+        "Apple",
+        "Xcode",
+        "2010",
+        "2014"
+      ],
+      "source": {
+        "title": "Swift (programming language): created by Chris Lattner from 2010, announced at WWDC in June 2014, shipped in Xcode 6 in September 2014",
+        "url": "https://en.wikipedia.org/wiki/Swift_(programming_language)",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "On 2 June 2014 the conference application became the first publicly released application written in Swift.",
+      "type": "date",
+      "tokens": [
+        "Swift",
+        "2014"
+      ],
+      "source": {
+        "title": "Swift (programming language): created by Chris Lattner from 2010, announced at WWDC in June 2014, shipped in Xcode 6 in September 2014",
+        "url": "https://en.wikipedia.org/wiki/Swift_(programming_language)",
+        "kind": "secondary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a platform’s language ages, but the platform owner cannot replace it, because every application and every library on it is written in the old one",
+    "fix": "a new language on the same runtime that calls the old one and is callable from it, so migration happens file by file and nothing has to be rewritten at once",
+    "cost": "interoperating with the old language means inheriting its model at the boundary, permanently",
+    "interview": "why interoperation rather than quality is what decides whether a replacement language succeeds"
+  }
+}

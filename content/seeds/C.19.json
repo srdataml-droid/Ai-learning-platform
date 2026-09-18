@@ -1,0 +1,84 @@
+{
+  "taskId": "C.19",
+  "title": "2012. TypeScript. Microsoft",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "It was announced publicly on 1 October 2012 as version 0.8, with the source released as open source under the Apache licence the same day, after roughly two years of internal development at Microsoft under the codename Strada. Anders Hejlsberg is among the designers.",
+      "type": "date",
+      "tokens": [
+        "Microsoft",
+        "Strada",
+        "Anders Hejlsberg",
+        "Hejlsberg",
+        "Apache",
+        "2012"
+      ],
+      "source": {
+        "title": "TypeScript: the public release of version 0.8 on 1 October 2012, the internal development from 2010 under the codename Strada, and its gradual, structural typing",
+        "url": "https://en.wikipedia.org/wiki/TypeScript",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Rather than replacing the existing language, it is a superset of it: any existing file in the base language is a valid file in this one, which lets a codebase be converted file by file. Version 1.0 shipped in 2014.",
+      "type": "event",
+      "tokens": [
+        "2014"
+      ],
+      "source": {
+        "title": "TypeScript: the public release of version 0.8 on 1 October 2012, the internal development from 2010 under the codename Strada, and its gradual, structural typing",
+        "url": "https://en.wikipedia.org/wiki/TypeScript",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Its typing discipline is gradual and structural: convertibility between types depends on the parts of the type rather than on a declared name, so a value fits a type when its shape matches.",
+      "type": "event",
+      "tokens": [
+        "Strada"
+      ],
+      "source": {
+        "title": "TypeScript: the public release of version 0.8 on 1 October 2012, the internal development from 2010 under the codename Strada, and its gradual, structural typing",
+        "url": "https://en.wikipedia.org/wiki/TypeScript",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "It extends the base language with features aimed at large-scale programming, including optional static type checking, classes, interfaces and modules.",
+      "type": "event",
+      "tokens": [
+        "Strada"
+      ],
+      "source": {
+        "title": "TypeScript: the public release of version 0.8 on 1 October 2012, the internal development from 2010 under the codename Strada, and its gradual, structural typing",
+        "url": "https://en.wikipedia.org/wiki/TypeScript",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "The base language it is a superset of was prototyped in about ten days in May 1995 at Netscape and shipped into a client shared by everyone, which is why it could not subsequently be replaced or corrected.",
+      "type": "date",
+      "tokens": [
+        "Netscape",
+        "1995"
+      ],
+      "source": {
+        "title": "Brendan Eich: the ten-day prototype of May 1995 at Netscape",
+        "url": "https://en.wikipedia.org/wiki/Brendan_Eich",
+        "kind": "secondary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a large codebase in a language with no way to state intent cannot be checked, and the language cannot be replaced because the substrate it runs on is not yours to change",
+    "fix": "a superset that erases back to the original, so types are added file by file and nothing about deployment changes",
+    "cost": "the types are erased, so they are a claim checked at build time and absent at run time — at every boundary the checker is trusting a description nobody verified",
+    "interview": "what erased types actually guarantee, and where the guarantee stops"
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "taskId": "C.13",
+  "title": "1995. JavaScript. Eich, Netscape, about ten days",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Brendan Eich, recently hired by Netscape Communications, was tasked in May 1995 with producing a scripting language for client-side interactivity in Netscape Navigator, and prototyped it in about ten days.",
+      "type": "date",
+      "tokens": [
+        "Brendan Eich",
+        "Eich",
+        "Netscape",
+        "Netscape Communications",
+        "Navigator",
+        "1995"
+      ],
+      "source": {
+        "title": "Brendan Eich: the ten-day prototype of May 1995 at Netscape, the Mocha and LiveScript names, and the December 1995 renaming under the Sun licensing deal",
+        "url": "https://en.wikipedia.org/wiki/Brendan_Eich",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The design drew on Scheme for its functional elements, Self for prototype-based inheritance, and the syntax of Java for familiarity. Despite the eventual name the two languages differ fundamentally: one is compiled, class-based and statically typed, the other interpreted, prototype-based and dynamically typed, and the main similarity is C-style syntax.",
+      "type": "event",
+      "tokens": [
+        "Scheme",
+        "Self",
+        "Java"
+      ],
+      "source": {
+        "title": "Brendan Eich: the ten-day prototype of May 1995 at Netscape, the Mocha and LiveScript names, and the December 1995 renaming under the Sun licensing deal",
+        "url": "https://en.wikipedia.org/wiki/Brendan_Eich",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The prototype was codenamed Mocha, renamed LiveScript in September 1995 for the beta of the second version of the browser, and renamed again in December 1995 after Netscape and Sun reached a licensing deal. Eich described it in a later interview: \"in early December Netscape and Sun reached a licensing deal, and the language became JavaScript.\"",
+      "type": "quote",
+      "tokens": [
+        "Mocha",
+        "Netscape",
+        "Sun",
+        "Eich",
+        "1995"
+      ],
+      "source": {
+        "title": "Brendan Eich: the ten-day prototype of May 1995 at Netscape, the Mocha and LiveScript names, and the December 1995 renaming under the Sun licensing deal",
+        "url": "https://en.wikipedia.org/wiki/Brendan_Eich",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "The name was chosen to ride on the contemporaneous success of Java, and the resulting confusion between the two has persisted ever since.",
+      "type": "event",
+      "tokens": [
+        "Java"
+      ],
+      "source": {
+        "title": "Brendan Eich: the ten-day prototype of May 1995 at Netscape, the Mocha and LiveScript names, and the December 1995 renaming under the Sun licensing deal",
+        "url": "https://en.wikipedia.org/wiki/Brendan_Eich",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "Eich also wrote the first engine to execute the language in the browser. When Mozilla inherited the Netscape codebase in 1998, that engine came with it. The language was taken to Ecma in 1996 and 1997 to produce a standard specification.",
+      "type": "date",
+      "tokens": [
+        "Eich",
+        "Mozilla",
+        "Netscape",
+        "Ecma",
+        "1996",
+        "1997",
+        "1998"
+      ],
+      "source": {
+        "title": "Brendan Eich: the ten-day prototype of May 1995 at Netscape, the Mocha and LiveScript names, and the December 1995 renaming under the Sun licensing deal",
+        "url": "https://en.wikipedia.org/wiki/Brendan_Eich",
+        "kind": "secondary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a page was a document, so every interaction with it required a round trip to a server, and anything responsive was impossible",
+    "fix": "put an interpreter in the client, so computation happens where the user is rather than where the data is",
+    "cost": "the client belongs to everyone, so every mistake became permanent the moment pages started depending on it",
+    "interview": "why the design could never be fixed afterwards, and what that implies about shipping into a shared substrate"
+  }
+}

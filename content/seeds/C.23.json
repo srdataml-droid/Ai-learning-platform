@@ -1,0 +1,92 @@
+{
+  "taskId": "C.23",
+  "title": "2007. CUDA. NVIDIA",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The work began in 2004, when NVIDIA hired Ian Buck and paired him with John Nickolls, then director of architecture for GPU computing, to develop a research language called Brook into a product.",
+      "type": "date",
+      "tokens": [
+        "NVIDIA",
+        "Ian Buck",
+        "Buck",
+        "John Nickolls",
+        "Nickolls",
+        "Brook",
+        "2004"
+      ],
+      "source": {
+        "title": "CUDA: the 2004 origin with Ian Buck and John Nickolls, the February 2007 initial release, and the July 2007 1.0 toolkit",
+        "url": "https://en.wikipedia.org/wiki/CUDA",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The initial public release was in February 2007, and version 1.0 of the toolkit, including the compiler, followed in mid-2007 with availability for the GeForce 8 Series, the Quadro FX 5600 and 4600, and Tesla. The version 1.0 programming guide is dated 23 June 2007.",
+      "type": "date",
+      "tokens": [
+        "NVIDIA",
+        "CUDA",
+        "Quadro",
+        "FX",
+        "Tesla",
+        "Series",
+        "2007"
+      ],
+      "source": {
+        "title": "CUDA: the 2004 origin with Ian Buck and John Nickolls, the February 2007 initial release, and the July 2007 1.0 toolkit",
+        "url": "https://en.wikipedia.org/wiki/CUDA",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The programming guide presents a model in which the programmer writes functions executed by many threads in parallel, organised into blocks and grids, and in which the distinct memory spaces available to those threads — per-thread, per-block shared, and device-wide — are part of the programming model rather than hidden by it.",
+      "type": "event",
+      "tokens": [
+        "CUDA"
+      ],
+      "source": {
+        "title": "NVIDIA CUDA Compute Unified Device Architecture Programming Guide, Version 1.0, 23 June 2007",
+        "url": "https://developer.download.nvidia.com/compute/cuda/1.0/NVIDIA_CUDA_Programming_Guide_1.0.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "Before this, using the hardware for general computation required expressing the problem in terms of the graphics pipeline — as textures, shaders and rendering passes — whether or not the problem had anything to do with graphics.",
+      "type": "event",
+      "tokens": [
+        "CUDA"
+      ],
+      "source": {
+        "title": "CUDA: the 2004 origin with Ian Buck and John Nickolls, the February 2007 initial release, and the July 2007 1.0 toolkit",
+        "url": "https://en.wikipedia.org/wiki/CUDA",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "The coupling deliberately re-accepted here — code written against one manufacturer’s machine — is the one the COBOL committees were set up to remove at a Pentagon meeting in May 1959, by making a written specification rather than any vendor’s product the authority.",
+      "type": "date",
+      "tokens": [
+        "COBOL",
+        "Pentagon",
+        "1959"
+      ],
+      "source": {
+        "title": "Sammet, J. E., The Early History of COBOL, in History of Programming Languages, ACM SIGPLAN Notices, 1978",
+        "url": "https://dl.acm.org/doi/10.1145/960118.808378",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "the hardware could perform enormous amounts of parallel arithmetic, but the only way to reach it was to express your problem as graphics",
+    "fix": "a C-like language and runtime that exposes the parallel execution model directly, so a computation can be written as a computation",
+    "cost": "the model deliberately does not hide the memory hierarchy, so correct code is easy and fast code requires knowing the machine — and the machine belongs to one vendor",
+    "interview": "why this abstraction exposes the hardware when every other one in the chain hides it"
+  }
+}

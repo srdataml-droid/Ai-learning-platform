@@ -1,0 +1,48 @@
+{
+  "id": "C.21",
+  "trackId": "C",
+  "trackName": "Languages: the chain of walls",
+  "title": "2011 and 2014. Kotlin and Swift",
+  "status": "traced",
+  "seed": "C.21",
+  "story": "Two languages, two companies, no connection between the projects, and the same manoeuvre — which is the reason to study them together. Each arrives on a platform whose existing language has aged badly and cannot be removed, because everything on the platform is written in it: every application, every library, every piece of sample code anyone has ever read.\n\nKotlin was unveiled in July 2011, open-sourced the following February, and reached a stable 1.0 in February 2016 with a long-term compatibility commitment; the platform owner endorsed it for Android in 2017 and made it the preferred language in 2019. Swift began in 2010 under Lattner, was announced in June 2014, and shipped in the toolchain that September — with the conference application itself, on 2 June 2014, as the first publicly released program written in it.\n\nNeither succeeded by being better, and that is the point worth extracting. Better languages for both platforms already existed and went nowhere. What these two did was refuse to ask for a rewrite: each runs on the runtime already there, calls the old language, and is callable from it, so a single file can be converted while everything around it stays as it was. The unit of migration is one file, the cost of trying is one file, and the cost of being wrong is reverting one file.\n\nThe price is permanent and shows up at the seam. A language that must interoperate with an older one inherits that language’s model wherever they meet — its notion of what may be absent, its object layout, its calling conventions — and cannot design those away without breaking the property that made adoption possible. So the new language carries a permanent compromise at its boundary in exchange for having any users at all, which is the same bargain C.19 made against a different substrate, and the same one C.16 made when it kept a virtual machine and replaced only the surface.",
+  "problem": {
+    "name": "Incremental language replacement",
+    "aka": [
+      "interop-first successor",
+      "same-runtime migration"
+    ],
+    "shape": "The language a platform is built on has aged badly, and it cannot be replaced because everything on the platform is written in it.",
+    "tell": [
+      "the case for the new language is obvious and adoption is nevertheless zero",
+      "any migration plan begins with the word \"rewrite\"",
+      "the existing libraries are more valuable than the existing language is bad"
+    ],
+    "move": "Target the runtime that is already there and make the two languages mutually callable, so that a codebase converts one file at a time with everything around it untouched.",
+    "invariant": "A partially converted codebase works. Every intermediate state must be shippable, because no organisation will hold a broken system across a migration that takes years — and every migration of this kind takes years.",
+    "breaks": "It breaks the new language’s freedom at the boundary. Whatever the old language assumes — what may be absent, how objects are laid out, how calls are made — becomes visible in the new one wherever they meet, and cannot be designed away without giving up the interoperation that is the entire adoption strategy. The compromise is permanent, not transitional.",
+    "cost": {
+      "time": "boundary crossings and bridging, against a clean-slate design",
+      "space": "two languages’ worth of tooling and concepts alive at once, indefinitely",
+      "beats": "a clean replacement, which is a better language and gets no users"
+    },
+    "worked": {
+      "problem": "Why does interoperation, rather than quality, decide whether a replacement language succeeds?",
+      "reasoning": "Look at the decision an individual team actually faces, since that is where adoption happens.\n\nWithout interoperation, the choice is: rewrite the whole system in the new language, all at once, giving up every existing library, with no working intermediate state and no way to stop. That is a bet the size of the codebase, and the payoff is a nicer language. Almost nobody takes that bet, and the ones who do are not enough to establish an ecosystem.\n\nWith interoperation, the choice is: convert one file. The cost is bounded, the system keeps working, and the decision is reversible. Adoption becomes a sequence of small independent choices rather than one large one.\n\nQuality still matters — it determines whether people want to take the second step. But it never gets evaluated unless the first step is small, which is why better languages with no migration path lose to worse ones with a good one.",
+      "code": "clean replacement            interop-first\n-----------------            -------------\nrewrite everything           convert file 1     -> ships\n  |                          convert file 2     -> ships\n  | (no working state        ...\n  |  for months)             stop any time      -> ships\n  v\nmaybe it works               every state is shippable\n\ndecision size: the codebase  decision size: one file\nreversible:    no            reversible:    yes\nlibraries:     lost          libraries:     kept\n\n  Quality decides step 2 onward.\n  Step 1 decides whether quality is ever evaluated."
+    },
+    "practice": "Find a migration in your own work that stalled. Ask whether it stalled because the destination was wrong or because no intermediate state was shippable — and what the smallest shippable unit would have had to be."
+  },
+  "beats": {
+    "broke": "A platform’s language ages, and the owner cannot replace it because every application and library on the platform is written in it. The value locked up in the old code exceeds the pain of the old language.",
+    "fix": "A new language on the same runtime, mutually callable with the old one, so migration proceeds file by file. Unveiled July 2011 and stable in February 2016 in one case; begun in 2010 and announced in June 2014 in the other.",
+    "cost": "The old language’s model shows through at the boundary — absence, layout, calling conventions — and cannot be designed away without giving up the interoperation that made adoption possible. The compromise is permanent.",
+    "interview": {
+      "q": "Why does interoperation rather than quality decide whether a replacement language succeeds?",
+      "trap": "Concluding that quality does not matter. It decides everything after the first step — it just never gets evaluated if the first step is too large.",
+      "answer": "Because adoption is a sequence of decisions made by individual teams, and the size of the first decision determines whether any of them are taken.\n\nWithout interoperation, the smallest available move is to rewrite the system, abandoning the existing libraries, with no working intermediate state. That is a bet proportional to the codebase with a payoff of \"a nicer language\", and almost nobody accepts it — so the ecosystem never forms and the quality is never tested in practice.\n\nWith interoperation, the smallest move is one file: bounded, shippable, reversible. The migration becomes many small independent choices instead of one large irreversible one.\n\nQuality governs whether people take the second step and the hundredth. But it is only ever evaluated if the first step is small, which is why better languages with no migration path lose to worse ones with one — and why the permanent boundary compromise is worth paying."
+    }
+  },
+  "blueprint": "The same move, three times in this track:\n\n  2012  superset + erasure   -> substrate: a shared client\n  2012  new surface, same VM -> substrate: a runtime\n  2011/2014  new language,   -> substrate: a platform's\n        mutual interop           existing libraries\n\n  All three refuse to ask for a rewrite. All three pay\n  at the seam.\n\n  What must hold:\n\n     every intermediate state SHIPS\n     because migrations of this kind take years and\n     nobody holds a broken system for years\n\n  What it costs, permanently:\n\n     old model visible at the boundary\n     (absence, layout, calling conventions)\n     -- and it can't be removed, because removing it\n        removes the adoption path",
+  "takeaway": "Two unrelated projects made the same move: run on the existing runtime and interoperate, so migration is one file at a time — buying adoption with a permanent compromise at the boundary, because a language nobody can adopt incrementally is never judged on quality at all."
+}

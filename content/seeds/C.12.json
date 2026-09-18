@@ -1,0 +1,95 @@
+{
+  "taskId": "C.12",
+  "title": "1995. Java. Gosling, Sun",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "James Gosling, Mike Sheridan and Patrick Naughton started the project in June 1991 at Sun Microsystems, chartered to anticipate the next wave in computing. The target was digital consumer devices such as set-top boxes and televisions.",
+      "type": "date",
+      "tokens": [
+        "James Gosling",
+        "Gosling",
+        "Mike Sheridan",
+        "Sheridan",
+        "Patrick Naughton",
+        "Naughton",
+        "Sun Microsystems",
+        "Sun",
+        "1991"
+      ],
+      "source": {
+        "title": "Java (programming language): the Green Project, the Oak name, the 1994 retarget to the internet, and the SunWorld announcement of 23 May 1995",
+        "url": "https://en.wikipedia.org/wiki/Java_(programming_language)",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The language was first called Oak, after a tree outside Gosling’s office. A trademark search found Oak already registered by a video adaptor card manufacturer, so it was renamed. Gosling gave it a syntax in the style of C and C++ so that working programmers would find it familiar.",
+      "type": "event",
+      "tokens": [
+        "Oak",
+        "Gosling"
+      ],
+      "source": {
+        "title": "Java (programming language): the Green Project, the Oak name, the 1994 retarget to the internet, and the SunWorld announcement of 23 May 1995",
+        "url": "https://en.wikipedia.org/wiki/Java_(programming_language)",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "In June and July 1994 the team retargeted the work from consumer devices to the internet, judging that with the arrival of the Mosaic browser the web was moving toward the interactive vision they had had for cable television. On 16 September 1994 work began on a browser called WebRunner, later renamed HotJava, demonstrated to executives on 29 September 1994.",
+      "type": "date",
+      "tokens": [
+        "Mosaic",
+        "1994"
+      ],
+      "source": {
+        "title": "Java (programming language): the Green Project, the Oak name, the 1994 retarget to the internet, and the SunWorld announcement of 23 May 1995",
+        "url": "https://en.wikipedia.org/wiki/Java_(programming_language)",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "Sun announced the language and the browser at SunWorld on 23 May 1995. John Gage of Sun and Marc Andreessen of Netscape announced on stage that the technology would be incorporated into Netscape Navigator; Andreessen’s announcement was a surprise. The team numbered fewer than 30 people at the time.",
+      "type": "date",
+      "tokens": [
+        "Sun",
+        "John Gage",
+        "Gage",
+        "Marc Andreessen",
+        "Andreessen",
+        "Netscape",
+        "Navigator",
+        "1995"
+      ],
+      "source": {
+        "title": "Java (programming language): the Green Project, the Oak name, the 1994 retarget to the internet, and the SunWorld announcement of 23 May 1995",
+        "url": "https://en.wikipedia.org/wiki/Java_(programming_language)",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "Programs are compiled to bytecode, which can be executed on any device with a compatible runtime. This is the property summarised by the slogan write once, run anywhere.",
+      "type": "event",
+      "tokens": [
+        "Java"
+      ],
+      "source": {
+        "title": "Java (programming language): the Green Project, the Oak name, the 1994 retarget to the internet, and the SunWorld announcement of 23 May 1995",
+        "url": "https://en.wikipedia.org/wiki/Java_(programming_language)",
+        "kind": "secondary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a compiled program targets one instruction set and one operating system, so shipping software to a population of machines you do not control means shipping a different build for each",
+    "fix": "compile to the instruction set of a machine that does not exist, and port that machine once per platform instead of porting every program",
+    "cost": "the program now depends on a runtime being present and behaving identically everywhere, so its portability is only as good as that runtime’s uniformity",
+    "interview": "what a virtual machine actually moves, and why that is a distribution decision rather than a language one"
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "id": "C.18",
+  "trackId": "C",
+  "trackName": "Languages: the chain of walls",
+  "title": "2009. Go. Griesemer, Pike, Thompson at Google",
+  "status": "traced",
+  "seed": "C.18",
+  "story": "C.6 made the case that the cost of a single attempt decides who can use a system. That argument was about a chemist in 1964 waiting hours for a batch job. Run the same argument at a different scale and you get this entry: tens of millions of lines, hundreds or thousands of programmers, daily updates, one source tree — and, in Pike’s description of the environment, build times that had stretched on large compilation clusters to many minutes, even hours.\n\nThe conclusion drawn is unusual. Slow builds are normally treated as a compiler problem or a hardware problem, and the response is a bigger build cluster, which is what already existed and was not enough. The claim behind this language is that build time is a property of the language’s dependency structure, so no amount of machinery fixes it. If a file’s meaning depends on text pulled in from elsewhere, and that elsewhere pulls in more, then the work to compile one file grows with the transitive closure of everything it touches — and that closure grows faster than the codebase.\n\nSo the design treats compilation speed as a constraint the language must satisfy rather than an outcome the compiler should optimise. Dependencies are explicit and cannot be circular; there are no header files, so nothing is re-read per compilation unit; the specification is small enough that keeping it that way is a live consideration. Pike’s own framing is that the language is by and for people who write, read, debug and maintain large systems, and that it is more about software engineering than programming language research — which reads as modest and is actually the whole thesis.\n\nThe bill is the omissions, and they should be stated as losses rather than explained away. Features that would have complicated the dependency graph or the specification were left out, and the resulting language is less expressive than its contemporaries in ways its users genuinely felt. That is the trade being made, openly: expressiveness spent to keep a loop short, which is defensible exactly when the loop is the thing that was hurting and indefensible when it is not.",
+  "problem": {
+    "name": "Build scalability",
+    "aka": [
+      "compilation speed as a design constraint",
+      "dependency hygiene"
+    ],
+    "shape": "The development loop is dominated by the time to build, and the build time grows faster than the code because of how dependencies compose.",
+    "tell": [
+      "adding hardware has stopped helping, or helps sublinearly",
+      "the time to compile one file has little to do with the size of that file",
+      "people batch up changes instead of testing them one at a time, and nobody decided to work that way"
+    ],
+    "move": "Make the dependency structure a property the language enforces: explicit imports, no cycles, no textual inclusion, and a compilation unit whose cost depends on its own size plus a summary of what it names — not on the transitive text behind it.",
+    "invariant": "Compiling a unit requires reading that unit and a bounded summary of its direct dependencies, never their dependencies in turn. That is what makes build cost grow with the codebase rather than with its transitive closure.",
+    "breaks": "It costs expressiveness. Any feature that makes one unit’s meaning depend on the interior of another — rather than on its interface — threatens the invariant, so such features get refused. Those refusals are real losses, and the trade only pays where the loop was actually the binding constraint. Where it was not, you have bought nothing and spent something.",
+    "cost": {
+      "time": "build cost proportional to the code, not its transitive closure",
+      "space": "compiled summaries of interfaces instead of re-parsed source text",
+      "beats": "textual inclusion, which is simpler, more flexible, and quadratic in practice"
+    },
+    "worked": {
+      "problem": "Why is build time a language design problem rather than a tooling problem?",
+      "reasoning": "Look at what determines the work. With textual inclusion, compiling a file means processing that file plus the full text of everything it includes, plus everything those include. The same headers are re-processed once per compilation unit, so total work scales with files multiplied by the average transitive closure — and in a growing codebase both factors grow.\n\nNow ask what a tool can do about that. Caching helps until something near the root changes; parallelism divides a quantity that is still growing faster than the code; a bigger cluster buys a constant factor against superlinear growth. None of these change the exponent, because the exponent comes from the dependency structure, which is defined by the language.\n\nChange the language so that a unit depends on its imports’ interfaces rather than their text, and forbid cycles, and the per-unit cost becomes bounded by that unit plus a summary. That is a different growth curve, and only the language could have produced it.",
+      "code": "textual inclusion            explicit, acyclic imports\n-----------------            -------------------------\na.c  #include \"b.h\"          package a imports b\nb.h  #include \"c.h\"            -> compiler reads a/\nc.h  #include \"d.h\"               + b's INTERFACE\n                                  (compiled, summarised)\ncompiling a.c reads:\n  a + b + c + d ...          compiling a reads:\n  ...for EVERY .c file         a + one summary\n\nwork ~ files x closure       work ~ files\n\n  a bigger build cluster changes the CONSTANT.\n  the language changes the EXPONENT.\n  that is why it isn't a tooling problem."
+    },
+    "practice": "Measure how long your project takes to rebuild after touching one leaf file and after touching one file near the root of the dependency graph. The ratio tells you whether your build cost is about your code or about its closure."
+  },
+  "beats": {
+    "broke": "At tens of millions of lines and thousands of programmers, the time to build dominated the development loop. Larger build clusters bought a constant factor against a cost that was growing faster than the codebase.",
+    "fix": "Treat compilation speed as something the language must guarantee: explicit and acyclic dependencies, no textual inclusion, compilation against interfaces rather than source. Conceived September 2007, first released 10 November 2009, stable at version 1 in early 2012.",
+    "cost": "Expressiveness was spent to keep the property. Features that would let one unit depend on the interior of another were refused, and those refusals were felt as genuine losses by the people using it.",
+    "interview": {
+      "q": "Why is build time a language design problem rather than a tooling problem?",
+      "trap": "Answering that compilers can be optimised or builds parallelised. Those are real and they move a constant factor; the complaint is about growth.",
+      "answer": "Because the growth rate is set by the dependency structure, and the language defines the dependency structure.\n\nUnder textual inclusion, compiling one unit means processing that unit plus the full text of its transitive includes, repeated for every unit. Total work scales with the number of files times the average closure, and in a growing codebase both of those grow. Caching, parallelism and more machines each buy a constant factor against that, which is why the build cluster already existed and was not enough.\n\nIf instead a unit compiles against a summarised interface of its direct imports, and cycles are forbidden, then per-unit cost is bounded by the unit plus a summary, and total cost grows with the code rather than with its closure. That is a change of exponent, and no tool outside the language can make it.\n\nThe honest cost is that features letting one unit see into another's interior threaten the invariant and so get refused — which is a real loss, worth paying only when the loop was the binding constraint."
+    }
+  },
+  "blueprint": "Same argument as 1964, different scale:\n\n  1964: attempt costs hours -> only specialists can use it\n  2009: build costs hours   -> only batched work is viable\n\n  and in both cases the fix is the LOOP, not the tool.\n\n  where the growth comes from:\n\n     #include        -> work ~ files x transitive closure\n                        (both factors growing)\n     import + iface  -> work ~ files\n\n     cluster/cache/parallel  -> constant factor\n     language                -> exponent\n\n  Paid for in refused features. State that as a loss,\n  because it is one -- and it only pays where the loop\n  was what hurt.",
+  "takeaway": "Build cost grows with the dependency closure, which the language defines — so no build cluster fixes it, and the price of fixing it in the language is features deliberately refused."
+}

@@ -1,0 +1,100 @@
+{
+  "taskId": "C.17",
+  "title": "2000. C#. Hejlsberg, Microsoft",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "In January 1999 Anders Hejlsberg formed a team to build a new language, at the time called COOL, standing for C-like Object Oriented Language. The name was not kept for trademark reasons; a naming committee was convened and wanted a reference to the C heritage. Other candidates considered included Safe C.",
+      "type": "date",
+      "tokens": [
+        "Anders Hejlsberg",
+        "Hejlsberg",
+        "COOL",
+        "Safe",
+        "1999"
+      ],
+      "source": {
+        "title": "C Sharp (programming language): the COOL codename, the July 2000 release with the .NET Framework, and the Ecma standardisation adopted in December 2001",
+        "url": "https://en.wikipedia.org/wiki/C_Sharp_(programming_language)",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The principal designers were Anders Hejlsberg, Scott Wiltamuth and Peter Golde. The first widely distributed implementation was released by Microsoft in July 2000 as part of the .NET Framework initiative.",
+      "type": "date",
+      "tokens": [
+        "Anders Hejlsberg",
+        "Hejlsberg",
+        "Scott Wiltamuth",
+        "Wiltamuth",
+        "Peter Golde",
+        "Golde",
+        "Microsoft",
+        "NET",
+        "Framework",
+        "2000"
+      ],
+      "source": {
+        "title": "C Sharp (programming language): the COOL codename, the July 2000 release with the .NET Framework, and the Ecma standardisation adopted in December 2001",
+        "url": "https://en.wikipedia.org/wiki/C_Sharp_(programming_language)",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "An Ecma technical committee task group was formed in September 2000 to produce a standard for the language, with a separate group formed at the same time for the common language infrastructure. Development of the standard began in November 2000 and it was adopted as an Ecma standard by the General Assembly of December 2001.",
+      "type": "date",
+      "tokens": [
+        "Ecma",
+        "General Assembly",
+        "2000",
+        "2001"
+      ],
+      "source": {
+        "title": "C Sharp (programming language): the COOL codename, the July 2000 release with the .NET Framework, and the Ecma standardisation adopted in December 2001",
+        "url": "https://en.wikipedia.org/wiki/C_Sharp_(programming_language)",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "The standard was based on a submission from Hewlett-Packard, Intel and Microsoft, and was later approved by the international standards bodies in 2003.",
+      "type": "event",
+      "tokens": [
+        "Hewlett-Packard",
+        "Intel",
+        "Microsoft",
+        "2003"
+      ],
+      "source": {
+        "title": "C Sharp (programming language): the COOL codename, the July 2000 release with the .NET Framework, and the Ecma standardisation adopted in December 2001",
+        "url": "https://en.wikipedia.org/wiki/C_Sharp_(programming_language)",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "The precedent for putting a language definition in a document nobody owns is COBOL, whose specifying committees were set up at a Pentagon meeting in May 1959 and whose specification was approved in January 1960, so that the document rather than any vendor’s compiler was the authority.",
+      "type": "date",
+      "tokens": [
+        "COBOL",
+        "Pentagon",
+        "1959",
+        "1960"
+      ],
+      "source": {
+        "title": "Sammet, J. E., The Early History of COBOL, in History of Programming Languages, ACM SIGPLAN Notices, 1978",
+        "url": "https://dl.acm.org/doi/10.1145/960118.808378",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "adopting a vendor’s language binds your code to that vendor’s continued interest and terms, which is a commercial risk rather than a technical one",
+    "fix": "publish the language as a specification through an independent standards body, co-submitted with other companies, so conformance is checkable against a document nobody owns",
+    "cost": "the standard covers the language, not the platform — the libraries, runtime and tooling that people actually depend on stay where they were",
+    "interview": "what standardising a vendor language actually buys the adopter, and what it conspicuously does not"
+  }
+}

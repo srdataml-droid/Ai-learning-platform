@@ -1,0 +1,48 @@
+{
+  "id": "C.15",
+  "trackId": "C",
+  "trackName": "Languages: the chain of walls",
+  "title": "1995 and 2004. Ruby, then Rails. Matsumoto, then Hansson",
+  "status": "traced",
+  "seed": "C.15",
+  "story": "This entry is two things nine years apart, and the second is the one that changed how software gets built. The language came first: named in a chat in February 1993 before any code existed, released as version 0.95 on Japanese newsgroups in December 1995, reaching 1.0 exactly a year later. Its premise is that the constraint worth optimising is the programmer’s experience rather than the machine’s — which had been said before, and which the chain has mostly ignored since Fortran made the translator the hard part.\n\nThe framework is where the interesting claim lives, and it is not a claim about the language. Hansson did not design a web framework. He built an application — a project management tool at a small company — and then took out of it the parts that were not about project management, open-sourcing the result in July 2004. The order matters more than anything in the code. Every abstraction in it existed because a working application had required it, which is a filter no amount of design review reproduces.\n\nThe visible consequence is convention over configuration: names and locations imply the wiring, so declarations that other frameworks demanded simply do not get written. That looks like a preference for terseness and is better understood as a consequence of extraction. You can only default what you have seen done the same way repeatedly, and you have only seen that if you built something first.\n\nThe costs follow just as directly from the origin. What gets extracted is the shape of the application it came from, so the fit is excellent for systems that resemble that one and degrades quietly for systems that do not. And a convention is only cheaper than a declaration while you agree with it — the moment you need something else, you are working against a default that is invisible precisely because nobody wrote it down.",
+  "problem": {
+    "name": "Extraction over invention",
+    "aka": [
+      "convention over configuration",
+      "harvesting a framework"
+    ],
+    "shape": "You need a general tool, and the abstractions you would design for it are guesses about needs nobody has demonstrated yet.",
+    "tell": [
+      "the framework has extension points nobody uses and lacks the one thing everybody writes by hand",
+      "the design is justified by scenarios rather than by cases that occurred",
+      "every user reimplements the same missing piece in the same way"
+    ],
+    "move": "Build a working system first, then remove from it the parts that are not specific to it. Ship what remains. Make defaults out of whatever the working system did the same way every time.",
+    "invariant": "Every abstraction present was required by something that actually ran. That is the filter, and it is what makes the result smaller and better fitted than a designed equivalent — not the taste of the person doing it.",
+    "breaks": "It generalises only as far as the source system was typical. What you extract carries that application’s shape, including assumptions nobody noticed they were making, so it fits neighbours well and strangers badly. Conventions make this worse rather than better: an unwritten default is invisible, so where it is wrong the user must first discover that a decision was made at all.",
+    "cost": {
+      "time": "you must build the whole thing before you have the general one",
+      "space": "the extracted framework carries the source application’s assumptions with it",
+      "beats": "designing in advance, which is faster to start and reliably produces abstractions nobody needed"
+    },
+    "worked": {
+      "problem": "Why does extraction produce better abstractions than design, and what can it not produce?",
+      "reasoning": "Design proposes abstractions against imagined requirements, and there is no mechanism that removes the ones nobody will need — a plausible extension point costs nothing to add and survives review, because the case against it is hypothetical too.\n\nExtraction has that mechanism built in. Only what was used can be taken out, so the selection has already happened before anyone exercises judgement. You are not deciding well; you are deciding from evidence.\n\nWhat it cannot produce is generality beyond the source. The evidence is a sample of one system, so anything that system did not need is absent and anything it assumed is baked in. That is why extracted frameworks are opinionated in a specific way: not arbitrary opinions, but the recorded opinions of one application — and the more unusual that application was, the less the result transfers.",
+      "code": "designed                      extracted\n--------                      ---------\nimagine needs                 build the thing\n-> abstraction A  (unused)    -> keep what ran\n-> abstraction B  (unused)    -> drop what was specific\n-> abstraction C  (used)\n-> ...missing D, which\n   everyone writes by hand\n\n  filter: review (hypothetical vs hypothetical)\n  filter: it shipped, or it didn't      <- decisive\n\n  What extraction cannot give you: anything the source\n  application never needed. Sample size is one.\n  Hence: fits neighbours, fails strangers, and the\n  assumptions are invisible because nobody wrote them."
+    },
+    "practice": "Find an internal library in your codebase that was designed up front and count how many of its extension points are used. Then find one that was extracted from a working system and do the same, and compare the two ratios."
+  },
+  "beats": {
+    "broke": "Frameworks were designed in advance against imagined applications. There was no mechanism to remove abstractions nobody needed, so they arrived carrying extension points that went unused while everybody hand-wrote the same missing piece.",
+    "fix": "Build a working application, then remove what is specific to it and ship the remainder. Extracted from a project management tool and open-sourced in July 2004, reaching version 1.0 in December 2005.",
+    "cost": "The result carries the shape of the application it came from, so it fits similar systems and fails unusual ones — and conventions make the misfit harder to see, because an unwritten default gives you nothing to read when it is wrong.",
+    "interview": {
+      "q": "Why does extracting a framework produce better abstractions than designing one, and what can it not give you?",
+      "trap": "Attributing it to the taste or experience of the person doing the extracting. The advantage is structural and works regardless of who does it.",
+      "answer": "Because extraction has a filter that design lacks. When you design, an abstraction is justified by an imagined requirement and the argument against it is equally imagined, so plausible-but-unneeded things survive review. When you extract, only what was actually used is available to take out — the selection has already happened before anyone exercises judgement.\n\nWhat it cannot give you is generality past the source system. The evidence is a sample of one, so anything that application never needed is missing and anything it quietly assumed is now built in. That is the precise sense in which extracted frameworks are opinionated: the opinions are not arbitrary, they are one application's requirements, recorded.\n\nThe practical consequence is a rule for when to use it. Extract when your system is representative of the ones you want to serve, and be suspicious when it is unusual — because the more unusual it was, the more of its shape you are shipping as though it were general."
+    }
+  },
+  "blueprint": "Where the abstractions come from, and what survives:\n\n  DESIGN                       EXTRACT\n  ------                       -------\n  imagined requirement         a thing that ran\n  argued against by            removed by not having\n    another imagination          been used\n  -> unused extension points   -> only what was needed\n  -> missing the common case   -> the common case IS\n                                  the default\n\n  The filter is the whole difference, and it works\n  no matter who applies it.\n\n  The limit is sample size:\n\n     evidence = 1 application\n     -> its assumptions ship as if general\n     -> fits neighbours, fails strangers\n     -> and conventions hide the misfit, because\n        an unwritten default has nothing to read",
+  "takeaway": "Extraction beats design because only what actually ran is available to take out — a filter no review reproduces — and its limit is that the evidence is one application, whose assumptions ship as though they were general."
+}

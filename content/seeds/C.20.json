@@ -1,0 +1,80 @@
+{
+  "taskId": "C.20",
+  "title": "2015. Rust reaches 1.0. Mozilla",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Rust 1.0 was announced on 15 May 2015 by the Rust Core Team. The announcement states that it \"combines low-level control over performance with high-level convenience and safety guarantees\".",
+      "type": "quote",
+      "tokens": [
+        "Rust",
+        "Rust Core Team",
+        "2015"
+      ],
+      "source": {
+        "title": "Announcing Rust 1.0, The Rust Core Team, The Rust Programming Language Blog, 15 May 2015",
+        "url": "https://blog.rust-lang.org/2015/05/15/Rust-1.0/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The announcement states that it achieves these goals \"without requiring a garbage collector or runtime\", which is what allows its libraries to serve as a drop-in substitute for C.",
+      "type": "quote",
+      "tokens": [
+        "Rust"
+      ],
+      "source": {
+        "title": "Announcing Rust 1.0, The Rust Core Team, The Rust Programming Language Blog, 15 May 2015",
+        "url": "https://blog.rust-lang.org/2015/05/15/Rust-1.0/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The announcement attributes the language’s distinctiveness to its type system, described as a refinement and codification of best practices drawn from experience with C and C++. It says newcomers can write low-level code without worrying about minor mistakes leading to mysterious crashes, and that experienced developers save time they would otherwise spend debugging.",
+      "type": "quote",
+      "tokens": [
+        "Rust"
+      ],
+      "source": {
+        "title": "Announcing Rust 1.0, The Rust Core Team, The Rust Programming Language Blog, 15 May 2015",
+        "url": "https://blog.rust-lang.org/2015/05/15/Rust-1.0/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "The release marks a stability commitment: the announcement describes the preceding churn as ended and breaking changes as largely out of scope going forward, alongside a six-week release train.",
+      "type": "event",
+      "tokens": [
+        "Rust"
+      ],
+      "source": {
+        "title": "Announcing Rust 1.0, The Rust Core Team, The Rust Programming Language Blog, 15 May 2015",
+        "url": "https://blog.rust-lang.org/2015/05/15/Rust-1.0/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "The language was sponsored by Mozilla, which supported its development in the years before the 1.0 release.",
+      "type": "event",
+      "tokens": [
+        "Mozilla"
+      ],
+      "source": {
+        "title": "Rust (programming language): origins and Mozilla sponsorship",
+        "url": "https://en.wikipedia.org/wiki/Rust_(programming_language)",
+        "kind": "secondary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "memory safety had always been bought with a runtime, and the code that most needs safety — kernels, drivers, engines — is exactly the code that cannot afford one",
+    "fix": "make ownership part of the type system and check it when compiling, so the safety property is established before the program runs and costs nothing while it does",
+    "cost": "the checker must be satisfied, so it rejects correct programs it cannot prove correct, and the work moves to the author",
+    "interview": "what it means for a compiler to reject a program that would have worked"
+  }
+}

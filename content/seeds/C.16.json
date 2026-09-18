@@ -1,0 +1,99 @@
+{
+  "taskId": "C.16",
+  "title": "1986 and 2012. Erlang, then Elixir. Ericsson",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The first version was developed by Joe Armstrong in 1986 at Ericsson, in a Prolog form over 1986 and 1987, with Robert Virding joining to help rewrite the prototype and improve concurrency performance. An early internal document is Armstrong’s Telephony Programming in Prolog, Ericsson internal report T/SU 86 036, dated 3 March 1986.",
+      "type": "date",
+      "tokens": [
+        "Joe Armstrong",
+        "Armstrong",
+        "Ericsson",
+        "Prolog",
+        "Robert Virding",
+        "Virding",
+        "Telephony Programming",
+        "1986",
+        "1987"
+      ],
+      "source": {
+        "title": "Erlang (programming language): the 1986 origin at Ericsson, the February 1998 in-house ban, and the December 1998 open-source release",
+        "url": "https://en.wikipedia.org/wiki/Erlang_(programming_language)",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Armstrong describes the language as designed for writing concurrent programs that run indefinitely, structured around lightweight concurrent processes that belong to the language rather than the operating system, with no shared memory and asynchronous message passing, plus mechanisms for changing code while the system runs. He calls the resulting model concurrency-oriented programming.",
+      "type": "event",
+      "tokens": [
+        "Armstrong"
+      ],
+      "source": {
+        "title": "Armstrong, J., A History of Erlang, Third ACM SIGPLAN Conference on History of Programming Languages, San Diego, June 2007",
+        "url": "https://dl.acm.org/doi/10.1145/1238844.1238850",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "In March 1998 Ericsson announced a switch containing over a million lines of the language, reported to achieve an availability of nine nines, alongside an observed four-fold increase in development productivity.",
+      "type": "date",
+      "tokens": [
+        "Ericsson",
+        "1998"
+      ],
+      "source": {
+        "title": "Armstrong, J., A History of Erlang, Third ACM SIGPLAN Conference on History of Programming Languages, San Diego, June 2007",
+        "url": "https://dl.acm.org/doi/10.1145/1238844.1238850",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "In February 1998 Ericsson Radio Systems banned in-house use of the language for new products, citing a preference for non-proprietary languages. In December 1998 the implementation was open-sourced and most of the team resigned to form Bluetail AB. The ban was eventually relaxed and Armstrong was re-hired in 2004.",
+      "type": "date",
+      "tokens": [
+        "Ericsson",
+        "Ericsson Radio Systems",
+        "Radio Systems",
+        "Bluetail",
+        "Armstrong",
+        "1998",
+        "2004"
+      ],
+      "source": {
+        "title": "Erlang (programming language): the 1986 origin at Ericsson, the February 1998 in-house ban, and the December 1998 open-source release",
+        "url": "https://en.wikipedia.org/wiki/Erlang_(programming_language)",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "Elixir was designed by José Valim and first appeared on 25 May 2012, running on the same virtual machine, influenced by Clojure, Erlang and Ruby. Valim’s stated aim was to increase the extensibility and productivity of that virtual machine while keeping compatibility with its existing tooling and ecosystem.",
+      "type": "date",
+      "tokens": [
+        "Elixir",
+        "José Valim",
+        "Valim",
+        "Clojure",
+        "Erlang",
+        "Ruby",
+        "2012"
+      ],
+      "source": {
+        "title": "Elixir (programming language): design by José Valim, first appearance 25 May 2012, and its relationship to the Erlang virtual machine",
+        "url": "https://en.wikipedia.org/wiki/Elixir_(programming_language)",
+        "kind": "secondary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a telephone exchange cannot be stopped, so a fault while handling one call must not affect the others and an upgrade must happen while the system runs",
+    "fix": "isolated lightweight processes owned by the language, sharing no memory, communicating by asynchronous messages, supervised by other processes, with code replaceable in place",
+    "cost": "no shared memory means copying, and the model only helps where the work genuinely decomposes into independent activities",
+    "interview": "why isolation has to be the language’s job rather than the programmer’s discipline"
+  }
+}

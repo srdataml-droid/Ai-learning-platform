@@ -883,6 +883,393 @@
     "blueprint": "Read the first feature list as boundaries, not features:\n\n  classes + inheritance   -> boundary between your parts\n  module system           -> boundary to other people's code\n  exceptions              -> boundary between planned and\n                               actual control flow\n  interfaces with the OS  -> boundary to everything that\n                               is not this language\n\n  The predecessor had the notation and none of these.\n  Admired; unused.\n\n  What each boundary costs is the same thing:\n\n     inside  |  outside\n     types   |  no types\n     errors  |  your problem\n     safety  |  none\n\n  and slow code migrates OUTWARD, by habit.",
     "takeaway": "The predecessor failed on its boundaries rather than its notation — so the successor designed the seams first, accepting that a language’s guarantees end exactly where its escape hatches begin."
   },
+  "C.12": {
+    "id": "C.12",
+    "trackId": "C",
+    "trackName": "Languages: the chain of walls",
+    "title": "1995. Java. Gosling, Sun",
+    "status": "traced",
+    "seed": "C.12",
+    "story": "The languages up to here assume you know what you are compiling for. That assumption holds in a machine room and fails completely once the software has to reach machines belonging to other people. The project started in June 1991 aimed at set-top boxes and televisions, which is the same problem in its purest form: a population of devices with different processors, none of them yours, all of them needing to run the same thing.\n\nThe answer is to stop compiling for a real machine. Compile instead to the instruction set of a machine that does not exist, and write that machine once for each platform. The economics invert: porting used to cost one effort per program per platform, and now costs one effort per platform, paid by whoever supplies the runtime rather than by whoever writes the program.\n\nThe retargeting is the part worth noticing, because the technical work did not change and the problem it solved did. In mid-1994 the team pointed the same thing at the internet, judging that with the arrival of the Mosaic browser the web was going where they had expected cable television to go. It was announced at SunWorld on 23 May 1995, where Marc Andreessen of Netscape came on stage unannounced to say Navigator would include it. A solution to heterogeneous consumer hardware turned out to be a solution to heterogeneous personal computers, because it was never really about the hardware.\n\nThe cost is exact and often stated as though it were a slogan rather than a condition. Write once, run anywhere holds only where the runtime is present and behaves identically, so the portability of the program has been converted into the uniformity of an implementation someone else maintains. That is a real trade and frequently a good one — but it moves the compatibility problem rather than removing it, and it puts the part you now depend on outside your control.",
+    "problem": {
+      "name": "Virtual machine portability",
+      "aka": [
+        "bytecode",
+        "managed runtime",
+        "write once run anywhere"
+      ],
+      "shape": "The same program must run on many machines you do not own and cannot enumerate, so you cannot build for each of them.",
+      "tell": [
+        "the audience for the software is a population of devices rather than a known set of servers",
+        "you are maintaining a build matrix that grows with every platform you support",
+        "the people running the program cannot be asked to compile it"
+      ],
+      "move": "Define an abstract machine, compile to its instruction set, and implement that machine once per real platform. The distributed artefact targets the abstraction, not the hardware.",
+      "invariant": "The abstract machine behaves the same everywhere. Every guarantee the approach offers rests on this and on nothing else, which is why conformance of the runtime matters more than any property of the language.",
+      "breaks": "It breaks wherever runtimes differ — in version, in supported features, in the parts deliberately left platform-specific. Then the promise degrades into a build matrix again, except the differences are now in someone else’s implementation and are harder to see. It also breaks where no runtime can be installed, or where the runtime’s overhead is the thing you could not afford.",
+      "cost": {
+        "time": "an interpretation or compilation step at run time that native code does not pay",
+        "space": "the runtime ships alongside or underneath every program",
+        "beats": "native builds per platform, which are faster and multiply with every platform added"
+      },
+      "worked": {
+        "problem": "What does a virtual machine actually move, given that somebody still has to write code for each real platform?",
+        "reasoning": "Count the work both ways. With native compilation the cost is one port per program per platform, so it grows as the product of the two — and it is paid by every author independently, including those who will never hear about a platform until it fails.\n\nWith an abstract machine the cost is one implementation per platform, paid once by whoever supplies the runtime, and it does not grow as programs are added.\n\nSo the move is not an elimination, it is a change of who pays and how the cost scales. That reframing also tells you the failure mode without further argument: if the per-platform implementations diverge, the cost reappears in the programs — and it reappears as subtle behavioural differences rather than as a build that visibly fails.",
+        "code": "native                        abstract machine\n------                        ----------------\nprog x plat builds            prog builds: 1\npaid by: every author         paid by: runtime vendor\ngrows with: both              grows with: platforms only\n\n        source\n          |\n      [ compile ]\n          |\n       bytecode  <- the artefact you ship\n          |\n   +------+------+------+\n   |      |      |      |\n  VM     VM     VM     VM      <- written once each\n (x86) (ARM) (...)  (...)\n\n  Everything the approach promises rests on those\n  boxes agreeing. When they don't, you are back to a\n  build matrix -- but an invisible one."
+      },
+      "practice": "Take a runtime you depend on and find one documented behaviour that differs between two of its implementations or versions. Then decide how you would have discovered that difference if it had not been documented."
+    },
+    "beats": {
+      "broke": "A compiled program targets one instruction set and one operating system. Software meant for machines you do not own and cannot enumerate therefore needs a separate build for each, and the count grows with every program and every platform.",
+      "fix": "Compile to the instruction set of a machine that does not exist and implement that machine once per platform. Begun in June 1991 for consumer devices, retargeted to the internet in 1994, and announced at SunWorld on 23 May 1995 with Netscape committing Navigator on stage.",
+      "cost": "Portability of the program becomes uniformity of a runtime you do not maintain. The slogan holds exactly as far as the implementations agree, and where they disagree the failure is behavioural rather than a build error, so it is harder to find.",
+      "interview": {
+        "q": "What does a virtual machine actually move, since someone still writes code for every real platform?",
+        "trap": "Answering that it makes code portable. It relocates the porting work; saying it removes it skips the question and hides the failure mode.",
+        "answer": "It changes who pays the porting cost and how that cost scales. Natively, the work is one port per program per platform, it grows as the product of the two, and every author pays it separately. With an abstract machine it is one implementation per platform, paid by whoever supplies the runtime, and adding programs does not add to it.\n\nThat is a genuine structural win, and it is a distribution decision rather than a language one — which is why the same technology retargeted cleanly from set-top boxes to the web without the design changing. The problem was never the specific hardware, it was that the hardware was not yours.\n\nThe reframing also gives you the failure mode for free. If the per-platform implementations diverge, the cost reappears inside the programs, and it reappears as behaviour that differs rather than as a build that fails — which is strictly worse to diagnose."
+      }
+    },
+    "blueprint": "Who pays the porting cost, and how it scales:\n\n  native:            programs x platforms\n                     paid by: each author\n                     visible: build fails\n\n  abstract machine:  platforms\n                     paid by: runtime vendor\n                     visible: ...nothing, until behaviour differs\n\n  Same technology, two problems, because the problem\n  was never the hardware:\n\n     1991  set-top boxes, TVs   -> devices aren't yours\n     1994  retarget to the web  -> PCs aren't yours either\n     1995  announced; Navigator ships it\n\n  The slogan is a conditional. It holds exactly as far\n  as the runtimes agree, and not one step past that.",
+    "takeaway": "Compiling to a machine that does not exist converts one-port-per-program-per-platform into one-port-per-platform — a distribution win paid for by depending on a runtime whose divergences show up as behaviour, not as build errors."
+  },
+  "C.13": {
+    "id": "C.13",
+    "trackId": "C",
+    "trackName": "Languages: the chain of walls",
+    "title": "1995. JavaScript. Eich, Netscape, about ten days",
+    "status": "traced",
+    "seed": "C.13",
+    "story": "A page was a document. Anything a reader did to it — checking a field, revealing a section, reacting to a click — had to travel to a server and come back as a new document, which is a design in which no interaction can be faster than the network. The fix is obvious once stated: put an interpreter in the client, so computation can happen where the person is rather than where the data is.\n\nWhat is not obvious is the timescale. Eich, newly hired, was given the task in May 1995 and had a prototype in about ten days, assembled from the functional elements of Scheme, the prototype-based inheritance of Self, and a syntax borrowed from Java for familiarity. It was called Mocha, then LiveScript in September, and got its final name in December after Netscape and Sun reached a licensing deal — a naming chosen to ride on Java’s success, from which three decades of confusion follow. The two are not variants of one another: one is compiled, class-based and statically typed; the other interpreted, prototype-based and dynamically typed.\n\nTen days is the famous part and the least interesting. Plenty of languages were designed quickly. What makes this one different is where it was deployed: into a client that belongs to everybody, running pages nobody has an inventory of. From the moment those pages existed, no mistake in the language could be corrected, because correcting it would break documents whose authors are unreachable and often no longer alive to the problem.\n\nSo the durable lesson is not about the ten days, it is about the substrate. The language went to a standards body in 1996 and 1997, and everything since has been addition, never removal — the same constraint noted in C.9, arrived at from the opposite direction. There it came from a deliberate criterion about what adoption costs. Here it came free with the deployment channel, and nobody chose it.",
+    "problem": {
+      "name": "Shipping into an immovable substrate",
+      "aka": [
+        "backward compatibility as a design constraint",
+        "the install base problem"
+      ],
+      "shape": "Your work is deployed into an environment shared by everyone, where the things depending on it cannot be enumerated, contacted or updated.",
+      "tell": [
+        "you cannot list your callers, let alone coordinate with them",
+        "the deployed versions of your thing will all be running simultaneously, indefinitely",
+        "a change that is obviously an improvement would still break something you cannot see"
+      ],
+      "move": "Accept that every observable behaviour becomes permanent on release, and design accordingly: add rather than change, keep the surface small enough that you can afford to keep all of it, and treat anything observable as a commitment whether or not you intended it.",
+      "invariant": "Nothing observable is ever removed. This is not a policy that can be relaxed for good reasons, because the cost of relaxing it falls on parties who are not in the conversation and cannot object until they have already broken.",
+      "breaks": "The constraint itself does not break — it is the environment. What breaks is any plan that assumes a deprecation path, a migration window, or a major version that cleans things up. Those assume a knowable set of dependents, which is precisely what is missing, so a design made under a deadline is a design you keep.",
+      "cost": {
+        "time": "every future implementation carries every past decision, forever",
+        "space": "the specification only grows, and complexity accumulates as compatibility layers",
+        "beats": "a controlled rollout, which is far better and is not available here"
+      },
+      "worked": {
+        "problem": "Why could the early mistakes never be fixed, when plenty of languages have made breaking changes?",
+        "reasoning": "Breaking changes are affordable when you can identify who breaks. A library knows its dependents through a package manager; a service knows its callers through logs; a compiler breaks a build and someone reads the error.\n\nNone of that exists here. The dependents are documents on the open web, written by people who are unreachable and often no longer maintaining anything, and the failure appears to a reader who has no idea what changed. There is no build to fail, no version to pin, and no one to notify.\n\nSo the usual mechanism for paying down a mistake is simply absent, and correctness in the abstract loses to a broken page in the concrete every time. Under that condition the only sustainable policy is additive, and that policy is imposed by the deployment channel rather than chosen by the designers.",
+        "code": "who can you break?\n\nlibrary      -> dependents in a registry, semver, a\n                changelog people read           -> fixable\nservice      -> callers in your logs, you can\n                deprecate with a deadline       -> fixable\nshared client-> documents on the open web,\n                authors unreachable, failure\n                shows up to a READER            -> not fixable\n\n  no build to fail\n  no version to pin\n  no one to notify\n  -> the only move left is: ADD, never change\n\n  Ten days of design, kept for thirty years -- not\n  because it was right, because the channel had no\n  mechanism for paying it down."
+      },
+      "practice": "Find something in a system you work on that you cannot change because you do not know who depends on it. Then work out what it would take to know — and whether the reason you cannot is technical or organisational."
+    },
+    "beats": {
+      "broke": "A page was a document, so every interaction cost a round trip to a server. Nothing responsive was possible, because responsiveness was bounded by the network.",
+      "fix": "An interpreter in the client, so computation happens where the user is. Prototyped in about ten days in May 1995, from the functional parts of Scheme, the prototype inheritance of Self and a syntax borrowed for familiarity.",
+      "cost": "It shipped into a substrate shared by everyone, so every observable behaviour became permanent as soon as pages relied on it. The design made under a deadline is the design that was kept, and everything since has been addition.",
+      "interview": {
+        "q": "Why were the early design mistakes never fixed, when other languages make breaking changes routinely?",
+        "trap": "Explaining it as inertia, or as the language being too popular to change. Popularity is not the mechanism — plenty of widely used languages have broken compatibility deliberately.",
+        "answer": "Because a breaking change requires knowing who breaks, and here nobody does. A library has dependents in a registry and a changelog people read; a service has callers in its logs and can set a deadline; a compiler at least fails a build in front of a developer.\n\nThe dependents here are documents on the open web, written by people who are unreachable and mostly no longer involved, and the failure surfaces to a reader who has no idea anything changed. There is no build to fail, no version to pin, and no one to notify — so the ordinary mechanism for paying down a mistake does not exist at all.\n\nThe lesson generalises past this language. When you ship into a substrate shared by everyone, the compatibility constraint arrives with the channel rather than being chosen, and the practical consequence is that you should keep the initial surface small — because you are going to keep all of it."
+      }
+    },
+    "blueprint": "Two routes to the same constraint:\n\n  C++ (1983)              this (1995)\n  ----------              -----------\n  \"must be affordable\"    \"pages already depend on it\"\n  a CHOSEN criterion      a PROPERTY of the channel\n  -> can't remove         -> can't remove\n\n  Same outcome, opposite origin. One was reasoned\n  toward; the other arrived free with the deployment\n  target and nobody decided it.\n\n  Which is why the practical advice is the same, and\n  why it is about launch rather than maintenance:\n\n     the surface you ship is the surface you keep\n     -> so ship a small one",
+    "takeaway": "The ten days matter less than the deployment target: shipping into a client shared by everyone makes every observable behaviour permanent, because there is no one to notify and no build to fail."
+  },
+  "C.14": {
+    "id": "C.14",
+    "trackId": "C",
+    "trackName": "Languages: the chain of walls",
+    "title": "1995. PHP. Lerdorf",
+    "status": "traced",
+    "seed": "C.14",
+    "story": "The other 1995 entries in this track solve problems for programmers. This one solves a problem for people who had a page and wanted part of it to change. At the time that meant writing a program in C, registering it as a CGI binary, and having it print the page — which puts the document inside the program, as strings, in a language with no strings worth the name. The person who wanted a visitor counter had to become a systems programmer to get one.\n\nWhat was released on 8 June 1995 was not yet a language: a set of small, tight CGI binaries in C, a utility library and a templating mechanism, announced on a newsgroup for people writing CGI scripts. The rewrite came that October and the second generation the following April. But the model that survived all the rewrites was there from the start, and it is a single inversion — the file is a document that may contain code, rather than a program that prints a document.\n\nThat inversion is why it spread and it is worth being precise about the mechanism. It makes the cost of the first dynamic element on a page approximately zero. You do not start a project, you do not write a program that emits your existing page, you do not restructure anything. You take the page you already have, put code where the varying part goes, and everything else is served as written. Nothing else at the time had a first step that small.\n\nAnd the same property is the bill. If code goes wherever output goes, then there is no structural boundary between what the page says and how it was decided — not because anyone forbade the separation but because nothing requires it, and the path of least resistance at every single step is to add one more piece of logic where the output is. A design optimised for the first ten minutes cannot also be optimised for the tenth year, and this one chose, deliberately and correctly, the first ten minutes.",
+    "problem": {
+      "name": "Template inversion",
+      "aka": [
+        "embedded server-side scripting",
+        "document-with-code"
+      ],
+      "shape": "Output that is mostly fixed with small varying parts is being produced by a program that emits all of it, so the fixed majority lives awkwardly inside code.",
+      "tell": [
+        "most of what the program emits is literal text that never changes",
+        "the output’s structure is invisible in the source because it is spread across print statements",
+        "the person who owns the content is not the person who can edit the program"
+      ],
+      "move": "Invert the nesting. Make the file the document and let it escape into code at the points that vary, so the default is to emit and the exception is to compute.",
+      "invariant": "The fixed majority of the output appears literally in the source, in the order it is emitted. That is what makes the document readable as a document and what makes the first change cheap.",
+      "breaks": "It breaks as the varying part grows. Once the logic is substantial, the inversion works against you — code is now scattered through presentation in emission order, which is rarely the order the logic wants, and nothing in the model creates a boundary to pull it back behind. The property that makes the first change free makes the thousandth change expensive, and there is no point at which the model tells you to stop.",
+      "cost": {
+        "time": "a parse and an interpretation per request, against a compiled binary",
+        "space": "a runtime on the server where previously there was an executable",
+        "beats": "a program that prints the document, which is faster and much more expensive to start"
+      },
+      "worked": {
+        "problem": "Why did the inversion spread when better-structured alternatives existed?",
+        "reasoning": "Compare the first step, not the finished system. That is what people actually choose on.\n\nProgram-emits-document: create a project, translate the page you already have into print statements, arrange for it to be compiled and installed, then make the one part vary. Everything before the last clause is overhead paid before you see anything work.\n\nDocument-contains-code: open the page you already have, put the code where the varying part goes, save it. The overhead is zero and the page keeps working throughout.\n\nAdoption is decided at the first step far more often than at the tenth year, because the first step is the only one the person can see when choosing. That is a general fact about tools, not a fact about this one — and it explains the spread without needing to claim the design was better.",
+        "code": "program emits document        document contains code\n----------------------        ----------------------\nmain() {                      <h1>Hello</h1>\n  print(\"<h1>Hello</h1>\");    <p>You are visitor\n  print(\"<p>You are \");          <?php echo $n; ?>\n  print(\"visitor \");          </p>\n  print(n);\n  print(\"</p>\");\n}\n\n  left:  the page's shape is invisible; you must\n         execute it in your head to see the document\n  right: the page IS the page\n\n  first change: rewrite everything | type 20 characters\n  thousandth:   structured         | logic everywhere,\n                                     in emission order"
+      },
+      "practice": "Take a template in any system you use and find the most complex piece of logic embedded in it. Then ask what would have had to exist for that logic to have been written somewhere else — and why it was easier to put it there."
+    },
+    "beats": {
+      "broke": "A page that varied by request had to be printed by a program, so the document lived inside code as a sequence of strings. Wanting one dynamic element on an existing page meant rewriting the page as a program.",
+      "fix": "Invert the nesting: the file is the document, escaping into code where the output varies. Released on 8 June 1995 as a set of small CGI binaries — a templating mechanism rather than a language — and rewritten twice in the following year.",
+      "cost": "Code goes wherever output goes, so nothing creates a boundary between presentation and logic. The model has no point at which it tells you the varying part has grown too large, and the cheap path at every step is to add more logic in place.",
+      "interview": {
+        "q": "What does the inversion actually buy, and why is that the same thing that makes large systems built on it unmaintainable?",
+        "trap": "Framing it as ease of use versus good structure, as though the trade were between a beginner’s tool and a professional one. The mechanism is about where the default lies, not about who is using it.",
+        "answer": "It buys a first step of essentially zero cost. With a program that emits the document, you must translate the whole page into code before anything varies; with a document that contains code, the page keeps working and you add twenty characters where the varying part goes. Adoption is usually decided on the first step, because that is the only one visible at the time of choosing.\n\nThe cost is the same fact viewed later. If the default is to emit and the exception is to compute, then computation lands wherever output lands, in emission order — which is rarely the order the logic wants. Nothing in the model creates a boundary to pull it back behind, and adding one more piece of logic in place is always locally cheaper than introducing one.\n\nSo it is not beginners versus professionals. It is that the model has no mechanism for noticing when the varying part has outgrown the inversion, and by then the code is distributed through the presentation by construction."
+      }
+    },
+    "blueprint": "The inversion, and the bill it comes with:\n\n  default: EMIT        exception: COMPUTE\n  -------------------------------------------\n  first dynamic element on an existing page:\n      cost ~ 0        <- this is why it spread\n\n  but the same rule, run for years:\n\n      output goes here   -> logic goes here\n      more output here   -> more logic here\n      ...\n      -> logic distributed through presentation,\n         ordered by EMISSION, not by meaning\n\n  Nothing in the model ever says \"the varying part\n  has outgrown this\". There is no such signal, because\n  the absence of a boundary IS the feature.",
+    "takeaway": "Making the document the default and code the exception drives the cost of the first dynamic element to nothing — and by the same rule scatters logic through presentation in emission order, with no signal that it has outgrown the model."
+  },
+  "C.15": {
+    "id": "C.15",
+    "trackId": "C",
+    "trackName": "Languages: the chain of walls",
+    "title": "1995 and 2004. Ruby, then Rails. Matsumoto, then Hansson",
+    "status": "traced",
+    "seed": "C.15",
+    "story": "This entry is two things nine years apart, and the second is the one that changed how software gets built. The language came first: named in a chat in February 1993 before any code existed, released as version 0.95 on Japanese newsgroups in December 1995, reaching 1.0 exactly a year later. Its premise is that the constraint worth optimising is the programmer’s experience rather than the machine’s — which had been said before, and which the chain has mostly ignored since Fortran made the translator the hard part.\n\nThe framework is where the interesting claim lives, and it is not a claim about the language. Hansson did not design a web framework. He built an application — a project management tool at a small company — and then took out of it the parts that were not about project management, open-sourcing the result in July 2004. The order matters more than anything in the code. Every abstraction in it existed because a working application had required it, which is a filter no amount of design review reproduces.\n\nThe visible consequence is convention over configuration: names and locations imply the wiring, so declarations that other frameworks demanded simply do not get written. That looks like a preference for terseness and is better understood as a consequence of extraction. You can only default what you have seen done the same way repeatedly, and you have only seen that if you built something first.\n\nThe costs follow just as directly from the origin. What gets extracted is the shape of the application it came from, so the fit is excellent for systems that resemble that one and degrades quietly for systems that do not. And a convention is only cheaper than a declaration while you agree with it — the moment you need something else, you are working against a default that is invisible precisely because nobody wrote it down.",
+    "problem": {
+      "name": "Extraction over invention",
+      "aka": [
+        "convention over configuration",
+        "harvesting a framework"
+      ],
+      "shape": "You need a general tool, and the abstractions you would design for it are guesses about needs nobody has demonstrated yet.",
+      "tell": [
+        "the framework has extension points nobody uses and lacks the one thing everybody writes by hand",
+        "the design is justified by scenarios rather than by cases that occurred",
+        "every user reimplements the same missing piece in the same way"
+      ],
+      "move": "Build a working system first, then remove from it the parts that are not specific to it. Ship what remains. Make defaults out of whatever the working system did the same way every time.",
+      "invariant": "Every abstraction present was required by something that actually ran. That is the filter, and it is what makes the result smaller and better fitted than a designed equivalent — not the taste of the person doing it.",
+      "breaks": "It generalises only as far as the source system was typical. What you extract carries that application’s shape, including assumptions nobody noticed they were making, so it fits neighbours well and strangers badly. Conventions make this worse rather than better: an unwritten default is invisible, so where it is wrong the user must first discover that a decision was made at all.",
+      "cost": {
+        "time": "you must build the whole thing before you have the general one",
+        "space": "the extracted framework carries the source application’s assumptions with it",
+        "beats": "designing in advance, which is faster to start and reliably produces abstractions nobody needed"
+      },
+      "worked": {
+        "problem": "Why does extraction produce better abstractions than design, and what can it not produce?",
+        "reasoning": "Design proposes abstractions against imagined requirements, and there is no mechanism that removes the ones nobody will need — a plausible extension point costs nothing to add and survives review, because the case against it is hypothetical too.\n\nExtraction has that mechanism built in. Only what was used can be taken out, so the selection has already happened before anyone exercises judgement. You are not deciding well; you are deciding from evidence.\n\nWhat it cannot produce is generality beyond the source. The evidence is a sample of one system, so anything that system did not need is absent and anything it assumed is baked in. That is why extracted frameworks are opinionated in a specific way: not arbitrary opinions, but the recorded opinions of one application — and the more unusual that application was, the less the result transfers.",
+        "code": "designed                      extracted\n--------                      ---------\nimagine needs                 build the thing\n-> abstraction A  (unused)    -> keep what ran\n-> abstraction B  (unused)    -> drop what was specific\n-> abstraction C  (used)\n-> ...missing D, which\n   everyone writes by hand\n\n  filter: review (hypothetical vs hypothetical)\n  filter: it shipped, or it didn't      <- decisive\n\n  What extraction cannot give you: anything the source\n  application never needed. Sample size is one.\n  Hence: fits neighbours, fails strangers, and the\n  assumptions are invisible because nobody wrote them."
+      },
+      "practice": "Find an internal library in your codebase that was designed up front and count how many of its extension points are used. Then find one that was extracted from a working system and do the same, and compare the two ratios."
+    },
+    "beats": {
+      "broke": "Frameworks were designed in advance against imagined applications. There was no mechanism to remove abstractions nobody needed, so they arrived carrying extension points that went unused while everybody hand-wrote the same missing piece.",
+      "fix": "Build a working application, then remove what is specific to it and ship the remainder. Extracted from a project management tool and open-sourced in July 2004, reaching version 1.0 in December 2005.",
+      "cost": "The result carries the shape of the application it came from, so it fits similar systems and fails unusual ones — and conventions make the misfit harder to see, because an unwritten default gives you nothing to read when it is wrong.",
+      "interview": {
+        "q": "Why does extracting a framework produce better abstractions than designing one, and what can it not give you?",
+        "trap": "Attributing it to the taste or experience of the person doing the extracting. The advantage is structural and works regardless of who does it.",
+        "answer": "Because extraction has a filter that design lacks. When you design, an abstraction is justified by an imagined requirement and the argument against it is equally imagined, so plausible-but-unneeded things survive review. When you extract, only what was actually used is available to take out — the selection has already happened before anyone exercises judgement.\n\nWhat it cannot give you is generality past the source system. The evidence is a sample of one, so anything that application never needed is missing and anything it quietly assumed is now built in. That is the precise sense in which extracted frameworks are opinionated: the opinions are not arbitrary, they are one application's requirements, recorded.\n\nThe practical consequence is a rule for when to use it. Extract when your system is representative of the ones you want to serve, and be suspicious when it is unusual — because the more unusual it was, the more of its shape you are shipping as though it were general."
+      }
+    },
+    "blueprint": "Where the abstractions come from, and what survives:\n\n  DESIGN                       EXTRACT\n  ------                       -------\n  imagined requirement         a thing that ran\n  argued against by            removed by not having\n    another imagination          been used\n  -> unused extension points   -> only what was needed\n  -> missing the common case   -> the common case IS\n                                  the default\n\n  The filter is the whole difference, and it works\n  no matter who applies it.\n\n  The limit is sample size:\n\n     evidence = 1 application\n     -> its assumptions ship as if general\n     -> fits neighbours, fails strangers\n     -> and conventions hide the misfit, because\n        an unwritten default has nothing to read",
+    "takeaway": "Extraction beats design because only what actually ran is available to take out — a filter no review reproduces — and its limit is that the evidence is one application, whose assumptions ship as though they were general."
+  },
+  "C.16": {
+    "id": "C.16",
+    "trackId": "C",
+    "trackName": "Languages: the chain of walls",
+    "title": "1986 and 2012. Erlang, then Elixir. Ericsson",
+    "status": "traced",
+    "seed": "C.16",
+    "story": "Every language above this one assumes a program can stop. A telephone exchange cannot. It handles enormous numbers of independent conversations, a fault in any one of them must not disturb the others, and it has to be upgraded while running, because there is no window in which nobody is making a call. Those three requirements, taken literally, rule out almost every structure the chain has offered so far.\n\nThe design that came out of Ericsson from 1986 takes them literally. Processes are lightweight and belong to the language rather than the operating system, so you can have vast numbers of them. They share no memory, so a corrupted one cannot corrupt a neighbour. They communicate only by asynchronous messages, so a slow or dead process blocks nobody. Other processes watch them and restart them, so recovery is part of the program’s structure rather than a procedure someone follows. And code can be replaced while the system runs. Armstrong’s name for the resulting style is concurrency-oriented programming, which is a claim that concurrency is the organising principle and not a feature.\n\nThe evidence is unusually good for this kind of claim, and it needs stating with its provenance. A switch announced in March 1998 contained over a million lines of it and was reported to reach nine nines of availability, with a four-fold productivity increase observed. That figure is reported by the people who built it rather than independently audited, which is worth holding a little more loosely than the fact that the switch existed and shipped.\n\nThen the second act, which is the part that generalises. In February 1998 Ericsson Radio Systems banned in-house use of the language for new products, preferring non-proprietary ones; in December it was open-sourced and most of the team left. Fourteen years later Elixir arrived on the same virtual machine — a different surface with the same runtime, explicitly aiming to keep compatibility with the existing tooling and ecosystem. The judgement embedded in that is precise: the runtime was right and the surface was the barrier, so replace the surface and keep everything underneath.",
+    "problem": {
+      "name": "Fault isolation through process isolation",
+      "aka": [
+        "let it crash",
+        "concurrency-oriented programming",
+        "supervision trees"
+      ],
+      "shape": "The system must keep serving everyone while any part of it is failing, and failures cannot be prevented in advance.",
+      "tell": [
+        "the work is naturally many independent activities rather than one computation",
+        "an error while serving one request currently risks the process serving all of them",
+        "there is no maintenance window, because there is no moment when nobody is using it"
+      ],
+      "move": "Make the unit of failure the same as the unit of work: a process per activity, sharing nothing, reachable only by message. Let a failing process die and have a supervisor restart it from a known state, rather than trying to make each process handle every error.",
+      "invariant": "No process can observe or corrupt another’s state. That is what makes a crash local, and therefore what makes restarting a legitimate recovery strategy instead of a euphemism for losing data.",
+      "breaks": "It breaks where the work does not decompose — a single large computation over shared state gets nothing from this and pays for it in copying, since no sharing means messages carry data rather than references. It also breaks where restarting does not restore correctness, because the state that matters is outside the process and was left half-changed.",
+      "cost": {
+        "time": "message passing and copying instead of shared references",
+        "space": "per-process state, duplicated rather than shared",
+        "beats": "shared-memory concurrency, which is faster and makes one fault everyone’s fault"
+      },
+      "worked": {
+        "problem": "Why does isolation have to be enforced by the language rather than achieved by disciplined programming?",
+        "reasoning": "Discipline is a property that holds until someone does not have it, and the thing you are buying here is a guarantee about the worst case. A convention that processes do not touch shared state gives you isolation everywhere the convention was followed, which is exactly no help, because the fault you are worried about is the one in the code that broke the rule.\n\nThere is a sharper version. Restarting is only a sane recovery strategy if you know what a crashed component could have damaged. Under enforced isolation the answer is \"itself\", and it is the same answer every time, so a supervisor can be written once and trusted. Under discipline the answer is \"whatever it touched\", which is unknowable at restart time and different for every failure.\n\nSo the language-level guarantee is not a convenience over the disciplined version. It is the precondition that makes the whole recovery model available at all.",
+        "code": "shared memory + discipline      enforced isolation\n--------------------------      ------------------\nprocess A --\\                   A [state]  B [state]\n             > shared state        |          |\nprocess B --/                      +--msg---->+\n\n  A crashes mid-write:            A crashes:\n    shared state is now             A's state is gone\n    half-updated                    B is untouched\n    B reads garbage                 supervisor restarts A\n    blast radius: unknown           blast radius: A\n\n  \"restart it\" is only a recovery strategy if the\n  blast radius is KNOWN. Discipline can't tell you\n  what the broken code touched -- that's why it broke."
+      },
+      "practice": "Take a service you run and write down what a crash mid-request can leave half-done. Then ask whether restarting it is actually a recovery, or whether it just moves the damage somewhere you will find later."
+    },
+    "beats": {
+      "broke": "A telephone exchange handles many independent conversations, cannot let a fault in one disturb the others, and has no window in which to be taken down for an upgrade. Almost no ordinary program structure satisfies all three.",
+      "fix": "Lightweight processes owned by the language, sharing no memory, communicating by asynchronous message, supervised and restarted by other processes, with code replaceable while running. Developed at Ericsson from 1986.",
+      "cost": "Sharing nothing means copying, and the model only pays where the work genuinely decomposes into independent activities. A single computation over shared state gains nothing and pays the message-passing cost anyway.",
+      "interview": {
+        "q": "Why must isolation be enforced by the language rather than achieved by disciplined programming?",
+        "trap": "Answering that programmers make mistakes, so enforcement is safer. True but weak — it treats enforcement as insurance rather than as the thing that makes the recovery model possible.",
+        "answer": "Because the recovery strategy depends on knowing the blast radius, and only enforcement makes that knowable.\n\nUnder enforced isolation, a crashed process can have damaged exactly itself, and that answer is the same for every process and every fault. So a supervisor can be written once, and restarting is genuinely a recovery. Under convention, the answer is \"whatever that code touched\" — unknowable at restart time, different every time, and least knowable precisely in the code that misbehaved, since breaking the convention is how it went wrong.\n\nThat is why this is a precondition rather than a safeguard. Without the guarantee you cannot let anything crash, so you are back to handling every error at the point it occurs, which is the structure the design exists to escape.\n\nThe honest limit is that it buys nothing where the work does not decompose into independent activities — there you pay the copying and get no isolation you needed."
+      }
+    },
+    "blueprint": "Three requirements, taken literally:\n\n  can't stop        -> replace code in place\n  fault must be     -> share nothing; crash is local\n    local\n  huge concurrency  -> processes owned by the LANGUAGE,\n                       not the OS\n\n  and then the move that makes it usable:\n\n     don't handle every error -> let it crash\n     because blast radius is KNOWN = itself\n     -> supervisor restarts from a known state\n\n  Second act, 2012: same virtual machine, new surface,\n  compatible tooling. The judgement: the RUNTIME was\n  right, the SURFACE was the barrier. Replace only the\n  part that was wrong.",
+    "takeaway": "Making the unit of failure the unit of work lets a crash be a recovery strategy — but only because isolation is enforced, which is what makes the blast radius knowable and a supervisor writable once."
+  },
+  "C.17": {
+    "id": "C.17",
+    "trackId": "C",
+    "trackName": "Languages: the chain of walls",
+    "title": "2000. C#. Hejlsberg, Microsoft",
+    "status": "traced",
+    "seed": "C.17",
+    "story": "By 2000 the managed-runtime argument had been won: compiling to an abstract machine with automatic memory management was clearly productive for application work. The open question was no longer whether to do it but whose runtime you would be doing it on, and that is a commercial question wearing technical clothes. Adopting a language owned by one company means your code lives as long as that company’s interest in it does.\n\nA team formed in January 1999 under Hejlsberg, on a language then called COOL — a name dropped for trademark reasons by a committee that wanted the C heritage visible. The first widely distributed implementation shipped in July 2000 with the surrounding framework. As a design it is unremarkable in the sense that matters here: it is a careful synthesis of what the previous twenty years had settled, which is what you want from a language meant for large amounts of ordinary work.\n\nThe move worth studying is the one made alongside it. In September 2000, months after release, a standards task group was formed; development of the standard started that November and it was adopted in December 2001, based on a submission from three companies rather than one, and approved by the international bodies in 2003. That is the same manoeuvre COBOL made in 1959 — put the definition in a document nobody owns — but made for an entirely different reason. Then it was a buyer forcing interchangeability on its suppliers. Here it is a supplier volunteering it, because the objection to adoption was ownership and a specification is the only thing that answers that objection.\n\nThe limit is exact, and it is where most of the value actually sat. A standard covers the language. It does not cover the class libraries, the runtime implementation, the tooling, or the surrounding framework, and those are what a real program depends on. So what was bought was a credible answer to \"what if you stop\" at the level of syntax and semantics, while the dependency that would actually hurt to lose stayed exactly where it was.",
+    "problem": {
+      "name": "Vendor language with an open specification",
+      "aka": [
+        "standardisation as a credibility move",
+        "second-source guarantee"
+      ],
+      "shape": "Adopters will not commit to a technology whose definition one company controls, because the risk is that company’s future behaviour rather than any property of the technology.",
+      "tell": [
+        "the objection you keep hearing is about ownership, not capability",
+        "buyers ask what happens if you stop, and there is no answer that is not a promise",
+        "a competitor’s equivalent is worse and is being chosen anyway"
+      ],
+      "move": "Move the definition into a document held by an independent body, with co-submitters who are not you, so that conformance is checkable by someone else and a second implementation is legally and technically possible.",
+      "invariant": "The specification is sufficient to build a conforming implementation without the originator’s cooperation. If it is not, the standard is a description of a product rather than a definition of a technology, and it answers nothing.",
+      "breaks": "It breaks at the edge of what was standardised. Real programs depend on libraries, runtime behaviour and tooling, and if those stay proprietary then the portability the standard offers is not the portability anyone needed. The manoeuvre is also weakened whenever the reference implementation moves faster than the standard, because then the product defines the language again in practice.",
+      "cost": {
+        "time": "the standards process runs at its own pace, slower than the product",
+        "space": "a specification to maintain in parallel with the implementation",
+        "beats": "a purely proprietary language, which is faster to evolve and carries an objection you cannot answer"
+      },
+      "worked": {
+        "problem": "What does standardising a vendor language actually buy the adopter?",
+        "reasoning": "Ask what the adopter is afraid of. Not that the language is bad — they can evaluate that. They are afraid of a future in which the owner loses interest, changes terms, or disappears, and their code becomes unmaintainable through no technical fault.\n\nA specification held elsewhere answers precisely one part of that: the language itself could be reimplemented by someone else, because the definition does not belong to the originator. That is real, and it is why co-submitters matter — a document submitted by three parties is evidence that at least three read it as implementable.\n\nNow check what is left. The program does not depend only on syntax and semantics; it depends on the libraries it calls, the runtime it assumes, and the tooling that builds it. If those are outside the standard, the guarantee covers the part that was never the expensive part to replace.\n\nSo the honest summary: it converts an unanswerable objection into a bounded one, and the bound is where the specification stops.",
+        "code": "what the adopter fears: \"what if you stop?\"\n\n  proprietary        standardised\n  -----------        ------------\n  language    owner  -> independent body   <- covered\n  libraries   owner  -> owner              <- NOT\n  runtime     owner  -> owner (partly)     <- NOT\n  tooling     owner  -> owner              <- NOT\n\n  The answer is real, and it is scoped.\n\n  Test of a genuine standard: could a stranger build a\n  conforming implementation with the document alone?\n  If not, it describes a product rather than defining\n  a technology -- and answers nothing."
+      },
+      "practice": "Pick a standardised technology you rely on and list which of the things your code actually depends on are inside the standard and which are outside it. Then ask which list contains the things that would be expensive to replace."
+    },
+    "beats": {
+      "broke": "A language owned by one company carries a risk that is commercial rather than technical: your code lives exactly as long as the owner’s interest in it, and no feature list answers that.",
+      "fix": "Put the definition in a document held by an independent body. A task group was formed in September 2000, work began that November, and the standard was adopted in December 2001 from a submission by three companies, ratified internationally in 2003.",
+      "cost": "The standard covers the language and not the platform. Libraries, runtime and tooling stayed proprietary, so the guarantee applies to the layer that was cheapest to replace and stops short of the ones that were not.",
+      "interview": {
+        "q": "What does standardising a vendor-created language actually buy the people adopting it?",
+        "trap": "Answering \"portability\", without checking which layer is portable. The portability that a language standard provides is rarely the portability the adopter was worried about.",
+        "answer": "It converts an unanswerable objection into a bounded one. The fear is not that the language is bad — that is assessable — but that the owner may lose interest or change terms, leaving working code unmaintainable for non-technical reasons. Putting the definition in a document held elsewhere means the language could be reimplemented without the originator, and co-submission by several companies is evidence the document is actually implementable.\n\nThe bound is where the specification stops. Programs depend on libraries, runtime behaviour and tooling, and if those remain proprietary then the guarantee covers syntax and semantics — the layer that was least expensive to replace anyway.\n\nIt is worth noticing this is the same move as the 1959 committee that produced COBOL, run in the opposite direction. There a buyer imposed a specification on its suppliers to get interchangeability. Here a supplier volunteered one to remove an objection to adoption. Same mechanism, opposite party, and the test is identical: could someone build a conforming implementation from the document alone?"
+      }
+    },
+    "blueprint": "The same manoeuvre, made by opposite parties:\n\n  1959                          2000\n  ----                          ----\n  BUYER forces a spec on        SUPPLIER volunteers a\n    its suppliers                 spec to its buyers\n  goal: interchangeability      goal: remove the\n    across manufacturers          ownership objection\n  proof: same program on        proof: co-submitted by\n    two makes of machine          three companies\n\n  Identical test in both cases:\n\n     can a stranger build a conforming implementation\n     from the document alone?\n\n  And the identical limit:\n\n     the spec ends somewhere. Past that line the\n     product is still the definition -- which here is\n     the libraries, the runtime and the tooling.",
+    "takeaway": "Standardising a vendor language answers the ownership objection at the level of syntax and semantics only — the same move COBOL made in 1959, run by the supplier instead of the buyer, and bounded exactly where the specification stops."
+  },
+  "C.18": {
+    "id": "C.18",
+    "trackId": "C",
+    "trackName": "Languages: the chain of walls",
+    "title": "2009. Go. Griesemer, Pike, Thompson at Google",
+    "status": "traced",
+    "seed": "C.18",
+    "story": "C.6 made the case that the cost of a single attempt decides who can use a system. That argument was about a chemist in 1964 waiting hours for a batch job. Run the same argument at a different scale and you get this entry: tens of millions of lines, hundreds or thousands of programmers, daily updates, one source tree — and, in Pike’s description of the environment, build times that had stretched on large compilation clusters to many minutes, even hours.\n\nThe conclusion drawn is unusual. Slow builds are normally treated as a compiler problem or a hardware problem, and the response is a bigger build cluster, which is what already existed and was not enough. The claim behind this language is that build time is a property of the language’s dependency structure, so no amount of machinery fixes it. If a file’s meaning depends on text pulled in from elsewhere, and that elsewhere pulls in more, then the work to compile one file grows with the transitive closure of everything it touches — and that closure grows faster than the codebase.\n\nSo the design treats compilation speed as a constraint the language must satisfy rather than an outcome the compiler should optimise. Dependencies are explicit and cannot be circular; there are no header files, so nothing is re-read per compilation unit; the specification is small enough that keeping it that way is a live consideration. Pike’s own framing is that the language is by and for people who write, read, debug and maintain large systems, and that it is more about software engineering than programming language research — which reads as modest and is actually the whole thesis.\n\nThe bill is the omissions, and they should be stated as losses rather than explained away. Features that would have complicated the dependency graph or the specification were left out, and the resulting language is less expressive than its contemporaries in ways its users genuinely felt. That is the trade being made, openly: expressiveness spent to keep a loop short, which is defensible exactly when the loop is the thing that was hurting and indefensible when it is not.",
+    "problem": {
+      "name": "Build scalability",
+      "aka": [
+        "compilation speed as a design constraint",
+        "dependency hygiene"
+      ],
+      "shape": "The development loop is dominated by the time to build, and the build time grows faster than the code because of how dependencies compose.",
+      "tell": [
+        "adding hardware has stopped helping, or helps sublinearly",
+        "the time to compile one file has little to do with the size of that file",
+        "people batch up changes instead of testing them one at a time, and nobody decided to work that way"
+      ],
+      "move": "Make the dependency structure a property the language enforces: explicit imports, no cycles, no textual inclusion, and a compilation unit whose cost depends on its own size plus a summary of what it names — not on the transitive text behind it.",
+      "invariant": "Compiling a unit requires reading that unit and a bounded summary of its direct dependencies, never their dependencies in turn. That is what makes build cost grow with the codebase rather than with its transitive closure.",
+      "breaks": "It costs expressiveness. Any feature that makes one unit’s meaning depend on the interior of another — rather than on its interface — threatens the invariant, so such features get refused. Those refusals are real losses, and the trade only pays where the loop was actually the binding constraint. Where it was not, you have bought nothing and spent something.",
+      "cost": {
+        "time": "build cost proportional to the code, not its transitive closure",
+        "space": "compiled summaries of interfaces instead of re-parsed source text",
+        "beats": "textual inclusion, which is simpler, more flexible, and quadratic in practice"
+      },
+      "worked": {
+        "problem": "Why is build time a language design problem rather than a tooling problem?",
+        "reasoning": "Look at what determines the work. With textual inclusion, compiling a file means processing that file plus the full text of everything it includes, plus everything those include. The same headers are re-processed once per compilation unit, so total work scales with files multiplied by the average transitive closure — and in a growing codebase both factors grow.\n\nNow ask what a tool can do about that. Caching helps until something near the root changes; parallelism divides a quantity that is still growing faster than the code; a bigger cluster buys a constant factor against superlinear growth. None of these change the exponent, because the exponent comes from the dependency structure, which is defined by the language.\n\nChange the language so that a unit depends on its imports’ interfaces rather than their text, and forbid cycles, and the per-unit cost becomes bounded by that unit plus a summary. That is a different growth curve, and only the language could have produced it.",
+        "code": "textual inclusion            explicit, acyclic imports\n-----------------            -------------------------\na.c  #include \"b.h\"          package a imports b\nb.h  #include \"c.h\"            -> compiler reads a/\nc.h  #include \"d.h\"               + b's INTERFACE\n                                  (compiled, summarised)\ncompiling a.c reads:\n  a + b + c + d ...          compiling a reads:\n  ...for EVERY .c file         a + one summary\n\nwork ~ files x closure       work ~ files\n\n  a bigger build cluster changes the CONSTANT.\n  the language changes the EXPONENT.\n  that is why it isn't a tooling problem."
+      },
+      "practice": "Measure how long your project takes to rebuild after touching one leaf file and after touching one file near the root of the dependency graph. The ratio tells you whether your build cost is about your code or about its closure."
+    },
+    "beats": {
+      "broke": "At tens of millions of lines and thousands of programmers, the time to build dominated the development loop. Larger build clusters bought a constant factor against a cost that was growing faster than the codebase.",
+      "fix": "Treat compilation speed as something the language must guarantee: explicit and acyclic dependencies, no textual inclusion, compilation against interfaces rather than source. Conceived September 2007, first released 10 November 2009, stable at version 1 in early 2012.",
+      "cost": "Expressiveness was spent to keep the property. Features that would let one unit depend on the interior of another were refused, and those refusals were felt as genuine losses by the people using it.",
+      "interview": {
+        "q": "Why is build time a language design problem rather than a tooling problem?",
+        "trap": "Answering that compilers can be optimised or builds parallelised. Those are real and they move a constant factor; the complaint is about growth.",
+        "answer": "Because the growth rate is set by the dependency structure, and the language defines the dependency structure.\n\nUnder textual inclusion, compiling one unit means processing that unit plus the full text of its transitive includes, repeated for every unit. Total work scales with the number of files times the average closure, and in a growing codebase both of those grow. Caching, parallelism and more machines each buy a constant factor against that, which is why the build cluster already existed and was not enough.\n\nIf instead a unit compiles against a summarised interface of its direct imports, and cycles are forbidden, then per-unit cost is bounded by the unit plus a summary, and total cost grows with the code rather than with its closure. That is a change of exponent, and no tool outside the language can make it.\n\nThe honest cost is that features letting one unit see into another's interior threaten the invariant and so get refused — which is a real loss, worth paying only when the loop was the binding constraint."
+      }
+    },
+    "blueprint": "Same argument as 1964, different scale:\n\n  1964: attempt costs hours -> only specialists can use it\n  2009: build costs hours   -> only batched work is viable\n\n  and in both cases the fix is the LOOP, not the tool.\n\n  where the growth comes from:\n\n     #include        -> work ~ files x transitive closure\n                        (both factors growing)\n     import + iface  -> work ~ files\n\n     cluster/cache/parallel  -> constant factor\n     language                -> exponent\n\n  Paid for in refused features. State that as a loss,\n  because it is one -- and it only pays where the loop\n  was what hurt.",
+    "takeaway": "Build cost grows with the dependency closure, which the language defines — so no build cluster fixes it, and the price of fixing it in the language is features deliberately refused."
+  },
+  "C.19": {
+    "id": "C.19",
+    "trackId": "C",
+    "trackName": "Languages: the chain of walls",
+    "title": "2012. TypeScript. Microsoft",
+    "status": "traced",
+    "seed": "C.19",
+    "story": "C.13 left a language frozen by its deployment channel: a client shared by everyone, no way to break anything, so the design shipped in 1995 is the design you keep. By the early 2010s people were building very large systems in it, and the missing thing was not a feature but a way to state what a piece of code expects so that a machine can check it. The obvious answer — use a better language — was unavailable for exactly the reason C.13 gives.\n\nThe move is to add without replacing. Make the new language a superset, so every existing file is already valid, and make the output the original language, so nothing about deployment changes. Announced on 1 October 2012 after about two years of internal work, it lets a codebase be converted one file at a time, with each conversion independently useful and independently reversible. That is the property that made it adoptable: there is no moment at which you have committed.\n\nThe type system is structural rather than nominal, which is not an aesthetic choice but a consequence of the same constraint. The values being described already exist — objects from libraries, parsed responses, things written years ago — and none of them were declared as belonging to anything. A type system that asked values to announce their membership would have nothing to work with. Asking instead whether a value has the right shape describes code that was written before the type system existed, which is all of it.\n\nThe cost is that the types are erased. What ships is the base language, so a type is a claim checked when you build and entirely absent when you run — and at every boundary where data enters from outside, the checker is trusting a description that nothing verified. A parsed response annotated as a particular shape is not checked to be that shape; it is asserted to be, and the checker will reason confidently from the assertion. The system is sound about the code you wrote and silent about the data you received, which is a useful thing to be exactly as long as you remember which is which.",
+    "problem": {
+      "name": "Gradual typing over an immovable substrate",
+      "aka": [
+        "erased types",
+        "superset language",
+        "file-by-file migration"
+      ],
+      "shape": "You need the guarantees of a checked language in a codebase written in an unchecked one, and replacing the language is not available.",
+      "tell": [
+        "the runtime or deployment target is fixed by something outside your control",
+        "the codebase is too large to convert in one step and too valuable to rewrite",
+        "the intent of a function is documented in comments, or nowhere"
+      ],
+      "move": "Define a strict superset whose compiler erases back to the original language. Let annotations be optional so conversion proceeds file by file, and make the type system structural so it can describe values that already exist.",
+      "invariant": "Every program in the base language is a valid program here, and every output is a valid program in the base language. That two-way property is what makes adoption incremental and reversible — and it is the entire adoption strategy, not a convenience.",
+      "breaks": "It breaks at every boundary where data arrives from outside the checked region: parsed input, untyped libraries, anything asserted rather than derived. The types are erased, so nothing at run time compares the claim to the value, and the checker will reason soundly from a false premise. The guarantee covers the code you wrote, not the data you were given.",
+      "cost": {
+        "time": "a build step where previously there was none; nothing at run time",
+        "space": "type declarations that ship to nobody",
+        "beats": "a full rewrite in a checked language, which gives stronger guarantees and requires a substrate you do not control"
+      },
+      "worked": {
+        "problem": "If the types are erased, what exactly do they guarantee?",
+        "reasoning": "Split the program into the part the checker saw and the part it did not.\n\nInside the checked part, the guarantee is real and worth having: if the annotations are accurate, the checker has verified that every use is consistent with them, and it did so across the whole region without anyone running anything. Whole classes of mistakes become impossible to commit.\n\nAt the boundary, the guarantee is different in kind, not merely weaker. When you annotate incoming data, you are not checking that it has the shape — you are telling the checker to assume it does. Everything downstream is then verified against an assumption nobody tested, and since the types are gone at run time, nothing will ever notice if the assumption was wrong. The failure appears far from the boundary, as a value of the wrong kind in code that was proved correct.\n\nSo: sound about the code, silent about the data. The engineering consequence is that boundaries deserve run-time validation, and the type system’s job is to make sure you only have to do it there.",
+        "code": "        outside                 |  checked region\n  ------------------------------+------------------------\n  JSON from the network         |\n  a library with no types       |\n  a value you asserted          |\n            |                   |\n            v                   |\n      [ annotation ]  <--- a CLAIM, not a check\n            |                   |\n            +-------------------> everything downstream\n                                  is verified against it\n\n  erased at run time -> nothing ever compares the\n  claim to the value\n\n  sound about the code you wrote\n  silent about the data you received\n\n  -> validate AT the boundary; that is what buys the\n     rest of the region."
+      },
+      "practice": "Find a place in a typed codebase where external data enters and is annotated rather than validated. Then trace how far a wrong assumption would travel before anything noticed, and what the error would look like when it did."
+    },
+    "beats": {
+      "broke": "Large systems were being written in a language that cannot state intent, and it could not be replaced because the substrate it runs on belongs to everyone. The usual answer — choose a better language — was unavailable by construction.",
+      "fix": "A strict superset that erases back to the original: every existing file already valid, every output still the base language, so a codebase converts one file at a time. Announced 1 October 2012 after about two years of internal work, structural rather than nominal so it can describe values that already existed.",
+      "cost": "Types are erased, so they are build-time claims with no run-time existence. Wherever data crosses in from outside, an annotation is an assumption rather than a check, and the checker will reason correctly from it whether or not it is true.",
+      "interview": {
+        "q": "If the types are erased before the program runs, what do they actually guarantee?",
+        "trap": "Answering \"type safety\" without distinguishing the region the checker saw from the data it did not. The two guarantees differ in kind, not degree.",
+        "answer": "Within the checked region, they guarantee consistency: given accurate annotations, every use has been verified against them across the whole codebase, statically, without running anything. That removes entire classes of error and it is the bulk of the value.\n\nAt the boundary the situation inverts. Annotating incoming data does not check it — it instructs the checker to assume a shape. Everything downstream is then correctly verified against an untested premise, and because the types do not exist at run time, nothing will ever compare the claim to the value. When it is wrong, the failure surfaces far from the boundary, inside code that was proved consistent.\n\nSo the system is sound about the code you wrote and silent about the data you received. The practical consequence is a rule rather than a caveat: validate at the boundaries, and treat the type system's real job as guaranteeing that the boundaries are the only place you have to."
+      }
+    },
+    "blueprint": "The two-way property that makes adoption possible:\n\n     every base-language file  ->  already valid here\n     every output              ->  valid base language\n\n  therefore: convert one file, stop, ship. Repeat or\n  don't. There is no moment of commitment -- which is\n  the whole adoption strategy, not a nicety.\n\n  Why STRUCTURAL and not nominal:\n\n     the values already exist and were never declared\n     as belonging to anything\n     -> ask about SHAPE, not membership\n     -> otherwise there is nothing to describe\n\n  Why the guarantee has an edge:\n\n     erased  ->  no run-time existence\n             ->  annotation at a boundary = assumption\n             ->  sound reasoning, false premise",
+    "takeaway": "A superset that erases makes adoption incremental and reversible, and its type system is sound about the code you wrote while saying nothing about the data you received — so boundaries need validation and everything inside them does not."
+  },
   "C.2": {
     "id": "C.2",
     "trackId": "C",
@@ -930,6 +1317,198 @@
     },
     "blueprint": "The bet, stated as the arithmetic its buyers would do:\n\n  hand coding      write: weeks     run: 1.00x\n  compiled         write: days      run: ?\n\n  if ? is 1.1x  -> everyone switches, labour dominates\n  if ? is 2.0x  -> nobody switches, machine time dominates\n                   and the project is dead regardless of\n                   how good the language is\n\n  Therefore: the language was specified first and fast\n  (Nov 1954, before anything ran), and three years went\n  into the translator. The risk was never in the syntax.",
     "takeaway": "Fortran’s achievement was not a notation close to algebra but a translator good enough that hand coding stopped paying — and the price, permanent from here on, is that the program you read is no longer the program that runs."
+  },
+  "C.20": {
+    "id": "C.20",
+    "trackId": "C",
+    "trackName": "Languages: the chain of walls",
+    "title": "2015. Rust reaches 1.0. Mozilla",
+    "status": "traced",
+    "seed": "C.20",
+    "story": "Two earlier entries in this chain set up this one precisely. C.7 gives a language whose types describe the machine’s layout and therefore cannot refuse a description that is wrong. C.9 adds abstraction on the condition that it be affordable, which rules out any ambient runtime and so rules out a collector. Between them they define a gap: safety, historically, has been something a runtime provides, and the programs that most need safety are the ones that cannot have a runtime.\n\nThe claim made in the 1.0 announcement of 15 May 2015 is that both are available at once — low-level control over performance together with high-level convenience and safety guarantees — and, crucially, without requiring a garbage collector or runtime, which is what lets its libraries stand in for C. The mechanism, in the announcement’s own framing, is the type system, described as a refinement and codification of practices already known from experience with C and C++.\n\nThat description is worth taking literally rather than as modesty. The rules being enforced — do not use a thing after it has been freed, do not free it twice, do not hold a mutable reference while others are reading — are not new discoveries. They are the rules careful practitioners already followed and documented in comments. What changed is who checks them: a convention that a reviewer might notice became a property a compiler establishes before the program runs.\n\nThe cost follows from that mechanically, and it is a real one rather than a learning curve to be apologised for. A checker that runs before execution must decide from the text alone, so it will reject programs that would have worked but whose safety it cannot demonstrate. The work of satisfying it lands on the author, at the time of writing, every time — which is the same shape as C.9’s bargain viewed from a different angle: the cost has been moved from run time to author time, and author time is not free either.",
+    "problem": {
+      "name": "Compile-time memory safety",
+      "aka": [
+        "ownership and borrowing",
+        "safety without a runtime"
+      ],
+      "shape": "The code must be memory-safe, and the environment cannot support the runtime machinery that safety has always required.",
+      "tell": [
+        "you are writing the runtime, the kernel, the driver, or the hot path, so there is nothing underneath to catch you",
+        "the bugs that hurt are use-after-free, double-free and data races rather than logic errors",
+        "the current defence is a convention in a style guide and a careful reviewer"
+      ],
+      "move": "Encode the ownership rules into the type system — who owns a value, who may borrow it, for how long, and whether anyone else may read it meanwhile — and refuse to compile a program that cannot be shown to obey them.",
+      "invariant": "Safety is established from the text before anything runs, so it costs nothing at run time. This only works if the rules are decidable statically, which is why they are conservative: the checker must be able to prove the property, not merely fail to find a counterexample.",
+      "breaks": "It rejects correct programs. A static checker decides from the text, so anything whose safety depends on facts it cannot see is refused, and the author must restructure the code or step outside the checked subset explicitly. The cost has not vanished; it has moved to writing time, where it is paid by a person rather than by the machine.",
+      "cost": {
+        "time": "nothing at run time; a slower compile and a slower author",
+        "space": "no collector, no object headers, no runtime",
+        "beats": "garbage collection, which accepts every correct program and needs a runtime you may not be able to afford"
+      },
+      "worked": {
+        "problem": "What does it mean for a compiler to reject a program that would have run correctly?",
+        "reasoning": "A static checker answers a question about all possible executions using only the text. That question is undecidable in general, so any checker that always terminates must approximate — and it has to approximate in the safe direction, because a checker that sometimes accepts unsafe programs provides no guarantee at all.\n\nApproximating safely means the answer set is smaller than the truth. There are programs that never misbehave and cannot be shown not to, and those get refused. This is not a defect to be engineered away; it is the price of a decision made before execution.\n\nWhich tells you where the cost went. Not eliminated — relocated, from the machine at run time to the author at writing time. That is a good trade when run-time cost is what you cannot afford, and a bad one when author time is scarcer, which is why this language and a garbage-collected one are answers to different questions rather than competitors.",
+        "code": "        all programs\n  +---------------------------+\n  |   unsafe                  |\n  |     +-------------------+ |\n  |     | safe              | |\n  |     |   +-----------+   | |\n  |     |   | PROVABLY  |   | |\n  |     |   |   safe    |   | |   <- what compiles\n  |     |   +-----------+   | |\n  |     |      ^            | |\n  |     +------|------------+ |\n  +------------|--------------+\n               |\n     safe but not provably so:\n     REJECTED, and correctly so\n\n  A checker that ever accepts the outer ring gives no\n  guarantee. So the gap is not a bug -- it is what\n  \"decided before running\" costs.\n\n  cost didn't vanish:  run time -> author time"
+      },
+      "practice": "Take a piece of code the borrow checker refuses and work out whether it is genuinely unsafe or merely unprovable. Then restructure it, and notice what the restructuring made explicit that was previously only in your head."
+    },
+    "beats": {
+      "broke": "Memory safety had always been supplied by a runtime, and the programs that most need it — kernels, drivers, engines, hot paths — are exactly the ones that cannot carry one. The prior options were safety with a collector or control without safety.",
+      "fix": "Put ownership into the type system and check it before the program runs. Announced at version 1.0 on 15 May 2015 as combining low-level control with safety guarantees, explicitly without requiring a garbage collector or runtime.",
+      "cost": "A static checker must be conservative, so it refuses correct programs whose safety it cannot demonstrate. The cost moved from the machine at run time to the author at writing time, and author time is not free.",
+      "interview": {
+        "q": "What does it mean when a compiler rejects a program that would have run correctly?",
+        "trap": "Treating the rejection as a limitation to be fixed in a future version. Some of it can be improved, but the gap is structural and cannot be closed.",
+        "answer": "It means the checker is answering a question about every possible execution using only the text, which is undecidable in general — so any checker that always terminates has to approximate, and it must approximate toward refusal. One that occasionally accepted an unsafe program would provide no guarantee at all, which is the whole point of having it.\n\nSo the set of programs that compile is strictly smaller than the set that are safe, and some correct programs fall in the gap. Better analysis moves the boundary; it never removes it.\n\nThe useful way to hold this is that the cost was relocated rather than eliminated: from the machine at run time to the author at writing time. That makes it the right trade where run-time cost or an absent runtime is the binding constraint, and the wrong one where author time is scarcer — which is why a garbage-collected language is not a worse version of this, it is an answer to a different question."
+      }
+    },
+    "blueprint": "The gap two earlier links left open:\n\n  C (1972)    types DESCRIBE layout -> can't refuse a\n              wrong description\n  C++ (1983)  must be AFFORDABLE    -> no ambient\n              runtime, so no collector\n                 |\n                 v\n  safety has always needed a runtime, and this code\n  cannot have one.\n\n  The move: check before running.\n\n     convention a reviewer might catch\n        -> property a compiler establishes\n\n  And the price, which is structural:\n\n     provably safe  (  safe  (  all programs\n     ^^^^^^^^^^^^^ compiles\n             ^^^^ some of this is refused, correctly\n\n     cost: run time -> author time",
+    "takeaway": "Ownership in the type system buys memory safety with no runtime by deciding it before execution — and because that decision must be conservative, it refuses some correct programs and moves the cost from the machine to the author."
+  },
+  "C.21": {
+    "id": "C.21",
+    "trackId": "C",
+    "trackName": "Languages: the chain of walls",
+    "title": "2011 and 2014. Kotlin and Swift",
+    "status": "traced",
+    "seed": "C.21",
+    "story": "Two languages, two companies, no connection between the projects, and the same manoeuvre — which is the reason to study them together. Each arrives on a platform whose existing language has aged badly and cannot be removed, because everything on the platform is written in it: every application, every library, every piece of sample code anyone has ever read.\n\nKotlin was unveiled in July 2011, open-sourced the following February, and reached a stable 1.0 in February 2016 with a long-term compatibility commitment; the platform owner endorsed it for Android in 2017 and made it the preferred language in 2019. Swift began in 2010 under Lattner, was announced in June 2014, and shipped in the toolchain that September — with the conference application itself, on 2 June 2014, as the first publicly released program written in it.\n\nNeither succeeded by being better, and that is the point worth extracting. Better languages for both platforms already existed and went nowhere. What these two did was refuse to ask for a rewrite: each runs on the runtime already there, calls the old language, and is callable from it, so a single file can be converted while everything around it stays as it was. The unit of migration is one file, the cost of trying is one file, and the cost of being wrong is reverting one file.\n\nThe price is permanent and shows up at the seam. A language that must interoperate with an older one inherits that language’s model wherever they meet — its notion of what may be absent, its object layout, its calling conventions — and cannot design those away without breaking the property that made adoption possible. So the new language carries a permanent compromise at its boundary in exchange for having any users at all, which is the same bargain C.19 made against a different substrate, and the same one C.16 made when it kept a virtual machine and replaced only the surface.",
+    "problem": {
+      "name": "Incremental language replacement",
+      "aka": [
+        "interop-first successor",
+        "same-runtime migration"
+      ],
+      "shape": "The language a platform is built on has aged badly, and it cannot be replaced because everything on the platform is written in it.",
+      "tell": [
+        "the case for the new language is obvious and adoption is nevertheless zero",
+        "any migration plan begins with the word \"rewrite\"",
+        "the existing libraries are more valuable than the existing language is bad"
+      ],
+      "move": "Target the runtime that is already there and make the two languages mutually callable, so that a codebase converts one file at a time with everything around it untouched.",
+      "invariant": "A partially converted codebase works. Every intermediate state must be shippable, because no organisation will hold a broken system across a migration that takes years — and every migration of this kind takes years.",
+      "breaks": "It breaks the new language’s freedom at the boundary. Whatever the old language assumes — what may be absent, how objects are laid out, how calls are made — becomes visible in the new one wherever they meet, and cannot be designed away without giving up the interoperation that is the entire adoption strategy. The compromise is permanent, not transitional.",
+      "cost": {
+        "time": "boundary crossings and bridging, against a clean-slate design",
+        "space": "two languages’ worth of tooling and concepts alive at once, indefinitely",
+        "beats": "a clean replacement, which is a better language and gets no users"
+      },
+      "worked": {
+        "problem": "Why does interoperation, rather than quality, decide whether a replacement language succeeds?",
+        "reasoning": "Look at the decision an individual team actually faces, since that is where adoption happens.\n\nWithout interoperation, the choice is: rewrite the whole system in the new language, all at once, giving up every existing library, with no working intermediate state and no way to stop. That is a bet the size of the codebase, and the payoff is a nicer language. Almost nobody takes that bet, and the ones who do are not enough to establish an ecosystem.\n\nWith interoperation, the choice is: convert one file. The cost is bounded, the system keeps working, and the decision is reversible. Adoption becomes a sequence of small independent choices rather than one large one.\n\nQuality still matters — it determines whether people want to take the second step. But it never gets evaluated unless the first step is small, which is why better languages with no migration path lose to worse ones with a good one.",
+        "code": "clean replacement            interop-first\n-----------------            -------------\nrewrite everything           convert file 1     -> ships\n  |                          convert file 2     -> ships\n  | (no working state        ...\n  |  for months)             stop any time      -> ships\n  v\nmaybe it works               every state is shippable\n\ndecision size: the codebase  decision size: one file\nreversible:    no            reversible:    yes\nlibraries:     lost          libraries:     kept\n\n  Quality decides step 2 onward.\n  Step 1 decides whether quality is ever evaluated."
+      },
+      "practice": "Find a migration in your own work that stalled. Ask whether it stalled because the destination was wrong or because no intermediate state was shippable — and what the smallest shippable unit would have had to be."
+    },
+    "beats": {
+      "broke": "A platform’s language ages, and the owner cannot replace it because every application and library on the platform is written in it. The value locked up in the old code exceeds the pain of the old language.",
+      "fix": "A new language on the same runtime, mutually callable with the old one, so migration proceeds file by file. Unveiled July 2011 and stable in February 2016 in one case; begun in 2010 and announced in June 2014 in the other.",
+      "cost": "The old language’s model shows through at the boundary — absence, layout, calling conventions — and cannot be designed away without giving up the interoperation that made adoption possible. The compromise is permanent.",
+      "interview": {
+        "q": "Why does interoperation rather than quality decide whether a replacement language succeeds?",
+        "trap": "Concluding that quality does not matter. It decides everything after the first step — it just never gets evaluated if the first step is too large.",
+        "answer": "Because adoption is a sequence of decisions made by individual teams, and the size of the first decision determines whether any of them are taken.\n\nWithout interoperation, the smallest available move is to rewrite the system, abandoning the existing libraries, with no working intermediate state. That is a bet proportional to the codebase with a payoff of \"a nicer language\", and almost nobody accepts it — so the ecosystem never forms and the quality is never tested in practice.\n\nWith interoperation, the smallest move is one file: bounded, shippable, reversible. The migration becomes many small independent choices instead of one large irreversible one.\n\nQuality governs whether people take the second step and the hundredth. But it is only ever evaluated if the first step is small, which is why better languages with no migration path lose to worse ones with one — and why the permanent boundary compromise is worth paying."
+      }
+    },
+    "blueprint": "The same move, three times in this track:\n\n  2012  superset + erasure   -> substrate: a shared client\n  2012  new surface, same VM -> substrate: a runtime\n  2011/2014  new language,   -> substrate: a platform's\n        mutual interop           existing libraries\n\n  All three refuse to ask for a rewrite. All three pay\n  at the seam.\n\n  What must hold:\n\n     every intermediate state SHIPS\n     because migrations of this kind take years and\n     nobody holds a broken system for years\n\n  What it costs, permanently:\n\n     old model visible at the boundary\n     (absence, layout, calling conventions)\n     -- and it can't be removed, because removing it\n        removes the adoption path",
+    "takeaway": "Two unrelated projects made the same move: run on the existing runtime and interoperate, so migration is one file at a time — buying adoption with a permanent compromise at the boundary, because a language nobody can adopt incrementally is never judged on quality at all."
+  },
+  "C.22": {
+    "id": "C.22",
+    "trackId": "C",
+    "trackName": "Languages: the chain of walls",
+    "title": "1974. SQL. Chamberlin and Boyce, IBM",
+    "status": "traced",
+    "seed": "C.22",
+    "story": "Before this, getting data out of a store meant writing a program that walked it: follow this pointer, read that index, traverse the chain. Such a program is correct only for the structure it was written against, which means the physical layout is copied into every program that touches the data. Reorganise the store for any reason — growth, a new access pattern, different hardware — and every one of those programs is wrong, and wrong in the expensive way, because it still runs.\n\nThe relational model Codd published in 1970 removes the thing being navigated. Data is in relations, and a query is a statement about which rows satisfy which conditions — there is no traversal to describe because there is no structure exposed to traverse. What Chamberlin and Boyce added in 1974, at a workshop in Ann Arbor, was a way for people to write such statements. Their paper is explicit about the design constraint: without resorting to bound variables and quantifiers, it identifies operations on tabular structures shown to be of equivalent power to the first-order predicate calculus, presented as keyword templates that compose.\n\nThat sentence contains the whole engineering judgement, and it is easy to read past. The expressive target is the predicate calculus — they are not settling for something weaker. The presentation deliberately avoids quantifiers and bound variables, because those are the parts that make logic notation unusable by people who are not logicians, and the language was intended for the infrequent user as much as the professional programmer. Equivalent power, different surface: that is a much harder thing to achieve than either simplifying or being rigorous.\n\nThe cost arrives with the benefit and is inseparable from it. If the query does not say how, then something else decides how, and that decision is made by an optimiser using statistics, at a moment you were not present for. Performance becomes a property you influence indirectly and cannot read off the text — the same trade Fortran made in 1957, when the compiler started choosing instructions, except that here the choice is remade at every execution and can change without your code changing at all.",
+    "problem": {
+      "name": "Physical data independence",
+      "aka": [
+        "declarative query",
+        "the relational model"
+      ],
+      "shape": "Programs encode how data is physically stored, so the storage cannot be changed without breaking every program that reads it.",
+      "tell": [
+        "the code contains traversal steps — follow this, then read that — rather than a description of what is wanted",
+        "a change to indexes or layout requires editing application code",
+        "the same question is answered by different code depending on where the data happens to live"
+      ],
+      "move": "Describe the result as a condition over relations and let the system choose the access path. The query names what must be true of the answer and says nothing about how to find it.",
+      "invariant": "The query’s meaning is independent of the physical organisation. That is what lets indexes be added, layouts changed and data moved without touching a single query — and it holds only while nothing in the query language can observe the storage.",
+      "breaks": "Performance is not part of the meaning, so it is not stable. The same query on the same data can be executed differently as statistics shift, and you cannot read its cost off the text. When it goes wrong you are debugging a plan chosen by an optimiser rather than code you wrote, using indirect controls — and the mechanism that keeps queries portable across layouts is the same one that denies you control of them.",
+      "cost": {
+        "time": "optimisation at execution time, against a plan fixed by hand",
+        "space": "statistics and indexes maintained by the system",
+        "beats": "hand-navigated access, which is predictable and re-breaks on every reorganisation"
+      },
+      "worked": {
+        "problem": "What does physical data independence buy, and what does it necessarily take away?",
+        "reasoning": "The gain is that the number of places encoding the layout drops to one. Before, every program contained it; after, only the system does. So reorganising costs one change instead of a search through all application code for programs that will otherwise keep running and return wrong or slow results.\n\nThe loss is the same fact from the other side. If no query mentions the access path, then no query can specify it, so the choice belongs to the optimiser permanently. You cannot have a language in which layout is invisible for the purposes of correctness and visible for the purposes of control — the moment a query can observe storage, queries start depending on storage, and the independence is gone.\n\nHence the shape of the real world: query hints exist, they are discouraged, and the discouragement is principled rather than snobbery.",
+        "code": "navigational                 declarative\n------------                 -----------\nopen index I                 SELECT name\nseek key K                     FROM emp\nfollow chain ptr               WHERE dept = 'sales'\nread record\n...\n  layout appears in EVERY      layout appears in ONE\n  program                      place: the system\n\n  add an index -> rewrite      add an index -> rewrite\n  the programs                 nothing; plans change\n\n  and therefore:\n     you cannot say \"use index I\"  <- by construction\n     because a query that can say it is a query that\n     DEPENDS on it, which is the thing being removed."
+      },
+      "practice": "Take a slow query and read its execution plan. Then change something outside the query — an index, the statistics — and read it again. Note that you altered the program’s behaviour without altering the program."
+    },
+    "beats": {
+      "broke": "Reading data meant writing a program that navigated the stored structure, so the physical layout was copied into every program. Reorganising the store made all of them wrong, and wrong while still running.",
+      "fix": "Describe the answer instead of the route. Codd’s relational model of 1970 removed the structure to navigate, and the 1974 paper supplied a surface for it — equivalent in power to the first-order predicate calculus, presented as composable keyword templates rather than quantifiers.",
+      "cost": "Because the query cannot name an access path, it cannot choose one. Performance belongs to an optimiser, is decided at execution from statistics, and can change without the query changing — so the thing you debug is a plan you did not write.",
+      "interview": {
+        "q": "What does physical data independence buy, and what does it necessarily take away?",
+        "trap": "Answering that declarative queries are easier to write. That is a consequence of the surface, not of the independence, and it misses what the property is actually for.",
+        "answer": "It reduces the number of places that encode the physical layout from \"every program\" to one. That is what makes storage reorganisation affordable: indexes can be added, layouts changed and data moved without editing any query — and without the far worse alternative of programs that keep running against a layout that has changed underneath them.\n\nWhat it takes away is control of execution, and not by oversight. If a query could name an access path, queries would come to depend on access paths, which is exactly the coupling being removed. So the independence and the loss of control are the same property, and you cannot keep one without the other.\n\nThat explains the state of practice: hints exist, and they are discouraged on principle rather than as a matter of taste. It is also the same trade Fortran made in 1957 when the compiler began choosing instructions — with the difference that here the choice is remade on every execution, so the cost of a query can change while the query does not."
+      }
+    },
+    "blueprint": "Where the layout is written down:\n\n  navigational:  in every program that reads the data\n  declarative:   in the system, once\n\n  -> reorganise: N edits, silent breakage\n  -> reorganise: 0 edits\n\n  The sentence in the 1974 paper that carries the\n  design:\n\n     equivalent power to the first-order predicate\n     calculus, WITHOUT bound variables and quantifiers\n\n  i.e. don't weaken the logic; change the surface.\n  Harder than either simplifying or being rigorous.\n\n  And the inseparable cost:\n\n     can't name the access path\n       -> can't choose it\n       -> optimiser decides, from statistics, per run\n       -> your query's cost changes while your query\n          does not",
+    "takeaway": "Describing the answer instead of the route moves the physical layout out of every program and into one place — and because a query that could name an access path would depend on it, losing control of execution is the same property, not a side effect."
+  },
+  "C.23": {
+    "id": "C.23",
+    "trackId": "C",
+    "trackName": "Languages: the chain of walls",
+    "title": "2007. CUDA. NVIDIA",
+    "status": "traced",
+    "seed": "C.23",
+    "story": "This entry runs against the direction of the whole track, which is why it belongs at the end of it. Every link so far puts more distance between the program and the machine: symbolic names, then generated instructions, then a virtual machine, then a runtime that manages memory for you. This one deliberately reverses that, and has a good reason.\n\nThe wall was peculiar. Graphics hardware could already perform enormous quantities of arithmetic in parallel — that is what it was built for — but the only route to it was the graphics pipeline. To use it for anything else you encoded your data as textures, wrote your computation as a shader, and read the answer back as rendered pixels, whether or not your problem had any connection to images. The capability was present and the interface was a costume.\n\nThe work began in 2004, developing a research language into a product, and shipped in 2007. What it provides is a way to write a function that many threads execute in parallel, organised into blocks and grids, with the different memory spaces those threads can reach — per-thread, shared within a block, and device-wide — present in the programming model rather than hidden behind it. That last clause is the design decision, and it is the one that looks like a regression.\n\nIt is not, because of why anyone is there. Nobody writes for this hardware for convenience; they write for it because a computation is too slow elsewhere, which makes performance the entire reason the code exists. An abstraction that hid the memory hierarchy would hide the difference between a version that is fast and a version that is a hundred times slower, and both would be correct, and you would have no way to tell them apart from the text. So the hierarchy is exposed on purpose: correct code is straightforward, fast code requires knowing the machine, and the language declines to pretend otherwise. The bill is that your program is now written against one vendor’s model of a machine — which is the wall C.3 spent 1959 tearing down, rebuilt deliberately because this time the performance was worth more than the portability.",
+    "problem": {
+      "name": "Data-parallel programming model",
+      "aka": [
+        "general-purpose GPU computing",
+        "explicit memory hierarchy"
+      ],
+      "shape": "Hardware can do the work, but reaching it requires restating your problem in terms of something it was originally built for.",
+      "tell": [
+        "the same operation applies to very many independent data elements",
+        "the current route to the hardware requires a translation that has nothing to do with your problem",
+        "the reason for using this hardware at all is performance, not convenience"
+      ],
+      "move": "Expose the execution model directly: a function run by many threads, grouped so that groups can cooperate, with the distinct memory spaces named in the language rather than abstracted away.",
+      "invariant": "What the program says about placement and cooperation is what the hardware does. The model is a description of the machine rather than an interface to it, which is what makes performance predictable from the source.",
+      "breaks": "It forfeits portability twice over. The code is written against one vendor’s model, and it is tuned to the memory sizes and thread geometry of particular devices, so it does not merely fail to move — it moves and becomes slow, which is harder to notice. It also means correctness and speed come apart: a straightforward version works and can be enormously slower than a tuned one, with nothing in the type system or the tests to indicate the difference.",
+      "cost": {
+        "time": "very large parallel throughput, conditional on the work decomposing into independent elements",
+        "space": "explicit management of several memory spaces, by hand",
+        "beats": "expressing the computation as graphics, which reached the same hardware through an irrelevant model"
+      },
+      "worked": {
+        "problem": "Why does this abstraction expose the hardware when every other one in the chain hides it?",
+        "reasoning": "Ask what the abstraction is protecting you from, and what you came for.\n\nOrdinarily you want the machine hidden because you care about the result and the machine is an implementation detail. Hiding it costs some performance, and that is acceptable precisely because performance was not the point.\n\nHere performance is the entire point — nobody chooses this hardware for expressiveness. So an abstraction that hides the memory hierarchy is hiding the only thing the programmer is there to control. Two programs, both correct, both readable, can differ by orders of magnitude depending on where data sits, and if the language conceals placement then nothing in the source distinguishes them.\n\nSo the rule is not \"abstractions should hide the machine\". It is that an abstraction should hide what you are not there to decide — and the answer to that depends on why you came.",
+        "code": "every other link in this chain:\n    hide the machine -> you came for the RESULT\n\nthis one:\n    expose the machine -> you came for the SPEED\n\n  two correct programs, same output:\n\n    data in device-wide memory   -> 1x\n    staged into block-shared     -> ~10-100x\n\n  if the language hides placement, these two look\n  identical in the source and identical in the tests.\n\n  -> the abstraction would be hiding the only thing\n     you are there to control.\n\n  Rule: hide what the reader isn't there to decide.\n        Which depends entirely on why they came."
+      },
+      "practice": "Take any abstraction you rely on and name one thing it hides that you sometimes need to control. Then decide whether the right response is a better abstraction or a deliberate hole in this one."
+    },
+    "beats": {
+      "broke": "The hardware could already do vast parallel arithmetic, but the only interface was the graphics pipeline. Using it meant encoding data as textures and computation as shaders regardless of whether the problem involved images at all.",
+      "fix": "A C-like language and runtime exposing the execution model directly — functions run by many threads in blocks and grids, with the memory spaces named in the model. Begun in 2004 from a research language, released in 2007.",
+      "cost": "Portability is given up twice: the model belongs to one vendor, and code is tuned to particular device geometry, so it can move and silently become slow. Correctness and speed come apart, with nothing in the source marking the difference.",
+      "interview": {
+        "q": "Why does this abstraction expose the hardware when every other one in this chain hides it?",
+        "trap": "Concluding that it is a low-level tool and low-level tools expose hardware. That restates the observation rather than explaining it, and gives you nothing transferable.",
+        "answer": "Because an abstraction should hide what you are not there to decide, and what that is depends on why you came.\n\nIn ordinary programming the machine is an implementation detail: you want a result, hiding the machine costs some performance, and that is fine because performance was not the point. Here performance is the only point — nobody chooses this hardware for expressiveness. So hiding the memory hierarchy would conceal the single thing the programmer came to control, and two correct, readable programs that differ by orders of magnitude would be indistinguishable in the source.\n\nNotice what that costs, honestly: the program is now written against one vendor's model of a machine, which is the coupling the 1959 committees spent so much effort removing. It was rebuilt on purpose, because here the performance is worth more than the portability.\n\nThe transferable rule is that \"abstractions hide the machine\" is a heuristic, not a principle. The principle is about which decisions belong to the caller."
+      }
+    },
+    "blueprint": "The track's direction, and this one reversing it:\n\n  1949 -> 2015   more distance from the machine\n                 (names, generated code, a VM, a\n                  collector, a borrow checker)\n\n  2007           LESS distance -- on purpose\n\n  Why, in one line:\n\n     hide what the reader isn't there to decide\n\n  ordinary code: came for the RESULT -> hide it\n  this code:     came for the SPEED  -> exposing the\n                 memory hierarchy IS the feature\n\n  The price, knowingly paid:\n\n     one vendor's model of a machine\n     = the exact coupling 1959 existed to remove,\n       rebuilt because speed was worth more here",
+    "takeaway": "It reverses the track’s direction and exposes the memory hierarchy because performance is the only reason anyone is there — an abstraction should hide what you are not there to decide, and that answer changes with why you came."
   },
   "C.3": {
     "id": "C.3",

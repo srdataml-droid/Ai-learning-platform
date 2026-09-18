@@ -1,0 +1,48 @@
+{
+  "id": "C.22",
+  "trackId": "C",
+  "trackName": "Languages: the chain of walls",
+  "title": "1974. SQL. Chamberlin and Boyce, IBM",
+  "status": "traced",
+  "seed": "C.22",
+  "story": "Before this, getting data out of a store meant writing a program that walked it: follow this pointer, read that index, traverse the chain. Such a program is correct only for the structure it was written against, which means the physical layout is copied into every program that touches the data. Reorganise the store for any reason — growth, a new access pattern, different hardware — and every one of those programs is wrong, and wrong in the expensive way, because it still runs.\n\nThe relational model Codd published in 1970 removes the thing being navigated. Data is in relations, and a query is a statement about which rows satisfy which conditions — there is no traversal to describe because there is no structure exposed to traverse. What Chamberlin and Boyce added in 1974, at a workshop in Ann Arbor, was a way for people to write such statements. Their paper is explicit about the design constraint: without resorting to bound variables and quantifiers, it identifies operations on tabular structures shown to be of equivalent power to the first-order predicate calculus, presented as keyword templates that compose.\n\nThat sentence contains the whole engineering judgement, and it is easy to read past. The expressive target is the predicate calculus — they are not settling for something weaker. The presentation deliberately avoids quantifiers and bound variables, because those are the parts that make logic notation unusable by people who are not logicians, and the language was intended for the infrequent user as much as the professional programmer. Equivalent power, different surface: that is a much harder thing to achieve than either simplifying or being rigorous.\n\nThe cost arrives with the benefit and is inseparable from it. If the query does not say how, then something else decides how, and that decision is made by an optimiser using statistics, at a moment you were not present for. Performance becomes a property you influence indirectly and cannot read off the text — the same trade Fortran made in 1957, when the compiler started choosing instructions, except that here the choice is remade at every execution and can change without your code changing at all.",
+  "problem": {
+    "name": "Physical data independence",
+    "aka": [
+      "declarative query",
+      "the relational model"
+    ],
+    "shape": "Programs encode how data is physically stored, so the storage cannot be changed without breaking every program that reads it.",
+    "tell": [
+      "the code contains traversal steps — follow this, then read that — rather than a description of what is wanted",
+      "a change to indexes or layout requires editing application code",
+      "the same question is answered by different code depending on where the data happens to live"
+    ],
+    "move": "Describe the result as a condition over relations and let the system choose the access path. The query names what must be true of the answer and says nothing about how to find it.",
+    "invariant": "The query’s meaning is independent of the physical organisation. That is what lets indexes be added, layouts changed and data moved without touching a single query — and it holds only while nothing in the query language can observe the storage.",
+    "breaks": "Performance is not part of the meaning, so it is not stable. The same query on the same data can be executed differently as statistics shift, and you cannot read its cost off the text. When it goes wrong you are debugging a plan chosen by an optimiser rather than code you wrote, using indirect controls — and the mechanism that keeps queries portable across layouts is the same one that denies you control of them.",
+    "cost": {
+      "time": "optimisation at execution time, against a plan fixed by hand",
+      "space": "statistics and indexes maintained by the system",
+      "beats": "hand-navigated access, which is predictable and re-breaks on every reorganisation"
+    },
+    "worked": {
+      "problem": "What does physical data independence buy, and what does it necessarily take away?",
+      "reasoning": "The gain is that the number of places encoding the layout drops to one. Before, every program contained it; after, only the system does. So reorganising costs one change instead of a search through all application code for programs that will otherwise keep running and return wrong or slow results.\n\nThe loss is the same fact from the other side. If no query mentions the access path, then no query can specify it, so the choice belongs to the optimiser permanently. You cannot have a language in which layout is invisible for the purposes of correctness and visible for the purposes of control — the moment a query can observe storage, queries start depending on storage, and the independence is gone.\n\nHence the shape of the real world: query hints exist, they are discouraged, and the discouragement is principled rather than snobbery.",
+      "code": "navigational                 declarative\n------------                 -----------\nopen index I                 SELECT name\nseek key K                     FROM emp\nfollow chain ptr               WHERE dept = 'sales'\nread record\n...\n  layout appears in EVERY      layout appears in ONE\n  program                      place: the system\n\n  add an index -> rewrite      add an index -> rewrite\n  the programs                 nothing; plans change\n\n  and therefore:\n     you cannot say \"use index I\"  <- by construction\n     because a query that can say it is a query that\n     DEPENDS on it, which is the thing being removed."
+    },
+    "practice": "Take a slow query and read its execution plan. Then change something outside the query — an index, the statistics — and read it again. Note that you altered the program’s behaviour without altering the program."
+  },
+  "beats": {
+    "broke": "Reading data meant writing a program that navigated the stored structure, so the physical layout was copied into every program. Reorganising the store made all of them wrong, and wrong while still running.",
+    "fix": "Describe the answer instead of the route. Codd’s relational model of 1970 removed the structure to navigate, and the 1974 paper supplied a surface for it — equivalent in power to the first-order predicate calculus, presented as composable keyword templates rather than quantifiers.",
+    "cost": "Because the query cannot name an access path, it cannot choose one. Performance belongs to an optimiser, is decided at execution from statistics, and can change without the query changing — so the thing you debug is a plan you did not write.",
+    "interview": {
+      "q": "What does physical data independence buy, and what does it necessarily take away?",
+      "trap": "Answering that declarative queries are easier to write. That is a consequence of the surface, not of the independence, and it misses what the property is actually for.",
+      "answer": "It reduces the number of places that encode the physical layout from \"every program\" to one. That is what makes storage reorganisation affordable: indexes can be added, layouts changed and data moved without editing any query — and without the far worse alternative of programs that keep running against a layout that has changed underneath them.\n\nWhat it takes away is control of execution, and not by oversight. If a query could name an access path, queries would come to depend on access paths, which is exactly the coupling being removed. So the independence and the loss of control are the same property, and you cannot keep one without the other.\n\nThat explains the state of practice: hints exist, and they are discouraged on principle rather than as a matter of taste. It is also the same trade Fortran made in 1957 when the compiler began choosing instructions — with the difference that here the choice is remade on every execution, so the cost of a query can change while the query does not."
+    }
+  },
+  "blueprint": "Where the layout is written down:\n\n  navigational:  in every program that reads the data\n  declarative:   in the system, once\n\n  -> reorganise: N edits, silent breakage\n  -> reorganise: 0 edits\n\n  The sentence in the 1974 paper that carries the\n  design:\n\n     equivalent power to the first-order predicate\n     calculus, WITHOUT bound variables and quantifiers\n\n  i.e. don't weaken the logic; change the surface.\n  Harder than either simplifying or being rigorous.\n\n  And the inseparable cost:\n\n     can't name the access path\n       -> can't choose it\n       -> optimiser decides, from statistics, per run\n       -> your query's cost changes while your query\n          does not",
+  "takeaway": "Describing the answer instead of the route moves the physical layout out of every program and into one place — and because a query that could name an access path would depend on it, losing control of execution is the same property, not a side effect."
+}

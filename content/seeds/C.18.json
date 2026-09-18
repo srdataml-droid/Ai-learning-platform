@@ -1,0 +1,90 @@
+{
+  "taskId": "C.18",
+  "title": "2009. Go. Griesemer, Pike, Thompson at Google",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The language was conceived in September 2007 by Robert Griesemer, Rob Pike and Ken Thompson at Google, as an answer to problems seen while developing software infrastructure there. It first appeared on 10 November 2009 and stabilised at version 1 in early 2012.",
+      "type": "date",
+      "tokens": [
+        "Robert Griesemer",
+        "Griesemer",
+        "Rob Pike",
+        "Pike",
+        "Ken Thompson",
+        "Thompson",
+        "Google",
+        "2007",
+        "2009",
+        "2012"
+      ],
+      "source": {
+        "title": "Go (programming language): conception in September 2007 by Griesemer, Pike and Thompson, first appearance 10 November 2009, and Go 1 in early 2012",
+        "url": "https://en.wikipedia.org/wiki/Go_(programming_language)",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Pike describes the environment it was designed for: server programs grown to tens of millions of lines of code, worked on by hundreds or thousands of programmers, updated daily, in one source tree with a distributed build system, written mostly in C++ with substantial amounts of Java and Python.",
+      "type": "event",
+      "tokens": [
+        "Pike",
+        "Java",
+        "Python"
+      ],
+      "source": {
+        "title": "Pike, R., Go at Google: Language Design in the Service of Software Engineering, keynote at SPLASH 2012, Tucson, 25 October 2012",
+        "url": "https://go.dev/talks/2012/splash.article",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Pike states that in that environment build times, even on large compilation clusters, had stretched to many minutes, even hours. The stated goals of the project were to eliminate slowness, eliminate clumsiness, improve effectiveness, and maintain or improve scale.",
+      "type": "event",
+      "tokens": [
+        "Pike"
+      ],
+      "source": {
+        "title": "Pike, R., Go at Google: Language Design in the Service of Software Engineering, keynote at SPLASH 2012, Tucson, 25 October 2012",
+        "url": "https://go.dev/talks/2012/splash.article",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "Pike frames the work as being designed by and for people who write, read, debug and maintain large software systems, and says its purpose is improving the working environment rather than programming-language research — that it is more about software engineering than programming language research.",
+      "type": "quote",
+      "tokens": [
+        "Pike"
+      ],
+      "source": {
+        "title": "Pike, R., Go at Google: Language Design in the Service of Software Engineering, keynote at SPLASH 2012, Tucson, 25 October 2012",
+        "url": "https://go.dev/talks/2012/splash.article",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "The earlier link this argument is drawn from is the time-sharing system built at Dartmouth, demonstrated on 1 May 1964, where the barrier to using a computer was the hours-long turnaround of a single attempt rather than the difficulty of the language.",
+      "type": "date",
+      "tokens": [
+        "Dartmouth",
+        "1964"
+      ],
+      "source": {
+        "title": "BASIC at Dartmouth, Dartmouth College",
+        "url": "https://www.dartmouth.edu/basicfifty/basic.html",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "at a large enough codebase and headcount, the time to build dominates the development loop, and no amount of hardware fixes a dependency structure that grows superlinearly",
+    "fix": "treat compilation speed as a language design constraint rather than a compiler problem: explicit dependencies, no headers, no cycles, and a specification small enough to keep the rest honest",
+    "cost": "features get left out to preserve the property, and the omissions are real losses rather than oversights",
+    "interview": "why build time is a language design problem rather than a tooling one"
+  }
+}

@@ -10,20 +10,8 @@ Study order: the sequence first, then the five habits running underneath.
 
 ## Track C — Languages: the chain of walls
 
-22 of 34 still missing.
+10 of 34 still missing.
 
-- [ ] `C.12` 1995. Java. Gosling, Sun
-- [ ] `C.13` 1995. JavaScript. Eich, Netscape, about ten days
-- [ ] `C.14` 1995. PHP. Lerdorf
-- [ ] `C.15` 1995 and 2004. Ruby, then Rails. Matsumoto, then Hansson
-- [ ] `C.16` 1986 and 2012. Erlang, then Elixir. Ericsson
-- [ ] `C.17` 2000. C#. Hejlsberg, Microsoft
-- [ ] `C.18` 2009. Go. Griesemer, Pike, Thompson at Google
-- [ ] `C.19` 2012. TypeScript. Microsoft
-- [ ] `C.20` 2015. Rust reaches 1.0. Mozilla
-- [ ] `C.21` 2011 and 2014. Kotlin and Swift
-- [ ] `C.22` 1974. SQL. Chamberlin and Boyce, IBM
-- [ ] `C.23` 2007. CUDA. NVIDIA
 - [ ] `C.24` HTML and CSS
 - [ ] `C.25` Bash and the shell
 - [ ] `C.26` Regular expressions
@@ -287,7 +275,7 @@ Study order: the sequence first, then the five habits running underneath.
 
 ---
 
-**Total remaining: 193 of 313.**
+**Total remaining: 181 of 313.**
 
 Regenerate: `node tools/missing-lessons.mjs > docs/MISSING-LESSONS.md`
 

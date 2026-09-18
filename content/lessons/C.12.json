@@ -1,0 +1,49 @@
+{
+  "id": "C.12",
+  "trackId": "C",
+  "trackName": "Languages: the chain of walls",
+  "title": "1995. Java. Gosling, Sun",
+  "status": "traced",
+  "seed": "C.12",
+  "story": "The languages up to here assume you know what you are compiling for. That assumption holds in a machine room and fails completely once the software has to reach machines belonging to other people. The project started in June 1991 aimed at set-top boxes and televisions, which is the same problem in its purest form: a population of devices with different processors, none of them yours, all of them needing to run the same thing.\n\nThe answer is to stop compiling for a real machine. Compile instead to the instruction set of a machine that does not exist, and write that machine once for each platform. The economics invert: porting used to cost one effort per program per platform, and now costs one effort per platform, paid by whoever supplies the runtime rather than by whoever writes the program.\n\nThe retargeting is the part worth noticing, because the technical work did not change and the problem it solved did. In mid-1994 the team pointed the same thing at the internet, judging that with the arrival of the Mosaic browser the web was going where they had expected cable television to go. It was announced at SunWorld on 23 May 1995, where Marc Andreessen of Netscape came on stage unannounced to say Navigator would include it. A solution to heterogeneous consumer hardware turned out to be a solution to heterogeneous personal computers, because it was never really about the hardware.\n\nThe cost is exact and often stated as though it were a slogan rather than a condition. Write once, run anywhere holds only where the runtime is present and behaves identically, so the portability of the program has been converted into the uniformity of an implementation someone else maintains. That is a real trade and frequently a good one — but it moves the compatibility problem rather than removing it, and it puts the part you now depend on outside your control.",
+  "problem": {
+    "name": "Virtual machine portability",
+    "aka": [
+      "bytecode",
+      "managed runtime",
+      "write once run anywhere"
+    ],
+    "shape": "The same program must run on many machines you do not own and cannot enumerate, so you cannot build for each of them.",
+    "tell": [
+      "the audience for the software is a population of devices rather than a known set of servers",
+      "you are maintaining a build matrix that grows with every platform you support",
+      "the people running the program cannot be asked to compile it"
+    ],
+    "move": "Define an abstract machine, compile to its instruction set, and implement that machine once per real platform. The distributed artefact targets the abstraction, not the hardware.",
+    "invariant": "The abstract machine behaves the same everywhere. Every guarantee the approach offers rests on this and on nothing else, which is why conformance of the runtime matters more than any property of the language.",
+    "breaks": "It breaks wherever runtimes differ — in version, in supported features, in the parts deliberately left platform-specific. Then the promise degrades into a build matrix again, except the differences are now in someone else’s implementation and are harder to see. It also breaks where no runtime can be installed, or where the runtime’s overhead is the thing you could not afford.",
+    "cost": {
+      "time": "an interpretation or compilation step at run time that native code does not pay",
+      "space": "the runtime ships alongside or underneath every program",
+      "beats": "native builds per platform, which are faster and multiply with every platform added"
+    },
+    "worked": {
+      "problem": "What does a virtual machine actually move, given that somebody still has to write code for each real platform?",
+      "reasoning": "Count the work both ways. With native compilation the cost is one port per program per platform, so it grows as the product of the two — and it is paid by every author independently, including those who will never hear about a platform until it fails.\n\nWith an abstract machine the cost is one implementation per platform, paid once by whoever supplies the runtime, and it does not grow as programs are added.\n\nSo the move is not an elimination, it is a change of who pays and how the cost scales. That reframing also tells you the failure mode without further argument: if the per-platform implementations diverge, the cost reappears in the programs — and it reappears as subtle behavioural differences rather than as a build that visibly fails.",
+      "code": "native                        abstract machine\n------                        ----------------\nprog x plat builds            prog builds: 1\npaid by: every author         paid by: runtime vendor\ngrows with: both              grows with: platforms only\n\n        source\n          |\n      [ compile ]\n          |\n       bytecode  <- the artefact you ship\n          |\n   +------+------+------+\n   |      |      |      |\n  VM     VM     VM     VM      <- written once each\n (x86) (ARM) (...)  (...)\n\n  Everything the approach promises rests on those\n  boxes agreeing. When they don't, you are back to a\n  build matrix -- but an invisible one."
+    },
+    "practice": "Take a runtime you depend on and find one documented behaviour that differs between two of its implementations or versions. Then decide how you would have discovered that difference if it had not been documented."
+  },
+  "beats": {
+    "broke": "A compiled program targets one instruction set and one operating system. Software meant for machines you do not own and cannot enumerate therefore needs a separate build for each, and the count grows with every program and every platform.",
+    "fix": "Compile to the instruction set of a machine that does not exist and implement that machine once per platform. Begun in June 1991 for consumer devices, retargeted to the internet in 1994, and announced at SunWorld on 23 May 1995 with Netscape committing Navigator on stage.",
+    "cost": "Portability of the program becomes uniformity of a runtime you do not maintain. The slogan holds exactly as far as the implementations agree, and where they disagree the failure is behavioural rather than a build error, so it is harder to find.",
+    "interview": {
+      "q": "What does a virtual machine actually move, since someone still writes code for every real platform?",
+      "trap": "Answering that it makes code portable. It relocates the porting work; saying it removes it skips the question and hides the failure mode.",
+      "answer": "It changes who pays the porting cost and how that cost scales. Natively, the work is one port per program per platform, it grows as the product of the two, and every author pays it separately. With an abstract machine it is one implementation per platform, paid by whoever supplies the runtime, and adding programs does not add to it.\n\nThat is a genuine structural win, and it is a distribution decision rather than a language one — which is why the same technology retargeted cleanly from set-top boxes to the web without the design changing. The problem was never the specific hardware, it was that the hardware was not yours.\n\nThe reframing also gives you the failure mode for free. If the per-platform implementations diverge, the cost reappears inside the programs, and it reappears as behaviour that differs rather than as a build that fails — which is strictly worse to diagnose."
+    }
+  },
+  "blueprint": "Who pays the porting cost, and how it scales:\n\n  native:            programs x platforms\n                     paid by: each author\n                     visible: build fails\n\n  abstract machine:  platforms\n                     paid by: runtime vendor\n                     visible: ...nothing, until behaviour differs\n\n  Same technology, two problems, because the problem\n  was never the hardware:\n\n     1991  set-top boxes, TVs   -> devices aren't yours\n     1994  retarget to the web  -> PCs aren't yours either\n     1995  announced; Navigator ships it\n\n  The slogan is a conditional. It holds exactly as far\n  as the runtimes agree, and not one step past that.",
+  "takeaway": "Compiling to a machine that does not exist converts one-port-per-program-per-platform into one-port-per-platform — a distribution win paid for by depending on a runtime whose divergences show up as behaviour, not as build errors."
+}

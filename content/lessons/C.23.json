@@ -1,0 +1,48 @@
+{
+  "id": "C.23",
+  "trackId": "C",
+  "trackName": "Languages: the chain of walls",
+  "title": "2007. CUDA. NVIDIA",
+  "status": "traced",
+  "seed": "C.23",
+  "story": "This entry runs against the direction of the whole track, which is why it belongs at the end of it. Every link so far puts more distance between the program and the machine: symbolic names, then generated instructions, then a virtual machine, then a runtime that manages memory for you. This one deliberately reverses that, and has a good reason.\n\nThe wall was peculiar. Graphics hardware could already perform enormous quantities of arithmetic in parallel — that is what it was built for — but the only route to it was the graphics pipeline. To use it for anything else you encoded your data as textures, wrote your computation as a shader, and read the answer back as rendered pixels, whether or not your problem had any connection to images. The capability was present and the interface was a costume.\n\nThe work began in 2004, developing a research language into a product, and shipped in 2007. What it provides is a way to write a function that many threads execute in parallel, organised into blocks and grids, with the different memory spaces those threads can reach — per-thread, shared within a block, and device-wide — present in the programming model rather than hidden behind it. That last clause is the design decision, and it is the one that looks like a regression.\n\nIt is not, because of why anyone is there. Nobody writes for this hardware for convenience; they write for it because a computation is too slow elsewhere, which makes performance the entire reason the code exists. An abstraction that hid the memory hierarchy would hide the difference between a version that is fast and a version that is a hundred times slower, and both would be correct, and you would have no way to tell them apart from the text. So the hierarchy is exposed on purpose: correct code is straightforward, fast code requires knowing the machine, and the language declines to pretend otherwise. The bill is that your program is now written against one vendor’s model of a machine — which is the wall C.3 spent 1959 tearing down, rebuilt deliberately because this time the performance was worth more than the portability.",
+  "problem": {
+    "name": "Data-parallel programming model",
+    "aka": [
+      "general-purpose GPU computing",
+      "explicit memory hierarchy"
+    ],
+    "shape": "Hardware can do the work, but reaching it requires restating your problem in terms of something it was originally built for.",
+    "tell": [
+      "the same operation applies to very many independent data elements",
+      "the current route to the hardware requires a translation that has nothing to do with your problem",
+      "the reason for using this hardware at all is performance, not convenience"
+    ],
+    "move": "Expose the execution model directly: a function run by many threads, grouped so that groups can cooperate, with the distinct memory spaces named in the language rather than abstracted away.",
+    "invariant": "What the program says about placement and cooperation is what the hardware does. The model is a description of the machine rather than an interface to it, which is what makes performance predictable from the source.",
+    "breaks": "It forfeits portability twice over. The code is written against one vendor’s model, and it is tuned to the memory sizes and thread geometry of particular devices, so it does not merely fail to move — it moves and becomes slow, which is harder to notice. It also means correctness and speed come apart: a straightforward version works and can be enormously slower than a tuned one, with nothing in the type system or the tests to indicate the difference.",
+    "cost": {
+      "time": "very large parallel throughput, conditional on the work decomposing into independent elements",
+      "space": "explicit management of several memory spaces, by hand",
+      "beats": "expressing the computation as graphics, which reached the same hardware through an irrelevant model"
+    },
+    "worked": {
+      "problem": "Why does this abstraction expose the hardware when every other one in the chain hides it?",
+      "reasoning": "Ask what the abstraction is protecting you from, and what you came for.\n\nOrdinarily you want the machine hidden because you care about the result and the machine is an implementation detail. Hiding it costs some performance, and that is acceptable precisely because performance was not the point.\n\nHere performance is the entire point — nobody chooses this hardware for expressiveness. So an abstraction that hides the memory hierarchy is hiding the only thing the programmer is there to control. Two programs, both correct, both readable, can differ by orders of magnitude depending on where data sits, and if the language conceals placement then nothing in the source distinguishes them.\n\nSo the rule is not \"abstractions should hide the machine\". It is that an abstraction should hide what you are not there to decide — and the answer to that depends on why you came.",
+      "code": "every other link in this chain:\n    hide the machine -> you came for the RESULT\n\nthis one:\n    expose the machine -> you came for the SPEED\n\n  two correct programs, same output:\n\n    data in device-wide memory   -> 1x\n    staged into block-shared     -> ~10-100x\n\n  if the language hides placement, these two look\n  identical in the source and identical in the tests.\n\n  -> the abstraction would be hiding the only thing\n     you are there to control.\n\n  Rule: hide what the reader isn't there to decide.\n        Which depends entirely on why they came."
+    },
+    "practice": "Take any abstraction you rely on and name one thing it hides that you sometimes need to control. Then decide whether the right response is a better abstraction or a deliberate hole in this one."
+  },
+  "beats": {
+    "broke": "The hardware could already do vast parallel arithmetic, but the only interface was the graphics pipeline. Using it meant encoding data as textures and computation as shaders regardless of whether the problem involved images at all.",
+    "fix": "A C-like language and runtime exposing the execution model directly — functions run by many threads in blocks and grids, with the memory spaces named in the model. Begun in 2004 from a research language, released in 2007.",
+    "cost": "Portability is given up twice: the model belongs to one vendor, and code is tuned to particular device geometry, so it can move and silently become slow. Correctness and speed come apart, with nothing in the source marking the difference.",
+    "interview": {
+      "q": "Why does this abstraction expose the hardware when every other one in this chain hides it?",
+      "trap": "Concluding that it is a low-level tool and low-level tools expose hardware. That restates the observation rather than explaining it, and gives you nothing transferable.",
+      "answer": "Because an abstraction should hide what you are not there to decide, and what that is depends on why you came.\n\nIn ordinary programming the machine is an implementation detail: you want a result, hiding the machine costs some performance, and that is fine because performance was not the point. Here performance is the only point — nobody chooses this hardware for expressiveness. So hiding the memory hierarchy would conceal the single thing the programmer came to control, and two correct, readable programs that differ by orders of magnitude would be indistinguishable in the source.\n\nNotice what that costs, honestly: the program is now written against one vendor's model of a machine, which is the coupling the 1959 committees spent so much effort removing. It was rebuilt on purpose, because here the performance is worth more than the portability.\n\nThe transferable rule is that \"abstractions hide the machine\" is a heuristic, not a principle. The principle is about which decisions belong to the caller."
+    }
+  },
+  "blueprint": "The track's direction, and this one reversing it:\n\n  1949 -> 2015   more distance from the machine\n                 (names, generated code, a VM, a\n                  collector, a borrow checker)\n\n  2007           LESS distance -- on purpose\n\n  Why, in one line:\n\n     hide what the reader isn't there to decide\n\n  ordinary code: came for the RESULT -> hide it\n  this code:     came for the SPEED  -> exposing the\n                 memory hierarchy IS the feature\n\n  The price, knowingly paid:\n\n     one vendor's model of a machine\n     = the exact coupling 1959 existed to remove,\n       rebuilt because speed was worth more here",
+  "takeaway": "It reverses the track’s direction and exposes the memory hierarchy because performance is the only reason anyone is there — an abstraction should hide what you are not there to decide, and that answer changes with why you came."
+}

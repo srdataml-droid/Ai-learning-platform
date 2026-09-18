@@ -1,0 +1,48 @@
+{
+  "id": "C.20",
+  "trackId": "C",
+  "trackName": "Languages: the chain of walls",
+  "title": "2015. Rust reaches 1.0. Mozilla",
+  "status": "traced",
+  "seed": "C.20",
+  "story": "Two earlier entries in this chain set up this one precisely. C.7 gives a language whose types describe the machine’s layout and therefore cannot refuse a description that is wrong. C.9 adds abstraction on the condition that it be affordable, which rules out any ambient runtime and so rules out a collector. Between them they define a gap: safety, historically, has been something a runtime provides, and the programs that most need safety are the ones that cannot have a runtime.\n\nThe claim made in the 1.0 announcement of 15 May 2015 is that both are available at once — low-level control over performance together with high-level convenience and safety guarantees — and, crucially, without requiring a garbage collector or runtime, which is what lets its libraries stand in for C. The mechanism, in the announcement’s own framing, is the type system, described as a refinement and codification of practices already known from experience with C and C++.\n\nThat description is worth taking literally rather than as modesty. The rules being enforced — do not use a thing after it has been freed, do not free it twice, do not hold a mutable reference while others are reading — are not new discoveries. They are the rules careful practitioners already followed and documented in comments. What changed is who checks them: a convention that a reviewer might notice became a property a compiler establishes before the program runs.\n\nThe cost follows from that mechanically, and it is a real one rather than a learning curve to be apologised for. A checker that runs before execution must decide from the text alone, so it will reject programs that would have worked but whose safety it cannot demonstrate. The work of satisfying it lands on the author, at the time of writing, every time — which is the same shape as C.9’s bargain viewed from a different angle: the cost has been moved from run time to author time, and author time is not free either.",
+  "problem": {
+    "name": "Compile-time memory safety",
+    "aka": [
+      "ownership and borrowing",
+      "safety without a runtime"
+    ],
+    "shape": "The code must be memory-safe, and the environment cannot support the runtime machinery that safety has always required.",
+    "tell": [
+      "you are writing the runtime, the kernel, the driver, or the hot path, so there is nothing underneath to catch you",
+      "the bugs that hurt are use-after-free, double-free and data races rather than logic errors",
+      "the current defence is a convention in a style guide and a careful reviewer"
+    ],
+    "move": "Encode the ownership rules into the type system — who owns a value, who may borrow it, for how long, and whether anyone else may read it meanwhile — and refuse to compile a program that cannot be shown to obey them.",
+    "invariant": "Safety is established from the text before anything runs, so it costs nothing at run time. This only works if the rules are decidable statically, which is why they are conservative: the checker must be able to prove the property, not merely fail to find a counterexample.",
+    "breaks": "It rejects correct programs. A static checker decides from the text, so anything whose safety depends on facts it cannot see is refused, and the author must restructure the code or step outside the checked subset explicitly. The cost has not vanished; it has moved to writing time, where it is paid by a person rather than by the machine.",
+    "cost": {
+      "time": "nothing at run time; a slower compile and a slower author",
+      "space": "no collector, no object headers, no runtime",
+      "beats": "garbage collection, which accepts every correct program and needs a runtime you may not be able to afford"
+    },
+    "worked": {
+      "problem": "What does it mean for a compiler to reject a program that would have run correctly?",
+      "reasoning": "A static checker answers a question about all possible executions using only the text. That question is undecidable in general, so any checker that always terminates must approximate — and it has to approximate in the safe direction, because a checker that sometimes accepts unsafe programs provides no guarantee at all.\n\nApproximating safely means the answer set is smaller than the truth. There are programs that never misbehave and cannot be shown not to, and those get refused. This is not a defect to be engineered away; it is the price of a decision made before execution.\n\nWhich tells you where the cost went. Not eliminated — relocated, from the machine at run time to the author at writing time. That is a good trade when run-time cost is what you cannot afford, and a bad one when author time is scarcer, which is why this language and a garbage-collected one are answers to different questions rather than competitors.",
+      "code": "        all programs\n  +---------------------------+\n  |   unsafe                  |\n  |     +-------------------+ |\n  |     | safe              | |\n  |     |   +-----------+   | |\n  |     |   | PROVABLY  |   | |\n  |     |   |   safe    |   | |   <- what compiles\n  |     |   +-----------+   | |\n  |     |      ^            | |\n  |     +------|------------+ |\n  +------------|--------------+\n               |\n     safe but not provably so:\n     REJECTED, and correctly so\n\n  A checker that ever accepts the outer ring gives no\n  guarantee. So the gap is not a bug -- it is what\n  \"decided before running\" costs.\n\n  cost didn't vanish:  run time -> author time"
+    },
+    "practice": "Take a piece of code the borrow checker refuses and work out whether it is genuinely unsafe or merely unprovable. Then restructure it, and notice what the restructuring made explicit that was previously only in your head."
+  },
+  "beats": {
+    "broke": "Memory safety had always been supplied by a runtime, and the programs that most need it — kernels, drivers, engines, hot paths — are exactly the ones that cannot carry one. The prior options were safety with a collector or control without safety.",
+    "fix": "Put ownership into the type system and check it before the program runs. Announced at version 1.0 on 15 May 2015 as combining low-level control with safety guarantees, explicitly without requiring a garbage collector or runtime.",
+    "cost": "A static checker must be conservative, so it refuses correct programs whose safety it cannot demonstrate. The cost moved from the machine at run time to the author at writing time, and author time is not free.",
+    "interview": {
+      "q": "What does it mean when a compiler rejects a program that would have run correctly?",
+      "trap": "Treating the rejection as a limitation to be fixed in a future version. Some of it can be improved, but the gap is structural and cannot be closed.",
+      "answer": "It means the checker is answering a question about every possible execution using only the text, which is undecidable in general — so any checker that always terminates has to approximate, and it must approximate toward refusal. One that occasionally accepted an unsafe program would provide no guarantee at all, which is the whole point of having it.\n\nSo the set of programs that compile is strictly smaller than the set that are safe, and some correct programs fall in the gap. Better analysis moves the boundary; it never removes it.\n\nThe useful way to hold this is that the cost was relocated rather than eliminated: from the machine at run time to the author at writing time. That makes it the right trade where run-time cost or an absent runtime is the binding constraint, and the wrong one where author time is scarcer — which is why a garbage-collected language is not a worse version of this, it is an answer to a different question."
+    }
+  },
+  "blueprint": "The gap two earlier links left open:\n\n  C (1972)    types DESCRIBE layout -> can't refuse a\n              wrong description\n  C++ (1983)  must be AFFORDABLE    -> no ambient\n              runtime, so no collector\n                 |\n                 v\n  safety has always needed a runtime, and this code\n  cannot have one.\n\n  The move: check before running.\n\n     convention a reviewer might catch\n        -> property a compiler establishes\n\n  And the price, which is structural:\n\n     provably safe  (  safe  (  all programs\n     ^^^^^^^^^^^^^ compiles\n             ^^^^ some of this is refused, correctly\n\n     cost: run time -> author time",
+  "takeaway": "Ownership in the type system buys memory safety with no runtime by deciding it before execution — and because that decision must be conservative, it refuses some correct programs and moves the cost from the machine to the author."
+}

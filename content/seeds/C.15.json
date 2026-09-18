@@ -1,0 +1,92 @@
+{
+  "taskId": "C.15",
+  "title": "1995 and 2004. Ruby, then Rails. Matsumoto, then Hansson",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The name was chosen on 24 February 1993, in a chat between Yukihiro Matsumoto and Keiju Ishitsuka, before any code existed. Coral and Ruby were the two proposals and Matsumoto picked the latter.",
+      "type": "date",
+      "tokens": [
+        "Yukihiro Matsumoto",
+        "Matsumoto",
+        "Keiju Ishitsuka",
+        "Ishitsuka",
+        "Coral",
+        "Ruby",
+        "1993"
+      ],
+      "source": {
+        "title": "Ruby (programming language): the February 1993 naming, the 0.95 release of 21 December 1995, and the 1.0 release of 25 December 1996",
+        "url": "https://en.wikipedia.org/wiki/Ruby_(programming_language)",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The first public release, version 0.95, was announced on Japanese domestic newsgroups on 21 December 1995. Three further versions followed within two days, and the release coincided with the launch of the language’s first mailing list. Version 1.0 followed on 25 December 1996.",
+      "type": "date",
+      "tokens": [
+        "Ruby",
+        "1995",
+        "1996"
+      ],
+      "source": {
+        "title": "Ruby (programming language): the February 1993 naming, the 0.95 release of 21 December 1995, and the 1.0 release of 25 December 1996",
+        "url": "https://en.wikipedia.org/wiki/Ruby_(programming_language)",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "David Heinemeier Hansson extracted the framework from his work on the project management application Basecamp at 37signals. It was created for the company’s internal use first, open-sourced in July 2004, and reached version 1.0 in December 2005. Hansson had discovered the language in 2003.",
+      "type": "date",
+      "tokens": [
+        "David Heinemeier Hansson",
+        "Hansson",
+        "Heinemeier",
+        "Basecamp",
+        "2003",
+        "2004",
+        "2005"
+      ],
+      "source": {
+        "title": "Ruby on Rails: extraction from Basecamp at 37signals, the July 2004 open-source release, and version 1.0 in December 2005",
+        "url": "https://en.wikipedia.org/wiki/Ruby_on_Rails",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "The framework is built on convention over configuration: defaults derived from names and locations stand in for declarations the developer would otherwise have to write.",
+      "type": "event",
+      "tokens": [
+        "Rails"
+      ],
+      "source": {
+        "title": "Ruby on Rails: extraction from Basecamp at 37signals, the July 2004 open-source release, and version 1.0 in December 2005",
+        "url": "https://en.wikipedia.org/wiki/Ruby_on_Rails",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "The earlier link in this chain that this one is contrasted with is Fortran, whose designers deliberately treated the translator rather than the language as the real challenge — that is, they optimised for the machine rather than for the programmer writing it.",
+      "type": "event",
+      "tokens": [
+        "Fortran"
+      ],
+      "source": {
+        "title": "Backus, J., The History of Fortran I, II and III, in History of Programming Languages, ACM/Academic Press, 1978",
+        "url": "https://cse.sc.edu/~mgv/csce330f12/Backus78.pdf",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "frameworks were designed in advance for imagined applications, so they carried abstractions nobody had needed and missed the ones everybody did",
+    "fix": "extract the framework from an application that already works, so every abstraction in it was demanded by a real case",
+    "cost": "what you extract is the shape of that application, and conventions help exactly as far as you agree with them",
+    "interview": "why extraction produces better abstractions than design, and what it cannot produce"
+  }
+}

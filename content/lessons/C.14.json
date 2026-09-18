@@ -1,0 +1,48 @@
+{
+  "id": "C.14",
+  "trackId": "C",
+  "trackName": "Languages: the chain of walls",
+  "title": "1995. PHP. Lerdorf",
+  "status": "traced",
+  "seed": "C.14",
+  "story": "The other 1995 entries in this track solve problems for programmers. This one solves a problem for people who had a page and wanted part of it to change. At the time that meant writing a program in C, registering it as a CGI binary, and having it print the page — which puts the document inside the program, as strings, in a language with no strings worth the name. The person who wanted a visitor counter had to become a systems programmer to get one.\n\nWhat was released on 8 June 1995 was not yet a language: a set of small, tight CGI binaries in C, a utility library and a templating mechanism, announced on a newsgroup for people writing CGI scripts. The rewrite came that October and the second generation the following April. But the model that survived all the rewrites was there from the start, and it is a single inversion — the file is a document that may contain code, rather than a program that prints a document.\n\nThat inversion is why it spread and it is worth being precise about the mechanism. It makes the cost of the first dynamic element on a page approximately zero. You do not start a project, you do not write a program that emits your existing page, you do not restructure anything. You take the page you already have, put code where the varying part goes, and everything else is served as written. Nothing else at the time had a first step that small.\n\nAnd the same property is the bill. If code goes wherever output goes, then there is no structural boundary between what the page says and how it was decided — not because anyone forbade the separation but because nothing requires it, and the path of least resistance at every single step is to add one more piece of logic where the output is. A design optimised for the first ten minutes cannot also be optimised for the tenth year, and this one chose, deliberately and correctly, the first ten minutes.",
+  "problem": {
+    "name": "Template inversion",
+    "aka": [
+      "embedded server-side scripting",
+      "document-with-code"
+    ],
+    "shape": "Output that is mostly fixed with small varying parts is being produced by a program that emits all of it, so the fixed majority lives awkwardly inside code.",
+    "tell": [
+      "most of what the program emits is literal text that never changes",
+      "the output’s structure is invisible in the source because it is spread across print statements",
+      "the person who owns the content is not the person who can edit the program"
+    ],
+    "move": "Invert the nesting. Make the file the document and let it escape into code at the points that vary, so the default is to emit and the exception is to compute.",
+    "invariant": "The fixed majority of the output appears literally in the source, in the order it is emitted. That is what makes the document readable as a document and what makes the first change cheap.",
+    "breaks": "It breaks as the varying part grows. Once the logic is substantial, the inversion works against you — code is now scattered through presentation in emission order, which is rarely the order the logic wants, and nothing in the model creates a boundary to pull it back behind. The property that makes the first change free makes the thousandth change expensive, and there is no point at which the model tells you to stop.",
+    "cost": {
+      "time": "a parse and an interpretation per request, against a compiled binary",
+      "space": "a runtime on the server where previously there was an executable",
+      "beats": "a program that prints the document, which is faster and much more expensive to start"
+    },
+    "worked": {
+      "problem": "Why did the inversion spread when better-structured alternatives existed?",
+      "reasoning": "Compare the first step, not the finished system. That is what people actually choose on.\n\nProgram-emits-document: create a project, translate the page you already have into print statements, arrange for it to be compiled and installed, then make the one part vary. Everything before the last clause is overhead paid before you see anything work.\n\nDocument-contains-code: open the page you already have, put the code where the varying part goes, save it. The overhead is zero and the page keeps working throughout.\n\nAdoption is decided at the first step far more often than at the tenth year, because the first step is the only one the person can see when choosing. That is a general fact about tools, not a fact about this one — and it explains the spread without needing to claim the design was better.",
+      "code": "program emits document        document contains code\n----------------------        ----------------------\nmain() {                      <h1>Hello</h1>\n  print(\"<h1>Hello</h1>\");    <p>You are visitor\n  print(\"<p>You are \");          <?php echo $n; ?>\n  print(\"visitor \");          </p>\n  print(n);\n  print(\"</p>\");\n}\n\n  left:  the page's shape is invisible; you must\n         execute it in your head to see the document\n  right: the page IS the page\n\n  first change: rewrite everything | type 20 characters\n  thousandth:   structured         | logic everywhere,\n                                     in emission order"
+    },
+    "practice": "Take a template in any system you use and find the most complex piece of logic embedded in it. Then ask what would have had to exist for that logic to have been written somewhere else — and why it was easier to put it there."
+  },
+  "beats": {
+    "broke": "A page that varied by request had to be printed by a program, so the document lived inside code as a sequence of strings. Wanting one dynamic element on an existing page meant rewriting the page as a program.",
+    "fix": "Invert the nesting: the file is the document, escaping into code where the output varies. Released on 8 June 1995 as a set of small CGI binaries — a templating mechanism rather than a language — and rewritten twice in the following year.",
+    "cost": "Code goes wherever output goes, so nothing creates a boundary between presentation and logic. The model has no point at which it tells you the varying part has grown too large, and the cheap path at every step is to add more logic in place.",
+    "interview": {
+      "q": "What does the inversion actually buy, and why is that the same thing that makes large systems built on it unmaintainable?",
+      "trap": "Framing it as ease of use versus good structure, as though the trade were between a beginner’s tool and a professional one. The mechanism is about where the default lies, not about who is using it.",
+      "answer": "It buys a first step of essentially zero cost. With a program that emits the document, you must translate the whole page into code before anything varies; with a document that contains code, the page keeps working and you add twenty characters where the varying part goes. Adoption is usually decided on the first step, because that is the only one visible at the time of choosing.\n\nThe cost is the same fact viewed later. If the default is to emit and the exception is to compute, then computation lands wherever output lands, in emission order — which is rarely the order the logic wants. Nothing in the model creates a boundary to pull it back behind, and adding one more piece of logic in place is always locally cheaper than introducing one.\n\nSo it is not beginners versus professionals. It is that the model has no mechanism for noticing when the varying part has outgrown the inversion, and by then the code is distributed through the presentation by construction."
+    }
+  },
+  "blueprint": "The inversion, and the bill it comes with:\n\n  default: EMIT        exception: COMPUTE\n  -------------------------------------------\n  first dynamic element on an existing page:\n      cost ~ 0        <- this is why it spread\n\n  but the same rule, run for years:\n\n      output goes here   -> logic goes here\n      more output here   -> more logic here\n      ...\n      -> logic distributed through presentation,\n         ordered by EMISSION, not by meaning\n\n  Nothing in the model ever says \"the varying part\n  has outgrown this\". There is no such signal, because\n  the absence of a boundary IS the feature.",
+  "takeaway": "Making the document the default and code the exception drives the cost of the first dynamic element to nothing — and by the same rule scatters logic through presentation in emission order, with no signal that it has outgrown the model."
+}

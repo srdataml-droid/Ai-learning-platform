@@ -1,0 +1,48 @@
+{
+  "id": "C.17",
+  "trackId": "C",
+  "trackName": "Languages: the chain of walls",
+  "title": "2000. C#. Hejlsberg, Microsoft",
+  "status": "traced",
+  "seed": "C.17",
+  "story": "By 2000 the managed-runtime argument had been won: compiling to an abstract machine with automatic memory management was clearly productive for application work. The open question was no longer whether to do it but whose runtime you would be doing it on, and that is a commercial question wearing technical clothes. Adopting a language owned by one company means your code lives as long as that company’s interest in it does.\n\nA team formed in January 1999 under Hejlsberg, on a language then called COOL — a name dropped for trademark reasons by a committee that wanted the C heritage visible. The first widely distributed implementation shipped in July 2000 with the surrounding framework. As a design it is unremarkable in the sense that matters here: it is a careful synthesis of what the previous twenty years had settled, which is what you want from a language meant for large amounts of ordinary work.\n\nThe move worth studying is the one made alongside it. In September 2000, months after release, a standards task group was formed; development of the standard started that November and it was adopted in December 2001, based on a submission from three companies rather than one, and approved by the international bodies in 2003. That is the same manoeuvre COBOL made in 1959 — put the definition in a document nobody owns — but made for an entirely different reason. Then it was a buyer forcing interchangeability on its suppliers. Here it is a supplier volunteering it, because the objection to adoption was ownership and a specification is the only thing that answers that objection.\n\nThe limit is exact, and it is where most of the value actually sat. A standard covers the language. It does not cover the class libraries, the runtime implementation, the tooling, or the surrounding framework, and those are what a real program depends on. So what was bought was a credible answer to \"what if you stop\" at the level of syntax and semantics, while the dependency that would actually hurt to lose stayed exactly where it was.",
+  "problem": {
+    "name": "Vendor language with an open specification",
+    "aka": [
+      "standardisation as a credibility move",
+      "second-source guarantee"
+    ],
+    "shape": "Adopters will not commit to a technology whose definition one company controls, because the risk is that company’s future behaviour rather than any property of the technology.",
+    "tell": [
+      "the objection you keep hearing is about ownership, not capability",
+      "buyers ask what happens if you stop, and there is no answer that is not a promise",
+      "a competitor’s equivalent is worse and is being chosen anyway"
+    ],
+    "move": "Move the definition into a document held by an independent body, with co-submitters who are not you, so that conformance is checkable by someone else and a second implementation is legally and technically possible.",
+    "invariant": "The specification is sufficient to build a conforming implementation without the originator’s cooperation. If it is not, the standard is a description of a product rather than a definition of a technology, and it answers nothing.",
+    "breaks": "It breaks at the edge of what was standardised. Real programs depend on libraries, runtime behaviour and tooling, and if those stay proprietary then the portability the standard offers is not the portability anyone needed. The manoeuvre is also weakened whenever the reference implementation moves faster than the standard, because then the product defines the language again in practice.",
+    "cost": {
+      "time": "the standards process runs at its own pace, slower than the product",
+      "space": "a specification to maintain in parallel with the implementation",
+      "beats": "a purely proprietary language, which is faster to evolve and carries an objection you cannot answer"
+    },
+    "worked": {
+      "problem": "What does standardising a vendor language actually buy the adopter?",
+      "reasoning": "Ask what the adopter is afraid of. Not that the language is bad — they can evaluate that. They are afraid of a future in which the owner loses interest, changes terms, or disappears, and their code becomes unmaintainable through no technical fault.\n\nA specification held elsewhere answers precisely one part of that: the language itself could be reimplemented by someone else, because the definition does not belong to the originator. That is real, and it is why co-submitters matter — a document submitted by three parties is evidence that at least three read it as implementable.\n\nNow check what is left. The program does not depend only on syntax and semantics; it depends on the libraries it calls, the runtime it assumes, and the tooling that builds it. If those are outside the standard, the guarantee covers the part that was never the expensive part to replace.\n\nSo the honest summary: it converts an unanswerable objection into a bounded one, and the bound is where the specification stops.",
+      "code": "what the adopter fears: \"what if you stop?\"\n\n  proprietary        standardised\n  -----------        ------------\n  language    owner  -> independent body   <- covered\n  libraries   owner  -> owner              <- NOT\n  runtime     owner  -> owner (partly)     <- NOT\n  tooling     owner  -> owner              <- NOT\n\n  The answer is real, and it is scoped.\n\n  Test of a genuine standard: could a stranger build a\n  conforming implementation with the document alone?\n  If not, it describes a product rather than defining\n  a technology -- and answers nothing."
+    },
+    "practice": "Pick a standardised technology you rely on and list which of the things your code actually depends on are inside the standard and which are outside it. Then ask which list contains the things that would be expensive to replace."
+  },
+  "beats": {
+    "broke": "A language owned by one company carries a risk that is commercial rather than technical: your code lives exactly as long as the owner’s interest in it, and no feature list answers that.",
+    "fix": "Put the definition in a document held by an independent body. A task group was formed in September 2000, work began that November, and the standard was adopted in December 2001 from a submission by three companies, ratified internationally in 2003.",
+    "cost": "The standard covers the language and not the platform. Libraries, runtime and tooling stayed proprietary, so the guarantee applies to the layer that was cheapest to replace and stops short of the ones that were not.",
+    "interview": {
+      "q": "What does standardising a vendor-created language actually buy the people adopting it?",
+      "trap": "Answering \"portability\", without checking which layer is portable. The portability that a language standard provides is rarely the portability the adopter was worried about.",
+      "answer": "It converts an unanswerable objection into a bounded one. The fear is not that the language is bad — that is assessable — but that the owner may lose interest or change terms, leaving working code unmaintainable for non-technical reasons. Putting the definition in a document held elsewhere means the language could be reimplemented without the originator, and co-submission by several companies is evidence the document is actually implementable.\n\nThe bound is where the specification stops. Programs depend on libraries, runtime behaviour and tooling, and if those remain proprietary then the guarantee covers syntax and semantics — the layer that was least expensive to replace anyway.\n\nIt is worth noticing this is the same move as the 1959 committee that produced COBOL, run in the opposite direction. There a buyer imposed a specification on its suppliers to get interchangeability. Here a supplier volunteered one to remove an objection to adoption. Same mechanism, opposite party, and the test is identical: could someone build a conforming implementation from the document alone?"
+    }
+  },
+  "blueprint": "The same manoeuvre, made by opposite parties:\n\n  1959                          2000\n  ----                          ----\n  BUYER forces a spec on        SUPPLIER volunteers a\n    its suppliers                 spec to its buyers\n  goal: interchangeability      goal: remove the\n    across manufacturers          ownership objection\n  proof: same program on        proof: co-submitted by\n    two makes of machine          three companies\n\n  Identical test in both cases:\n\n     can a stranger build a conforming implementation\n     from the document alone?\n\n  And the identical limit:\n\n     the spec ends somewhere. Past that line the\n     product is still the definition -- which here is\n     the libraries, the runtime and the tooling.",
+  "takeaway": "Standardising a vendor language answers the ownership objection at the level of syntax and semantics only — the same move COBOL made in 1959, run by the supplier instead of the buyer, and bounded exactly where the specification stops."
+}

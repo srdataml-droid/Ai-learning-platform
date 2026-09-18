@@ -1,0 +1,116 @@
+{
+  "taskId": "C.22",
+  "title": "1974. SQL. Chamberlin and Boyce, IBM",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The relational model it implements was set out by Codd in A Relational Model of Data for Large Shared Data Banks, Communications of the ACM volume 13 number 6, pages 377 to 387, in 1970.",
+      "type": "date",
+      "tokens": [
+        "Codd",
+        "Relational Model",
+        "Communications",
+        "ACM",
+        "1970"
+      ],
+      "source": {
+        "title": "Codd, E. F., A Relational Model of Data for Large Shared Data Banks, Communications of the ACM 13(6):377-387, 1970",
+        "url": "https://dl.acm.org/doi/10.1145/362384.362685",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Donald Chamberlin and Raymond Boyce of the IBM Research Laboratory in San Jose presented SEQUEL at the 1974 ACM SIGFIDET workshop in Ann Arbor, pages 249 to 264. Participants afterwards renamed the group SIGMOD.",
+      "type": "date",
+      "tokens": [
+        "Donald Chamberlin",
+        "Chamberlin",
+        "Raymond Boyce",
+        "Boyce",
+        "IBM",
+        "Research Laboratory",
+        "San Jose",
+        "SEQUEL",
+        "SIGFIDET",
+        "SIGMOD",
+        "Ann Arbor",
+        "1974"
+      ],
+      "source": {
+        "title": "Chamberlin, D. D. and Boyce, R. F., SEQUEL: A Structured English Query Language, Proc. 1974 ACM SIGFIDET Workshop on Data Description, Access and Control, Ann Arbor, May 1974, pp. 249-264",
+        "url": "https://dl.acm.org/doi/10.1145/800296.811515",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The paper states that without resorting to the concepts of bound variables and quantifiers, the language identifies a set of simple operations on tabular structures which are shown to be of equivalent power to the first-order predicate calculus. Users are presented with a consistent set of keyword English templates which can be composed to form more complex queries.",
+      "type": "quote",
+      "tokens": [
+        "SEQUEL",
+        "English"
+      ],
+      "source": {
+        "title": "Chamberlin, D. D. and Boyce, R. F., SEQUEL: A Structured English Query Language, Proc. 1974 ACM SIGFIDET Workshop on Data Description, Access and Control, Ann Arbor, May 1974, pp. 249-264",
+        "url": "https://dl.acm.org/doi/10.1145/800296.811515",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "It was intended as a database sublanguage for both the professional programmer and the more infrequent database user, refining an earlier language the same authors had worked on called SQUARE, and was built for a prototype intended to demonstrate the practicality of relational technology.",
+      "type": "event",
+      "tokens": [
+        "SEQUEL",
+        "SQUARE"
+      ],
+      "source": {
+        "title": "Chamberlin, D. D. and Boyce, R. F., SEQUEL: A Structured English Query Language, Proc. 1974 ACM SIGFIDET Workshop on Data Description, Access and Control, Ann Arbor, May 1974, pp. 249-264",
+        "url": "https://dl.acm.org/doi/10.1145/800296.811515",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "The name was later changed because SEQUEL was a trademark registered by the Hawker Siddeley aircraft company. Boyce died of a brain aneurysm in 1974, shortly after the work, and Chamberlin continued the development.",
+      "type": "event",
+      "tokens": [
+        "SEQUEL",
+        "SQL",
+        "Hawker Siddeley",
+        "Hawker",
+        "Siddeley",
+        "Boyce",
+        "Chamberlin",
+        "1974"
+      ],
+      "source": {
+        "title": "SQL: the renaming from SEQUEL owing to the Hawker Siddeley trademark, and the deaths and continuations around the 1974 work",
+        "url": "https://en.wikipedia.org/wiki/SQL",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c6",
+      "text": "The earlier link this trade is compared with is Fortran, shipped to users in April 1957, where a compiler began choosing machine instructions on the programmer’s behalf and the executed program stopped being the written one.",
+      "type": "date",
+      "tokens": [
+        "Fortran",
+        "1957"
+      ],
+      "source": {
+        "title": "Backus, J., The History of Fortran I, II and III, in History of Programming Languages, ACM/Academic Press, 1978",
+        "url": "https://cse.sc.edu/~mgv/csce330f12/Backus78.pdf",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "retrieving data meant writing a program that navigated the stored structure, so every program encoded the physical layout and changing the layout broke all of them",
+    "fix": "state the result you want over relations and let the system choose how to obtain it, with the query saying nothing about access paths",
+    "cost": "you no longer control how, so performance becomes the judgement of an optimiser and the thing you debug is a plan you did not write",
+    "interview": "what physical data independence actually buys, and what it necessarily takes away"
+  }
+}
