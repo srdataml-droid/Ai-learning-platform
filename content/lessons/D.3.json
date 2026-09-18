@@ -1,0 +1,48 @@
+{
+  "id": "D.3",
+  "trackId": "D",
+  "trackName": "Software development craft",
+  "title": "Reading other people’s code fast",
+  "status": "traced",
+  "seed": "D.3",
+  "story": "Two studies measured where the working day goes, and both found the same shape. Minelli, Mocci and Lanza put comprehension at roughly 70% of instrumented session time, with editing and navigation at about 5% each. Xia and colleagues instrumented everything rather than just the development environment — seven projects, 78 professionals, 3,148 working hours — and put it at about 58%.\n\nBe careful quoting those together, because the temptation is to say \"58 to 70%\" and it is not a range. One is a share of session time inside one environment; the other is a share of total working hours across every application. They are measurements of different denominators that happen to point the same way. What they jointly support is the qualitative claim and not a number: reading dominates, and editing is a rounding error next to it.\n\nThe default strategy is to read from the top until it makes sense, and it fails for a reason that is structural rather than about discipline. Linear reading costs time proportional to the size of the code, while what you need is proportional to the size of your question, and in any codebase worth reading those two quantities have nothing to do with each other. So the skill is not reading faster. It is reading less, which means having a question sharp enough to tell you when to stop.\n\nThat reframing is what makes the studies’ other finding legible. Xia reports that senior developers spend significantly smaller percentages of their time on comprehension than juniors, which sounds like it should be the other way round if comprehension were a skill you get better at performing. It is better explained as a skill you get better at avoiding: knowing which parts you do not need to read, recognising a shape you have seen before, and asking a question narrow enough that three files answer it. The cost is real and worth stating — you finish with a model that is accurate about your question and unreliable everywhere else, and nothing marks the boundary.",
+  "problem": {
+    "name": "Targeted comprehension",
+    "aka": [
+      "reading code against a question",
+      "partial understanding"
+    ],
+    "shape": "You must understand enough of an unfamiliar system to act, and the system is far larger than the part your action touches.",
+    "tell": [
+      "you have been reading for an hour and could not yet state what you are looking for",
+      "the plan is to understand the codebase, rather than to answer something",
+      "you are starting at the top of a file because it is the top"
+    ],
+    "move": "Write the question first. Find the point every answer must pass through — the entry point, the request handler, the type the data arrives as — and read outward from there only as far as the question requires. Stop when it is answered.",
+    "invariant": "The reading is bounded by the question, not by the code. That is the only thing that keeps the cost independent of the size of the system, and it is why the question has to be written down: an unstated question cannot tell you when to stop.",
+    "breaks": "You get a model that is correct about the path you traced and silent about everything else, with no marker where it ends. That is usually fine and occasionally severe — the assumption you did not know you were making sits just outside the region you read. The mitigation is not to read more, it is to make the model falsifiable: write the test, make the change, and see whether the system agrees with you.",
+    "cost": {
+      "time": "proportional to the question rather than to the codebase",
+      "space": "a partial model, accurate locally, unmarked at the edges",
+      "beats": "linear reading, which is complete in principle and unaffordable in practice at any real size"
+    },
+    "worked": {
+      "problem": "Why do more experienced developers spend a smaller share of their time on comprehension?",
+      "reasoning": "If comprehension were an activity you get better at performing, experience would make each act cheaper but you would still do the same amount, and the share might not move much at all. The measured share drops, so something else is happening.\n\nThe better explanation is that experience reduces how much reading is needed, in three ways. Recognition: a pattern seen before is identified rather than derived. Scoping: a sharper question implicates fewer files. And elimination: knowing which parts of a system cannot be relevant is itself knowledge, and it removes reading rather than speeding it up.\n\nThat reframes what to practise. Reading faster has a low ceiling. Getting better at stating the question, and at ruling regions out, does not — and it is the thing the measurement is actually detecting.",
+      "code": "linear reading            reading against a question\n--------------            --------------------------\nstart at the top          \"why is the total wrong\nread until it makes        when the cart is empty?\"\nsense                            |\n  |                        entry point: checkout()\ncost ~ size of the           -> price calc\n       CODEBASE              -> the empty branch\n                          stop.\n\n  cost ~ size of the QUESTION\n\n  and those two quantities are unrelated in any\n  codebase worth reading.\n\n  what experience actually buys:\n     recognition  - seen this shape before\n     scoping      - a narrower question\n     elimination  - knowing what can't be relevant\n\n  none of these are \"reading faster\"."
+    },
+    "practice": "Next time you open unfamiliar code, write your question in one sentence before reading anything, and note the time. Stop when the question is answered and note it again. Then ask what you would have read if you had not written the question down."
+  },
+  "beats": {
+    "broke": "Comprehension is the dominant activity in the working day — roughly 70% of instrumented session time in one study, about 58% of total working hours in another — while the default approach, reading linearly until it makes sense, costs time proportional to the codebase rather than to the task.",
+    "fix": "Read against a written question, entering where every answer must pass, and stop when it is answered. The cost then scales with the question instead of the system.",
+    "cost": "You are left with a model accurate about the path you traced and unmarked at its edges, so the assumption you did not know you were making is the one just outside the region you read.",
+    "interview": {
+      "q": "Why do more experienced developers spend a smaller share of their time on comprehension?",
+      "trap": "Answering that they read faster or know the codebase already. The measurement covers unfamiliar code too, and pure speed has a low ceiling.",
+      "answer": "Because the skill is largely about needing to read less rather than reading more quickly.\n\nThree things do the work. Recognition — a familiar shape is identified instead of derived from first principles. Scoping — a sharper question implicates fewer files, and the ability to ask a narrow question is itself the expertise. Elimination — knowing which regions cannot possibly be relevant removes reading altogether rather than accelerating it.\n\nIf comprehension were simply an activity you get better at performing, you would expect each act to get cheaper while the share stayed roughly stable. The share dropping is evidence that the volume is falling, not just the unit cost.\n\nWorth adding the caveat on the numbers: the 70% and 58% figures come from different denominators — one is session time in a single environment, the other total working hours across all applications — so they support the qualitative claim jointly and should not be quoted as a range."
+    }
+  },
+  "blueprint": "Two costs, and which one you control:\n\n  linear reading   cost ~ size of CODEBASE\n  question-first   cost ~ size of QUESTION\n\n  and those are unrelated at any real size.\n\n  the question has one job the code cannot do:\n     tell you when to STOP\n\n  so it has to be written down. an unstated question\n  is satisfied by anything and therefore by nothing.\n\n  what the measurements actually show:\n\n     comprehension dominates       (both studies)\n     seniors spend a SMALLER share (Xia)\n       -> not \"reads faster\"\n       -> recognition + scoping + elimination\n       -> i.e. reads LESS\n\n  caveat: 70% and 58% have different denominators.\n  they agree in direction, not as a range.",
+  "takeaway": "Reading linearly costs time proportional to the codebase while the task is proportional to your question — so the skill is a question sharp enough to tell you when to stop, which is why experience shows up as less comprehension time rather than faster reading."
+}

@@ -2350,6 +2350,102 @@
     "blueprint": "# Automated bisect search:\n$ git bisect start HEAD v1.4.0\n$ git bisect run npm test\n# Output: 34a8e2b is the first bad commit\n$ git bisect reset",
     "takeaway": "Git is not a backup cloud; it is an immutable directed acyclic graph of project evolution."
   },
+  "D.10": {
+    "id": "D.10",
+    "trackId": "D",
+    "trackName": "Software development craft",
+    "title": "Documentation that survives: README, architecture notes, decision records",
+    "status": "traced",
+    "seed": "D.10",
+    "story": "Documentation rots for a mechanical reason rather than a cultural one, and naming the mechanism tells you what to write. A document that describes the current state of a system makes a claim that the system can falsify, and nothing connects the two: the code changes in one place and the description stays as it was. There is no force that updates it, so the only question is how fast it drifts.\n\nNygard’s 2011 post proposes a form of writing that this cannot happen to. A decision record is a short text file describing a set of forces and a single decision made in response, with a title, the context, the decision and its consequences. The crucial property is in the tense. It records that on some date, given these pressures, this choice was made — and that remains true forever, because it is a statement about an event rather than about a state. When the decision changes you do not edit the record; you write a new one that supersedes it, and both stay.\n\nSo the practical rule is to sort writing by what kind of claim it makes. Anything describing how things are now will rot, so keep it short and make as much of it as possible checkable — commands that are actually run, examples that are actually tested. Anything describing why a choice was made cannot rot, so it can be as long as it needs to be, and it is where the expensive knowledge should go. That knowledge is the same thing D.2 identified as unrecoverable: the forces, and the alternatives that were rejected.\n\nNygard also answers the objection directly: agile methods are not opposed to documentation, only to valueless documentation. The honest cost is that decision records do not replace the rotting document. They tell you how you got here, in order, and not what is true now — so a reader who needs the current architecture still needs something that describes it, with all the decay that implies.",
+    "problem": {
+      "name": "Durable documentation",
+      "aka": [
+        "architecture decision records",
+        "writing that cannot go stale"
+      ],
+      "shape": "Written descriptions of a changing system are falsified by the system changing, and nothing in the process updates them.",
+      "tell": [
+        "the setup instructions have not worked for months and nobody noticed",
+        "people ask why something is the way it is and the answer is a person, not a document",
+        "a decision is relitigated because nobody can find what was considered the first time"
+      ],
+      "move": "Separate writing by the kind of claim it makes. State-describing writing must be short and, where possible, executable. Event-describing writing — a decision, its forces, its consequences — is append-only and superseded rather than edited.",
+      "invariant": "A record of a past decision cannot become false, because the decision was in fact made under those forces at that time. That property, not discipline or tooling, is what stops it rotting.",
+      "breaks": "It does not solve the original problem. A stack of decision records tells you the sequence of choices and not the current shape of the system, so the document that describes how things are now still exists and still decays. Records also accumulate, and reading twenty to reconstruct the present state is worse than reading one accurate page.",
+      "cost": {
+        "time": "a short record per significant decision, written at the moment it is made",
+        "space": "a directory that only grows, including entries that are no longer in force",
+        "beats": "a single living architecture document, which is easier to read and is wrong within months"
+      },
+      "worked": {
+        "problem": "Why does a decision record not go stale when a README does?",
+        "reasoning": "Look at the tense of the claim each one makes.\n\nA README says: this is how the system is. The system can change, and when it does the claim becomes false, and nothing propagates the change to the document. Its truth is hostage to something it does not control.\n\nA decision record says: on this date, facing these forces, we chose this. The system changing does not touch that. Circumstances can change, the choice can be regretted, a later decision can reverse it — and none of that makes the record false, because it never claimed to describe the present.\n\nSo immutability here is not a policy anyone enforces; it is a property of the kind of statement. Which is exactly why superseding rather than editing is the right handling: editing would convert it into a claim about the present, and reintroduce the failure mode the form exists to avoid.",
+        "code": "README                      decision record\n------                      ---------------\n\"the service uses X\"        \"2024-03: chose X over Y\n                             because Z. Consequence:\n                             we cannot do W.\"\n\nclaim about: the PRESENT     claim about: an EVENT\nfalsified by: any change     falsified by: nothing\nkept true by: nothing        kept true by: the past\n                                           not moving\n\n  -> so: state-describing writing\n         short + executable where possible\n     event-describing writing\n         append-only, supersede, never edit\n\n  editing a record turns it back into a claim about\n  the present -- and back into something that rots."
+      },
+      "practice": "Find a decision in your system that people periodically re-argue. Write the record for it: the forces at the time, the choice, and the consequences — including what it made impossible. Then notice whether you can still reconstruct the forces, or only the outcome."
+    },
+    "beats": {
+      "broke": "Documentation describes how a system is, the system changes, and nothing connects the two — so decay is the default and the only variable is speed. Meanwhile the reasoning behind decisions is stored nowhere and leaves with the people.",
+      "fix": "Write what cannot become false. Nygard’s decision record, from 2011, is a short file giving the forces, the single decision made in response, and its consequences — superseded by a later record rather than edited.",
+      "cost": "It does not replace the document that rots. Records give you the sequence of choices, not the present shape, and they accumulate — reconstructing the current state from twenty of them is worse than one accurate page.",
+      "interview": {
+        "q": "Why does a decision record not go stale when a README does?",
+        "trap": "Answering that records are better maintained, or that teams take them more seriously. It is a property of the claim, not of anyone’s diligence.",
+        "answer": "Because of what each one asserts. A README claims that this is how the system is — a statement about the present, which the system falsifies whenever it changes, with nothing propagating the change to the text. Its truth depends on something it does not control.\n\nA decision record claims that on a given date, facing particular forces, a particular choice was made. Nothing the system does afterwards touches that. The decision may be regretted or reversed, and the record remains accurate, because it never claimed to describe the present.\n\nSo immutability is a property of the kind of statement rather than a policy anyone enforces — which is also why the handling is to supersede rather than edit. Editing a record to reflect current reality converts it back into a claim about the present and reintroduces exactly the decay you were avoiding.\n\nThe honest limit is that this does not remove the need for the rotting document. Records tell you how you got here, in order; someone still needs a description of where here is."
+      }
+    },
+    "blueprint": "Sort writing by the tense of its claim:\n\n  about the PRESENT        about an EVENT\n  -----------------        --------------\n  \"the service uses X\"     \"on <date>, facing <forces>,\n                            we chose X over Y\"\n\n  falsified by: any        falsified by: nothing\n    change to the system     (the past doesn't move)\n  kept true by: nothing\n                           -> append-only\n  -> keep SHORT            -> supersede, never edit\n  -> make EXECUTABLE\n     (commands that run,\n      examples that are\n      tested)\n\n  and note what goes in the second kind: the forces\n  and the rejected alternatives -- the same thing D.2\n  called the only unrecoverable part.",
+    "takeaway": "A README claims something the system can falsify and nothing keeps it true; a decision record claims something about the past, which nothing can falsify — so put the expensive reasoning there and keep the state-describing writing short and executable."
+  },
+  "D.11": {
+    "id": "D.11",
+    "trackId": "D",
+    "trackName": "Software development craft",
+    "title": "Code review, on both sides of it",
+    "status": "traced",
+    "seed": "D.11",
+    "story": "Bacchelli and Bird went and looked. They observed, interviewed and surveyed developers and managers, and hand-classified hundreds of review comments across teams at Microsoft, and what they found is a gap between why people say they review and what review produces. Finding defects remains the main stated motivation; reviews turn out to be less about defects than expected, and to deliver knowledge transfer, increased team awareness, and alternative solutions to problems.\n\nThat gap matters because the two purposes recommend opposite behaviour. If review is a defect gate, a review with no comments is a clean pass, the fastest reviewer is the best one, and a question like \"why is it done this way\" is noise because it finds no bug. If review is mostly how knowledge moves and how a team stays aware of what is changing, then a review with no comments is a wasted opportunity, and that question is among the most valuable things you can write — it transfers context in both directions and often surfaces the alternative nobody considered.\n\nSo the practical advice differs per side. As a reviewer, the highest-value comment is frequently not a defect: it is a question that makes the author articulate a reason, which is the same mechanism D.2 noted for commit messages, where people find their own bugs while explaining themselves. As an author, the useful move is to make review cheap — small changes, and the reasoning already written down, so the reviewer spends their attention on the decision rather than on reconstructing it.\n\nTwo caveats, because this is a literature where confidence outruns evidence. Rigby and Bird found that review parameters converge across drastically different settings — Google’s Android and Chromium OS, projects at Microsoft and AMD, inspection data from Lucent, and open source review on Apache, Linux and KDE — which suggests something structural rather than cultural is shaping the practice. And they record that the closest available proxy for a defect found was a discussion thread marked resolved, noting that a reviewer’s comment or question can produce a resolved thread without any defect existing. So the field’s numbers about defect-finding are softer than they sound, which is a reason to hold the headline claim loosely and the mechanism firmly.",
+    "problem": {
+      "name": "Purpose-outcome mismatch",
+      "aka": [
+        "code review",
+        "reviewing for knowledge rather than defects"
+      ],
+      "shape": "A practice is justified by one outcome and mostly delivers another, so optimising it against the stated purpose degrades what it actually provides.",
+      "tell": [
+        "approvals arrive with no comments and that is treated as a good sign",
+        "reviewers are measured on turnaround time",
+        "the same context is explained repeatedly in person because it never appears in a review"
+      ],
+      "move": "Review for the outputs it actually produces: ask the questions that make reasoning explicit, name alternatives, and treat transferring context as the work rather than as a digression from it.",
+      "invariant": "The reviewer ends up understanding the change well enough to maintain it. That is the property that produces the measured benefits, and unlike defect count it is something the reviewer can tell whether they achieved.",
+      "breaks": "It breaks under measurement. Defects found is countable, and knowledge transferred is not, so a team that instruments review will instrument the part that matters least and reward the behaviour that produces it — speed and silence. The proxy problem runs deep enough that even the research had to use resolved discussion threads as a stand-in for defects.",
+      "cost": {
+        "time": "slower reviews, and reviewers who must understand rather than scan",
+        "space": "discussion recorded against the change, which is where a future reader will look",
+        "beats": "a fast approval gate, which is cheaper, measurable, and delivers the smaller half of the value"
+      },
+      "worked": {
+        "problem": "What changes about how you review once you know defects are not the main output?",
+        "reasoning": "Take one comment type and evaluate it under both purposes: \"why is this done this way?\"\n\nUnder the defect-gate purpose it scores zero. It identifies no bug, it delays the merge, and a reviewer optimising for throughput should not write it.\n\nUnder the measured purpose it is close to optimal. The author must articulate a reason, which frequently exposes that there was not a good one. The reviewer acquires context they will need later. The exchange is recorded against the change, where the next person will look. And it often surfaces an alternative, which is one of the outcomes the study names directly.\n\nSo the same comment is worthless or excellent depending on which purpose you hold, and that is the practical content of the finding. It also explains the failure mode: because defects are countable and understanding is not, any team that measures review will drift toward the purpose that scores worse.",
+        "code": "comment: \"why is this done this way?\"\n\n  scored as a defect gate     scored as it actually works\n  ---------------------       --------------------------\n  finds no bug: 0             author must justify it\n  delays merge: -1            -> often finds there\n  reviewer throughput: worse     wasn't a reason\n                              reviewer gains context\n  verdict: don't write it     recorded where the next\n                                person will look\n                              surfaces alternatives\n                              verdict: near-optimal\n\n  same comment. opposite verdicts.\n\n  and the measurement trap:\n     defects found     -> countable\n     knowledge moved   -> not\n  -> instrument review and you reward speed+silence"
+      },
+      "practice": "Take your last five reviews and classify every comment as defect, style, or question. Then ask, for each question you did not write but thought of, what would have happened if you had."
+    },
+    "beats": {
+      "broke": "Review is justified as a defect-finding gate. Under that purpose an empty review is a success and the fastest reviewer is the best, so the practice is optimised toward speed and silence.",
+      "fix": "Treat it as what it measurably delivers. Studying review at Microsoft found that although defects remain the main motivation, reviews are less about defects than expected and deliver knowledge transfer, team awareness and alternative solutions.",
+      "cost": "The valuable outputs are not countable while defects are, so any team that measures review will measure the smaller half and reward the behaviour that produces it. Even the research had to use resolved discussion threads as a proxy for defects found.",
+      "interview": {
+        "q": "What changes about how you review once you know that defects are not the main output?",
+        "trap": "Concluding that defects do not matter. They remain the main stated motivation and reviews do catch them — the point is that they are not the largest part of the value.",
+        "answer": "Take one comment — \"why is this done this way?\" — and score it under each purpose.\n\nAs a defect gate it is worthless: it identifies no bug, it delays the merge, and a reviewer optimising for throughput should not write it. Under what review actually delivers it is close to optimal: the author has to articulate a reason, which often reveals there was not a good one; the reviewer acquires context they will need later; the exchange is recorded against the change where the next person will look; and it frequently surfaces an alternative, which the research names as one of the outcomes.\n\nSame comment, opposite verdicts. That is the practical content of the finding, and it applies on both sides — as an author, make review cheap by keeping changes small and writing the reasoning down first, so attention goes to the decision rather than to reconstructing it.\n\nTwo caveats worth carrying: review parameters converge across very different organisations, which suggests something structural shapes the practice; and the closest available proxy for a defect found was a resolved discussion thread, so the numbers on defect-finding are softer than they sound."
+      }
+    },
+    "blueprint": "Stated purpose vs measured outcome:\n\n  stated:   find defects\n  measured: knowledge transfer, team awareness,\n            alternative solutions\n            (defects: real, but the smaller half)\n\n  and they recommend OPPOSITE behaviour:\n\n     as a gate            as it actually works\n     ---------            --------------------\n     no comments = pass   no comments = wasted\n     fast = good          understanding = good\n     \"why this way?\"      \"why this way?\"\n        = noise              = near-optimal\n\n  the measurement trap:\n     defects   countable\n     knowledge not\n     -> instrumenting review rewards speed + silence\n\n  and hold the numbers loosely: the proxy for\n  \"defect found\" was a RESOLVED DISCUSSION THREAD.",
+    "takeaway": "Review is justified by defect-finding and mostly delivers knowledge transfer, awareness and alternatives — so the same comment is worthless under the stated purpose and near-optimal under the real one, and measuring review rewards the wrong half."
+  },
   "D.12": {
     "id": "D.12",
     "trackId": "D",
@@ -2389,6 +2485,390 @@
     },
     "blueprint": "/* The Senior Engineer's Razor: */\nQ: \"Should we add an asynchronous queue and worker cluster here?\"\nA: \"Have we measured the database latency in production?\"\nA: \"Can we name the incident where synchronous execution failed?\"\nIf NO: Keep it synchronous until the metric demands the queue.",
     "takeaway": "If you cannot name the incident that justified it, you are building for an imaginary future."
+  },
+  "D.2": {
+    "id": "D.2",
+    "trackId": "D",
+    "trackName": "Software development craft",
+    "title": "Commit messages that explain why, not what",
+    "status": "traced",
+    "seed": "D.2",
+    "story": "Start with what the repository already knows. It has the diff, so it knows precisely what changed, line by line, forever, with more accuracy than any prose summary. A message that says what changed is therefore a worse copy of something already stored — which is the entire argument, and it is usually skipped in favour of an appeal to politeness.\n\nWhat the repository cannot store is why. The Git project’s own guidance is unusually direct about this: a message should explain the problem the change tries to solve — what is wrong with the current code without the change — justify why the result with the change is better, and record alternate solutions considered but discarded. The third item is the one people drop, and it is the only one of the three that is completely unrecoverable. A future reader can often infer the problem from the change; they can never infer the two approaches you tried and abandoned, so without the note they will try them again.\n\nThere is a second-order benefit the guidance mentions almost in passing and which is worth taking seriously: you often discover your own bugs while writing the message that summarises the thinking behind the change. That is a testable claim about your own work rather than a courtesy to posterity. Stating why you did something forces you to check that it is what you did, and the first reason the guidance gives for writing the message at all is that your code may be doing something different from what you wanted.\n\nThe rest is mechanical and cheap. Imperative mood, as if giving orders to the codebase. The problem stated in the present tense, because by convention the status quo is the code without your change. Understandable without external resources — summarise the discussion rather than linking to it, because the link will die and the archive will move. And detailed enough that a reader can judge whether the change is a good thing to do without reading the patch to find out what it actually does.",
+    "problem": {
+      "name": "Recording intent",
+      "aka": [
+        "commit message discipline",
+        "why not what"
+      ],
+      "shape": "A system records the outcome of decisions perfectly and the reasoning behind them not at all, so the expensive half is the half that is lost.",
+      "tell": [
+        "the history answers \"what changed here\" instantly and \"why\" never",
+        "the same rejected approach gets attempted again by someone new",
+        "understanding a past change requires finding the person who made it"
+      ],
+      "move": "Write down what the mechanism cannot: the problem with the code as it stands, why this change is better, and which alternatives were considered and rejected. Leave what changed to the diff.",
+      "invariant": "The message contains only what is not recoverable from the artefact. That test decides every line: if the reader could derive it by looking, it does not belong, and if they could not, it is the whole reason the message exists.",
+      "breaks": "It is written at the worst possible moment. You write it immediately after solving the problem, which is the point of maximum context and therefore the point at which the reasoning feels most self-evident — so the cost feels highest exactly when the value is highest. Nothing in the tooling corrects for this, which is why the discipline has to be deliberate.",
+      "cost": {
+        "time": "a few minutes per commit, paid by the author, at their least patient moment",
+        "space": "prose in the history, which is never garbage collected",
+        "beats": "the diff alone, which is complete about mechanism and silent about cause"
+      },
+      "worked": {
+        "problem": "Why is a commit message that describes what changed worth nothing?",
+        "reasoning": "Because it duplicates a record that is already perfect. The diff is a complete, exact, machine-checked statement of what changed. Prose restating it is strictly worse on every dimension — less precise, not verified, and liable to drift from the change it describes if the change is amended.\n\nSo the question is what a message can hold that the diff cannot, and the answer is everything about the decision: the problem, the justification, and the roads not taken.\n\nNotice which of those is genuinely unrecoverable. A reader can usually reconstruct the problem from the change, and can often reconstruct the justification. They can never reconstruct the alternatives you rejected, because nothing in the repository was ever touched by them. That is why the guidance asks for them explicitly and why their absence has a specific, repeated cost: the next person tries them.",
+        "code": "what the repo already has      what only you have\n-------------------------      ------------------\nthe diff (exact, verified)     the problem\nevery line, forever            why this beats the\n                                 alternatives\n                               what you tried and\n                                 abandoned   <- gone\n                                               forever\n\n  test for every line you write:\n     could the reader derive this by looking?\n       yes -> delete it\n       no  -> that's the message\n\n  \"Fix bug in parser\"        <- the diff said that\n  \"Reject empty input; the   <- the diff never\n   caller passes '' on          could\n   timeout, which we were\n   treating as EOF. Tried\n   defaulting upstream;\n   it hides the timeout.\""
+      },
+      "practice": "Take your last ten commit messages and mark each line as derivable from the diff or not. Then find one change where you rejected an approach, and check whether anything in the repository records that you did."
+    },
+    "beats": {
+      "broke": "The diff is already a perfect record of what changed, so a message restating it is a worse copy of something stored. Meanwhile the reasoning — the part that cost the most and is stored nowhere — goes with the author.",
+      "fix": "Write what the mechanism cannot hold. The Git project asks for the problem with the current code, why this change is better, and the alternate solutions considered and discarded, in the imperative, understandable without following a link.",
+      "cost": "It is written immediately after solving the problem, when the reasoning feels most obvious and the author least patient — so the perceived cost peaks exactly where the value does, and no tooling corrects for it.",
+      "interview": {
+        "q": "Why is a commit message that describes what changed worth nothing?",
+        "trap": "Answering that it is redundant, and stopping there. Redundancy is the premise; the useful part is what should occupy the space instead, and which part of that is truly unrecoverable.",
+        "answer": "Because it duplicates a record that is already exact and machine-verified. The diff states what changed completely; prose restating it is less precise, unverified, and can drift from the change if the change is amended.\n\nSo the message's job is whatever the diff cannot hold: the problem with the code as it stands, why this change is better than not making it, and the alternatives considered and rejected.\n\nThe third is the one that matters most and gets dropped first, because it is the only one that is strictly unrecoverable. A reader can usually infer the problem from the change and often the justification — but nothing in the repository was ever touched by the approach you tried and abandoned, so if you do not write it down the next person will try it. That is a repeated, measurable cost with a one-sentence fix.\n\nThere is also a benefit to the author rather than to posterity: the Git guidance notes that people often discover their own bugs while writing the message, because stating why you did something forces you to check that it is what you did."
+      }
+    },
+    "blueprint": "Split the record by what can hold it:\n\n  the diff holds          the message must hold\n  --------------          ---------------------\n  what changed            the problem\n  exactly, verified,      why this is better\n  forever                 what you rejected  <-- and\n                            nothing else ever\n                            recorded this\n\n  one test per line:\n     derivable by looking? -> delete\n     not derivable?        -> that IS the message\n\n  recoverability, worst to best:\n\n     alternatives rejected   never recoverable\n     justification           sometimes\n     problem                 usually\n     what changed            always (it's the diff)\n\n  and we write them in exactly the wrong order.",
+    "takeaway": "The diff is a perfect record of what changed, so the message exists only for what cannot be derived by looking — above all the alternatives you rejected, which nothing else in the repository was ever touched by."
+  },
+  "D.3": {
+    "id": "D.3",
+    "trackId": "D",
+    "trackName": "Software development craft",
+    "title": "Reading other people’s code fast",
+    "status": "traced",
+    "seed": "D.3",
+    "story": "Two studies measured where the working day goes, and both found the same shape. Minelli, Mocci and Lanza put comprehension at roughly 70% of instrumented session time, with editing and navigation at about 5% each. Xia and colleagues instrumented everything rather than just the development environment — seven projects, 78 professionals, 3,148 working hours — and put it at about 58%.\n\nBe careful quoting those together, because the temptation is to say \"58 to 70%\" and it is not a range. One is a share of session time inside one environment; the other is a share of total working hours across every application. They are measurements of different denominators that happen to point the same way. What they jointly support is the qualitative claim and not a number: reading dominates, and editing is a rounding error next to it.\n\nThe default strategy is to read from the top until it makes sense, and it fails for a reason that is structural rather than about discipline. Linear reading costs time proportional to the size of the code, while what you need is proportional to the size of your question, and in any codebase worth reading those two quantities have nothing to do with each other. So the skill is not reading faster. It is reading less, which means having a question sharp enough to tell you when to stop.\n\nThat reframing is what makes the studies’ other finding legible. Xia reports that senior developers spend significantly smaller percentages of their time on comprehension than juniors, which sounds like it should be the other way round if comprehension were a skill you get better at performing. It is better explained as a skill you get better at avoiding: knowing which parts you do not need to read, recognising a shape you have seen before, and asking a question narrow enough that three files answer it. The cost is real and worth stating — you finish with a model that is accurate about your question and unreliable everywhere else, and nothing marks the boundary.",
+    "problem": {
+      "name": "Targeted comprehension",
+      "aka": [
+        "reading code against a question",
+        "partial understanding"
+      ],
+      "shape": "You must understand enough of an unfamiliar system to act, and the system is far larger than the part your action touches.",
+      "tell": [
+        "you have been reading for an hour and could not yet state what you are looking for",
+        "the plan is to understand the codebase, rather than to answer something",
+        "you are starting at the top of a file because it is the top"
+      ],
+      "move": "Write the question first. Find the point every answer must pass through — the entry point, the request handler, the type the data arrives as — and read outward from there only as far as the question requires. Stop when it is answered.",
+      "invariant": "The reading is bounded by the question, not by the code. That is the only thing that keeps the cost independent of the size of the system, and it is why the question has to be written down: an unstated question cannot tell you when to stop.",
+      "breaks": "You get a model that is correct about the path you traced and silent about everything else, with no marker where it ends. That is usually fine and occasionally severe — the assumption you did not know you were making sits just outside the region you read. The mitigation is not to read more, it is to make the model falsifiable: write the test, make the change, and see whether the system agrees with you.",
+      "cost": {
+        "time": "proportional to the question rather than to the codebase",
+        "space": "a partial model, accurate locally, unmarked at the edges",
+        "beats": "linear reading, which is complete in principle and unaffordable in practice at any real size"
+      },
+      "worked": {
+        "problem": "Why do more experienced developers spend a smaller share of their time on comprehension?",
+        "reasoning": "If comprehension were an activity you get better at performing, experience would make each act cheaper but you would still do the same amount, and the share might not move much at all. The measured share drops, so something else is happening.\n\nThe better explanation is that experience reduces how much reading is needed, in three ways. Recognition: a pattern seen before is identified rather than derived. Scoping: a sharper question implicates fewer files. And elimination: knowing which parts of a system cannot be relevant is itself knowledge, and it removes reading rather than speeding it up.\n\nThat reframes what to practise. Reading faster has a low ceiling. Getting better at stating the question, and at ruling regions out, does not — and it is the thing the measurement is actually detecting.",
+        "code": "linear reading            reading against a question\n--------------            --------------------------\nstart at the top          \"why is the total wrong\nread until it makes        when the cart is empty?\"\nsense                            |\n  |                        entry point: checkout()\ncost ~ size of the           -> price calc\n       CODEBASE              -> the empty branch\n                          stop.\n\n  cost ~ size of the QUESTION\n\n  and those two quantities are unrelated in any\n  codebase worth reading.\n\n  what experience actually buys:\n     recognition  - seen this shape before\n     scoping      - a narrower question\n     elimination  - knowing what can't be relevant\n\n  none of these are \"reading faster\"."
+      },
+      "practice": "Next time you open unfamiliar code, write your question in one sentence before reading anything, and note the time. Stop when the question is answered and note it again. Then ask what you would have read if you had not written the question down."
+    },
+    "beats": {
+      "broke": "Comprehension is the dominant activity in the working day — roughly 70% of instrumented session time in one study, about 58% of total working hours in another — while the default approach, reading linearly until it makes sense, costs time proportional to the codebase rather than to the task.",
+      "fix": "Read against a written question, entering where every answer must pass, and stop when it is answered. The cost then scales with the question instead of the system.",
+      "cost": "You are left with a model accurate about the path you traced and unmarked at its edges, so the assumption you did not know you were making is the one just outside the region you read.",
+      "interview": {
+        "q": "Why do more experienced developers spend a smaller share of their time on comprehension?",
+        "trap": "Answering that they read faster or know the codebase already. The measurement covers unfamiliar code too, and pure speed has a low ceiling.",
+        "answer": "Because the skill is largely about needing to read less rather than reading more quickly.\n\nThree things do the work. Recognition — a familiar shape is identified instead of derived from first principles. Scoping — a sharper question implicates fewer files, and the ability to ask a narrow question is itself the expertise. Elimination — knowing which regions cannot possibly be relevant removes reading altogether rather than accelerating it.\n\nIf comprehension were simply an activity you get better at performing, you would expect each act to get cheaper while the share stayed roughly stable. The share dropping is evidence that the volume is falling, not just the unit cost.\n\nWorth adding the caveat on the numbers: the 70% and 58% figures come from different denominators — one is session time in a single environment, the other total working hours across all applications — so they support the qualitative claim jointly and should not be quoted as a range."
+      }
+    },
+    "blueprint": "Two costs, and which one you control:\n\n  linear reading   cost ~ size of CODEBASE\n  question-first   cost ~ size of QUESTION\n\n  and those are unrelated at any real size.\n\n  the question has one job the code cannot do:\n     tell you when to STOP\n\n  so it has to be written down. an unstated question\n  is satisfied by anything and therefore by nothing.\n\n  what the measurements actually show:\n\n     comprehension dominates       (both studies)\n     seniors spend a SMALLER share (Xia)\n       -> not \"reads faster\"\n       -> recognition + scoping + elimination\n       -> i.e. reads LESS\n\n  caveat: 70% and 58% have different denominators.\n  they agree in direction, not as a range.",
+    "takeaway": "Reading linearly costs time proportional to the codebase while the task is proportional to your question — so the skill is a question sharp enough to tell you when to stop, which is why experience shows up as less comprehension time rather than faster reading."
+  },
+  "D.4": {
+    "id": "D.4",
+    "trackId": "D",
+    "trackName": "Software development craft",
+    "title": "Naming things: variables, functions, files, endpoints",
+    "status": "traced",
+    "seed": "D.4",
+    "story": "The economics are the whole argument and they are lopsided in a way that is easy to state. A name is written once, by someone holding the entire context in their head, and read an unbounded number of times by people holding none of it. D.3 gives the scale of the reading side: comprehension is around 58% of total working time in one study and roughly 70% of session time in another, against about 5% for editing. The cost of a name is paid almost entirely by readers, and the effort is budgeted almost entirely by the writer.\n\nSo the useful question is not whether a name is good but what a reader would have to do if it were absent. If they would have to open another file, check a caller, or run something to find out, the name has the opportunity to carry that, and every reader from now on is spared the trip. The Git guidance makes the same point about commit messages — the explanation should be understandable without external resources — and a name is the shortest possible form of the same discipline.\n\nWhat that means concretely is that names should carry the things that are expensive to look up and impossible to infer. A unit: a value called timeout costs a trip to find out whether it is seconds or milliseconds, and one called timeout_ms does not. A state: user says nothing about whether it has been validated, while validated_user settles it at every use site. A guarantee, or the lack of one: a function called get_user and one called fetch_user promise very different things about whether the network is involved. And a failure mode: parse and try_parse differ on the only question the caller actually has.\n\nThe cost is real and worth naming, because it is the one people feel. Names that carry more are longer, and length is visible at the moment of writing while the saving is spread invisibly across every future reading. That asymmetry is the same one as in D.2, and it produces the same outcome: the discipline has to be deliberate, because the feedback loop will never supply it.",
+    "problem": {
+      "name": "Naming as compression of context",
+      "aka": [
+        "identifier design",
+        "self-documenting code"
+      ],
+      "shape": "Knowledge that exists in the author’s head has to reach readers who will not have it, and the cheapest channel available is the name itself.",
+      "tell": [
+        "reading the name leaves you with a question you must go elsewhere to answer",
+        "the same concept appears under three names, or three concepts under one",
+        "a comment exists purely to explain what a name means"
+      ],
+      "move": "Ask what a reader would have to look up if the name told them nothing, and put the most expensive of those answers into the name — typically the unit, the state, the guarantee, or the failure mode.",
+      "invariant": "The name is read in places where nothing else is visible. That is the reason it must carry context rather than merely label: at a call site, the name and the arguments are frequently all the reader has.",
+      "breaks": "It breaks when the name encodes something that changes independently of it. A name asserting a type, an implementation or a unit becomes a lie the moment either changes without the other, and a confidently wrong name is worse than a vague one — a vague name sends the reader to check, and a wrong one persuades them not to.",
+      "cost": {
+        "time": "longer to write and to type; the saving is distributed across readings you never see",
+        "space": "longer lines, occasionally forcing a wrap",
+        "beats": "short names plus comments, which drift apart, and short names alone, which relocate the cost to every reader"
+      },
+      "worked": {
+        "problem": "What is a name for, given that the compiler does not read it?",
+        "reasoning": "It is a channel from the person who knows to the people who will not, and it is the only one that is guaranteed to be present at the point of use.\n\nDocumentation is elsewhere and may not be opened. Comments are adjacent and drift. Types carry some of it and stop at the edges of what the type system can say. The name is the one piece of context that appears every single time the thing is used, and it costs nothing to transmit.\n\nThat tells you what belongs in it: whatever a reader would otherwise have to leave the line to discover. A unit, because getting it wrong is silent. A state, because \"validated\" is invisible in the value. A guarantee about cost or failure, because that is what the caller is deciding on.\n\nAnd it tells you the failure mode. A name that encodes something liable to change independently becomes an active lie, and a wrong name is worse than a vague one, because the vague one sends the reader to check.",
+        "code": "what does the reader have to go and find out?\n\n  timeout        -> seconds or ms?     -> timeout_ms\n  user           -> validated?         -> validated_user\n  get_user       -> network? cached?   -> fetch_user\n                                          lookup_user\n  parse(s)       -> throws? returns?   -> try_parse(s)\n\n  the name is the ONLY context present at every\n  use site. documentation isn't opened. comments\n  drift. types stop where the type system stops.\n\n  and the failure mode:\n\n     name asserts something that can change\n     independently  ->  it becomes a LIE\n     vague name -> reader checks\n     wrong name -> reader doesn't"
+      },
+      "practice": "Take one function you wrote this week and list what a caller must know that its name does not say. Then decide, for each, whether it belongs in the name, in the type, or nowhere — and whether it would still be true after a plausible change."
+    },
+    "beats": {
+      "broke": "A name is written once by someone holding all the context and read repeatedly by people holding none of it. With comprehension at roughly 58 to 70% of working time against about 5% for editing, the cost falls almost entirely on readers while the effort is budgeted by the writer.",
+      "fix": "Put into the name whatever a reader would otherwise have to leave the line to discover — the unit, the state, the guarantee, the failure mode — since the name is the only context guaranteed to be present at the point of use.",
+      "cost": "Names that carry more are longer, and length is visible while the saving is invisible and distributed. Worse, a name encoding something that can change independently becomes an active lie, and a confident wrong name is worse than a vague one.",
+      "interview": {
+        "q": "What is a name for, given that the compiler does not read it?",
+        "trap": "Answering \"readability\", which restates the goal. The question is what channel a name is and why it beats the alternatives.",
+        "answer": "It is the only channel of context guaranteed to be present at the point of use. Documentation lives elsewhere and may never be opened; comments sit adjacent and drift out of sync; types carry some of it and stop where the type system stops. The name appears every single time the thing is used, and transmitting it costs nothing at run time.\n\nThat determines what belongs in it: whatever a reader would otherwise have to leave the line to find out. A unit, because getting it wrong is silent. A state such as validated, because that is invisible in the value. A guarantee about cost or failure, because it is what the caller is actually deciding on.\n\nIt also gives the failure mode precisely. A name that asserts something able to change independently of it becomes a lie as soon as one changes without the other — and a confidently wrong name is worse than a vague one, because a vague name sends the reader to check while a wrong one persuades them they need not."
+      }
+    },
+    "blueprint": "The asymmetry that decides everything:\n\n  written: once, by someone with FULL context\n  read:    unboundedly, by people with NONE\n\n  and reading is ~58-70% of the time, editing ~5%.\n\n  so the test is not \"is this a good name\" but:\n\n     what would the reader have to go and find out\n     if the name said nothing?\n\n     unit        timeout   -> timeout_ms\n     state       user      -> validated_user\n     guarantee   get_user  -> fetch_user\n     failure     parse     -> try_parse\n\n  cost: length. visible now, saving invisible later.\n  -> same asymmetry as D.2, same remedy: be deliberate,\n     because the feedback loop will never tell you.",
+    "takeaway": "A name is the only context guaranteed to be present wherever the thing is used, so it should carry what a reader would otherwise leave the line to discover — and a name that can silently become wrong is worse than one that is merely vague."
+  },
+  "D.5": {
+    "id": "D.5",
+    "trackId": "D",
+    "trackName": "Software development craft",
+    "title": "Error handling: fail loudly, fail early, fail with information",
+    "status": "traced",
+    "seed": "D.5",
+    "story": "There is a paper that settles this argument with numbers rather than taste. Yuan and colleagues took 198 randomly sampled, user-reported failures from five systems — Cassandra, HBase, HDFS, Hadoop MapReduce and Redis — of which 48 were catastrophic, meaning they took out all or most users rather than some. Their headline finding is that almost all, 92%, of the catastrophic system failures are the result of incorrect handling of non-fatal errors explicitly signalled in software.\n\nRead that carefully, because the surprising word is \"signalled\". These were not unknown-unknowns or hardware doing something exotic. The system detected a problem, said so, and the code that received the message did the wrong thing with it. The most severe outcomes in five mature distributed systems came overwhelmingly from the part of the program written to cope with things going wrong.\n\nIt gets more specific and more uncomfortable. In 58% of catastrophic failures the underlying faults could easily have been detected through simple testing of the error handling code, and in 35% the faults fall into three trivial patterns: the handler is empty or only logs; the handler aborts the whole cluster on an overly general exception; or the handler contains a FIXME or TODO in the comments. A further 23% were so wrong that statement coverage testing or more careful review would have caught them. Those are not subtle concurrency bugs. They are code nobody looked at.\n\nThe authors then did the honest thing and tested their own claim. They built a static checker, Aspirator, from those simple rules, ran it on nine production systems already using state-of-the-art bug-finding tools, and found 121 new bugs and 379 bad practices, of which 143 were fixed or confirmed. And one caveat worth carrying: reviewers have pointed out that in a language where every fault surfaces as an exception, \"incorrect error handling\" is a broad category, so the 92% should be read as a statement about where the failures pass through rather than proof that better handling would have removed nearly all of them.",
+    "problem": {
+      "name": "Error path neglect",
+      "aka": [
+        "the untested branch",
+        "swallowed exceptions"
+      ],
+      "shape": "A program’s error paths are the least written, least tested and least reviewed part of it, and they run only when something has already gone wrong.",
+      "tell": [
+        "a handler is empty, or contains only a log line",
+        "a catch clause covers a general type and aborts, or covers a general type and continues",
+        "you cannot say when the error path last executed, in testing or in production"
+      ],
+      "move": "Treat the handler as ordinary code with ordinary obligations: it must be exercised by a test, it must record what happened with enough context to act on, and it must not absorb a condition it has no answer for.",
+      "invariant": "Every handler has been executed at least once by something other than the incident. An unexecuted handler is not error handling, it is the appearance of it — and its appearance is what stops anyone looking closer.",
+      "breaks": "It breaks where handling the error means making a decision nobody wants to make — what should this actually do if the write fails? The empty handler exists because the decision is hard, so the discipline transfers the cost from a future incident to a present argument, and that is genuinely more expensive today.",
+      "cost": {
+        "time": "a test per error path, and a decision per error path",
+        "space": "more code on the paths that ordinarily do not run",
+        "beats": "catching broadly and continuing, which is shorter, passes review, and produces the failure mode above"
+      },
+      "worked": {
+        "problem": "Why is the code that runs when something goes wrong the code most likely to be wrong?",
+        "reasoning": "Every feedback mechanism that corrects ordinary code is weak or absent on the error path.\n\nIt is not exercised: the happy path runs constantly in development, and the error path runs when a disk fills. It is not tested: writing the test requires inducing a failure, which is more work than testing the success case. It is not reviewed with the same attention, because a reviewer reads the change and the handler looks like boilerplate. And it is written last, when the interesting problem is already solved.\n\nSo the error path accumulates defects at the ordinary rate and has none of the ordinary mechanisms for removing them. That predicts exactly the measured result: the trivial patterns — empty handlers, overly general catches, TODO comments — dominate, because those are what unreviewed, unexecuted code looks like.\n\nWhich also tells you the cheapest intervention, and it is not better judgement. It is making the paths run.",
+        "code": "           happy path        error path\n           ----------        ----------\nexercised  constantly        when a disk fills\ntested     naturally         requires inducing a fault\nreviewed   closely           \"looks like boilerplate\"\nwritten    first             last, after the fun part\n\n  same defect rate. none of the correction mechanisms.\n\n  measured consequence (48 catastrophic failures):\n     92%  incorrect handling of signalled errors\n     58%  detectable by simple testing of that code\n     35%  three trivial patterns:\n            empty / log-only handler\n            abort the cluster on a general exception\n            \"FIXME\" or \"TODO\" in the handler\n\n  these are not hard bugs. this is unlooked-at code."
+      },
+      "practice": "Find every empty catch block, or one containing only a log line, in a service you own. For each, write down what should happen instead — and notice which ones you cannot answer, because those are the ones the empty handler was hiding."
+    },
+    "beats": {
+      "broke": "Error paths are written last, exercised least, tested least and reviewed least, while being the code that runs exactly when something has already gone wrong — so they accumulate defects normally and have none of the usual means of removing them.",
+      "fix": "Treat handlers as ordinary code: exercised by a test, recording enough context to act on, and never absorbing a condition they have no answer for. The authors turned three trivial patterns into a static checker and found 121 new bugs in systems already running other tools.",
+      "cost": "Handling an error properly means deciding what should happen, and the empty handler exists precisely because that decision is hard. The discipline converts a future incident into a present argument, which is more expensive today and cheaper overall.",
+      "interview": {
+        "q": "Why is the code that runs when something goes wrong the code most likely to be wrong?",
+        "trap": "Answering that errors are hard to anticipate. The measured failures were mostly errors the system had already detected and signalled — anticipation was not the problem.",
+        "answer": "Because every mechanism that ordinarily removes defects is weak or absent on the error path. It is not exercised, since the happy path runs constantly and the error path runs when a disk fills. It is not tested, because writing the test means inducing a failure. It is not reviewed as closely, because handlers read as boilerplate. And it is written last, after the interesting problem is solved.\n\nThe defect rate is the same; the correction is missing. That predicts the measured result precisely: in one study of 48 catastrophic failures across five mature distributed systems, 92% came from incorrect handling of non-fatal errors the software had already signalled, 58% were detectable by simple testing of the error handling code, and 35% fell into three trivial patterns — an empty or log-only handler, an abort on an overly general exception, or a FIXME left in the comments.\n\nSo the cheapest intervention is not better judgement but making those paths execute. One caveat: in a language where every fault surfaces as an exception, \"incorrect error handling\" is a broad category, so the 92% locates where failures pass through rather than proving better handling removes them all."
+      }
+    },
+    "blueprint": "Why this branch and not the others:\n\n               happy path     error path\n  exercised    always         ~never\n  tested       naturally      needs a fault induced\n  reviewed     closely        \"boilerplate\"\n  written      first          last\n\n  -> same defects, none of the correction\n\n  and so, measured across 48 catastrophic failures:\n\n     92% incorrect handling of SIGNALLED errors\n         (the system knew. the handler was wrong.)\n     58% detectable by simple testing of that code\n     35% three trivial patterns\n     23% wrong enough that coverage would show it\n\n  intervention that follows:\n     not \"think harder about errors\"\n     but \"make the error paths RUN\"",
+    "takeaway": "Error paths carry the same defect rate as everything else and none of the mechanisms that remove defects — which is why 92% of catastrophic failures in one study came from mishandling errors the system had already detected and announced."
+  },
+  "D.6": {
+    "id": "D.6",
+    "trackId": "D",
+    "trackName": "Software development craft",
+    "title": "The testing pyramid, and why most people invert it by accident",
+    "status": "traced",
+    "seed": "D.6",
+    "story": "Cohn introduced the shape in 2009: unit tests at the base, service tests in the middle, interface tests at the top, with the width standing for how many of each you should have. Fowler restated it in 2012 in one line — many more low-level unit tests than high-level tests running through a graphical interface. The advice is nearly universally agreed with and nearly universally not followed, which makes the interesting question why.\n\nIt is not that people disagree. It is that the shape is an outcome of many local decisions, and every one of those decisions individually favours the top. A test through the interface requires no design: you drive the thing the way a user does, and it passes or fails. A unit test requires that a unit exist — something with a boundary you can call and a result you can assert — and if the code has no such seam, writing the test means changing the code first. Faced with a deadline, the test that needs no design wins every time, and nobody ever decides to invert the pyramid.\n\nCohn names the mechanism precisely, and it is the middle that does the damage. He calls service tests the forgotten layer: when the cases that cannot be covered by unit tests get automated at the interface level instead, you end up with a large, slow interface suite. The middle layer is the one that requires you to have an interface below the user interface worth testing against — which is a design property, not a testing one.\n\nThere is empirical support for weighting the bottom, from the study in D.5. Across 198 real production failures in five distributed systems, 77% could be reproduced by a unit test, and almost all were guaranteed to manifest on no more than three nodes. That is a strong claim against the intuition that real failures need realistic environments: most of them did not. The cost is honest though — a suite weighted to the bottom tests the pieces thoroughly and can still miss that they are wired together wrongly, which is exactly what the thin top layer is for and why it is thin rather than absent.",
+    "problem": {
+      "name": "Test suite shape",
+      "aka": [
+        "the test pyramid",
+        "the inverted pyramid"
+      ],
+      "shape": "Checks can be written at several levels with very different costs, and the distribution across levels is decided by accumulated convenience rather than by design.",
+      "tell": [
+        "the suite takes long enough that people push without running it",
+        "failures are investigated by re-running rather than by reading",
+        "most of your tests drive the system the way a user would"
+      ],
+      "move": "Put most checks at the level where they are fast, deterministic and precise about what broke, use a middle layer against an interface below the user interface, and keep a small number of end-to-end tests for wiring.",
+      "invariant": "A failing test identifies what is broken, not merely that something is. That property degrades as the test covers more of the system, which is the real reason to weight the base — not speed alone.",
+      "breaks": "It breaks where there is no seam to test against. A unit test needs a unit, and a service test needs an interface below the interface, so an inverted suite is usually a symptom of the design rather than of the testing discipline. Rebalancing the suite therefore means changing the code, which is why exhortation alone never works.",
+      "cost": {
+        "time": "the base is fast and the top is slow, by orders of magnitude",
+        "space": "more tests in total, most of them small",
+        "beats": "testing everything end to end, which needs no design and produces a suite too slow and too flaky to run"
+      },
+      "worked": {
+        "problem": "Why does the inversion happen by accident, when almost everyone agrees with the pyramid?",
+        "reasoning": "Because the shape is never chosen. It is the sum of many individual decisions, each made under a deadline, and each of them locally favours the top.\n\nConsider one case you need to cover. Writing it through the interface needs no design: drive the system as a user does. Writing it as a unit test requires a unit — a boundary you can call directly — and if none exists, you must first change the code to create one. So the cheaper option today is the top, every single time.\n\nRepeat that a few hundred times and you have an inverted suite, with no meeting at which anyone proposed inverting it. The forgotten middle is the same mechanism in its sharpest form: it needs an interface beneath the user interface to exist, so when it does not, those cases float to the top.\n\nWhich tells you the intervention. Exhortation cannot work against an incentive that fires per test. You have to make the cheap option the low-level one, and that means creating the seams.",
+        "code": "one case to cover. two ways to write it.\n\n  through the UI            as a unit test\n  ------------              --------------\n  needs: nothing            needs: a unit to exist\n  design work: none         design work: maybe a lot\n  today's cost: LOW         today's cost: HIGH\n  runs in: minutes          runs in: ms\n  tells you: \"broke\"        tells you: \"this broke\"\n\n  each decision: rational. 300 decisions: inverted.\n  nobody ever decided to invert it.\n\n  -> exhortation loses to an incentive that fires\n     once per test\n  -> the fix is structural: create the seams, so the\n     cheap option becomes the low one\n\n  and the evidence for weighting the base:\n     77% of real production failures reproducible\n     by a unit test; almost all manifest on <= 3 nodes"
+      },
+      "practice": "Count your tests by level and draw the actual shape. Then take one high-level test and work out what would have to exist in the code for it to be written one level down — that answer, not the test count, is why your shape is what it is."
+    },
+    "beats": {
+      "broke": "Tests that drive the whole system require no design to write, so they are always the cheaper option today. Enough of them produces a suite slow and flaky enough that people stop running it, which removes the feedback the tests existed to provide.",
+      "fix": "Weight the suite to the level where failures are fast and specific: unit tests at the base, service tests in the middle, few interface tests on top — Cohn’s shape from 2009, restated by Fowler in 2012.",
+      "cost": "The middle layer needs an interface below the user interface to test against, so rebalancing is a design change rather than a testing change. And a base-weighted suite can pass while the pieces are wired together wrongly, which is what the thin top is for.",
+      "interview": {
+        "q": "If almost everyone agrees with the pyramid, why are most real suites inverted?",
+        "trap": "Attributing it to laziness or to teams not knowing better. Agreement is the premise of the question, so the explanation has to work for people who agree.",
+        "answer": "Because nobody ever decides the shape. It is the sum of hundreds of individual decisions, each taken under a deadline, and each one locally favours the top.\n\nTake a single case to cover. Through the interface it needs no design — you drive the system as a user does. As a unit test it needs a unit to exist: a boundary you can call and assert on. If the code has no such seam, writing the test means changing the code first. So the cheaper option today is the high-level one, every time, and repeating that produces an inverted suite with no meeting at which anyone proposed inverting it.\n\nCohn's forgotten middle is the same mechanism at its sharpest: service tests need an interface beneath the user interface, and where none exists those cases float to the top.\n\nThat tells you why exhortation fails and what works instead. You cannot argue against an incentive that fires once per test; you have to create the seams so the low-level option becomes the cheap one. The empirical case for bothering is strong — 77% of real production failures in one study were reproducible by a unit test."
+      }
+    },
+    "blueprint": "The shape nobody chooses:\n\n     /\\        few, slow, \"something broke\"\n    /  \\\n   /----\\      the FORGOTTEN layer: needs an interface\n  /      \\     below the UI to exist\n /--------\\    many, fast, \"THIS broke\"\n\n  per-test incentive, under a deadline:\n\n     through the UI : design needed = 0  -> cheap today\n     unit test      : design needed = ?  -> dear today\n\n  x300 -> inverted, by accumulation, never by decision\n\n  so the fix is not persuasion, it is seams.\n\n  evidence for the base being worth it:\n     77% of real production failures reproducible\n         by a unit test\n     almost all manifest on <= 3 nodes",
+    "takeaway": "The pyramid inverts by accumulation rather than by decision, because a test through the interface needs no design and a unit test needs a unit — so rebalancing the suite is a change to the code, not to the testing policy."
+  },
+  "D.7": {
+    "id": "D.7",
+    "trackId": "D",
+    "trackName": "Software development craft",
+    "title": "Writing a test that would actually have caught a real bug",
+    "status": "traced",
+    "seed": "D.7",
+    "story": "The uncomfortable property of a test suite written from imagination is that it covers the cases the author had in mind, and the bug was in a case they did not. Coverage measures how much of the code ran, not how much of your thinking was checked, so a suite can be thorough and systematically blind in exactly the region where you are wrong.\n\nA bug that actually happened breaks that symmetry, because it is evidence rather than invention. It is a case you demonstrably did not have in mind, delivered by production rather than by your own imagination, and it comes with the one thing a hypothetical never has: a known correct answer and a known wrong one.\n\nSo the exercise is precise. Take an incident. Write the test before applying the fix, and run it. If it does not fail, you have not reproduced the bug and whatever you are about to fix is not what broke — which happens more often than people expect and is the entire reason for the ordering. Then apply the fix and watch it pass. That sequence is what distinguishes a test that catches the bug from a test that merely describes the fix, and the two are indistinguishable once the fix is in.\n\nThe study in D.5 says this is far more available than it sounds. Across 198 real production failures, 77% could be reproduced by a unit test, 74% were deterministic given an appropriate input sequence, and almost all were guaranteed to manifest on no more than three nodes. The common objection — that a real failure needs a realistic environment — is mostly false, and in 58% of the catastrophic cases the faults could easily have been detected through simple testing of the error handling code. The honest limit is that this method only ever protects you against the kinds of fault you have already suffered, so it deepens your suite along the path of your own history and leaves everywhere else exactly as it was.",
+    "problem": {
+      "name": "Regression test from evidence",
+      "aka": [
+        "reproduce before you fix",
+        "the failing test first"
+      ],
+      "shape": "Tests written from imagination cover the cases you thought of, and defects live in the cases you did not.",
+      "tell": [
+        "coverage is high and bugs still reach production",
+        "after an incident the fix ships without a test, or with a test written afterwards",
+        "nobody can say whether the new test would have failed before the fix"
+      ],
+      "move": "Reproduce first. Write the test against the unfixed code, watch it fail, read the failure to confirm it is the right failure, then fix and watch it pass.",
+      "invariant": "The test failed before the change and passed after, for the stated reason. Without the first half you have evidence only that the test agrees with the current code, which every test does.",
+      "breaks": "It is bounded by your history. This method only produces tests for faults you have already experienced, so it reinforces the suite exactly where you have already been hurt and not at all where you have not — which is a real limitation and not a reason to skip it.",
+      "cost": {
+        "time": "reproduction is the expensive part, and is sometimes most of the incident",
+        "space": "a test per incident, which accumulates",
+        "beats": "fixing and moving on, which is faster and leaves nothing preventing a recurrence"
+      },
+      "worked": {
+        "problem": "Why does a test written after the fix prove less than one written before it?",
+        "reasoning": "Because after the fix, both a correct test and a useless one pass, and nothing distinguishes them.\n\nA test written against fixed code has only been observed in one state: agreeing. That is also what a test asserting something trivially true does, or one exercising a different path from the bug, or one whose assertion is misspelled in a way that cannot fail. You have no evidence about which of those you wrote.\n\nRunning it against the unfixed code is the only observation that separates them. If it fails, you have shown it is capable of failing and that it fails on this defect. If it passes, you have learned something important immediately: you have not reproduced the bug, and the fix you are about to apply is aimed at something else.\n\nThat second case is the reason for the ordering rather than a bonus. Discovering it before the fix costs a few minutes; discovering it after costs a second incident.",
+        "code": "test written AFTER the fix\n  observed states: { passes }\n  consistent with:\n     - a correct regression test\n     - asserting something trivially true\n     - exercising a different path\n     - an assertion that cannot fail\n  -> no evidence which one you wrote\n\ntest written BEFORE the fix\n  observed states: { fails, then passes }\n  fails  -> it CAN fail, and does so on this defect\n  passes -> you haven't reproduced it; the fix you\n            are about to ship targets something else\n\n  the second outcome is the point, not a bonus.\n  cost of finding it now:   minutes\n  cost of finding it later: another incident"
+      },
+      "practice": "Take the last bug you fixed. Check out the commit before the fix, write the test, and run it. If it passes, you did not reproduce the bug — and you should find out what you actually changed."
+    },
+    "beats": {
+      "broke": "A suite written from imagination covers the cases the author thought of, and defects are by definition in the cases they did not. Coverage measures executed lines, not examined assumptions, so it can be high in exactly the region where you are wrong.",
+      "fix": "Use a fault that really happened as evidence. Write the test against the unfixed code, watch it fail for the right reason, then fix it and watch it pass — an ordering that is the only thing distinguishing a regression test from a description of the fix.",
+      "cost": "It only protects against kinds of fault you have already suffered, so the suite deepens along the path of your own history and stays exactly as thin everywhere else.",
+      "interview": {
+        "q": "Why does a test written after the fix prove less than one written before it?",
+        "trap": "Answering that it is about discipline, or about test-first orthodoxy. The reason is evidential and applies even if you never do test-first development otherwise.",
+        "answer": "Because once the fix is in, a correct regression test and a useless one both pass, and you cannot tell them apart.\n\nA test only ever observed against fixed code has been seen in exactly one state: agreeing. So has a test asserting something trivially true, one exercising a different code path from the actual defect, and one whose assertion is broken in a way that can never fail. You have no evidence about which you wrote.\n\nRunning it against the unfixed code is the single observation that separates those cases. Failing shows it is capable of failing and that it fails on this defect. Passing tells you something more valuable and more alarming: you have not reproduced the bug, so whatever you are about to ship is aimed at something other than the cause.\n\nThat second outcome is the reason for the ordering. It costs minutes to discover before the fix and a second incident to discover after. And it is more available than people assume — in one study of 198 real production failures, 77% were reproducible by a unit test and 74% were deterministic given the right input sequence."
+      }
+    },
+    "blueprint": "The only observation that distinguishes them:\n\n  after the fix     states seen: { pass }\n                    -> correct test?\n                    -> trivially true?\n                    -> wrong path?\n                    -> assertion that can't fail?\n                       ...indistinguishable\n\n  before the fix    states seen: { fail, pass }\n                    fail -> it can fail, on THIS bug\n                    pass -> you didn't reproduce it\n\n  the \"pass\" case before the fix is the valuable one:\n     it says the fix you are about to ship is aimed\n     at something that isn't the cause.\n\n  and reproduction is more available than assumed:\n     77% of real failures: reproducible by a unit test\n     74%: deterministic given the input sequence\n     <=3 nodes: almost all of them",
+    "takeaway": "A test never run against the broken code has only ever been seen agreeing, which is also what a useless test does — so the failure before the fix is the only evidence that the test can catch anything."
+  },
+  "D.8": {
+    "id": "D.8",
+    "trackId": "D",
+    "trackName": "Software development craft",
+    "title": "Refactoring without changing behaviour",
+    "status": "traced",
+    "seed": "D.8",
+    "story": "Fowler’s definition puts all of its weight on five words. A refactoring is a change made to the internal structure of software to make it easier to understand and cheaper to modify without changing its observable behavior. Everything interesting is in the last clause, and the first thing to notice is that taken literally it is impossible to satisfy.\n\nAlmost everything observable does change. Extract a function and the call stack is different, so a stack trace differs and timing differs. Rename something and any reflection over names differs. Fowler is explicit that the term is deliberately loose: the code should overall do the same things as before, it will not work exactly the same, and the test is that nothing changes that the user should care about. That last phrase is doing real work, because it makes the boundary a judgement about who is observing and what they are entitled to depend on — not a property you can compute.\n\nWhich is why the discipline is a discipline about steps rather than about outcomes. The value comes from separating two kinds of change absolutely: alter structure while holding behaviour, or alter behaviour while holding structure, and never both in the same step. If a step changes only structure and something breaks, the cause is in the structural change, which you just made and can undo. Combine the two and you have lost that, because a failure is now consistent with either.\n\nThe cost follows directly and is the part people skip. Holding behaviour is a claim, and a claim needs a way of being checked. Without tests you cannot tell a refactoring from a change that happens not to have been noticed yet — and Fowler’s own distinction is useful here: refactoring is not a synonym for cleaning up code, and restructuring is the broader term. Restructuring without a way to verify behaviour is a legitimate thing to do; it is just not this thing, and calling it refactoring borrows a confidence it has not earned.",
+    "problem": {
+      "name": "Behaviour-preserving transformation",
+      "aka": [
+        "refactoring",
+        "structural change under test"
+      ],
+      "shape": "The internal shape of working code needs to change, and any change to it risks changing what the code does.",
+      "tell": [
+        "the change you want to make is hard because of how the code is arranged, not because of what it does",
+        "people avoid touching a region because nobody knows what depends on it",
+        "a single commit both moves code around and alters what it computes"
+      ],
+      "move": "Split every change into structure-only and behaviour-only steps, never combining them, and run the tests between steps so each one is independently verified.",
+      "invariant": "After a structural step, the observable behaviour is unchanged — where observable means what a user or caller is entitled to depend on, not everything detectable. That boundary is a judgement, which is why it has to be stated rather than computed.",
+      "breaks": "It breaks without a means of verification. The claim \"behaviour is unchanged\" is exactly as strong as your ability to detect a change, so with a weak suite the discipline degrades into a habit of confident-sounding edits. It also breaks where someone depends on something you classed as unobservable — timing, stack shape, iteration order — which is how a correct refactoring breaks a caller.",
+      "cost": {
+        "time": "more steps, more test runs, no visible progress during the structural ones",
+        "space": "nothing permanent; the intermediate states are transient",
+        "beats": "changing shape and behaviour together, which is faster and makes every failure ambiguous"
+      },
+      "worked": {
+        "problem": "What does \"without changing observable behaviour\" mean, given that almost everything observable changes?",
+        "reasoning": "Take it literally and nothing qualifies. Extracting a function changes the call stack and therefore stack traces, timing and possibly allocation. Renaming changes anything that reflects over names. Reordering independent operations changes what a profiler shows. If observable meant detectable, the category would be empty.\n\nFowler says the looseness is deliberate: the code should overall do the same things, it will not work exactly the same, and nothing should change that the user should care about.\n\nSo the real boundary is about entitlement rather than detectability — what a caller is allowed to depend on. That cannot be computed, which is uncomfortable, and it explains two things at once. It explains why the definition is vague where you would want precision. And it explains a specific class of incident: a genuinely correct refactoring that breaks a caller, because the caller depended on something outside the contract, like iteration order or timing.\n\nThe practical form is to make the boundary explicit rather than assumed — that is what a test suite is, read as a specification of what is protected.",
+        "code": "\"observable\" cannot mean \"detectable\":\n\n  extract a function -> call stack differs\n                     -> timing differs\n                     -> a profile differs\n  rename             -> reflection over names differs\n  reorder            -> allocation pattern differs\n\n  taken literally, the set of legal refactorings\n  is EMPTY.\n\n  what it means: what a caller is ENTITLED to rely on.\n  -> a judgement, not a computation\n  -> so it must be stated\n\n  and your test suite is that statement:\n     what it checks = what is protected\n     what it doesn't = what you are free to change\n                       ...and what will one day break\n                          a caller who relied on it"
+      },
+      "practice": "Take one commit that both moved code and changed what it does, and split it into two. Then note which half you could verify with the tests you have, and what that tells you about which half was actually risky."
+    },
+    "beats": {
+      "broke": "Working code has to change shape as requirements move, and any change to its shape risks changing what it does — so the shape stops changing, and the cost of every later change rises.",
+      "fix": "Separate the kinds of change absolutely: structure while holding behaviour, or behaviour while holding structure, never both in one step. Then a failure after a structural step has exactly one possible cause.",
+      "cost": "Holding behaviour is a claim, and it is only as strong as your ability to detect a change — so without tests the discipline reduces to confident-sounding edits, which is restructuring rather than refactoring.",
+      "interview": {
+        "q": "What does \"without changing observable behaviour\" mean, when almost everything observable changes?",
+        "trap": "Treating it as a precise technical property. Read literally the category is empty, so a precise reading cannot be what is meant.",
+        "answer": "It cannot mean detectable, because extracting a function changes the call stack and therefore stack traces and timing, renaming changes anything reflecting over names, and reordering changes what a profiler shows. Under a strict reading nothing qualifies.\n\nFowler says the looseness is deliberate: the code should overall do the same things, it will not work exactly the same, and nothing should change that the user should care about. So the boundary is about what a caller is entitled to depend on rather than what they can detect — a judgement, not a computation.\n\nThat explains two things at once. It explains why the definition is vague exactly where you would want precision. And it explains a specific class of incident: a genuinely correct refactoring that breaks a caller who depended on something outside the contract, like iteration order or timing.\n\nThe practical move is to make the boundary explicit, and the test suite is where you state it — what it checks is what is protected, and what it does not check is what you are implicitly free to change."
+      }
+    },
+    "blueprint": "Two kinds of change, never in the same step:\n\n  structure only      behaviour only\n  ------------        --------------\n  tests stay green    tests change deliberately\n  failure -> the      failure -> the behaviour\n    move was wrong      change was wrong\n\n  combine them, and a failure is consistent with\n  either. that is the entire reason for the rule.\n\n  and \"observable\" is a judgement, not a measurement:\n\n     detectable  : call stack, timing, allocation,\n                   iteration order  -> all change\n     entitled to : whatever you wrote down\n\n  your suite IS that statement:\n     checked   = protected\n     unchecked = free to change, and one day the\n                 caller who relied on it breaks",
+    "takeaway": "Never change structure and behaviour in one step, because then a failure has one cause instead of two — and \"observable behaviour\" is a judgement about what a caller may rely on, which your test suite is the written form of."
+  },
+  "D.9": {
+    "id": "D.9",
+    "trackId": "D",
+    "trackName": "Software development craft",
+    "title": "Continuous integration: what to run on every push",
+    "status": "traced",
+    "seed": "D.9",
+    "story": "The question is not whether to have automated checks but which ones run at which moment, and the answer follows from a quantity that is easy to state and rarely written down: what a check rules out, divided by how long you wait for it.\n\nThat ratio explains the ordering everyone converges on without usually being able to justify it. Type checking and linting run first because they rule out a narrow class instantly. Unit tests run next. Integration tests, which rule out much more, run later because they cost minutes. End-to-end and deployment checks run last. Nobody is ranking these by importance — the slow ones often catch the more serious problems — they are ranked by information per second of waiting, because the resource being spent is the author’s attention, and attention decays fast.\n\nThere is empirical support for how much a cheap check can buy. The study in D.5 found that across 198 real production failures, 77% could be reproduced by a unit test, 74% were deterministic given the right input sequence, and almost all manifested on no more than three nodes. So the intuition that catching real failures needs a realistic environment is largely wrong: the majority were reachable by the cheapest tier. The same study found that 58% of catastrophic failures could easily have been detected through simple testing of the error handling code, and that a static checker built from three trivial patterns found 121 new bugs in systems already running other tools — which is an argument for putting cheap, narrow checks early rather than dismissing them as trivial.\n\nThe failure mode is the one this track keeps returning to. If the checks on every push take long enough that people batch their work to avoid waiting, you have not made the system safer — you have lengthened the loop, and C.6 and C.18 both make the case that the cost of one attempt determines how the tool actually gets used. A twenty-minute pipeline does not produce careful developers; it produces large pushes.",
+    "problem": {
+      "name": "Check placement",
+      "aka": [
+        "pipeline staging",
+        "what runs on every push"
+      ],
+      "shape": "You have more checks than you can afford to run at every moment, and running them too late makes their findings expensive to act on.",
+      "tell": [
+        "people push in large batches rather than small ones, and nobody decided they should",
+        "the pipeline is long enough that developers switch context while waiting",
+        "a check was added to the fast stage because it seemed important, not because it was fast"
+      ],
+      "move": "Rank checks by what they rule out per unit of waiting and place them accordingly — cheapest and narrowest first, broadest and slowest last — and treat the total wait at each stage as a budget rather than an outcome.",
+      "invariant": "The first stage stays short enough that nobody batches work to avoid it. That is the property doing the work, because a check that changes behaviour by existing has effects far beyond what it catches.",
+      "breaks": "It breaks when importance is used as the ranking instead of cost-effectiveness. The slowest checks often catch the most serious problems, so ranking by importance moves them early, which lengthens the loop, which makes people push less often — and less frequent integration is the condition the whole practice exists to prevent.",
+      "cost": {
+        "time": "the early stages are fast and narrow; everything broad happens after the author has moved on",
+        "space": "infrastructure to run several stages, and the discipline to keep them separated",
+        "beats": "running everything on every push, which is thorough and lengthens the loop until people avoid it"
+      },
+      "worked": {
+        "problem": "How do you decide whether a given check belongs on every push?",
+        "reasoning": "Not by asking whether it matters. Almost every check in a pipeline matters, so that question does not discriminate.\n\nAsk instead what it rules out and how long it takes. A check that eliminates a broad class in one second belongs early. A check that eliminates a narrow class in twelve minutes belongs late, however severe the class — because putting it early charges everyone twelve minutes on every push to remove a possibility that is rarely present.\n\nThen apply the constraint that overrides the ranking: the total early wait must stay below the point at which people change how they work to avoid it. This matters more than any individual check, because once developers batch their pushes you have lost small changes, and small changes are what makes a failing check cheap to interpret.\n\nSo the honest summary is that you are not optimising for catching the most bugs per push. You are optimising for keeping the loop short enough that the checks stay in the loop at all.",
+        "code": "rank by:  what it rules out\n          -------------------\n             time you wait\n\n  types, lint      broad-ish / ~1s     -> every push\n  unit tests       77% of real         -> every push\n                   failures reproducible\n  integration      wiring / minutes    -> after merge\n  end-to-end       everything / slow   -> later still\n\n  NOT ranked by importance. the slow ones often\n  catch the worse things. importance-first ranking\n  lengthens the loop.\n\n  and the overriding constraint:\n\n     early stage wait < the point where people\n                        batch their pushes\n\n  because batching destroys the thing that makes a\n  red build cheap to read: a small change."
+      },
+      "practice": "Time your pipeline stage by stage and write down what each stage can rule out. Then find the check with the worst ratio of exclusion to waiting, and decide whether it belongs where it is."
+    },
+    "beats": {
+      "broke": "A check that runs too late reports something that is now expensive to act on, and a check that runs too slowly stops being run — so both the content and the timing of the checks decide whether they do anything at all.",
+      "fix": "Rank by what each check rules out per unit of waiting, cheapest and narrowest first. The empirical case for the cheap tier is strong: 77% of real production failures in one study were reproducible by a unit test and almost all manifested on at most three nodes.",
+      "cost": "Fast checks are narrow, so an early pipeline is confident about small things and says nothing about whether the parts are wired together — which is why the slow stages exist rather than being dropped.",
+      "interview": {
+        "q": "How do you decide whether a particular check belongs on every push?",
+        "trap": "Deciding by importance. Nearly every check in a pipeline is important, so importance does not discriminate — and ranking by it puts the slowest checks first.",
+        "answer": "By what it rules out divided by how long you wait for it. A check eliminating a broad class of problem in a second belongs early; one eliminating a narrow class in twelve minutes belongs late, no matter how severe that class, because placing it early charges everybody twelve minutes per push to exclude something rarely present.\n\nThen there is a constraint that overrides the ranking: the early stage must stay short enough that nobody changes how they work to avoid it. Once the wait is long enough that people batch their pushes, you have lost small changes — and a small change is what makes a failing check cheap to interpret, since the cause is in the few lines you just wrote.\n\nThat is why the goal is not catching the most defects per push. It is keeping the loop short enough that the checks stay inside it. It is the same argument as time-sharing in 1964 and as build times at scale: the cost of a single attempt determines how the tool is actually used, regardless of what the policy says."
+      }
+    },
+    "blueprint": "The ratio that orders everything:\n\n        what it rules out\n        -----------------\n        how long you wait\n\n  fast + narrow   -> every push\n  slow + broad    -> after, and after that\n\n  NOT by importance: the slow checks often catch the\n  worse things, and ranking by severity puts them\n  first, which lengthens the loop.\n\n  the constraint that beats the ranking:\n\n     early wait < the point where people batch\n\n  because:\n     small push  -> red build, cause is obvious\n     large push  -> red build, cause is a search\n\n  same argument as 1964 time-sharing and as build\n  times at scale: the price of ONE attempt decides\n  how the thing is used.",
+    "takeaway": "Place a check by what it rules out per second of waiting, not by how important it is — and keep the early stage short enough that nobody batches their pushes, because batching is what makes a failing check expensive to read."
   },
   "E.1": {
     "id": "E.1",
@@ -5481,6 +5961,278 @@
       "claim": "The first commercial implementation was released in October 1985, at the same time as the publication of the first edition of The C++ Programming Language.",
       "title": "Stroustrup, B., A History of C++: 1979-1991, HOPL-II, ACM SIGPLAN Notices 28(3), March 1993",
       "url": "https://www.stroustrup.com/hopl2.pdf",
+      "kind": "primary"
+    }
+  ],
+  "D.10": [
+    {
+      "claim": "Michael Nygard published Documenting Architecture Decisions on 15 November 2011. He describes a decision record as a short text file in a format similar to an Alexandrian pattern, where each record describes a set of forces and a single decision in response to those forces.",
+      "title": "Nygard, M., Documenting Architecture Decisions, 15 November 2011",
+      "url": "https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions",
+      "kind": "primary"
+    },
+    {
+      "claim": "Nygard argues that agile methods are not opposed to documentation, only to valueless documentation.",
+      "title": "Nygard, M., Documenting Architecture Decisions, 15 November 2011",
+      "url": "https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions",
+      "kind": "primary"
+    },
+    {
+      "claim": "The record format he gives contains a title, the context of the decision, the decision itself, and its consequences. Records are not deleted when a decision changes; a later record supersedes an earlier one.",
+      "title": "Nygard, M., Documenting Architecture Decisions, 15 November 2011",
+      "url": "https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions",
+      "kind": "primary"
+    },
+    {
+      "claim": "The approach builds on Kruchten’s work on the decision view’s role in software architecture practice, which extended an earlier view model to capture the rationale behind important decisions.",
+      "title": "Nygard, M., Documenting Architecture Decisions, 15 November 2011",
+      "url": "https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions",
+      "kind": "primary"
+    }
+  ],
+  "D.11": [
+    {
+      "claim": "Bacchelli and Bird studied tool-based code review by observing, interviewing and surveying developers and managers, and manually classifying hundreds of review comments across diverse teams at Microsoft.",
+      "title": "Bacchelli, A. and Bird, C., Expectations, Outcomes, and Challenges of Modern Code Review, ICSE 2013, pp. 712-721",
+      "url": "https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/ICSE202013-codereview.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "Their finding is that while finding defects remains the main motivation for review, reviews are less about defects than expected, and instead provide additional benefits such as knowledge transfer, increased team awareness, and the creation of alternative solutions to problems.",
+      "title": "Bacchelli, A. and Bird, C., Expectations, Outcomes, and Challenges of Modern Code Review, ICSE 2013, pp. 712-721",
+      "url": "https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/ICSE202013-codereview.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "They note that code review as practised today is less formal and more lightweight than the code inspections studied in the seventies and eighties.",
+      "title": "Bacchelli, A. and Bird, C., Expectations, Outcomes, and Challenges of Modern Code Review, ICSE 2013, pp. 712-721",
+      "url": "https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/ICSE202013-codereview.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "Rigby and Bird examined two projects led by Google — Android and Chromium OS — three at Microsoft, projects internal to AMD, traditional software inspection data from Lucent, and open source review on six projects including Apache, Linux and KDE. Despite drastically different settings, cultures, incentive systems and time pressures, they found that the parameters of peer review converge in contemporary software projects.",
+      "title": "Rigby, P. C. and Bird, C., Convergent Contemporary Software Peer Review Practices, ESEC/FSE 2013, pp. 202-212",
+      "url": "https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/rigby2013convergent.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "Rigby and Bird record a methodological caveat: in the review tool they studied, the closest artefact to a defect is a discussion thread marked as resolved, since a problem found would need to be resolved by the author before check-in — with the caveat that a reviewer might make comments or ask questions that lead to a resolved discussion without representing a defect found.",
+      "title": "Rigby, P. C. and Bird, C., Convergent Contemporary Software Peer Review Practices, ESEC/FSE 2013, pp. 202-212",
+      "url": "https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/rigby2013convergent.pdf",
+      "kind": "primary"
+    }
+  ],
+  "D.2": [
+    {
+      "claim": "The Git project’s guidance states that a meaningful commit message \"explains the problem the change tries to solve, i.e. what is wrong with the current code without the change\", \"justifies the way the change solves the problem, i.e. why the result with the change is better\", and records \"alternate solutions considered but discarded, if any\".",
+      "title": "SubmittingPatches, Git documentation — the Git project’s own guidance on writing a commit message",
+      "url": "https://git-scm.com/docs/SubmittingPatches",
+      "kind": "primary"
+    },
+    {
+      "claim": "It states that \"The log message that explains your changes is just as important as the changes themselves\", and that although code may be clearly written, \"those who need to fix or enhance your code in the future will need to know why your code does what it does\". It gives as the first reason that \"Your code may be doing something differently from what you wanted it to do\", and notes in passing that \"you often discover your own bugs yourself, while writing the log message to summarize the thought behind it\".",
+      "title": "SubmittingPatches, Git documentation — the Git project’s own guidance on writing a commit message",
+      "url": "https://git-scm.com/docs/SubmittingPatches",
+      "kind": "primary"
+    },
+    {
+      "claim": "It asks for the imperative mood — \"make xyzzy do frotz\" rather than \"[This patch] makes xyzzy do frotz\" — \"as if you are giving orders to the codebase to change its behavior\", and asks that the explanation \"can be understood without external resources\", summarising a discussion rather than linking to it.",
+      "title": "SubmittingPatches, Git documentation — the Git project’s own guidance on writing a commit message",
+      "url": "https://git-scm.com/docs/SubmittingPatches",
+      "kind": "primary"
+    },
+    {
+      "claim": "It asks for an explanation \"detailed enough so that people can judge if it is good thing to do, without reading the actual patch text to determine how well the code does what the explanation promises to do\", and states that \"The goal of your log message is to convey the why behind your change to help future developers.\"",
+      "title": "SubmittingPatches, Git documentation — the Git project’s own guidance on writing a commit message",
+      "url": "https://git-scm.com/docs/SubmittingPatches",
+      "kind": "primary"
+    }
+  ],
+  "D.3": [
+    {
+      "claim": "Xia and colleagues instrumented interaction across all applications rather than only the development environment, covering seven real projects, 78 professional developers and 3,148 working hours, and report that on average developers spend about 58% of their time on program comprehension activities.",
+      "title": "Xia, X., Bao, L., Lo, D., Xing, Z., Hassan, A. E., Li, S., Measuring Program Comprehension: A Large-Scale Field Study with Professionals, IEEE Transactions on Software Engineering 44(10):951-976, 2018",
+      "url": "https://dl.acm.org/doi/10.1145/3180155.3182538",
+      "kind": "primary"
+    },
+    {
+      "claim": "A secondary finding of the same study is that senior developers spend significantly smaller percentages of their time on program comprehension than junior developers do.",
+      "title": "Xia, X., Bao, L., Lo, D., Xing, Z., Hassan, A. E., Li, S., Measuring Program Comprehension: A Large-Scale Field Study with Professionals, IEEE Transactions on Software Engineering 44(10):951-976, 2018",
+      "url": "https://dl.acm.org/doi/10.1145/3180155.3182538",
+      "kind": "primary"
+    },
+    {
+      "claim": "Minelli, Mocci and Lanza report that comprehension accounts for roughly 70% of the time in instrumented development sessions, with interface interactions taking roughly 17% and editing and navigation roughly 5% each.",
+      "title": "Minelli, R., Mocci, A., Lanza, M., I Know What You Did Last Summer: an investigation of how developers spend their time, IEEE International Conference on Program Comprehension, 2015",
+      "url": "https://robertominelli.com/assets/downloads/publications/Mine2015b.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "The two figures are not directly comparable even though the later study adopted the earlier one’s activity categories. The earlier share is of instrumented session time inside one environment; the later is of total working hours across all applications. Quoting them together as a range conflates two different denominators.",
+      "title": "Xia, X., Bao, L., Lo, D., Xing, Z., Hassan, A. E., Li, S., Measuring Program Comprehension: A Large-Scale Field Study with Professionals, IEEE Transactions on Software Engineering 44(10):951-976, 2018",
+      "url": "https://dl.acm.org/doi/10.1145/3180155.3182538",
+      "kind": "primary"
+    }
+  ],
+  "D.4": [
+    {
+      "claim": "Xia and colleagues report that developers spend about 58% of their time on program comprehension activities, measured across seven projects, 78 professionals and 3,148 working hours; Minelli, Mocci and Lanza put comprehension at roughly 70% of instrumented session time, against roughly 5% each for editing and navigation.",
+      "title": "Xia, X., Bao, L., Lo, D., Xing, Z., Hassan, A. E., Li, S., Measuring Program Comprehension: A Large-Scale Field Study with Professionals, IEEE Transactions on Software Engineering 44(10):951-976, 2018",
+      "url": "https://dl.acm.org/doi/10.1145/3180155.3182538",
+      "kind": "primary"
+    },
+    {
+      "claim": "The Git project’s guidance on describing a change asks that an explanation \"can be understood without external resources\", summarising a discussion rather than linking to it.",
+      "title": "SubmittingPatches, Git documentation — the Git project’s own guidance on writing a commit message",
+      "url": "https://git-scm.com/docs/SubmittingPatches",
+      "kind": "primary"
+    }
+  ],
+  "D.5": [
+    {
+      "claim": "The study examined 198 randomly sampled, user-reported failures from five widely used distributed systems — Cassandra, HBase, HDFS, Hadoop MapReduce and Redis — of which 48, or 24%, were catastrophic, meaning they affected all or a majority of users rather than a subset.",
+      "title": "Yuan, D. et al., Simple Testing Can Prevent Most Critical Failures: An Analysis of Production Failures in Distributed Data-intensive Systems, OSDI ’14, pp. 249-265",
+      "url": "https://www.usenix.org/system/files/conference/osdi14/osdi14-paper-yuan.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "The paper’s headline finding, stated verbatim: \"almost all (92%) of the catastrophic system failures are the result of incorrect handling of non-fatal errors explicitly signaled in software.\"",
+      "title": "Yuan, D. et al., Simple Testing Can Prevent Most Critical Failures: An Analysis of Production Failures in Distributed Data-intensive Systems, OSDI ’14, pp. 249-265",
+      "url": "https://www.usenix.org/system/files/conference/osdi14/osdi14-paper-yuan.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "It further states: \"in 58% of the catastrophic failures, the underlying faults could easily have been detected through simple testing of error handling code.\"",
+      "title": "Yuan, D. et al., Simple Testing Can Prevent Most Critical Failures: An Analysis of Production Failures in Distributed Data-intensive Systems, OSDI ’14, pp. 249-265",
+      "url": "https://www.usenix.org/system/files/conference/osdi14/osdi14-paper-yuan.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "Of those, \"in 35% of the catastrophic failures, the faults in the error handling code fall into three trivial patterns: (i) the error handler is simply empty or only contains a log printing statement, (ii) the error handler aborts the cluster on an overly-general exception, and (iii) the error handler contains expressions like “FIXME” or “TODO” in the comments.\" A further 23% had error handling logic \"so wrong that any statement coverage testing or more careful code reviews by the developers would have caught the bugs\".",
+      "title": "Yuan, D. et al., Simple Testing Can Prevent Most Critical Failures: An Analysis of Production Failures in Distributed Data-intensive Systems, OSDI ’14, pp. 249-265",
+      "url": "https://www.usenix.org/system/files/conference/osdi14/osdi14-paper-yuan.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "Additional observations: \"74% of the failures are deterministic in that they are guaranteed to manifest with an appropriate input sequence\", \"almost all failures are guaranteed to manifest on no more than three nodes\", and \"77% of the failures can be reproduced by a unit test\".",
+      "title": "Yuan, D. et al., Simple Testing Can Prevent Most Critical Failures: An Analysis of Production Failures in Distributed Data-intensive Systems, OSDI ’14, pp. 249-265",
+      "url": "https://www.usenix.org/system/files/conference/osdi14/osdi14-paper-yuan.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "The authors built a static checker called Aspirator from the simple rules they extracted. It identified 121 new bugs and 379 bad practices in nine production-quality distributed systems that already used state-of-the-art bug-finding tools, of which 143 were fixed or confirmed by the systems’ developers. Over 30% of the catastrophic failures would have been prevented had it been used and the bugs fixed.",
+      "title": "Yuan, D. et al., Simple Testing Can Prevent Most Critical Failures: An Analysis of Production Failures in Distributed Data-intensive Systems, OSDI ’14, pp. 249-265",
+      "url": "https://www.usenix.org/system/files/conference/osdi14/osdi14-paper-yuan.pdf",
+      "kind": "primary"
+    }
+  ],
+  "D.6": [
+    {
+      "claim": "The test automation pyramid was introduced by Mike Cohn in Succeeding with Agile: Software Development Using Scrum, 2009, with three layers: unit tests at the base, service tests in the middle, and user interface tests at the top.",
+      "title": "Cohn, M., Succeeding with Agile: Software Development Using Scrum, Addison-Wesley, 2009 — where the test automation pyramid is introduced",
+      "url": "https://www.mountaingoatsoftware.com/books/succeeding-with-agile-software-development-using-scrum",
+      "kind": "primary"
+    },
+    {
+      "claim": "Cohn calls the middle layer the forgotten layer of test automation: when cases that cannot be covered by unit tests are automated directly at the user interface level instead, the result is a large, slow interface suite — an inverted pyramid.",
+      "title": "Cohn, M., Succeeding with Agile: Software Development Using Scrum, Addison-Wesley, 2009 — where the test automation pyramid is introduced",
+      "url": "https://www.mountaingoatsoftware.com/books/succeeding-with-agile-software-development-using-scrum",
+      "kind": "primary"
+    },
+    {
+      "claim": "Fowler popularised the shape in a 2012 entry, framing it as: you should have many more low-level unit tests than high-level tests running through a graphical interface.",
+      "title": "Fowler, M., TestPyramid, martinfowler.com, 2012 — the bliki entry that popularised Cohn’s pyramid",
+      "url": "https://martinfowler.com/bliki/TestPyramid.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "The inverted shape is widely called an ice cream cone, a label generally attributed to Alister Scott rather than to either of the above; that attribution is repeated from secondary accounts and was not confirmed against a primary source here.",
+      "title": "The inverted test pyramid, commonly called the ice cream cone — an attribution repeated from secondary accounts",
+      "url": "https://martinfowler.com/bliki/TestPyramid.html",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Yuan and colleagues report that \"77% of the failures can be reproduced by a unit test\" and that \"almost all failures are guaranteed to manifest on no more than three nodes\", from a study of 198 real production failures in five distributed systems.",
+      "title": "Yuan, D. et al., Simple Testing Can Prevent Most Critical Failures: An Analysis of Production Failures in Distributed Data-intensive Systems, OSDI ’14, pp. 249-265",
+      "url": "https://www.usenix.org/system/files/conference/osdi14/osdi14-paper-yuan.pdf",
+      "kind": "primary"
+    }
+  ],
+  "D.7": [
+    {
+      "claim": "The study examined 198 randomly sampled, user-reported failures from five widely used distributed systems — Cassandra, HBase, HDFS, Hadoop MapReduce and Redis — of which 48, or 24%, were catastrophic, meaning they affected all or a majority of users rather than a subset.",
+      "title": "Yuan, D. et al., Simple Testing Can Prevent Most Critical Failures: An Analysis of Production Failures in Distributed Data-intensive Systems, OSDI ’14, pp. 249-265",
+      "url": "https://www.usenix.org/system/files/conference/osdi14/osdi14-paper-yuan.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "The paper’s headline finding, stated verbatim: \"almost all (92%) of the catastrophic system failures are the result of incorrect handling of non-fatal errors explicitly signaled in software.\"",
+      "title": "Yuan, D. et al., Simple Testing Can Prevent Most Critical Failures: An Analysis of Production Failures in Distributed Data-intensive Systems, OSDI ’14, pp. 249-265",
+      "url": "https://www.usenix.org/system/files/conference/osdi14/osdi14-paper-yuan.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "It further states: \"in 58% of the catastrophic failures, the underlying faults could easily have been detected through simple testing of error handling code.\"",
+      "title": "Yuan, D. et al., Simple Testing Can Prevent Most Critical Failures: An Analysis of Production Failures in Distributed Data-intensive Systems, OSDI ’14, pp. 249-265",
+      "url": "https://www.usenix.org/system/files/conference/osdi14/osdi14-paper-yuan.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "Of those, \"in 35% of the catastrophic failures, the faults in the error handling code fall into three trivial patterns: (i) the error handler is simply empty or only contains a log printing statement, (ii) the error handler aborts the cluster on an overly-general exception, and (iii) the error handler contains expressions like “FIXME” or “TODO” in the comments.\" A further 23% had error handling logic \"so wrong that any statement coverage testing or more careful code reviews by the developers would have caught the bugs\".",
+      "title": "Yuan, D. et al., Simple Testing Can Prevent Most Critical Failures: An Analysis of Production Failures in Distributed Data-intensive Systems, OSDI ’14, pp. 249-265",
+      "url": "https://www.usenix.org/system/files/conference/osdi14/osdi14-paper-yuan.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "Additional observations: \"74% of the failures are deterministic in that they are guaranteed to manifest with an appropriate input sequence\", \"almost all failures are guaranteed to manifest on no more than three nodes\", and \"77% of the failures can be reproduced by a unit test\".",
+      "title": "Yuan, D. et al., Simple Testing Can Prevent Most Critical Failures: An Analysis of Production Failures in Distributed Data-intensive Systems, OSDI ’14, pp. 249-265",
+      "url": "https://www.usenix.org/system/files/conference/osdi14/osdi14-paper-yuan.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "The authors built a static checker called Aspirator from the simple rules they extracted. It identified 121 new bugs and 379 bad practices in nine production-quality distributed systems that already used state-of-the-art bug-finding tools, of which 143 were fixed or confirmed by the systems’ developers. Over 30% of the catastrophic failures would have been prevented had it been used and the bugs fixed.",
+      "title": "Yuan, D. et al., Simple Testing Can Prevent Most Critical Failures: An Analysis of Production Failures in Distributed Data-intensive Systems, OSDI ’14, pp. 249-265",
+      "url": "https://www.usenix.org/system/files/conference/osdi14/osdi14-paper-yuan.pdf",
+      "kind": "primary"
+    }
+  ],
+  "D.8": [
+    {
+      "claim": "Fowler defines the noun as \"a change made to the internal structure of software to make it easier to understand and cheaper to modify without changing its observable behavior\", and the verb as \"to restructure software by applying a series of refactorings without changing its observable behavior\".",
+      "title": "Fowler, M., Refactoring home page, refactoring.com — the definitions of the noun and the verb",
+      "url": "https://refactoring.com/",
+      "kind": "primary"
+    },
+    {
+      "claim": "Fowler notes that \"observable behavior\" is a deliberately loose term: it indicates the code should overall do the same things as before, but does not mean it will work exactly the same — Extract Function alters the call stack, so performance may change — and the test is that nothing should change that the user should care about.",
+      "title": "Fowler, M., Refactoring home page, refactoring.com — the definitions of the noun and the verb",
+      "url": "https://refactoring.com/",
+      "kind": "primary"
+    },
+    {
+      "claim": "Fowler stresses that refactoring is not a synonym for cleaning up code, and uses restructuring as the broader term for changes to the internal structure of software generally.",
+      "title": "Fowler, M., Refactoring home page, refactoring.com — the definitions of the noun and the verb",
+      "url": "https://refactoring.com/",
+      "kind": "primary"
+    }
+  ],
+  "D.9": [
+    {
+      "claim": "Yuan and colleagues report, from 198 real production failures across five distributed systems, that \"77% of the failures can be reproduced by a unit test\", that \"74% of the failures are deterministic in that they are guaranteed to manifest with an appropriate input sequence\", and that \"almost all failures are guaranteed to manifest on no more than three nodes\".",
+      "title": "Yuan, D. et al., Simple Testing Can Prevent Most Critical Failures, OSDI ’14, pp. 249-265",
+      "url": "https://www.usenix.org/system/files/conference/osdi14/osdi14-paper-yuan.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "The same study reports that \"in 58% of the catastrophic failures, the underlying faults could easily have been detected through simple testing of error handling code\", and that a simple static checker built from three trivial error-handling patterns found 121 new bugs and 379 bad practices in nine production systems that were already using state-of-the-art bug-finding tools.",
+      "title": "Yuan, D. et al., Simple Testing Can Prevent Most Critical Failures, OSDI ’14, pp. 249-265",
+      "url": "https://www.usenix.org/system/files/conference/osdi14/osdi14-paper-yuan.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "The same argument about the cost of a single attempt appears earlier in this curriculum: the time-sharing system demonstrated at Dartmouth on 1 May 1964 removed the barrier to using a computer by shortening the turnaround of one attempt, rather than by simplifying the language.",
+      "title": "BASIC at Dartmouth, Dartmouth College",
+      "url": "https://www.dartmouth.edu/basicfifty/basic.html",
       "kind": "primary"
     }
   ],

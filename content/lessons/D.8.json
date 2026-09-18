@@ -1,0 +1,48 @@
+{
+  "id": "D.8",
+  "trackId": "D",
+  "trackName": "Software development craft",
+  "title": "Refactoring without changing behaviour",
+  "status": "traced",
+  "seed": "D.8",
+  "story": "Fowler’s definition puts all of its weight on five words. A refactoring is a change made to the internal structure of software to make it easier to understand and cheaper to modify without changing its observable behavior. Everything interesting is in the last clause, and the first thing to notice is that taken literally it is impossible to satisfy.\n\nAlmost everything observable does change. Extract a function and the call stack is different, so a stack trace differs and timing differs. Rename something and any reflection over names differs. Fowler is explicit that the term is deliberately loose: the code should overall do the same things as before, it will not work exactly the same, and the test is that nothing changes that the user should care about. That last phrase is doing real work, because it makes the boundary a judgement about who is observing and what they are entitled to depend on — not a property you can compute.\n\nWhich is why the discipline is a discipline about steps rather than about outcomes. The value comes from separating two kinds of change absolutely: alter structure while holding behaviour, or alter behaviour while holding structure, and never both in the same step. If a step changes only structure and something breaks, the cause is in the structural change, which you just made and can undo. Combine the two and you have lost that, because a failure is now consistent with either.\n\nThe cost follows directly and is the part people skip. Holding behaviour is a claim, and a claim needs a way of being checked. Without tests you cannot tell a refactoring from a change that happens not to have been noticed yet — and Fowler’s own distinction is useful here: refactoring is not a synonym for cleaning up code, and restructuring is the broader term. Restructuring without a way to verify behaviour is a legitimate thing to do; it is just not this thing, and calling it refactoring borrows a confidence it has not earned.",
+  "problem": {
+    "name": "Behaviour-preserving transformation",
+    "aka": [
+      "refactoring",
+      "structural change under test"
+    ],
+    "shape": "The internal shape of working code needs to change, and any change to it risks changing what the code does.",
+    "tell": [
+      "the change you want to make is hard because of how the code is arranged, not because of what it does",
+      "people avoid touching a region because nobody knows what depends on it",
+      "a single commit both moves code around and alters what it computes"
+    ],
+    "move": "Split every change into structure-only and behaviour-only steps, never combining them, and run the tests between steps so each one is independently verified.",
+    "invariant": "After a structural step, the observable behaviour is unchanged — where observable means what a user or caller is entitled to depend on, not everything detectable. That boundary is a judgement, which is why it has to be stated rather than computed.",
+    "breaks": "It breaks without a means of verification. The claim \"behaviour is unchanged\" is exactly as strong as your ability to detect a change, so with a weak suite the discipline degrades into a habit of confident-sounding edits. It also breaks where someone depends on something you classed as unobservable — timing, stack shape, iteration order — which is how a correct refactoring breaks a caller.",
+    "cost": {
+      "time": "more steps, more test runs, no visible progress during the structural ones",
+      "space": "nothing permanent; the intermediate states are transient",
+      "beats": "changing shape and behaviour together, which is faster and makes every failure ambiguous"
+    },
+    "worked": {
+      "problem": "What does \"without changing observable behaviour\" mean, given that almost everything observable changes?",
+      "reasoning": "Take it literally and nothing qualifies. Extracting a function changes the call stack and therefore stack traces, timing and possibly allocation. Renaming changes anything that reflects over names. Reordering independent operations changes what a profiler shows. If observable meant detectable, the category would be empty.\n\nFowler says the looseness is deliberate: the code should overall do the same things, it will not work exactly the same, and nothing should change that the user should care about.\n\nSo the real boundary is about entitlement rather than detectability — what a caller is allowed to depend on. That cannot be computed, which is uncomfortable, and it explains two things at once. It explains why the definition is vague where you would want precision. And it explains a specific class of incident: a genuinely correct refactoring that breaks a caller, because the caller depended on something outside the contract, like iteration order or timing.\n\nThe practical form is to make the boundary explicit rather than assumed — that is what a test suite is, read as a specification of what is protected.",
+      "code": "\"observable\" cannot mean \"detectable\":\n\n  extract a function -> call stack differs\n                     -> timing differs\n                     -> a profile differs\n  rename             -> reflection over names differs\n  reorder            -> allocation pattern differs\n\n  taken literally, the set of legal refactorings\n  is EMPTY.\n\n  what it means: what a caller is ENTITLED to rely on.\n  -> a judgement, not a computation\n  -> so it must be stated\n\n  and your test suite is that statement:\n     what it checks = what is protected\n     what it doesn't = what you are free to change\n                       ...and what will one day break\n                          a caller who relied on it"
+    },
+    "practice": "Take one commit that both moved code and changed what it does, and split it into two. Then note which half you could verify with the tests you have, and what that tells you about which half was actually risky."
+  },
+  "beats": {
+    "broke": "Working code has to change shape as requirements move, and any change to its shape risks changing what it does — so the shape stops changing, and the cost of every later change rises.",
+    "fix": "Separate the kinds of change absolutely: structure while holding behaviour, or behaviour while holding structure, never both in one step. Then a failure after a structural step has exactly one possible cause.",
+    "cost": "Holding behaviour is a claim, and it is only as strong as your ability to detect a change — so without tests the discipline reduces to confident-sounding edits, which is restructuring rather than refactoring.",
+    "interview": {
+      "q": "What does \"without changing observable behaviour\" mean, when almost everything observable changes?",
+      "trap": "Treating it as a precise technical property. Read literally the category is empty, so a precise reading cannot be what is meant.",
+      "answer": "It cannot mean detectable, because extracting a function changes the call stack and therefore stack traces and timing, renaming changes anything reflecting over names, and reordering changes what a profiler shows. Under a strict reading nothing qualifies.\n\nFowler says the looseness is deliberate: the code should overall do the same things, it will not work exactly the same, and nothing should change that the user should care about. So the boundary is about what a caller is entitled to depend on rather than what they can detect — a judgement, not a computation.\n\nThat explains two things at once. It explains why the definition is vague exactly where you would want precision. And it explains a specific class of incident: a genuinely correct refactoring that breaks a caller who depended on something outside the contract, like iteration order or timing.\n\nThe practical move is to make the boundary explicit, and the test suite is where you state it — what it checks is what is protected, and what it does not check is what you are implicitly free to change."
+    }
+  },
+  "blueprint": "Two kinds of change, never in the same step:\n\n  structure only      behaviour only\n  ------------        --------------\n  tests stay green    tests change deliberately\n  failure -> the      failure -> the behaviour\n    move was wrong      change was wrong\n\n  combine them, and a failure is consistent with\n  either. that is the entire reason for the rule.\n\n  and \"observable\" is a judgement, not a measurement:\n\n     detectable  : call stack, timing, allocation,\n                   iteration order  -> all change\n     entitled to : whatever you wrote down\n\n  your suite IS that statement:\n     checked   = protected\n     unchecked = free to change, and one day the\n                 caller who relied on it breaks",
+  "takeaway": "Never change structure and behaviour in one step, because then a failure has one cause instead of two — and \"observable behaviour\" is a judgement about what a caller may rely on, which your test suite is the written form of."
+}

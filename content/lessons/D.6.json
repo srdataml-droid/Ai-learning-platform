@@ -1,0 +1,48 @@
+{
+  "id": "D.6",
+  "trackId": "D",
+  "trackName": "Software development craft",
+  "title": "The testing pyramid, and why most people invert it by accident",
+  "status": "traced",
+  "seed": "D.6",
+  "story": "Cohn introduced the shape in 2009: unit tests at the base, service tests in the middle, interface tests at the top, with the width standing for how many of each you should have. Fowler restated it in 2012 in one line — many more low-level unit tests than high-level tests running through a graphical interface. The advice is nearly universally agreed with and nearly universally not followed, which makes the interesting question why.\n\nIt is not that people disagree. It is that the shape is an outcome of many local decisions, and every one of those decisions individually favours the top. A test through the interface requires no design: you drive the thing the way a user does, and it passes or fails. A unit test requires that a unit exist — something with a boundary you can call and a result you can assert — and if the code has no such seam, writing the test means changing the code first. Faced with a deadline, the test that needs no design wins every time, and nobody ever decides to invert the pyramid.\n\nCohn names the mechanism precisely, and it is the middle that does the damage. He calls service tests the forgotten layer: when the cases that cannot be covered by unit tests get automated at the interface level instead, you end up with a large, slow interface suite. The middle layer is the one that requires you to have an interface below the user interface worth testing against — which is a design property, not a testing one.\n\nThere is empirical support for weighting the bottom, from the study in D.5. Across 198 real production failures in five distributed systems, 77% could be reproduced by a unit test, and almost all were guaranteed to manifest on no more than three nodes. That is a strong claim against the intuition that real failures need realistic environments: most of them did not. The cost is honest though — a suite weighted to the bottom tests the pieces thoroughly and can still miss that they are wired together wrongly, which is exactly what the thin top layer is for and why it is thin rather than absent.",
+  "problem": {
+    "name": "Test suite shape",
+    "aka": [
+      "the test pyramid",
+      "the inverted pyramid"
+    ],
+    "shape": "Checks can be written at several levels with very different costs, and the distribution across levels is decided by accumulated convenience rather than by design.",
+    "tell": [
+      "the suite takes long enough that people push without running it",
+      "failures are investigated by re-running rather than by reading",
+      "most of your tests drive the system the way a user would"
+    ],
+    "move": "Put most checks at the level where they are fast, deterministic and precise about what broke, use a middle layer against an interface below the user interface, and keep a small number of end-to-end tests for wiring.",
+    "invariant": "A failing test identifies what is broken, not merely that something is. That property degrades as the test covers more of the system, which is the real reason to weight the base — not speed alone.",
+    "breaks": "It breaks where there is no seam to test against. A unit test needs a unit, and a service test needs an interface below the interface, so an inverted suite is usually a symptom of the design rather than of the testing discipline. Rebalancing the suite therefore means changing the code, which is why exhortation alone never works.",
+    "cost": {
+      "time": "the base is fast and the top is slow, by orders of magnitude",
+      "space": "more tests in total, most of them small",
+      "beats": "testing everything end to end, which needs no design and produces a suite too slow and too flaky to run"
+    },
+    "worked": {
+      "problem": "Why does the inversion happen by accident, when almost everyone agrees with the pyramid?",
+      "reasoning": "Because the shape is never chosen. It is the sum of many individual decisions, each made under a deadline, and each of them locally favours the top.\n\nConsider one case you need to cover. Writing it through the interface needs no design: drive the system as a user does. Writing it as a unit test requires a unit — a boundary you can call directly — and if none exists, you must first change the code to create one. So the cheaper option today is the top, every single time.\n\nRepeat that a few hundred times and you have an inverted suite, with no meeting at which anyone proposed inverting it. The forgotten middle is the same mechanism in its sharpest form: it needs an interface beneath the user interface to exist, so when it does not, those cases float to the top.\n\nWhich tells you the intervention. Exhortation cannot work against an incentive that fires per test. You have to make the cheap option the low-level one, and that means creating the seams.",
+      "code": "one case to cover. two ways to write it.\n\n  through the UI            as a unit test\n  ------------              --------------\n  needs: nothing            needs: a unit to exist\n  design work: none         design work: maybe a lot\n  today's cost: LOW         today's cost: HIGH\n  runs in: minutes          runs in: ms\n  tells you: \"broke\"        tells you: \"this broke\"\n\n  each decision: rational. 300 decisions: inverted.\n  nobody ever decided to invert it.\n\n  -> exhortation loses to an incentive that fires\n     once per test\n  -> the fix is structural: create the seams, so the\n     cheap option becomes the low one\n\n  and the evidence for weighting the base:\n     77% of real production failures reproducible\n     by a unit test; almost all manifest on <= 3 nodes"
+    },
+    "practice": "Count your tests by level and draw the actual shape. Then take one high-level test and work out what would have to exist in the code for it to be written one level down — that answer, not the test count, is why your shape is what it is."
+  },
+  "beats": {
+    "broke": "Tests that drive the whole system require no design to write, so they are always the cheaper option today. Enough of them produces a suite slow and flaky enough that people stop running it, which removes the feedback the tests existed to provide.",
+    "fix": "Weight the suite to the level where failures are fast and specific: unit tests at the base, service tests in the middle, few interface tests on top — Cohn’s shape from 2009, restated by Fowler in 2012.",
+    "cost": "The middle layer needs an interface below the user interface to test against, so rebalancing is a design change rather than a testing change. And a base-weighted suite can pass while the pieces are wired together wrongly, which is what the thin top is for.",
+    "interview": {
+      "q": "If almost everyone agrees with the pyramid, why are most real suites inverted?",
+      "trap": "Attributing it to laziness or to teams not knowing better. Agreement is the premise of the question, so the explanation has to work for people who agree.",
+      "answer": "Because nobody ever decides the shape. It is the sum of hundreds of individual decisions, each taken under a deadline, and each one locally favours the top.\n\nTake a single case to cover. Through the interface it needs no design — you drive the system as a user does. As a unit test it needs a unit to exist: a boundary you can call and assert on. If the code has no such seam, writing the test means changing the code first. So the cheaper option today is the high-level one, every time, and repeating that produces an inverted suite with no meeting at which anyone proposed inverting it.\n\nCohn's forgotten middle is the same mechanism at its sharpest: service tests need an interface beneath the user interface, and where none exists those cases float to the top.\n\nThat tells you why exhortation fails and what works instead. You cannot argue against an incentive that fires once per test; you have to create the seams so the low-level option becomes the cheap one. The empirical case for bothering is strong — 77% of real production failures in one study were reproducible by a unit test."
+    }
+  },
+  "blueprint": "The shape nobody chooses:\n\n     /\\        few, slow, \"something broke\"\n    /  \\\n   /----\\      the FORGOTTEN layer: needs an interface\n  /      \\     below the UI to exist\n /--------\\    many, fast, \"THIS broke\"\n\n  per-test incentive, under a deadline:\n\n     through the UI : design needed = 0  -> cheap today\n     unit test      : design needed = ?  -> dear today\n\n  x300 -> inverted, by accumulation, never by decision\n\n  so the fix is not persuasion, it is seams.\n\n  evidence for the base being worth it:\n     77% of real production failures reproducible\n         by a unit test\n     almost all manifest on <= 3 nodes",
+  "takeaway": "The pyramid inverts by accumulation rather than by decision, because a test through the interface needs no design and a unit test needs a unit — so rebalancing the suite is a change to the code, not to the testing policy."
+}

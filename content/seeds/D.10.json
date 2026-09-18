@@ -1,0 +1,68 @@
+{
+  "taskId": "D.10",
+  "title": "Documentation that survives: README, architecture notes, decision records",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Michael Nygard published Documenting Architecture Decisions on 15 November 2011. He describes a decision record as a short text file in a format similar to an Alexandrian pattern, where each record describes a set of forces and a single decision in response to those forces.",
+      "type": "date",
+      "tokens": [
+        "Michael Nygard",
+        "Nygard",
+        "Alexandrian",
+        "2011"
+      ],
+      "source": {
+        "title": "Nygard, M., Documenting Architecture Decisions, 15 November 2011",
+        "url": "https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Nygard argues that agile methods are not opposed to documentation, only to valueless documentation.",
+      "type": "event",
+      "tokens": [
+        "Nygard"
+      ],
+      "source": {
+        "title": "Nygard, M., Documenting Architecture Decisions, 15 November 2011",
+        "url": "https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The record format he gives contains a title, the context of the decision, the decision itself, and its consequences. Records are not deleted when a decision changes; a later record supersedes an earlier one.",
+      "type": "event",
+      "tokens": [
+        "Nygard"
+      ],
+      "source": {
+        "title": "Nygard, M., Documenting Architecture Decisions, 15 November 2011",
+        "url": "https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "The approach builds on Kruchten’s work on the decision view’s role in software architecture practice, which extended an earlier view model to capture the rationale behind important decisions.",
+      "type": "event",
+      "tokens": [
+        "Kruchten"
+      ],
+      "source": {
+        "title": "Nygard, M., Documenting Architecture Decisions, 15 November 2011",
+        "url": "https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "documentation describes the current state of a system, the system changes, and nothing in the mechanism makes the description change with it",
+    "fix": "write down things that cannot become false — a decision made at a time, with its context and consequences — and supersede rather than edit",
+    "cost": "a pile of decision records tells you the history and not the present, so it does not replace the document that rots",
+    "interview": "why a decision record does not go stale when a README does"
+  }
+}

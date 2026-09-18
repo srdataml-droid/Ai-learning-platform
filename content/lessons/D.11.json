@@ -1,0 +1,48 @@
+{
+  "id": "D.11",
+  "trackId": "D",
+  "trackName": "Software development craft",
+  "title": "Code review, on both sides of it",
+  "status": "traced",
+  "seed": "D.11",
+  "story": "Bacchelli and Bird went and looked. They observed, interviewed and surveyed developers and managers, and hand-classified hundreds of review comments across teams at Microsoft, and what they found is a gap between why people say they review and what review produces. Finding defects remains the main stated motivation; reviews turn out to be less about defects than expected, and to deliver knowledge transfer, increased team awareness, and alternative solutions to problems.\n\nThat gap matters because the two purposes recommend opposite behaviour. If review is a defect gate, a review with no comments is a clean pass, the fastest reviewer is the best one, and a question like \"why is it done this way\" is noise because it finds no bug. If review is mostly how knowledge moves and how a team stays aware of what is changing, then a review with no comments is a wasted opportunity, and that question is among the most valuable things you can write — it transfers context in both directions and often surfaces the alternative nobody considered.\n\nSo the practical advice differs per side. As a reviewer, the highest-value comment is frequently not a defect: it is a question that makes the author articulate a reason, which is the same mechanism D.2 noted for commit messages, where people find their own bugs while explaining themselves. As an author, the useful move is to make review cheap — small changes, and the reasoning already written down, so the reviewer spends their attention on the decision rather than on reconstructing it.\n\nTwo caveats, because this is a literature where confidence outruns evidence. Rigby and Bird found that review parameters converge across drastically different settings — Google’s Android and Chromium OS, projects at Microsoft and AMD, inspection data from Lucent, and open source review on Apache, Linux and KDE — which suggests something structural rather than cultural is shaping the practice. And they record that the closest available proxy for a defect found was a discussion thread marked resolved, noting that a reviewer’s comment or question can produce a resolved thread without any defect existing. So the field’s numbers about defect-finding are softer than they sound, which is a reason to hold the headline claim loosely and the mechanism firmly.",
+  "problem": {
+    "name": "Purpose-outcome mismatch",
+    "aka": [
+      "code review",
+      "reviewing for knowledge rather than defects"
+    ],
+    "shape": "A practice is justified by one outcome and mostly delivers another, so optimising it against the stated purpose degrades what it actually provides.",
+    "tell": [
+      "approvals arrive with no comments and that is treated as a good sign",
+      "reviewers are measured on turnaround time",
+      "the same context is explained repeatedly in person because it never appears in a review"
+    ],
+    "move": "Review for the outputs it actually produces: ask the questions that make reasoning explicit, name alternatives, and treat transferring context as the work rather than as a digression from it.",
+    "invariant": "The reviewer ends up understanding the change well enough to maintain it. That is the property that produces the measured benefits, and unlike defect count it is something the reviewer can tell whether they achieved.",
+    "breaks": "It breaks under measurement. Defects found is countable, and knowledge transferred is not, so a team that instruments review will instrument the part that matters least and reward the behaviour that produces it — speed and silence. The proxy problem runs deep enough that even the research had to use resolved discussion threads as a stand-in for defects.",
+    "cost": {
+      "time": "slower reviews, and reviewers who must understand rather than scan",
+      "space": "discussion recorded against the change, which is where a future reader will look",
+      "beats": "a fast approval gate, which is cheaper, measurable, and delivers the smaller half of the value"
+    },
+    "worked": {
+      "problem": "What changes about how you review once you know defects are not the main output?",
+      "reasoning": "Take one comment type and evaluate it under both purposes: \"why is this done this way?\"\n\nUnder the defect-gate purpose it scores zero. It identifies no bug, it delays the merge, and a reviewer optimising for throughput should not write it.\n\nUnder the measured purpose it is close to optimal. The author must articulate a reason, which frequently exposes that there was not a good one. The reviewer acquires context they will need later. The exchange is recorded against the change, where the next person will look. And it often surfaces an alternative, which is one of the outcomes the study names directly.\n\nSo the same comment is worthless or excellent depending on which purpose you hold, and that is the practical content of the finding. It also explains the failure mode: because defects are countable and understanding is not, any team that measures review will drift toward the purpose that scores worse.",
+      "code": "comment: \"why is this done this way?\"\n\n  scored as a defect gate     scored as it actually works\n  ---------------------       --------------------------\n  finds no bug: 0             author must justify it\n  delays merge: -1            -> often finds there\n  reviewer throughput: worse     wasn't a reason\n                              reviewer gains context\n  verdict: don't write it     recorded where the next\n                                person will look\n                              surfaces alternatives\n                              verdict: near-optimal\n\n  same comment. opposite verdicts.\n\n  and the measurement trap:\n     defects found     -> countable\n     knowledge moved   -> not\n  -> instrument review and you reward speed+silence"
+    },
+    "practice": "Take your last five reviews and classify every comment as defect, style, or question. Then ask, for each question you did not write but thought of, what would have happened if you had."
+  },
+  "beats": {
+    "broke": "Review is justified as a defect-finding gate. Under that purpose an empty review is a success and the fastest reviewer is the best, so the practice is optimised toward speed and silence.",
+    "fix": "Treat it as what it measurably delivers. Studying review at Microsoft found that although defects remain the main motivation, reviews are less about defects than expected and deliver knowledge transfer, team awareness and alternative solutions.",
+    "cost": "The valuable outputs are not countable while defects are, so any team that measures review will measure the smaller half and reward the behaviour that produces it. Even the research had to use resolved discussion threads as a proxy for defects found.",
+    "interview": {
+      "q": "What changes about how you review once you know that defects are not the main output?",
+      "trap": "Concluding that defects do not matter. They remain the main stated motivation and reviews do catch them — the point is that they are not the largest part of the value.",
+      "answer": "Take one comment — \"why is this done this way?\" — and score it under each purpose.\n\nAs a defect gate it is worthless: it identifies no bug, it delays the merge, and a reviewer optimising for throughput should not write it. Under what review actually delivers it is close to optimal: the author has to articulate a reason, which often reveals there was not a good one; the reviewer acquires context they will need later; the exchange is recorded against the change where the next person will look; and it frequently surfaces an alternative, which the research names as one of the outcomes.\n\nSame comment, opposite verdicts. That is the practical content of the finding, and it applies on both sides — as an author, make review cheap by keeping changes small and writing the reasoning down first, so attention goes to the decision rather than to reconstructing it.\n\nTwo caveats worth carrying: review parameters converge across very different organisations, which suggests something structural shapes the practice; and the closest available proxy for a defect found was a resolved discussion thread, so the numbers on defect-finding are softer than they sound."
+    }
+  },
+  "blueprint": "Stated purpose vs measured outcome:\n\n  stated:   find defects\n  measured: knowledge transfer, team awareness,\n            alternative solutions\n            (defects: real, but the smaller half)\n\n  and they recommend OPPOSITE behaviour:\n\n     as a gate            as it actually works\n     ---------            --------------------\n     no comments = pass   no comments = wasted\n     fast = good          understanding = good\n     \"why this way?\"      \"why this way?\"\n        = noise              = near-optimal\n\n  the measurement trap:\n     defects   countable\n     knowledge not\n     -> instrumenting review rewards speed + silence\n\n  and hold the numbers loosely: the proxy for\n  \"defect found\" was a RESOLVED DISCUSSION THREAD.",
+  "takeaway": "Review is justified by defect-finding and mostly delivers knowledge transfer, awareness and alternatives — so the same comment is worthless under the stated purpose and near-optimal under the real one, and measuring review rewards the wrong half."
+}

@@ -1,0 +1,48 @@
+{
+  "id": "D.5",
+  "trackId": "D",
+  "trackName": "Software development craft",
+  "title": "Error handling: fail loudly, fail early, fail with information",
+  "status": "traced",
+  "seed": "D.5",
+  "story": "There is a paper that settles this argument with numbers rather than taste. Yuan and colleagues took 198 randomly sampled, user-reported failures from five systems — Cassandra, HBase, HDFS, Hadoop MapReduce and Redis — of which 48 were catastrophic, meaning they took out all or most users rather than some. Their headline finding is that almost all, 92%, of the catastrophic system failures are the result of incorrect handling of non-fatal errors explicitly signalled in software.\n\nRead that carefully, because the surprising word is \"signalled\". These were not unknown-unknowns or hardware doing something exotic. The system detected a problem, said so, and the code that received the message did the wrong thing with it. The most severe outcomes in five mature distributed systems came overwhelmingly from the part of the program written to cope with things going wrong.\n\nIt gets more specific and more uncomfortable. In 58% of catastrophic failures the underlying faults could easily have been detected through simple testing of the error handling code, and in 35% the faults fall into three trivial patterns: the handler is empty or only logs; the handler aborts the whole cluster on an overly general exception; or the handler contains a FIXME or TODO in the comments. A further 23% were so wrong that statement coverage testing or more careful review would have caught them. Those are not subtle concurrency bugs. They are code nobody looked at.\n\nThe authors then did the honest thing and tested their own claim. They built a static checker, Aspirator, from those simple rules, ran it on nine production systems already using state-of-the-art bug-finding tools, and found 121 new bugs and 379 bad practices, of which 143 were fixed or confirmed. And one caveat worth carrying: reviewers have pointed out that in a language where every fault surfaces as an exception, \"incorrect error handling\" is a broad category, so the 92% should be read as a statement about where the failures pass through rather than proof that better handling would have removed nearly all of them.",
+  "problem": {
+    "name": "Error path neglect",
+    "aka": [
+      "the untested branch",
+      "swallowed exceptions"
+    ],
+    "shape": "A program’s error paths are the least written, least tested and least reviewed part of it, and they run only when something has already gone wrong.",
+    "tell": [
+      "a handler is empty, or contains only a log line",
+      "a catch clause covers a general type and aborts, or covers a general type and continues",
+      "you cannot say when the error path last executed, in testing or in production"
+    ],
+    "move": "Treat the handler as ordinary code with ordinary obligations: it must be exercised by a test, it must record what happened with enough context to act on, and it must not absorb a condition it has no answer for.",
+    "invariant": "Every handler has been executed at least once by something other than the incident. An unexecuted handler is not error handling, it is the appearance of it — and its appearance is what stops anyone looking closer.",
+    "breaks": "It breaks where handling the error means making a decision nobody wants to make — what should this actually do if the write fails? The empty handler exists because the decision is hard, so the discipline transfers the cost from a future incident to a present argument, and that is genuinely more expensive today.",
+    "cost": {
+      "time": "a test per error path, and a decision per error path",
+      "space": "more code on the paths that ordinarily do not run",
+      "beats": "catching broadly and continuing, which is shorter, passes review, and produces the failure mode above"
+    },
+    "worked": {
+      "problem": "Why is the code that runs when something goes wrong the code most likely to be wrong?",
+      "reasoning": "Every feedback mechanism that corrects ordinary code is weak or absent on the error path.\n\nIt is not exercised: the happy path runs constantly in development, and the error path runs when a disk fills. It is not tested: writing the test requires inducing a failure, which is more work than testing the success case. It is not reviewed with the same attention, because a reviewer reads the change and the handler looks like boilerplate. And it is written last, when the interesting problem is already solved.\n\nSo the error path accumulates defects at the ordinary rate and has none of the ordinary mechanisms for removing them. That predicts exactly the measured result: the trivial patterns — empty handlers, overly general catches, TODO comments — dominate, because those are what unreviewed, unexecuted code looks like.\n\nWhich also tells you the cheapest intervention, and it is not better judgement. It is making the paths run.",
+      "code": "           happy path        error path\n           ----------        ----------\nexercised  constantly        when a disk fills\ntested     naturally         requires inducing a fault\nreviewed   closely           \"looks like boilerplate\"\nwritten    first             last, after the fun part\n\n  same defect rate. none of the correction mechanisms.\n\n  measured consequence (48 catastrophic failures):\n     92%  incorrect handling of signalled errors\n     58%  detectable by simple testing of that code\n     35%  three trivial patterns:\n            empty / log-only handler\n            abort the cluster on a general exception\n            \"FIXME\" or \"TODO\" in the handler\n\n  these are not hard bugs. this is unlooked-at code."
+    },
+    "practice": "Find every empty catch block, or one containing only a log line, in a service you own. For each, write down what should happen instead — and notice which ones you cannot answer, because those are the ones the empty handler was hiding."
+  },
+  "beats": {
+    "broke": "Error paths are written last, exercised least, tested least and reviewed least, while being the code that runs exactly when something has already gone wrong — so they accumulate defects normally and have none of the usual means of removing them.",
+    "fix": "Treat handlers as ordinary code: exercised by a test, recording enough context to act on, and never absorbing a condition they have no answer for. The authors turned three trivial patterns into a static checker and found 121 new bugs in systems already running other tools.",
+    "cost": "Handling an error properly means deciding what should happen, and the empty handler exists precisely because that decision is hard. The discipline converts a future incident into a present argument, which is more expensive today and cheaper overall.",
+    "interview": {
+      "q": "Why is the code that runs when something goes wrong the code most likely to be wrong?",
+      "trap": "Answering that errors are hard to anticipate. The measured failures were mostly errors the system had already detected and signalled — anticipation was not the problem.",
+      "answer": "Because every mechanism that ordinarily removes defects is weak or absent on the error path. It is not exercised, since the happy path runs constantly and the error path runs when a disk fills. It is not tested, because writing the test means inducing a failure. It is not reviewed as closely, because handlers read as boilerplate. And it is written last, after the interesting problem is solved.\n\nThe defect rate is the same; the correction is missing. That predicts the measured result precisely: in one study of 48 catastrophic failures across five mature distributed systems, 92% came from incorrect handling of non-fatal errors the software had already signalled, 58% were detectable by simple testing of the error handling code, and 35% fell into three trivial patterns — an empty or log-only handler, an abort on an overly general exception, or a FIXME left in the comments.\n\nSo the cheapest intervention is not better judgement but making those paths execute. One caveat: in a language where every fault surfaces as an exception, \"incorrect error handling\" is a broad category, so the 92% locates where failures pass through rather than proving better handling removes them all."
+    }
+  },
+  "blueprint": "Why this branch and not the others:\n\n               happy path     error path\n  exercised    always         ~never\n  tested       naturally      needs a fault induced\n  reviewed     closely        \"boilerplate\"\n  written      first          last\n\n  -> same defects, none of the correction\n\n  and so, measured across 48 catastrophic failures:\n\n     92% incorrect handling of SIGNALLED errors\n         (the system knew. the handler was wrong.)\n     58% detectable by simple testing of that code\n     35% three trivial patterns\n     23% wrong enough that coverage would show it\n\n  intervention that follows:\n     not \"think harder about errors\"\n     but \"make the error paths RUN\"",
+  "takeaway": "Error paths carry the same defect rate as everything else and none of the mechanisms that remove defects — which is why 92% of catastrophic failures in one study came from mishandling errors the system had already detected and announced."
+}

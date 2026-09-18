@@ -1,0 +1,48 @@
+{
+  "id": "D.7",
+  "trackId": "D",
+  "trackName": "Software development craft",
+  "title": "Writing a test that would actually have caught a real bug",
+  "status": "traced",
+  "seed": "D.7",
+  "story": "The uncomfortable property of a test suite written from imagination is that it covers the cases the author had in mind, and the bug was in a case they did not. Coverage measures how much of the code ran, not how much of your thinking was checked, so a suite can be thorough and systematically blind in exactly the region where you are wrong.\n\nA bug that actually happened breaks that symmetry, because it is evidence rather than invention. It is a case you demonstrably did not have in mind, delivered by production rather than by your own imagination, and it comes with the one thing a hypothetical never has: a known correct answer and a known wrong one.\n\nSo the exercise is precise. Take an incident. Write the test before applying the fix, and run it. If it does not fail, you have not reproduced the bug and whatever you are about to fix is not what broke — which happens more often than people expect and is the entire reason for the ordering. Then apply the fix and watch it pass. That sequence is what distinguishes a test that catches the bug from a test that merely describes the fix, and the two are indistinguishable once the fix is in.\n\nThe study in D.5 says this is far more available than it sounds. Across 198 real production failures, 77% could be reproduced by a unit test, 74% were deterministic given an appropriate input sequence, and almost all were guaranteed to manifest on no more than three nodes. The common objection — that a real failure needs a realistic environment — is mostly false, and in 58% of the catastrophic cases the faults could easily have been detected through simple testing of the error handling code. The honest limit is that this method only ever protects you against the kinds of fault you have already suffered, so it deepens your suite along the path of your own history and leaves everywhere else exactly as it was.",
+  "problem": {
+    "name": "Regression test from evidence",
+    "aka": [
+      "reproduce before you fix",
+      "the failing test first"
+    ],
+    "shape": "Tests written from imagination cover the cases you thought of, and defects live in the cases you did not.",
+    "tell": [
+      "coverage is high and bugs still reach production",
+      "after an incident the fix ships without a test, or with a test written afterwards",
+      "nobody can say whether the new test would have failed before the fix"
+    ],
+    "move": "Reproduce first. Write the test against the unfixed code, watch it fail, read the failure to confirm it is the right failure, then fix and watch it pass.",
+    "invariant": "The test failed before the change and passed after, for the stated reason. Without the first half you have evidence only that the test agrees with the current code, which every test does.",
+    "breaks": "It is bounded by your history. This method only produces tests for faults you have already experienced, so it reinforces the suite exactly where you have already been hurt and not at all where you have not — which is a real limitation and not a reason to skip it.",
+    "cost": {
+      "time": "reproduction is the expensive part, and is sometimes most of the incident",
+      "space": "a test per incident, which accumulates",
+      "beats": "fixing and moving on, which is faster and leaves nothing preventing a recurrence"
+    },
+    "worked": {
+      "problem": "Why does a test written after the fix prove less than one written before it?",
+      "reasoning": "Because after the fix, both a correct test and a useless one pass, and nothing distinguishes them.\n\nA test written against fixed code has only been observed in one state: agreeing. That is also what a test asserting something trivially true does, or one exercising a different path from the bug, or one whose assertion is misspelled in a way that cannot fail. You have no evidence about which of those you wrote.\n\nRunning it against the unfixed code is the only observation that separates them. If it fails, you have shown it is capable of failing and that it fails on this defect. If it passes, you have learned something important immediately: you have not reproduced the bug, and the fix you are about to apply is aimed at something else.\n\nThat second case is the reason for the ordering rather than a bonus. Discovering it before the fix costs a few minutes; discovering it after costs a second incident.",
+      "code": "test written AFTER the fix\n  observed states: { passes }\n  consistent with:\n     - a correct regression test\n     - asserting something trivially true\n     - exercising a different path\n     - an assertion that cannot fail\n  -> no evidence which one you wrote\n\ntest written BEFORE the fix\n  observed states: { fails, then passes }\n  fails  -> it CAN fail, and does so on this defect\n  passes -> you haven't reproduced it; the fix you\n            are about to ship targets something else\n\n  the second outcome is the point, not a bonus.\n  cost of finding it now:   minutes\n  cost of finding it later: another incident"
+    },
+    "practice": "Take the last bug you fixed. Check out the commit before the fix, write the test, and run it. If it passes, you did not reproduce the bug — and you should find out what you actually changed."
+  },
+  "beats": {
+    "broke": "A suite written from imagination covers the cases the author thought of, and defects are by definition in the cases they did not. Coverage measures executed lines, not examined assumptions, so it can be high in exactly the region where you are wrong.",
+    "fix": "Use a fault that really happened as evidence. Write the test against the unfixed code, watch it fail for the right reason, then fix it and watch it pass — an ordering that is the only thing distinguishing a regression test from a description of the fix.",
+    "cost": "It only protects against kinds of fault you have already suffered, so the suite deepens along the path of your own history and stays exactly as thin everywhere else.",
+    "interview": {
+      "q": "Why does a test written after the fix prove less than one written before it?",
+      "trap": "Answering that it is about discipline, or about test-first orthodoxy. The reason is evidential and applies even if you never do test-first development otherwise.",
+      "answer": "Because once the fix is in, a correct regression test and a useless one both pass, and you cannot tell them apart.\n\nA test only ever observed against fixed code has been seen in exactly one state: agreeing. So has a test asserting something trivially true, one exercising a different code path from the actual defect, and one whose assertion is broken in a way that can never fail. You have no evidence about which you wrote.\n\nRunning it against the unfixed code is the single observation that separates those cases. Failing shows it is capable of failing and that it fails on this defect. Passing tells you something more valuable and more alarming: you have not reproduced the bug, so whatever you are about to ship is aimed at something other than the cause.\n\nThat second outcome is the reason for the ordering. It costs minutes to discover before the fix and a second incident to discover after. And it is more available than people assume — in one study of 198 real production failures, 77% were reproducible by a unit test and 74% were deterministic given the right input sequence."
+    }
+  },
+  "blueprint": "The only observation that distinguishes them:\n\n  after the fix     states seen: { pass }\n                    -> correct test?\n                    -> trivially true?\n                    -> wrong path?\n                    -> assertion that can't fail?\n                       ...indistinguishable\n\n  before the fix    states seen: { fail, pass }\n                    fail -> it can fail, on THIS bug\n                    pass -> you didn't reproduce it\n\n  the \"pass\" case before the fix is the valuable one:\n     it says the fix you are about to ship is aimed\n     at something that isn't the cause.\n\n  and reproduction is more available than assumed:\n     77% of real failures: reproducible by a unit test\n     74%: deterministic given the input sequence\n     <=3 nodes: almost all of them",
+  "takeaway": "A test never run against the broken code has only ever been seen agreeing, which is also what a useless test does — so the failure before the fix is the only evidence that the test can catch anything."
+}

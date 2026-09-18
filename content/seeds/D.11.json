@@ -1,0 +1,93 @@
+{
+  "taskId": "D.11",
+  "title": "Code review, on both sides of it",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Bacchelli and Bird studied tool-based code review by observing, interviewing and surveying developers and managers, and manually classifying hundreds of review comments across diverse teams at Microsoft.",
+      "type": "event",
+      "tokens": [
+        "Bacchelli",
+        "Bird",
+        "Microsoft"
+      ],
+      "source": {
+        "title": "Bacchelli, A. and Bird, C., Expectations, Outcomes, and Challenges of Modern Code Review, ICSE 2013, pp. 712-721",
+        "url": "https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/ICSE202013-codereview.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Their finding is that while finding defects remains the main motivation for review, reviews are less about defects than expected, and instead provide additional benefits such as knowledge transfer, increased team awareness, and the creation of alternative solutions to problems.",
+      "type": "event",
+      "tokens": [
+        "Bacchelli",
+        "Bird"
+      ],
+      "source": {
+        "title": "Bacchelli, A. and Bird, C., Expectations, Outcomes, and Challenges of Modern Code Review, ICSE 2013, pp. 712-721",
+        "url": "https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/ICSE202013-codereview.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "They note that code review as practised today is less formal and more lightweight than the code inspections studied in the seventies and eighties.",
+      "type": "event",
+      "tokens": [
+        "Bacchelli",
+        "Bird"
+      ],
+      "source": {
+        "title": "Bacchelli, A. and Bird, C., Expectations, Outcomes, and Challenges of Modern Code Review, ICSE 2013, pp. 712-721",
+        "url": "https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/ICSE202013-codereview.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "Rigby and Bird examined two projects led by Google — Android and Chromium OS — three at Microsoft, projects internal to AMD, traditional software inspection data from Lucent, and open source review on six projects including Apache, Linux and KDE. Despite drastically different settings, cultures, incentive systems and time pressures, they found that the parameters of peer review converge in contemporary software projects.",
+      "type": "event",
+      "tokens": [
+        "Rigby",
+        "Bird",
+        "Google",
+        "Android",
+        "Chromium",
+        "Microsoft",
+        "AMD",
+        "Lucent",
+        "Apache",
+        "Linux",
+        "KDE"
+      ],
+      "source": {
+        "title": "Rigby, P. C. and Bird, C., Convergent Contemporary Software Peer Review Practices, ESEC/FSE 2013, pp. 202-212",
+        "url": "https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/rigby2013convergent.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "Rigby and Bird record a methodological caveat: in the review tool they studied, the closest artefact to a defect is a discussion thread marked as resolved, since a problem found would need to be resolved by the author before check-in — with the caveat that a reviewer might make comments or ask questions that lead to a resolved discussion without representing a defect found.",
+      "type": "event",
+      "tokens": [
+        "Rigby",
+        "Bird"
+      ],
+      "source": {
+        "title": "Rigby, P. C. and Bird, C., Convergent Contemporary Software Peer Review Practices, ESEC/FSE 2013, pp. 202-212",
+        "url": "https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/rigby2013convergent.pdf",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "review is run as a defect-finding gate, which is a job it does less well than expected and which makes an empty review look like a success",
+    "fix": "treat it as what it measurably delivers — knowledge moving between people, awareness of what is changing, and alternatives surfaced before they are expensive",
+    "cost": "the valuable outputs are hard to count, so a team that measures review will measure the part that matters least",
+    "interview": "what changes about how you review once you know defects are not the main output"
+  }
+}

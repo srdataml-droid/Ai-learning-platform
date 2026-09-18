@@ -1,0 +1,99 @@
+{
+  "taskId": "D.7",
+  "title": "Writing a test that would actually have caught a real bug",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The study examined 198 randomly sampled, user-reported failures from five widely used distributed systems — Cassandra, HBase, HDFS, Hadoop MapReduce and Redis — of which 48, or 24%, were catastrophic, meaning they affected all or a majority of users rather than a subset.",
+      "type": "number",
+      "tokens": [
+        "Cassandra",
+        "HBase",
+        "HDFS",
+        "Hadoop",
+        "Redis",
+        "24%"
+      ],
+      "source": {
+        "title": "Yuan, D. et al., Simple Testing Can Prevent Most Critical Failures: An Analysis of Production Failures in Distributed Data-intensive Systems, OSDI ’14, pp. 249-265",
+        "url": "https://www.usenix.org/system/files/conference/osdi14/osdi14-paper-yuan.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The paper’s headline finding, stated verbatim: \"almost all (92%) of the catastrophic system failures are the result of incorrect handling of non-fatal errors explicitly signaled in software.\"",
+      "type": "quote",
+      "tokens": [
+        "92%"
+      ],
+      "source": {
+        "title": "Yuan, D. et al., Simple Testing Can Prevent Most Critical Failures: An Analysis of Production Failures in Distributed Data-intensive Systems, OSDI ’14, pp. 249-265",
+        "url": "https://www.usenix.org/system/files/conference/osdi14/osdi14-paper-yuan.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "It further states: \"in 58% of the catastrophic failures, the underlying faults could easily have been detected through simple testing of error handling code.\"",
+      "type": "quote",
+      "tokens": [
+        "58%"
+      ],
+      "source": {
+        "title": "Yuan, D. et al., Simple Testing Can Prevent Most Critical Failures: An Analysis of Production Failures in Distributed Data-intensive Systems, OSDI ’14, pp. 249-265",
+        "url": "https://www.usenix.org/system/files/conference/osdi14/osdi14-paper-yuan.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "Of those, \"in 35% of the catastrophic failures, the faults in the error handling code fall into three trivial patterns: (i) the error handler is simply empty or only contains a log printing statement, (ii) the error handler aborts the cluster on an overly-general exception, and (iii) the error handler contains expressions like “FIXME” or “TODO” in the comments.\" A further 23% had error handling logic \"so wrong that any statement coverage testing or more careful code reviews by the developers would have caught the bugs\".",
+      "type": "quote",
+      "tokens": [
+        "35%",
+        "23%"
+      ],
+      "source": {
+        "title": "Yuan, D. et al., Simple Testing Can Prevent Most Critical Failures: An Analysis of Production Failures in Distributed Data-intensive Systems, OSDI ’14, pp. 249-265",
+        "url": "https://www.usenix.org/system/files/conference/osdi14/osdi14-paper-yuan.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "Additional observations: \"74% of the failures are deterministic in that they are guaranteed to manifest with an appropriate input sequence\", \"almost all failures are guaranteed to manifest on no more than three nodes\", and \"77% of the failures can be reproduced by a unit test\".",
+      "type": "quote",
+      "tokens": [
+        "74%",
+        "77%"
+      ],
+      "source": {
+        "title": "Yuan, D. et al., Simple Testing Can Prevent Most Critical Failures: An Analysis of Production Failures in Distributed Data-intensive Systems, OSDI ’14, pp. 249-265",
+        "url": "https://www.usenix.org/system/files/conference/osdi14/osdi14-paper-yuan.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c6",
+      "text": "The authors built a static checker called Aspirator from the simple rules they extracted. It identified 121 new bugs and 379 bad practices in nine production-quality distributed systems that already used state-of-the-art bug-finding tools, of which 143 were fixed or confirmed by the systems’ developers. Over 30% of the catastrophic failures would have been prevented had it been used and the bugs fixed.",
+      "type": "number",
+      "tokens": [
+        "Aspirator",
+        "30%"
+      ],
+      "source": {
+        "title": "Yuan, D. et al., Simple Testing Can Prevent Most Critical Failures: An Analysis of Production Failures in Distributed Data-intensive Systems, OSDI ’14, pp. 249-265",
+        "url": "https://www.usenix.org/system/files/conference/osdi14/osdi14-paper-yuan.pdf",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "tests get written for the cases the author already had in mind, which are by construction the cases they did not get wrong",
+    "fix": "take a bug that really happened, and write the test that fails before the fix and passes after — then check that it fails for the right reason",
+    "cost": "it only ever covers faults of a kind you have already suffered, so the suite grows along the path of your own history",
+    "interview": "why a test written after the fix proves less than one written before it"
+  }
+}

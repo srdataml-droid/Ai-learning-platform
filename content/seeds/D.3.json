@@ -1,0 +1,73 @@
+{
+  "taskId": "D.3",
+  "title": "Reading other people’s code fast",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Xia and colleagues instrumented interaction across all applications rather than only the development environment, covering seven real projects, 78 professional developers and 3,148 working hours, and report that on average developers spend about 58% of their time on program comprehension activities.",
+      "type": "number",
+      "tokens": [
+        "Xia",
+        "IEEE",
+        "58%"
+      ],
+      "source": {
+        "title": "Xia, X., Bao, L., Lo, D., Xing, Z., Hassan, A. E., Li, S., Measuring Program Comprehension: A Large-Scale Field Study with Professionals, IEEE Transactions on Software Engineering 44(10):951-976, 2018",
+        "url": "https://dl.acm.org/doi/10.1145/3180155.3182538",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "A secondary finding of the same study is that senior developers spend significantly smaller percentages of their time on program comprehension than junior developers do.",
+      "type": "event",
+      "tokens": [
+        "Xia"
+      ],
+      "source": {
+        "title": "Xia, X., Bao, L., Lo, D., Xing, Z., Hassan, A. E., Li, S., Measuring Program Comprehension: A Large-Scale Field Study with Professionals, IEEE Transactions on Software Engineering 44(10):951-976, 2018",
+        "url": "https://dl.acm.org/doi/10.1145/3180155.3182538",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Minelli, Mocci and Lanza report that comprehension accounts for roughly 70% of the time in instrumented development sessions, with interface interactions taking roughly 17% and editing and navigation roughly 5% each.",
+      "type": "number",
+      "tokens": [
+        "Minelli",
+        "Mocci",
+        "Lanza",
+        "70%",
+        "17%",
+        "5%"
+      ],
+      "source": {
+        "title": "Minelli, R., Mocci, A., Lanza, M., I Know What You Did Last Summer: an investigation of how developers spend their time, IEEE International Conference on Program Comprehension, 2015",
+        "url": "https://robertominelli.com/assets/downloads/publications/Mine2015b.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "The two figures are not directly comparable even though the later study adopted the earlier one’s activity categories. The earlier share is of instrumented session time inside one environment; the later is of total working hours across all applications. Quoting them together as a range conflates two different denominators.",
+      "type": "event",
+      "tokens": [
+        "Xia",
+        "Minelli"
+      ],
+      "source": {
+        "title": "Xia, X., Bao, L., Lo, D., Xing, Z., Hassan, A. E., Li, S., Measuring Program Comprehension: A Large-Scale Field Study with Professionals, IEEE Transactions on Software Engineering 44(10):951-976, 2018",
+        "url": "https://dl.acm.org/doi/10.1145/3180155.3182538",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "comprehension is the largest single activity in the working day, and the default strategy for it — read from the top until it makes sense — does not scale with the size of the codebase",
+    "fix": "read against a specific question, entering at the point the answer must pass through, and stop as soon as the question is answered",
+    "cost": "you end up with a working model that is accurate about your question and wrong everywhere else, and you will not know where the edges are",
+    "interview": "why experienced developers spend less time on comprehension, not more"
+  }
+}

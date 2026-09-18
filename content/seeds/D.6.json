@@ -1,0 +1,85 @@
+{
+  "taskId": "D.6",
+  "title": "The testing pyramid, and why most people invert it by accident",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The test automation pyramid was introduced by Mike Cohn in Succeeding with Agile: Software Development Using Scrum, 2009, with three layers: unit tests at the base, service tests in the middle, and user interface tests at the top.",
+      "type": "date",
+      "tokens": [
+        "Mike Cohn",
+        "Cohn",
+        "Succeeding",
+        "Agile",
+        "Scrum",
+        "2009"
+      ],
+      "source": {
+        "title": "Cohn, M., Succeeding with Agile: Software Development Using Scrum, Addison-Wesley, 2009 — where the test automation pyramid is introduced",
+        "url": "https://www.mountaingoatsoftware.com/books/succeeding-with-agile-software-development-using-scrum",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Cohn calls the middle layer the forgotten layer of test automation: when cases that cannot be covered by unit tests are automated directly at the user interface level instead, the result is a large, slow interface suite — an inverted pyramid.",
+      "type": "event",
+      "tokens": [
+        "Cohn"
+      ],
+      "source": {
+        "title": "Cohn, M., Succeeding with Agile: Software Development Using Scrum, Addison-Wesley, 2009 — where the test automation pyramid is introduced",
+        "url": "https://www.mountaingoatsoftware.com/books/succeeding-with-agile-software-development-using-scrum",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Fowler popularised the shape in a 2012 entry, framing it as: you should have many more low-level unit tests than high-level tests running through a graphical interface.",
+      "type": "date",
+      "tokens": [
+        "Fowler",
+        "2012"
+      ],
+      "source": {
+        "title": "Fowler, M., TestPyramid, martinfowler.com, 2012 — the bliki entry that popularised Cohn’s pyramid",
+        "url": "https://martinfowler.com/bliki/TestPyramid.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "The inverted shape is widely called an ice cream cone, a label generally attributed to Alister Scott rather than to either of the above; that attribution is repeated from secondary accounts and was not confirmed against a primary source here.",
+      "type": "event",
+      "tokens": [
+        "Alister Scott",
+        "Scott"
+      ],
+      "source": {
+        "title": "The inverted test pyramid, commonly called the ice cream cone — an attribution repeated from secondary accounts",
+        "url": "https://martinfowler.com/bliki/TestPyramid.html",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "Yuan and colleagues report that \"77% of the failures can be reproduced by a unit test\" and that \"almost all failures are guaranteed to manifest on no more than three nodes\", from a study of 198 real production failures in five distributed systems.",
+      "type": "quote",
+      "tokens": [
+        "77%"
+      ],
+      "source": {
+        "title": "Yuan, D. et al., Simple Testing Can Prevent Most Critical Failures: An Analysis of Production Failures in Distributed Data-intensive Systems, OSDI ’14, pp. 249-265",
+        "url": "https://www.usenix.org/system/files/conference/osdi14/osdi14-paper-yuan.pdf",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "the tests that are easiest to write are the ones that go through the whole system, and writing enough of those produces a suite too slow and too flaky to run",
+    "fix": "shape the suite so that most checks are at the level where they are fast and precise, and only a few go through everything",
+    "cost": "the middle layer is the one that requires design work, so it is the one that gets skipped, which is what inverts the shape",
+    "interview": "why the inversion happens by accident rather than by decision"
+  }
+}

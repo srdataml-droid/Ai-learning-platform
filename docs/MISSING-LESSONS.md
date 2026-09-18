@@ -14,18 +14,7 @@ Study order: the sequence first, then the five habits running underneath.
 
 ## Track D — Software development craft
 
-10 of 13 still missing.
-
-- [ ] `D.2` Commit messages that explain why, not what
-- [ ] `D.3` Reading other people's code fast
-- [ ] `D.4` Naming things: variables, functions, files, endpoints
-- [ ] `D.5` Error handling: fail loudly, fail early, fail with information
-- [ ] `D.6` The testing pyramid, and why most people invert it by accident
-- [ ] `D.7` Writing a test that would actually have caught a real bug
-- [ ] `D.8` Refactoring without changing behaviour
-- [ ] `D.9` Continuous integration: what to run on every push
-- [ ] `D.10` Documentation that survives: README, architecture notes, decision records
-- [ ] `D.11` Code review, on both sides of it
+**Complete.** All 13 written.
 
 ## Track E — Data structures and algorithms
 
@@ -263,7 +252,7 @@ Study order: the sequence first, then the five habits running underneath.
 
 ---
 
-**Total remaining: 171 of 313.**
+**Total remaining: 161 of 313.**
 
 Regenerate: `node tools/missing-lessons.mjs > docs/MISSING-LESSONS.md`
 

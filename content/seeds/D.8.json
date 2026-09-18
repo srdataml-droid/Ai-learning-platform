@@ -1,0 +1,54 @@
+{
+  "taskId": "D.8",
+  "title": "Refactoring without changing behaviour",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Fowler defines the noun as \"a change made to the internal structure of software to make it easier to understand and cheaper to modify without changing its observable behavior\", and the verb as \"to restructure software by applying a series of refactorings without changing its observable behavior\".",
+      "type": "quote",
+      "tokens": [
+        "Fowler"
+      ],
+      "source": {
+        "title": "Fowler, M., Refactoring home page, refactoring.com — the definitions of the noun and the verb",
+        "url": "https://refactoring.com/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Fowler notes that \"observable behavior\" is a deliberately loose term: it indicates the code should overall do the same things as before, but does not mean it will work exactly the same — Extract Function alters the call stack, so performance may change — and the test is that nothing should change that the user should care about.",
+      "type": "quote",
+      "tokens": [
+        "Fowler",
+        "Extract Function",
+        "Extract"
+      ],
+      "source": {
+        "title": "Fowler, M., Refactoring home page, refactoring.com — the definitions of the noun and the verb",
+        "url": "https://refactoring.com/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Fowler stresses that refactoring is not a synonym for cleaning up code, and uses restructuring as the broader term for changes to the internal structure of software generally.",
+      "type": "event",
+      "tokens": [
+        "Fowler"
+      ],
+      "source": {
+        "title": "Fowler, M., Refactoring home page, refactoring.com — the definitions of the noun and the verb",
+        "url": "https://refactoring.com/",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "code has to change shape as requirements change, and any change to its shape risks changing what it does, so the shape ossifies",
+    "fix": "separate the two kinds of change absolutely — alter structure while holding behaviour, or alter behaviour while holding structure, and never both in one step",
+    "cost": "holding behaviour requires something that can tell you it held, so without tests the discipline reduces to hoping",
+    "interview": "what observable behaviour means, given that almost everything observable changes"
+  }
+}

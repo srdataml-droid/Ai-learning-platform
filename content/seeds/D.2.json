@@ -1,0 +1,65 @@
+{
+  "taskId": "D.2",
+  "title": "Commit messages that explain why, not what",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The Git project’s guidance states that a meaningful commit message \"explains the problem the change tries to solve, i.e. what is wrong with the current code without the change\", \"justifies the way the change solves the problem, i.e. why the result with the change is better\", and records \"alternate solutions considered but discarded, if any\".",
+      "type": "quote",
+      "tokens": [
+        "Git"
+      ],
+      "source": {
+        "title": "SubmittingPatches, Git documentation — the Git project’s own guidance on writing a commit message",
+        "url": "https://git-scm.com/docs/SubmittingPatches",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "It states that \"The log message that explains your changes is just as important as the changes themselves\", and that although code may be clearly written, \"those who need to fix or enhance your code in the future will need to know why your code does what it does\". It gives as the first reason that \"Your code may be doing something differently from what you wanted it to do\", and notes in passing that \"you often discover your own bugs yourself, while writing the log message to summarize the thought behind it\".",
+      "type": "quote",
+      "tokens": [
+        "Git"
+      ],
+      "source": {
+        "title": "SubmittingPatches, Git documentation — the Git project’s own guidance on writing a commit message",
+        "url": "https://git-scm.com/docs/SubmittingPatches",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "It asks for the imperative mood — \"make xyzzy do frotz\" rather than \"[This patch] makes xyzzy do frotz\" — \"as if you are giving orders to the codebase to change its behavior\", and asks that the explanation \"can be understood without external resources\", summarising a discussion rather than linking to it.",
+      "type": "quote",
+      "tokens": [
+        "Git"
+      ],
+      "source": {
+        "title": "SubmittingPatches, Git documentation — the Git project’s own guidance on writing a commit message",
+        "url": "https://git-scm.com/docs/SubmittingPatches",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "It asks for an explanation \"detailed enough so that people can judge if it is good thing to do, without reading the actual patch text to determine how well the code does what the explanation promises to do\", and states that \"The goal of your log message is to convey the why behind your change to help future developers.\"",
+      "type": "quote",
+      "tokens": [
+        "Git"
+      ],
+      "source": {
+        "title": "SubmittingPatches, Git documentation — the Git project’s own guidance on writing a commit message",
+        "url": "https://git-scm.com/docs/SubmittingPatches",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "the diff already records what changed, so a message that restates it adds nothing, and the reasoning — the only part not recoverable from the repository — is lost",
+    "fix": "write the problem with the code as it stands, why this change is an improvement, and which alternatives were rejected",
+    "cost": "it is most expensive to write at the moment you are most certain it is obvious, which is immediately after solving it",
+    "interview": "why a commit message describing what changed is worth nothing"
+  }
+}

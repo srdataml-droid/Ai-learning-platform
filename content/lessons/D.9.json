@@ -1,0 +1,48 @@
+{
+  "id": "D.9",
+  "trackId": "D",
+  "trackName": "Software development craft",
+  "title": "Continuous integration: what to run on every push",
+  "status": "traced",
+  "seed": "D.9",
+  "story": "The question is not whether to have automated checks but which ones run at which moment, and the answer follows from a quantity that is easy to state and rarely written down: what a check rules out, divided by how long you wait for it.\n\nThat ratio explains the ordering everyone converges on without usually being able to justify it. Type checking and linting run first because they rule out a narrow class instantly. Unit tests run next. Integration tests, which rule out much more, run later because they cost minutes. End-to-end and deployment checks run last. Nobody is ranking these by importance — the slow ones often catch the more serious problems — they are ranked by information per second of waiting, because the resource being spent is the author’s attention, and attention decays fast.\n\nThere is empirical support for how much a cheap check can buy. The study in D.5 found that across 198 real production failures, 77% could be reproduced by a unit test, 74% were deterministic given the right input sequence, and almost all manifested on no more than three nodes. So the intuition that catching real failures needs a realistic environment is largely wrong: the majority were reachable by the cheapest tier. The same study found that 58% of catastrophic failures could easily have been detected through simple testing of the error handling code, and that a static checker built from three trivial patterns found 121 new bugs in systems already running other tools — which is an argument for putting cheap, narrow checks early rather than dismissing them as trivial.\n\nThe failure mode is the one this track keeps returning to. If the checks on every push take long enough that people batch their work to avoid waiting, you have not made the system safer — you have lengthened the loop, and C.6 and C.18 both make the case that the cost of one attempt determines how the tool actually gets used. A twenty-minute pipeline does not produce careful developers; it produces large pushes.",
+  "problem": {
+    "name": "Check placement",
+    "aka": [
+      "pipeline staging",
+      "what runs on every push"
+    ],
+    "shape": "You have more checks than you can afford to run at every moment, and running them too late makes their findings expensive to act on.",
+    "tell": [
+      "people push in large batches rather than small ones, and nobody decided they should",
+      "the pipeline is long enough that developers switch context while waiting",
+      "a check was added to the fast stage because it seemed important, not because it was fast"
+    ],
+    "move": "Rank checks by what they rule out per unit of waiting and place them accordingly — cheapest and narrowest first, broadest and slowest last — and treat the total wait at each stage as a budget rather than an outcome.",
+    "invariant": "The first stage stays short enough that nobody batches work to avoid it. That is the property doing the work, because a check that changes behaviour by existing has effects far beyond what it catches.",
+    "breaks": "It breaks when importance is used as the ranking instead of cost-effectiveness. The slowest checks often catch the most serious problems, so ranking by importance moves them early, which lengthens the loop, which makes people push less often — and less frequent integration is the condition the whole practice exists to prevent.",
+    "cost": {
+      "time": "the early stages are fast and narrow; everything broad happens after the author has moved on",
+      "space": "infrastructure to run several stages, and the discipline to keep them separated",
+      "beats": "running everything on every push, which is thorough and lengthens the loop until people avoid it"
+    },
+    "worked": {
+      "problem": "How do you decide whether a given check belongs on every push?",
+      "reasoning": "Not by asking whether it matters. Almost every check in a pipeline matters, so that question does not discriminate.\n\nAsk instead what it rules out and how long it takes. A check that eliminates a broad class in one second belongs early. A check that eliminates a narrow class in twelve minutes belongs late, however severe the class — because putting it early charges everyone twelve minutes on every push to remove a possibility that is rarely present.\n\nThen apply the constraint that overrides the ranking: the total early wait must stay below the point at which people change how they work to avoid it. This matters more than any individual check, because once developers batch their pushes you have lost small changes, and small changes are what makes a failing check cheap to interpret.\n\nSo the honest summary is that you are not optimising for catching the most bugs per push. You are optimising for keeping the loop short enough that the checks stay in the loop at all.",
+      "code": "rank by:  what it rules out\n          -------------------\n             time you wait\n\n  types, lint      broad-ish / ~1s     -> every push\n  unit tests       77% of real         -> every push\n                   failures reproducible\n  integration      wiring / minutes    -> after merge\n  end-to-end       everything / slow   -> later still\n\n  NOT ranked by importance. the slow ones often\n  catch the worse things. importance-first ranking\n  lengthens the loop.\n\n  and the overriding constraint:\n\n     early stage wait < the point where people\n                        batch their pushes\n\n  because batching destroys the thing that makes a\n  red build cheap to read: a small change."
+    },
+    "practice": "Time your pipeline stage by stage and write down what each stage can rule out. Then find the check with the worst ratio of exclusion to waiting, and decide whether it belongs where it is."
+  },
+  "beats": {
+    "broke": "A check that runs too late reports something that is now expensive to act on, and a check that runs too slowly stops being run — so both the content and the timing of the checks decide whether they do anything at all.",
+    "fix": "Rank by what each check rules out per unit of waiting, cheapest and narrowest first. The empirical case for the cheap tier is strong: 77% of real production failures in one study were reproducible by a unit test and almost all manifested on at most three nodes.",
+    "cost": "Fast checks are narrow, so an early pipeline is confident about small things and says nothing about whether the parts are wired together — which is why the slow stages exist rather than being dropped.",
+    "interview": {
+      "q": "How do you decide whether a particular check belongs on every push?",
+      "trap": "Deciding by importance. Nearly every check in a pipeline is important, so importance does not discriminate — and ranking by it puts the slowest checks first.",
+      "answer": "By what it rules out divided by how long you wait for it. A check eliminating a broad class of problem in a second belongs early; one eliminating a narrow class in twelve minutes belongs late, no matter how severe that class, because placing it early charges everybody twelve minutes per push to exclude something rarely present.\n\nThen there is a constraint that overrides the ranking: the early stage must stay short enough that nobody changes how they work to avoid it. Once the wait is long enough that people batch their pushes, you have lost small changes — and a small change is what makes a failing check cheap to interpret, since the cause is in the few lines you just wrote.\n\nThat is why the goal is not catching the most defects per push. It is keeping the loop short enough that the checks stay inside it. It is the same argument as time-sharing in 1964 and as build times at scale: the cost of a single attempt determines how the tool is actually used, regardless of what the policy says."
+    }
+  },
+  "blueprint": "The ratio that orders everything:\n\n        what it rules out\n        -----------------\n        how long you wait\n\n  fast + narrow   -> every push\n  slow + broad    -> after, and after that\n\n  NOT by importance: the slow checks often catch the\n  worse things, and ranking by severity puts them\n  first, which lengthens the loop.\n\n  the constraint that beats the ranking:\n\n     early wait < the point where people batch\n\n  because:\n     small push  -> red build, cause is obvious\n     large push  -> red build, cause is a search\n\n  same argument as 1964 time-sharing and as build\n  times at scale: the price of ONE attempt decides\n  how the thing is used.",
+  "takeaway": "Place a check by what it rules out per second of waiting, not by how important it is — and keep the early stage short enough that nobody batches their pushes, because batching is what makes a failing check expensive to read."
+}

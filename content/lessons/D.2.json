@@ -1,0 +1,48 @@
+{
+  "id": "D.2",
+  "trackId": "D",
+  "trackName": "Software development craft",
+  "title": "Commit messages that explain why, not what",
+  "status": "traced",
+  "seed": "D.2",
+  "story": "Start with what the repository already knows. It has the diff, so it knows precisely what changed, line by line, forever, with more accuracy than any prose summary. A message that says what changed is therefore a worse copy of something already stored — which is the entire argument, and it is usually skipped in favour of an appeal to politeness.\n\nWhat the repository cannot store is why. The Git project’s own guidance is unusually direct about this: a message should explain the problem the change tries to solve — what is wrong with the current code without the change — justify why the result with the change is better, and record alternate solutions considered but discarded. The third item is the one people drop, and it is the only one of the three that is completely unrecoverable. A future reader can often infer the problem from the change; they can never infer the two approaches you tried and abandoned, so without the note they will try them again.\n\nThere is a second-order benefit the guidance mentions almost in passing and which is worth taking seriously: you often discover your own bugs while writing the message that summarises the thinking behind the change. That is a testable claim about your own work rather than a courtesy to posterity. Stating why you did something forces you to check that it is what you did, and the first reason the guidance gives for writing the message at all is that your code may be doing something different from what you wanted.\n\nThe rest is mechanical and cheap. Imperative mood, as if giving orders to the codebase. The problem stated in the present tense, because by convention the status quo is the code without your change. Understandable without external resources — summarise the discussion rather than linking to it, because the link will die and the archive will move. And detailed enough that a reader can judge whether the change is a good thing to do without reading the patch to find out what it actually does.",
+  "problem": {
+    "name": "Recording intent",
+    "aka": [
+      "commit message discipline",
+      "why not what"
+    ],
+    "shape": "A system records the outcome of decisions perfectly and the reasoning behind them not at all, so the expensive half is the half that is lost.",
+    "tell": [
+      "the history answers \"what changed here\" instantly and \"why\" never",
+      "the same rejected approach gets attempted again by someone new",
+      "understanding a past change requires finding the person who made it"
+    ],
+    "move": "Write down what the mechanism cannot: the problem with the code as it stands, why this change is better, and which alternatives were considered and rejected. Leave what changed to the diff.",
+    "invariant": "The message contains only what is not recoverable from the artefact. That test decides every line: if the reader could derive it by looking, it does not belong, and if they could not, it is the whole reason the message exists.",
+    "breaks": "It is written at the worst possible moment. You write it immediately after solving the problem, which is the point of maximum context and therefore the point at which the reasoning feels most self-evident — so the cost feels highest exactly when the value is highest. Nothing in the tooling corrects for this, which is why the discipline has to be deliberate.",
+    "cost": {
+      "time": "a few minutes per commit, paid by the author, at their least patient moment",
+      "space": "prose in the history, which is never garbage collected",
+      "beats": "the diff alone, which is complete about mechanism and silent about cause"
+    },
+    "worked": {
+      "problem": "Why is a commit message that describes what changed worth nothing?",
+      "reasoning": "Because it duplicates a record that is already perfect. The diff is a complete, exact, machine-checked statement of what changed. Prose restating it is strictly worse on every dimension — less precise, not verified, and liable to drift from the change it describes if the change is amended.\n\nSo the question is what a message can hold that the diff cannot, and the answer is everything about the decision: the problem, the justification, and the roads not taken.\n\nNotice which of those is genuinely unrecoverable. A reader can usually reconstruct the problem from the change, and can often reconstruct the justification. They can never reconstruct the alternatives you rejected, because nothing in the repository was ever touched by them. That is why the guidance asks for them explicitly and why their absence has a specific, repeated cost: the next person tries them.",
+      "code": "what the repo already has      what only you have\n-------------------------      ------------------\nthe diff (exact, verified)     the problem\nevery line, forever            why this beats the\n                                 alternatives\n                               what you tried and\n                                 abandoned   <- gone\n                                               forever\n\n  test for every line you write:\n     could the reader derive this by looking?\n       yes -> delete it\n       no  -> that's the message\n\n  \"Fix bug in parser\"        <- the diff said that\n  \"Reject empty input; the   <- the diff never\n   caller passes '' on          could\n   timeout, which we were\n   treating as EOF. Tried\n   defaulting upstream;\n   it hides the timeout.\""
+    },
+    "practice": "Take your last ten commit messages and mark each line as derivable from the diff or not. Then find one change where you rejected an approach, and check whether anything in the repository records that you did."
+  },
+  "beats": {
+    "broke": "The diff is already a perfect record of what changed, so a message restating it is a worse copy of something stored. Meanwhile the reasoning — the part that cost the most and is stored nowhere — goes with the author.",
+    "fix": "Write what the mechanism cannot hold. The Git project asks for the problem with the current code, why this change is better, and the alternate solutions considered and discarded, in the imperative, understandable without following a link.",
+    "cost": "It is written immediately after solving the problem, when the reasoning feels most obvious and the author least patient — so the perceived cost peaks exactly where the value does, and no tooling corrects for it.",
+    "interview": {
+      "q": "Why is a commit message that describes what changed worth nothing?",
+      "trap": "Answering that it is redundant, and stopping there. Redundancy is the premise; the useful part is what should occupy the space instead, and which part of that is truly unrecoverable.",
+      "answer": "Because it duplicates a record that is already exact and machine-verified. The diff states what changed completely; prose restating it is less precise, unverified, and can drift from the change if the change is amended.\n\nSo the message's job is whatever the diff cannot hold: the problem with the code as it stands, why this change is better than not making it, and the alternatives considered and rejected.\n\nThe third is the one that matters most and gets dropped first, because it is the only one that is strictly unrecoverable. A reader can usually infer the problem from the change and often the justification — but nothing in the repository was ever touched by the approach you tried and abandoned, so if you do not write it down the next person will try it. That is a repeated, measurable cost with a one-sentence fix.\n\nThere is also a benefit to the author rather than to posterity: the Git guidance notes that people often discover their own bugs while writing the message, because stating why you did something forces you to check that it is what you did."
+    }
+  },
+  "blueprint": "Split the record by what can hold it:\n\n  the diff holds          the message must hold\n  --------------          ---------------------\n  what changed            the problem\n  exactly, verified,      why this is better\n  forever                 what you rejected  <-- and\n                            nothing else ever\n                            recorded this\n\n  one test per line:\n     derivable by looking? -> delete\n     not derivable?        -> that IS the message\n\n  recoverability, worst to best:\n\n     alternatives rejected   never recoverable\n     justification           sometimes\n     problem                 usually\n     what changed            always (it's the diff)\n\n  and we write them in exactly the wrong order.",
+  "takeaway": "The diff is a perfect record of what changed, so the message exists only for what cannot be derived by looking — above all the alternatives you rejected, which nothing else in the repository was ever touched by."
+}

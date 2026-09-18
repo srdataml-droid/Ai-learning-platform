@@ -1,0 +1,45 @@
+{
+  "taskId": "D.4",
+  "title": "Naming things: variables, functions, files, endpoints",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Xia and colleagues report that developers spend about 58% of their time on program comprehension activities, measured across seven projects, 78 professionals and 3,148 working hours; Minelli, Mocci and Lanza put comprehension at roughly 70% of instrumented session time, against roughly 5% each for editing and navigation.",
+      "type": "number",
+      "tokens": [
+        "Xia",
+        "Minelli",
+        "Mocci",
+        "Lanza",
+        "58%",
+        "70%",
+        "5%"
+      ],
+      "source": {
+        "title": "Xia, X., Bao, L., Lo, D., Xing, Z., Hassan, A. E., Li, S., Measuring Program Comprehension: A Large-Scale Field Study with Professionals, IEEE Transactions on Software Engineering 44(10):951-976, 2018",
+        "url": "https://dl.acm.org/doi/10.1145/3180155.3182538",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The Git project’s guidance on describing a change asks that an explanation \"can be understood without external resources\", summarising a discussion rather than linking to it.",
+      "type": "quote",
+      "tokens": [
+        "Git"
+      ],
+      "source": {
+        "title": "SubmittingPatches, Git documentation — the Git project’s own guidance on writing a commit message",
+        "url": "https://git-scm.com/docs/SubmittingPatches",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a name is read hundreds of times and written once, so the effort is budgeted at the moment of writing and the cost is paid at every reading",
+    "fix": "make the name carry the thing a reader would otherwise have to go and find out — the unit, the state, the guarantee, the failure mode",
+    "cost": "names that carry more are longer, and length is the one cost that is visible while the saving is not",
+    "interview": "what a name is for, given that the compiler does not read it"
+  }
+}

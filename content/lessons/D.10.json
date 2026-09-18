@@ -1,0 +1,48 @@
+{
+  "id": "D.10",
+  "trackId": "D",
+  "trackName": "Software development craft",
+  "title": "Documentation that survives: README, architecture notes, decision records",
+  "status": "traced",
+  "seed": "D.10",
+  "story": "Documentation rots for a mechanical reason rather than a cultural one, and naming the mechanism tells you what to write. A document that describes the current state of a system makes a claim that the system can falsify, and nothing connects the two: the code changes in one place and the description stays as it was. There is no force that updates it, so the only question is how fast it drifts.\n\nNygard’s 2011 post proposes a form of writing that this cannot happen to. A decision record is a short text file describing a set of forces and a single decision made in response, with a title, the context, the decision and its consequences. The crucial property is in the tense. It records that on some date, given these pressures, this choice was made — and that remains true forever, because it is a statement about an event rather than about a state. When the decision changes you do not edit the record; you write a new one that supersedes it, and both stay.\n\nSo the practical rule is to sort writing by what kind of claim it makes. Anything describing how things are now will rot, so keep it short and make as much of it as possible checkable — commands that are actually run, examples that are actually tested. Anything describing why a choice was made cannot rot, so it can be as long as it needs to be, and it is where the expensive knowledge should go. That knowledge is the same thing D.2 identified as unrecoverable: the forces, and the alternatives that were rejected.\n\nNygard also answers the objection directly: agile methods are not opposed to documentation, only to valueless documentation. The honest cost is that decision records do not replace the rotting document. They tell you how you got here, in order, and not what is true now — so a reader who needs the current architecture still needs something that describes it, with all the decay that implies.",
+  "problem": {
+    "name": "Durable documentation",
+    "aka": [
+      "architecture decision records",
+      "writing that cannot go stale"
+    ],
+    "shape": "Written descriptions of a changing system are falsified by the system changing, and nothing in the process updates them.",
+    "tell": [
+      "the setup instructions have not worked for months and nobody noticed",
+      "people ask why something is the way it is and the answer is a person, not a document",
+      "a decision is relitigated because nobody can find what was considered the first time"
+    ],
+    "move": "Separate writing by the kind of claim it makes. State-describing writing must be short and, where possible, executable. Event-describing writing — a decision, its forces, its consequences — is append-only and superseded rather than edited.",
+    "invariant": "A record of a past decision cannot become false, because the decision was in fact made under those forces at that time. That property, not discipline or tooling, is what stops it rotting.",
+    "breaks": "It does not solve the original problem. A stack of decision records tells you the sequence of choices and not the current shape of the system, so the document that describes how things are now still exists and still decays. Records also accumulate, and reading twenty to reconstruct the present state is worse than reading one accurate page.",
+    "cost": {
+      "time": "a short record per significant decision, written at the moment it is made",
+      "space": "a directory that only grows, including entries that are no longer in force",
+      "beats": "a single living architecture document, which is easier to read and is wrong within months"
+    },
+    "worked": {
+      "problem": "Why does a decision record not go stale when a README does?",
+      "reasoning": "Look at the tense of the claim each one makes.\n\nA README says: this is how the system is. The system can change, and when it does the claim becomes false, and nothing propagates the change to the document. Its truth is hostage to something it does not control.\n\nA decision record says: on this date, facing these forces, we chose this. The system changing does not touch that. Circumstances can change, the choice can be regretted, a later decision can reverse it — and none of that makes the record false, because it never claimed to describe the present.\n\nSo immutability here is not a policy anyone enforces; it is a property of the kind of statement. Which is exactly why superseding rather than editing is the right handling: editing would convert it into a claim about the present, and reintroduce the failure mode the form exists to avoid.",
+      "code": "README                      decision record\n------                      ---------------\n\"the service uses X\"        \"2024-03: chose X over Y\n                             because Z. Consequence:\n                             we cannot do W.\"\n\nclaim about: the PRESENT     claim about: an EVENT\nfalsified by: any change     falsified by: nothing\nkept true by: nothing        kept true by: the past\n                                           not moving\n\n  -> so: state-describing writing\n         short + executable where possible\n     event-describing writing\n         append-only, supersede, never edit\n\n  editing a record turns it back into a claim about\n  the present -- and back into something that rots."
+    },
+    "practice": "Find a decision in your system that people periodically re-argue. Write the record for it: the forces at the time, the choice, and the consequences — including what it made impossible. Then notice whether you can still reconstruct the forces, or only the outcome."
+  },
+  "beats": {
+    "broke": "Documentation describes how a system is, the system changes, and nothing connects the two — so decay is the default and the only variable is speed. Meanwhile the reasoning behind decisions is stored nowhere and leaves with the people.",
+    "fix": "Write what cannot become false. Nygard’s decision record, from 2011, is a short file giving the forces, the single decision made in response, and its consequences — superseded by a later record rather than edited.",
+    "cost": "It does not replace the document that rots. Records give you the sequence of choices, not the present shape, and they accumulate — reconstructing the current state from twenty of them is worse than one accurate page.",
+    "interview": {
+      "q": "Why does a decision record not go stale when a README does?",
+      "trap": "Answering that records are better maintained, or that teams take them more seriously. It is a property of the claim, not of anyone’s diligence.",
+      "answer": "Because of what each one asserts. A README claims that this is how the system is — a statement about the present, which the system falsifies whenever it changes, with nothing propagating the change to the text. Its truth depends on something it does not control.\n\nA decision record claims that on a given date, facing particular forces, a particular choice was made. Nothing the system does afterwards touches that. The decision may be regretted or reversed, and the record remains accurate, because it never claimed to describe the present.\n\nSo immutability is a property of the kind of statement rather than a policy anyone enforces — which is also why the handling is to supersede rather than edit. Editing a record to reflect current reality converts it back into a claim about the present and reintroduces exactly the decay you were avoiding.\n\nThe honest limit is that this does not remove the need for the rotting document. Records tell you how you got here, in order; someone still needs a description of where here is."
+    }
+  },
+  "blueprint": "Sort writing by the tense of its claim:\n\n  about the PRESENT        about an EVENT\n  -----------------        --------------\n  \"the service uses X\"     \"on <date>, facing <forces>,\n                            we chose X over Y\"\n\n  falsified by: any        falsified by: nothing\n    change to the system     (the past doesn't move)\n  kept true by: nothing\n                           -> append-only\n  -> keep SHORT            -> supersede, never edit\n  -> make EXECUTABLE\n     (commands that run,\n      examples that are\n      tested)\n\n  and note what goes in the second kind: the forces\n  and the rejected alternatives -- the same thing D.2\n  called the only unrecoverable part.",
+  "takeaway": "A README claims something the system can falsify and nothing keeps it true; a decision record claims something about the past, which nothing can falsify — so put the expensive reasoning there and keep the state-describing writing short and executable."
+}

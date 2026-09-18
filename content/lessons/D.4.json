@@ -1,0 +1,48 @@
+{
+  "id": "D.4",
+  "trackId": "D",
+  "trackName": "Software development craft",
+  "title": "Naming things: variables, functions, files, endpoints",
+  "status": "traced",
+  "seed": "D.4",
+  "story": "The economics are the whole argument and they are lopsided in a way that is easy to state. A name is written once, by someone holding the entire context in their head, and read an unbounded number of times by people holding none of it. D.3 gives the scale of the reading side: comprehension is around 58% of total working time in one study and roughly 70% of session time in another, against about 5% for editing. The cost of a name is paid almost entirely by readers, and the effort is budgeted almost entirely by the writer.\n\nSo the useful question is not whether a name is good but what a reader would have to do if it were absent. If they would have to open another file, check a caller, or run something to find out, the name has the opportunity to carry that, and every reader from now on is spared the trip. The Git guidance makes the same point about commit messages — the explanation should be understandable without external resources — and a name is the shortest possible form of the same discipline.\n\nWhat that means concretely is that names should carry the things that are expensive to look up and impossible to infer. A unit: a value called timeout costs a trip to find out whether it is seconds or milliseconds, and one called timeout_ms does not. A state: user says nothing about whether it has been validated, while validated_user settles it at every use site. A guarantee, or the lack of one: a function called get_user and one called fetch_user promise very different things about whether the network is involved. And a failure mode: parse and try_parse differ on the only question the caller actually has.\n\nThe cost is real and worth naming, because it is the one people feel. Names that carry more are longer, and length is visible at the moment of writing while the saving is spread invisibly across every future reading. That asymmetry is the same one as in D.2, and it produces the same outcome: the discipline has to be deliberate, because the feedback loop will never supply it.",
+  "problem": {
+    "name": "Naming as compression of context",
+    "aka": [
+      "identifier design",
+      "self-documenting code"
+    ],
+    "shape": "Knowledge that exists in the author’s head has to reach readers who will not have it, and the cheapest channel available is the name itself.",
+    "tell": [
+      "reading the name leaves you with a question you must go elsewhere to answer",
+      "the same concept appears under three names, or three concepts under one",
+      "a comment exists purely to explain what a name means"
+    ],
+    "move": "Ask what a reader would have to look up if the name told them nothing, and put the most expensive of those answers into the name — typically the unit, the state, the guarantee, or the failure mode.",
+    "invariant": "The name is read in places where nothing else is visible. That is the reason it must carry context rather than merely label: at a call site, the name and the arguments are frequently all the reader has.",
+    "breaks": "It breaks when the name encodes something that changes independently of it. A name asserting a type, an implementation or a unit becomes a lie the moment either changes without the other, and a confidently wrong name is worse than a vague one — a vague name sends the reader to check, and a wrong one persuades them not to.",
+    "cost": {
+      "time": "longer to write and to type; the saving is distributed across readings you never see",
+      "space": "longer lines, occasionally forcing a wrap",
+      "beats": "short names plus comments, which drift apart, and short names alone, which relocate the cost to every reader"
+    },
+    "worked": {
+      "problem": "What is a name for, given that the compiler does not read it?",
+      "reasoning": "It is a channel from the person who knows to the people who will not, and it is the only one that is guaranteed to be present at the point of use.\n\nDocumentation is elsewhere and may not be opened. Comments are adjacent and drift. Types carry some of it and stop at the edges of what the type system can say. The name is the one piece of context that appears every single time the thing is used, and it costs nothing to transmit.\n\nThat tells you what belongs in it: whatever a reader would otherwise have to leave the line to discover. A unit, because getting it wrong is silent. A state, because \"validated\" is invisible in the value. A guarantee about cost or failure, because that is what the caller is deciding on.\n\nAnd it tells you the failure mode. A name that encodes something liable to change independently becomes an active lie, and a wrong name is worse than a vague one, because the vague one sends the reader to check.",
+      "code": "what does the reader have to go and find out?\n\n  timeout        -> seconds or ms?     -> timeout_ms\n  user           -> validated?         -> validated_user\n  get_user       -> network? cached?   -> fetch_user\n                                          lookup_user\n  parse(s)       -> throws? returns?   -> try_parse(s)\n\n  the name is the ONLY context present at every\n  use site. documentation isn't opened. comments\n  drift. types stop where the type system stops.\n\n  and the failure mode:\n\n     name asserts something that can change\n     independently  ->  it becomes a LIE\n     vague name -> reader checks\n     wrong name -> reader doesn't"
+    },
+    "practice": "Take one function you wrote this week and list what a caller must know that its name does not say. Then decide, for each, whether it belongs in the name, in the type, or nowhere — and whether it would still be true after a plausible change."
+  },
+  "beats": {
+    "broke": "A name is written once by someone holding all the context and read repeatedly by people holding none of it. With comprehension at roughly 58 to 70% of working time against about 5% for editing, the cost falls almost entirely on readers while the effort is budgeted by the writer.",
+    "fix": "Put into the name whatever a reader would otherwise have to leave the line to discover — the unit, the state, the guarantee, the failure mode — since the name is the only context guaranteed to be present at the point of use.",
+    "cost": "Names that carry more are longer, and length is visible while the saving is invisible and distributed. Worse, a name encoding something that can change independently becomes an active lie, and a confident wrong name is worse than a vague one.",
+    "interview": {
+      "q": "What is a name for, given that the compiler does not read it?",
+      "trap": "Answering \"readability\", which restates the goal. The question is what channel a name is and why it beats the alternatives.",
+      "answer": "It is the only channel of context guaranteed to be present at the point of use. Documentation lives elsewhere and may never be opened; comments sit adjacent and drift out of sync; types carry some of it and stop where the type system stops. The name appears every single time the thing is used, and transmitting it costs nothing at run time.\n\nThat determines what belongs in it: whatever a reader would otherwise have to leave the line to find out. A unit, because getting it wrong is silent. A state such as validated, because that is invisible in the value. A guarantee about cost or failure, because it is what the caller is actually deciding on.\n\nIt also gives the failure mode precisely. A name that asserts something able to change independently of it becomes a lie as soon as one changes without the other — and a confidently wrong name is worse than a vague one, because a vague name sends the reader to check while a wrong one persuades them they need not."
+    }
+  },
+  "blueprint": "The asymmetry that decides everything:\n\n  written: once, by someone with FULL context\n  read:    unboundedly, by people with NONE\n\n  and reading is ~58-70% of the time, editing ~5%.\n\n  so the test is not \"is this a good name\" but:\n\n     what would the reader have to go and find out\n     if the name said nothing?\n\n     unit        timeout   -> timeout_ms\n     state       user      -> validated_user\n     guarantee   get_user  -> fetch_user\n     failure     parse     -> try_parse\n\n  cost: length. visible now, saving invisible later.\n  -> same asymmetry as D.2, same remedy: be deliberate,\n     because the feedback loop will never tell you.",
+  "takeaway": "A name is the only context guaranteed to be present wherever the thing is used, so it should carry what a reader would otherwise leave the line to discover — and a name that can silently become wrong is worse than one that is merely vague."
+}

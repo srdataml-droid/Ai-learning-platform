@@ -1,0 +1,55 @@
+{
+  "taskId": "D.9",
+  "title": "Continuous integration: what to run on every push",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Yuan and colleagues report, from 198 real production failures across five distributed systems, that \"77% of the failures can be reproduced by a unit test\", that \"74% of the failures are deterministic in that they are guaranteed to manifest with an appropriate input sequence\", and that \"almost all failures are guaranteed to manifest on no more than three nodes\".",
+      "type": "quote",
+      "tokens": [
+        "77%",
+        "74%"
+      ],
+      "source": {
+        "title": "Yuan, D. et al., Simple Testing Can Prevent Most Critical Failures, OSDI ’14, pp. 249-265",
+        "url": "https://www.usenix.org/system/files/conference/osdi14/osdi14-paper-yuan.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The same study reports that \"in 58% of the catastrophic failures, the underlying faults could easily have been detected through simple testing of error handling code\", and that a simple static checker built from three trivial error-handling patterns found 121 new bugs and 379 bad practices in nine production systems that were already using state-of-the-art bug-finding tools.",
+      "type": "quote",
+      "tokens": [
+        "58%",
+        "Aspirator"
+      ],
+      "source": {
+        "title": "Yuan, D. et al., Simple Testing Can Prevent Most Critical Failures, OSDI ’14, pp. 249-265",
+        "url": "https://www.usenix.org/system/files/conference/osdi14/osdi14-paper-yuan.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The same argument about the cost of a single attempt appears earlier in this curriculum: the time-sharing system demonstrated at Dartmouth on 1 May 1964 removed the barrier to using a computer by shortening the turnaround of one attempt, rather than by simplifying the language.",
+      "type": "date",
+      "tokens": [
+        "Dartmouth",
+        "1964"
+      ],
+      "source": {
+        "title": "BASIC at Dartmouth, Dartmouth College",
+        "url": "https://www.dartmouth.edu/basicfifty/basic.html",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a check that runs too late tells you something you can no longer act on cheaply, and a check that runs too slowly stops being run at all",
+    "fix": "choose what runs on every push by what it rules out per unit of waiting, and push everything else later in the pipeline",
+    "cost": "the fast checks are the narrow ones, so the fast pipeline is confident about small things and silent about integration",
+    "interview": "how to decide whether a given check belongs on every push"
+  }
+}
