@@ -1,6 +1,6 @@
 # Tasks with no lesson
 
-Regenerated 2026-09-17. Derived from content/lessons/ against the curriculum — not maintained by hand, so it cannot drift.
+Regenerated 2026-09-18. Derived from content/lessons/ against the curriculum — not maintained by hand, so it cannot drift.
 
 Study order: the sequence first, then the five habits running underneath.
 
@@ -10,20 +10,8 @@ Study order: the sequence first, then the five habits running underneath.
 
 ## Track C — Languages: the chain of walls
 
-34 of 34 still missing.
+22 of 34 still missing.
 
-- [ ] `C.0` Learn the chain itself first, as one story
-- [ ] `C.1` 1940s. Machine code and assembly
-- [ ] `C.2` 1957. Fortran. Backus, IBM
-- [ ] `C.3` 1959. COBOL. CODASYL, Hopper's influence
-- [ ] `C.4` 1958. LISP. McCarthy
-- [ ] `C.5` 1960. ALGOL
-- [ ] `C.6` 1964. BASIC. Kemeny and Kurtz
-- [ ] `C.7` 1972. C. Ritchie, Bell Labs
-- [ ] `C.8` 1972 to 1980. Smalltalk. Kay, Xerox PARC
-- [ ] `C.9` 1983. C++. Stroustrup
-- [ ] `C.10` 1987. Perl. Wall
-- [ ] `C.11` 1991. Python. van Rossum
 - [ ] `C.12` 1995. Java. Gosling, Sun
 - [ ] `C.13` 1995. JavaScript. Eich, Netscape, about ten days
 - [ ] `C.14` 1995. PHP. Lerdorf
@@ -299,7 +287,7 @@ Study order: the sequence first, then the five habits running underneath.
 
 ---
 
-**Total remaining: 205 of 313.**
+**Total remaining: 193 of 313.**
 
 Regenerate: `node tools/missing-lessons.mjs > docs/MISSING-LESSONS.md`
 

@@ -1,0 +1,231 @@
+{
+  "taskId": "C.0",
+  "title": "Learn the chain itself first, as one story",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "EDSAC ran its first program successfully on May 6, 1949, and the initial orders David Wheeler wrote that month occupied locations 0 to 30 and read a symbolic program in from paper tape. An order was a character giving the operation code followed by decimal digits giving the address.",
+      "type": "date",
+      "tokens": [
+        "EDSAC",
+        "David Wheeler",
+        "Wheeler",
+        "1949"
+      ],
+      "source": {
+        "title": "Richards, M., EDSAC Initial Orders and Squares Program, University of Cambridge Computer Laboratory",
+        "url": "https://www.cl.cam.ac.uk/~mr10/Edsac/edsacposter.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Backus wrote that if the system were to translate a reasonable scientific source program into an object program only half as fast as its hand coded counterpart, acceptance would be in serious danger, and that this belief made the translator the real challenge rather than the language. Shipment to IBM 704 users began in April 1957.",
+      "type": "quote",
+      "tokens": [
+        "Backus",
+        "Fortran",
+        "FORTRAN",
+        "IBM",
+        "1957"
+      ],
+      "source": {
+        "title": "Backus, J., The History of Fortran I, II and III, in History of Programming Languages, ACM/Academic Press, 1978",
+        "url": "https://cse.sc.edu/~mgv/csce330f12/Backus78.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "COBOL was specified by committees set up at a Pentagon meeting in May 1959 and approved in January 1960. On December 6 and 7, 1960, essentially the same program was run on an RCA machine and a Remington-Rand UNIVAC machine, demonstrating compatibility across manufacturers.",
+      "type": "date",
+      "tokens": [
+        "COBOL",
+        "Pentagon",
+        "RCA",
+        "Remington-Rand",
+        "UNIVAC",
+        "1959",
+        "1960"
+      ],
+      "source": {
+        "title": "Sammet, J. E., The Early History of COBOL, in History of Programming Languages, ACM SIGPLAN Notices, 1978",
+        "url": "https://dl.acm.org/doi/10.1145/960118.808378",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "McCarthy’s paper describing LISP appeared in Communications of the ACM in April 1960. It builds everything from atoms and pairs with five elementary operations, contains the first published description of automatic reclamation of unused storage, and represents programs in the same structure as data.",
+      "type": "date",
+      "tokens": [
+        "McCarthy",
+        "LISP",
+        "Communications",
+        "ACM",
+        "1960"
+      ],
+      "source": {
+        "title": "McCarthy, J., Recursive Functions of Symbolic Expressions and Their Computation by Machine, Part I, Communications of the ACM 3(4), April 1960",
+        "url": "https://www.cs.tufts.edu/~nr/cs257/archive/john-mccarthy/recursive.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "Thirteen representatives conferred in Paris from January 11 to 16, 1960 and produced the ALGOL report, edited by Naur, which describes the syntax in a formal grammar later named Backus-Naur form at Knuth’s suggestion. The language defines no input or output, so implementations supplied their own incompatibly. It gave rise to CPL, Simula, BCPL, B, Pascal and C.",
+      "type": "date",
+      "tokens": [
+        "ALGOL",
+        "Paris",
+        "Naur",
+        "Backus-Naur",
+        "Knuth",
+        "CPL",
+        "Simula",
+        "BCPL",
+        "Pascal",
+        "1960"
+      ],
+      "source": {
+        "title": "ALGOL 60: the Paris conference of January 1960, its report, and the naming of Backus-Naur form",
+        "url": "https://en.wikipedia.org/wiki/ALGOL_60",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c6",
+      "text": "At 4 a.m. on May 1, 1964 at Dartmouth, John Kemeny and a student typed RUN on neighbouring terminals and both got correct answers. The language had 14 statements and nine built-in functions and ran on the Dartmouth Time-Sharing System.",
+      "type": "date",
+      "tokens": [
+        "Dartmouth",
+        "John Kemeny",
+        "Kemeny",
+        "Kurtz",
+        "BASIC",
+        "RUN",
+        "Dartmouth Time-Sharing System",
+        "Time-Sharing",
+        "1964"
+      ],
+      "source": {
+        "title": "BASIC at Dartmouth, Dartmouth College",
+        "url": "https://www.dartmouth.edu/basicfifty/basic.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c7",
+      "text": "Kay’s first version ran on the NOVA in roughly September 1972 and was bootstrapped onto the Interim Dynabook in 1973. It had no inheritance, because the single static inheritance of Simula was judged too limiting; objects were described as little computers, a recursion on the notion of computer itself.",
+      "type": "date",
+      "tokens": [
+        "Kay",
+        "Smalltalk",
+        "NOVA",
+        "Interim Dynabook",
+        "Dynabook",
+        "Simula",
+        "1972",
+        "1973"
+      ],
+      "source": {
+        "title": "Kay, A. C., The Early History of Smalltalk, HOPL-II, ACM SIGPLAN Notices 28(3), March 1993",
+        "url": "https://worrydream.com/EarlyHistoryOfSmalltalk/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c8",
+      "text": "Ritchie records that by early 1973 the essentials of the language were complete and the Unix kernel was rewritten for the PDP-11 in it that summer, and that Thompson had made a brief attempt in 1972 to produce a system coded in an early version, before structures, and gave up the effort.",
+      "type": "date",
+      "tokens": [
+        "Ritchie",
+        "Unix",
+        "PDP-11",
+        "PDP",
+        "Thompson",
+        "1972",
+        "1973"
+      ],
+      "source": {
+        "title": "Ritchie, D. M., The Development of the C Language, HOPL-II, SIGPLAN Notices 28(3):201-208, April 1993",
+        "url": "https://dl.acm.org/doi/10.1145/154766.155580",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c9",
+      "text": "Stroustrup began in 1979 with a pre-processor adding classes in the style of Simula to C, states the design criterion that a facility must not just be useful but affordable, and released the first commercial implementation in October 1985.",
+      "type": "date",
+      "tokens": [
+        "Stroustrup",
+        "Simula",
+        "1979",
+        "1985"
+      ],
+      "source": {
+        "title": "Stroustrup, B., A History of C++: 1979-1991, HOPL-II, ACM SIGPLAN Notices 28(3), March 1993",
+        "url": "https://www.stroustrup.com/hopl2.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c10",
+      "text": "Larry Wall released version 1.0 on 18 December 1987. Its manual page states the niche: a problem that would ordinarily use sed or awk or sh but exceeds their capabilities, where you do not want to write the silly thing in C.",
+      "type": "date",
+      "tokens": [
+        "Larry Wall",
+        "Wall",
+        "Perl",
+        "1987"
+      ],
+      "source": {
+        "title": "Wall, L., perl(1) manual page — description text dating from the original 1987 release",
+        "url": "https://perldoc.perl.org/5.005/perl",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c11",
+      "text": "Guido van Rossum began implementation in December 1989 at CWI as a successor to ABC capable of exception handling and of interfacing with the Amoeba operating system, and published the code to a newsgroup in February 1991.",
+      "type": "date",
+      "tokens": [
+        "Guido",
+        "Rossum",
+        "Python",
+        "CWI",
+        "ABC",
+        "Amoeba",
+        "1989",
+        "1991"
+      ],
+      "source": {
+        "title": "History of Python: the December 1989 start at CWI and the February 1991 release",
+        "url": "https://en.wikipedia.org/wiki/History_of_Python",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c12",
+      "text": "Rust 1.0 was announced on May 15, 2015 by the Rust Core Team. The announcement states that it \"combines low-level control over performance with high-level convenience and safety guarantees\" and that it achieves these goals \"without requiring a garbage collector or runtime\". It is used here only as a language outside this chain, to test the frame against something the chain does not cover.",
+      "type": "quote",
+      "tokens": [
+        "Rust",
+        "Rust Core Team",
+        "2015"
+      ],
+      "source": {
+        "title": "Announcing Rust 1.0, The Rust Core Team, The Rust Programming Language Blog, May 15, 2015",
+        "url": "https://blog.rust-lang.org/2015/05/15/Rust-1.0/",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "each language is taught as a list of features, which makes the differences look like taste and gives you no way to judge a language you have not met",
+    "fix": "read every one as an answer to a specific scarcity: name what was impossible before it, and name what it made newly expensive",
+    "cost": "the frame only works where the constraint is recoverable, and the chain is a chain of problems rather than a strict chronology",
+    "interview": "why no language in the sequence is an improvement on the one before it"
+  }
+}

@@ -1,0 +1,131 @@
+{
+  "taskId": "C.7",
+  "title": "1972. C. Ritchie, Bell Labs",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Ritchie’s own account of the language was presented at the Second History of Programming Languages conference in Cambridge, Massachusetts in April 1993 and published in SIGPLAN Notices volume 28 number 3, pages 201 to 208.",
+      "type": "date",
+      "tokens": [
+        "Ritchie",
+        "History of Programming Languages",
+        "Cambridge",
+        "Massachusetts",
+        "SIGPLAN Notices",
+        "1993"
+      ],
+      "source": {
+        "title": "Ritchie, D. M., The Development of the C Language, Second ACM SIGPLAN Conference on History of Programming Languages, April 1993; SIGPLAN Notices 28(3):201-208",
+        "url": "https://dl.acm.org/doi/10.1145/154766.155580",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Ritchie describes B as the parent of the language and BCPL as its grandparent. BCPL was Martin Richards’s language and B was Ken Thompson’s; both were typeless, and the new language derived a type structure from a typeless ancestor.",
+      "type": "event",
+      "tokens": [
+        "Ritchie",
+        "BCPL",
+        "Martin Richards",
+        "Richards",
+        "Ken Thompson",
+        "Thompson"
+      ],
+      "source": {
+        "title": "Ritchie, D. M., The Development of the C Language, Second ACM SIGPLAN Conference on History of Programming Languages, April 1993; SIGPLAN Notices 28(3):201-208",
+        "url": "https://dl.acm.org/doi/10.1145/154766.155580",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The language came into being in the years 1969 to 1973, in parallel with the early development of Unix, with the most creative period during 1972. It was created on a small machine as a tool to improve a meagre programming environment.",
+      "type": "date",
+      "tokens": [
+        "Unix",
+        "1969",
+        "1972",
+        "1973"
+      ],
+      "source": {
+        "title": "Ritchie, D. M., The Development of the C Language, Second ACM SIGPLAN Conference on History of Programming Languages, April 1993; SIGPLAN Notices 28(3):201-208",
+        "url": "https://dl.acm.org/doi/10.1145/154766.155580",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "By early 1973 the essentials of the modern language were complete, and the language and compiler were strong enough to permit rewriting the Unix kernel for the PDP-11 in it during the summer of that year. Ritchie notes that Thompson had made a brief attempt in 1972 to produce a system coded in an early version of the language, before structures existed, and gave up the effort.",
+      "type": "event",
+      "tokens": [
+        "Unix",
+        "PDP-11",
+        "PDP",
+        "Ritchie",
+        "Thompson",
+        "1972",
+        "1973"
+      ],
+      "source": {
+        "title": "Ritchie, D. M., The Development of the C Language, Second ACM SIGPLAN Conference on History of Programming Languages, April 1993; SIGPLAN Notices 28(3):201-208",
+        "url": "https://dl.acm.org/doi/10.1145/154766.155580",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "A second period of change peaked between 1977 and 1979, when portability of Unix was being demonstrated; the compiler was retargeted to other machines, particularly the Honeywell 635 and the IBM 360 and 370.",
+      "type": "date",
+      "tokens": [
+        "Unix",
+        "Honeywell",
+        "IBM",
+        "1977",
+        "1979"
+      ],
+      "source": {
+        "title": "Ritchie, D. M., The Development of the C Language, Second ACM SIGPLAN Conference on History of Programming Languages, April 1993; SIGPLAN Notices 28(3):201-208",
+        "url": "https://dl.acm.org/doi/10.1145/154766.155580",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c6",
+      "text": "The first widely available description was The C Programming Language, which appeared in 1978 and served as the language reference although it did not describe some additions that soon became common. Beginning in 1983 the ANSI X3J11 committee standardised the language.",
+      "type": "date",
+      "tokens": [
+        "ANSI",
+        "X3J11",
+        "Programming Language",
+        "1978",
+        "1983"
+      ],
+      "source": {
+        "title": "Ritchie, D. M., The Development of the C Language, Second ACM SIGPLAN Conference on History of Programming Languages, April 1993; SIGPLAN Notices 28(3):201-208",
+        "url": "https://dl.acm.org/doi/10.1145/154766.155580",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c7",
+      "text": "Ritchie’s own assessment is that the most characteristic features — the relationship between arrays and pointers, and the declaration syntax — are also major sources of difficulty, and that the language offers limited support for modularisation, automatic memory management and strong type checking, while its pointer-oriented array model complicates optimisation.",
+      "type": "event",
+      "tokens": [
+        "Ritchie"
+      ],
+      "source": {
+        "title": "Ritchie, D. M., The Development of the C Language, Second ACM SIGPLAN Conference on History of Programming Languages, April 1993; SIGPLAN Notices 28(3):201-208",
+        "url": "https://dl.acm.org/doi/10.1145/154766.155580",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "an operating system had to be written in assembly, so it was welded to one machine — and an attempt to write one in a typeless higher-level language had already been abandoned",
+    "fix": "a language with types and, decisively, structures: enough abstraction to recompile elsewhere, enough contact with the machine to describe its layout",
+    "cost": "arrays and pointers are the same thing and declarations read inside out — named by their author as both the characteristic features and the major difficulties",
+    "interview": "why structures were the addition that made the kernel rewrite possible"
+  }
+}

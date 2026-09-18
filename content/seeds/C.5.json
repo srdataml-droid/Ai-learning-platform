@@ -1,0 +1,168 @@
+{
+  "taskId": "C.5",
+  "title": "1960. ALGOL",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Thirteen representatives from Denmark, England, France, Germany, Holland, Switzerland and the United States conferred in Paris from January 11 to 16, 1960. Before the meeting Naur had worked out a completely new draft report, and the conference adopted that draft as the basis for its report.",
+      "type": "date",
+      "tokens": [
+        "Denmark",
+        "England",
+        "France",
+        "Germany",
+        "Holland",
+        "Switzerland",
+        "United States",
+        "Paris",
+        "Naur",
+        "1960"
+      ],
+      "source": {
+        "title": "ALGOL 60: the Paris conference of January 1960, its attendees, and the naming of Backus-Naur form at Knuth’s suggestion",
+        "url": "https://en.wikipedia.org/wiki/ALGOL_60",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Naur was drawn into the international discussions as editor of the ALGOL Bulletin, was selected as a member of the European language design group in November 1959, and in that capacity served as editor of the report resulting from the Paris meeting.",
+      "type": "person",
+      "tokens": [
+        "Naur",
+        "ALGOL",
+        "Bulletin",
+        "European",
+        "Paris",
+        "1959"
+      ],
+      "source": {
+        "title": "ALGOL 60: the Paris conference of January 1960, its attendees, and the naming of Backus-Naur form at Knuth’s suggestion",
+        "url": "https://en.wikipedia.org/wiki/ALGOL_60",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The attendees included Bauer, Rutishauser, Samelson, Vauquois, van Wijngaarden and Woodger from Europe, and Backus, Green, Katz, McCarthy, Perlis and Wegstein from the United States.",
+      "type": "person",
+      "tokens": [
+        "Bauer",
+        "Rutishauser",
+        "Samelson",
+        "Vauquois",
+        "Wijngaarden",
+        "Woodger",
+        "Backus",
+        "Green",
+        "Katz",
+        "McCarthy",
+        "Perlis",
+        "Wegstein",
+        "Europe",
+        "United States"
+      ],
+      "source": {
+        "title": "ALGOL 60: the Paris conference of January 1960, its attendees, and the naming of Backus-Naur form at Knuth’s suggestion",
+        "url": "https://en.wikipedia.org/wiki/ALGOL_60",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "The notation Backus had devised for the earlier ALGOL specification was revised and expanded by Naur, and at Knuth’s suggestion it was renamed Backus-Naur form.",
+      "type": "event",
+      "tokens": [
+        "Backus",
+        "Naur",
+        "Knuth",
+        "Backus-Naur",
+        "ALGOL"
+      ],
+      "source": {
+        "title": "ALGOL 60: the Paris conference of January 1960, its attendees, and the naming of Backus-Naur form at Knuth’s suggestion",
+        "url": "https://en.wikipedia.org/wiki/ALGOL_60",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "The report defines blocks delimited by begin and end, procedures that may be invoked recursively, procedures nested within one another, and lexical scope, in which a name refers to the declaration enclosing it in the text.",
+      "type": "event",
+      "tokens": [
+        "ALGOL"
+      ],
+      "source": {
+        "title": "Naur, P. (ed.), Report on the Algorithmic Language ALGOL 60, Communications of the ACM 3(5), May 1960",
+        "url": "https://softwarepreservation.computerhistory.org/ALGOL/report/Algol60_report_CACM_1960_June.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c6",
+      "text": "The language as officially defined contains no input or output facilities, so implementations supplied their own, in largely incompatible ways.",
+      "type": "event",
+      "tokens": [
+        "ALGOL"
+      ],
+      "source": {
+        "title": "Naur, P. (ed.), Report on the Algorithmic Language ALGOL 60, Communications of the ACM 3(5), May 1960",
+        "url": "https://softwarepreservation.computerhistory.org/ALGOL/report/Algol60_report_CACM_1960_June.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c7",
+      "text": "Hoare wrote of it, in his 1980 Turing Award lecture: \"Here is a language so far ahead of its time that it was not only an improvement on its predecessors but also on nearly all its successors.\"",
+      "type": "quote",
+      "tokens": [
+        "Hoare",
+        "Turing Award",
+        "1980"
+      ],
+      "source": {
+        "title": "Hoare, C. A. R., The Emperor’s Old Clothes, 1980 Turing Award Lecture, Communications of the ACM 24(2), February 1981",
+        "url": "https://dl.acm.org/doi/10.1145/358549.358561",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c8",
+      "text": "It gave rise to CPL, Simula, BCPL, B, Pascal and C.",
+      "type": "event",
+      "tokens": [
+        "CPL",
+        "Simula",
+        "BCPL",
+        "Pascal",
+        "ALGOL"
+      ],
+      "source": {
+        "title": "ALGOL 60: the Paris conference of January 1960, its attendees, and the naming of Backus-Naur form at Knuth’s suggestion",
+        "url": "https://en.wikipedia.org/wiki/ALGOL_60",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c9",
+      "text": "The immediately preceding attempt at a vendor-independent language, COBOL, was specified in English words for commands, on the reasoning that the specification should be readable by people who do not program.",
+      "type": "event",
+      "tokens": [
+        "COBOL",
+        "English"
+      ],
+      "source": {
+        "title": "Sammet, J. E., The Early History of COBOL, in History of Programming Languages, ACM SIGPLAN Notices, 1978",
+        "url": "https://dl.acm.org/doi/10.1145/960118.808378",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "there was no way to state what a language was, so each language existed only as whatever its compiler happened to accept",
+    "fix": "a formal grammar for the syntax and a published report as the definition, plus block structure, lexical scope and recursion",
+    "cost": "the report defines no input or output, so every implementation added its own and the programs did not move",
+    "interview": "why the notation for describing the language mattered more than the language"
+  }
+}

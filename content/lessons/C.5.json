@@ -1,0 +1,49 @@
+{
+  "id": "C.5",
+  "trackId": "C",
+  "trackName": "Languages: the chain of walls",
+  "title": "1960. ALGOL",
+  "status": "traced",
+  "seed": "C.5",
+  "story": "COBOL tried to make the written specification the authority. It was written in English, which means the document can be read two ways and nobody can prove which is right. So the wall left standing after 1959 is not \"we need a standard\" — it is that there was no way to state precisely what a language is. A language existed as whatever its compiler happened to accept, and disagreements about it were disagreements about behaviour.\n\nThe Paris conference in January 1960 — thirteen people from seven countries, working from a draft Naur had written beforehand — produced a report that answered this by describing the syntax in a formal grammar rather than in prose. The notation had come from Backus and was revised and expanded by Naur; Knuth later suggested the name it now carries, Backus-Naur form. The effect is that a question about whether something is a legal program stops being a matter of opinion and becomes a derivation you can carry out.\n\nThe language it defined is where several things you now take for granted first appear together: blocks delimited by begin and end, procedures that can call themselves, procedures nested inside one another, and lexical scope — a name refers to the declaration that encloses it in the text, which you can determine by reading, without running anything. Hoare’s verdict, in his 1980 Turing Award lecture, is the one usually quoted: a language so far ahead of its time that it was not only an improvement on its predecessors but also on nearly all its successors.\n\nAnd it was barely used. The report defines no input and no output, on the reasoning that these belong to the machine rather than the language, so every implementation invented its own and programs stopped being portable at exactly the point where a program has to interact with anything. The lineage is the legacy instead: CPL, Simula, BCPL, Pascal and C descend from it. What survived was not the language but the two things underneath it — the grammar notation, and the idea that scope is a property of the text.",
+  "problem": {
+    "name": "Formal syntax specification",
+    "aka": [
+      "context-free grammar",
+      "Backus-Naur form",
+      "language definition"
+    ],
+    "shape": "A language has to be described precisely enough that two people can settle a disagreement about it without running a program.",
+    "tell": [
+      "the answer to \"is this legal\" is currently \"try it and see\"",
+      "two implementations disagree and there is no document that decides which is wrong",
+      "the specification is prose, so it can be read more than one way in good faith"
+    ],
+    "move": "Define the legal forms with a finite set of production rules over symbols, where each rule says how one construct is built from others. Legality becomes derivability from the start symbol.",
+    "invariant": "The rules are finite and each rule is local — it refers only to its own parts, never to context elsewhere in the program. That is what makes derivation mechanical, and therefore what makes a machine able to parse it and a person able to check it.",
+    "breaks": "It only covers form, never meaning. A grammar cannot state that a variable must be declared before use, that the types must agree, or what the program computes — those are not local properties of the text. Treating a grammar as a full definition is the standard error, and it is why the report needed prose for semantics and why the semantics is where the ambiguities went.",
+    "cost": {
+      "time": "parsing is mechanical and efficient for the grammar classes in practical use",
+      "space": "the grammar itself is small and finite, which is the point",
+      "beats": "prose specification, where disagreement has no procedure for resolving it"
+    },
+    "worked": {
+      "problem": "Why does a formal grammar settle disputes that a careful prose specification cannot?",
+      "reasoning": "Prose asserts. A grammar generates. Given a grammar and a candidate program, there is a procedure — attempt a derivation — whose outcome does not depend on who runs it. Given prose and a candidate program, there is only reading, and two competent readers who disagree have nothing further to appeal to.\n\nThe move is the same one that makes proofs different from arguments: replace a claim about a thing with a construction of it. Notice also what it does not do. Nothing in a derivation says what the program means, so the grammar removes one class of dispute completely and leaves the other class untouched.",
+      "code": "  <block> ::= begin <stmts> end\n  <stmts> ::= <stmt> | <stmt> ; <stmts>\n\n  is \"begin x := 1 ; y := 2 end\" legal?\n\n     <block>\n     -> begin <stmts> end\n     -> begin <stmt> ; <stmts> end\n     -> begin x := 1 ; <stmt> end\n     -> begin x := 1 ; y := 2 end        derivable: yes\n\n  The answer is a construction anyone can repeat.\n  What it does NOT tell you: whether x was declared,\n  whether the types agree, or what the block computes."
+    },
+    "practice": "Take four lines of a grammar for a language you use and derive one legal and one illegal statement from it. Then find a rule your language enforces that the grammar cannot express, and say why it cannot."
+  },
+  "beats": {
+    "broke": "A language was whatever its compiler accepted. With the definition written in prose, two readers could disagree in good faith and there was no procedure that settled it, so specifications could not actually specify.",
+    "fix": "A formal grammar for the syntax, published as the report of the Paris conference of January 1960 with Naur as editor — the notation from Backus, revised by Naur, later named Backus-Naur form at Knuth’s suggestion.",
+    "cost": "The report defines no input or output at all, so every implementation added its own incompatibly and programs stopped being portable exactly where they touched the world. The language was admired and little used.",
+    "interview": {
+      "q": "Why did the notation for describing the language end up mattering more than the language itself?",
+      "trap": "Answering that the language failed because it lacked input and output, and the notation happened to survive. That is the outcome, not the reason.",
+      "answer": "Because the notation solved a problem that every subsequent language also has, while the language solved a problem that a particular generation had.\n\nA grammar turns \"is this a legal program\" into a derivation, which is a procedure whose result does not depend on who performs it. That is reusable by construction: any language that wants a checkable definition needs the same machinery, and every one since has used it. The language, by contrast, competed on features against successors that had the same features plus input and output.\n\nThe general shape is worth carrying: the durable artefact from a piece of work is often the tool built to express it rather than the thing expressed. It is also why the descendants — CPL, Simula, BCPL, Pascal, C — are the legacy rather than any programs written in the original."
+    }
+  },
+  "blueprint": "Two things came out of the same report. Only one travelled:\n\n  the language                      the notation\n  ------------                      ------------\n  begin/end blocks                  <x> ::= <y> | <z>\n  recursion                         finite rules\n  lexical scope                     derivation decides legality\n  no I/O  <-- fatal                 says nothing about meaning\n\n  used by:  almost nobody           used by:  every language since\n  survives as: CPL, Simula,         survives as: the way a language\n     BCPL, Pascal, C                    is defined at all\n\n  A grammar answers \"legal?\" mechanically and answers\n  \"means what?\" not at all. Both halves are the point.",
+  "takeaway": "The report’s lasting contribution was a way to say what a language is — a grammar makes legality a derivation rather than an opinion — while the language it defined went unused for want of input and output."
+}

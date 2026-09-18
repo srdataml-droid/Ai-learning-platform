@@ -690,6 +690,587 @@
     "blueprint": "/* Protocol Comparison: */\nTCP:  Connection-oriented | 3-way handshake | Reliable | Ordered | Congestion control\n      Use case: Financial APIs, Web pages, Database connections, File transfers\n\nUDP:  Connectionless | No handshake | Fire-and-forget | Unordered | Minimal overhead\n      Use case: Real-time gaming, Voice (VoIP), Live video, DNS queries, QUIC",
     "takeaway": "TCP guarantees every byte arrives in order; UDP guarantees no byte ever waits for a dead predecessor."
   },
+  "C.0": {
+    "id": "C.0",
+    "trackId": "C",
+    "trackName": "Languages: the chain of walls",
+    "title": "Learn the chain itself first, as one story",
+    "status": "traced",
+    "seed": "C.0",
+    "story": "Learning languages one at a time teaches you the wrong thing. You end up with a set of feature lists and no way to compare them, so the differences look like matters of taste and any language you have not met is a blank. The sequence is only worth learning as one story, and the story has a single shape repeated eleven times: something was impossible, a design made it possible, and the design made something else expensive. That new expense is the next wall.\n\nRun it once and the shape is unmistakable. Writing programs as numbers meant an insertion falsified every jump below it, so symbolic notation and a translator arrived — the initial orders that Wheeler wrote for EDSAC in 1949 — and the new expense was that the notation was welded to one machine. Fortran removed that by compiling, and Backus is explicit that the risk was whether generated code could rival hand coding; the new expense is that what runs is no longer what you wrote. COBOL made the specification rather than the compiler the authority, proved it by running essentially the same program on two manufacturers’ machines in 1960, and paid in committee compromise. ALGOL made the definition itself formal and paid by defining no input or output at all.\n\nThe pattern does not weaken as the problems get more abstract. LISP made structures of unknown shape expressible and paid in run-time allocation and unpredictability. BASIC and the system under it made attempts cheap enough for non-specialists and paid by bounding the language to what a beginner could hold. Smalltalk put state behind a boundary and paid by making call sites unreadable. C described the machine’s layout and paid by describing it wrongly just as willingly. C++ made abstraction free at run time and paid by never being able to remove anything. Perl made the common text job short and paid in omission. Python designed its seams first and paid at every seam.\n\nTwo cautions, because a frame this neat invites misuse. It is a chain of problems, not a chronology — LISP, ALGOL and COBOL were all being settled around 1960 and did not queue politely. And the frame only works where the constraint is actually recoverable: when you cannot find what was scarce, you are guessing, and a guessed constraint will explain any design at all.",
+    "problem": {
+      "name": "Reading a design by its constraint",
+      "aka": [
+        "design archaeology",
+        "the wall-and-fix pattern"
+      ],
+      "shape": "You are comparing designs by their features, which makes every difference look arbitrary and gives you no way to judge one you have not seen before.",
+      "tell": [
+        "a comparison is being made as a feature table, with no mention of what each design was for",
+        "someone calls a design bad without saying what was scarce when it was made",
+        "a decision inside the design looks arbitrary, which usually means a constraint is missing rather than absent"
+      ],
+      "move": "For each design, name two things: what was impossible before it, and what it made newly expensive. Refuse to record one without the other, because a design with only benefits has been misread.",
+      "invariant": "Every fix trades one scarcity for another. Nothing in the sequence is strictly better than what it replaced — it is better under a stated constraint, and worse under some other.",
+      "breaks": "It breaks when the original constraint is no longer recoverable, or has stopped applying. If you cannot find what was scarce you will invent one, and an invented constraint can justify any design whatever, which makes the frame unfalsifiable. And when a constraint has genuinely expired, the design’s cost remains while its benefit is now free elsewhere — at which point it really is just worse, and insisting on charity is its own error.",
+      "cost": {
+        "time": "slower than memorising features, because each design needs its context reconstructed",
+        "space": "two facts per design instead of a list, which is the compression that makes it usable",
+        "beats": "feature comparison, which is faster to acquire and does not transfer to anything new"
+      },
+      "worked": {
+        "problem": "Apply the frame to a language you have not studied, and see what it yields before you know any of its features.",
+        "reasoning": "Take Rust as the test, since it is not in this chain. The frame does not tell you its syntax. It tells you what to ask.\n\nWhat was impossible before it? Memory safety without a garbage collector — which is the specific gap between the language that describes the machine and the languages that protect you, and the reason both halves of that gap existed is in this chain already.\n\nWhat did it make newly expensive? If safety is checked at compile time rather than maintained at run time, the checking must be satisfied before the program will build, so the cost lands on the author rather than the process. Predict: a hard learning curve and long compile times.\n\nTwo questions, no feature list, and you have the shape of the language and the shape of the complaints about it. That is what the frame is for.",
+        "code": "for each link:   impossible before  ->  newly expensive\n\nassembly      edit without renumbering | welded to one machine\nFortran       generated code competes  | you don't run what you wrote\nCOBOL         spec is the authority    | committee compromise\nALGOL         definition is formal     | no I/O at all\nLISP          shapes unknown until run | allocation, unpredictability\nBASIC         non-specialists compute  | language bounded by beginners\nSmalltalk     state has a boundary     | call sites say nothing\nC             layout is stated         | wrong layout compiles too\nC++           abstraction is free      | nothing can be removed\nPerl          the common job is short  | reader reconstructs\nPython        the seams are designed   | guarantees end at each seam\n\n  Read down the right column: each entry is the next\n  row's reason for existing. That is the chain."
+      },
+      "practice": "Pick a tool you use daily and write its two lines: what was impossible before it, and what it made newly expensive. If the second line is hard to write, you do not yet understand the tool — and if you cannot find what was scarce when it was built, say so rather than inventing one."
+    },
+    "beats": {
+      "broke": "Languages get taught one at a time as feature lists. That makes the differences look like taste, gives no basis for choosing between them, and transfers nothing to a language you have not met.",
+      "fix": "Read each as an answer to a specific scarcity, recording what became possible and what became expensive. The sequence from the initial orders for EDSAC in 1949 through to the release of February 1991 is one argument repeated, not eleven separate topics.",
+      "cost": "The frame needs a recoverable constraint. Where the scarcity cannot be found you will invent one, and an invented constraint explains everything and therefore predicts nothing — and where a constraint has expired, the charitable reading is simply wrong.",
+      "interview": {
+        "q": "Why is no language in this sequence an improvement on the one before it?",
+        "trap": "Answering that each is better for its own use case. That is true and empty — it restates the question without saying what forces the trade.",
+        "answer": "Because every one of them buys its advantage with a specific, nameable loss, and the loss is what the next link exists to address.\n\nCompilation buys code you did not have to write instruction by instruction, and costs you the correspondence between the text and the execution. Encapsulation buys a boundary you can change behind, and costs you the ability to tell from a call site what will run. Compile-time abstraction buys organisation at no run-time price, and costs you the ability to ever remove anything. In each case the cost is not an implementation defect that a better version would fix; it is the same property as the benefit, seen from the other side.\n\nSo \"better\" is only meaningful relative to a stated scarcity. That is also what makes the frame useful rather than merely charitable: it predicts what the complaints about a design will be before you have used it, because the complaints are the cost you already named."
+      }
+    },
+    "blueprint": "The whole track in one shape, repeated:\n\n        wall  ---- fix ---->  new wall  ---- fix ---->  ...\n          |                      |\n     what was              what the fix made\n     impossible            newly expensive\n\n  Two rules that keep it honest:\n\n    1. Never record a fix without its cost.\n       A design with only benefits has been misread,\n       not discovered.\n\n    2. If you cannot find what was scarce, say so.\n       An invented constraint explains every design\n       equally well, which means it explains none.\n\n  And it is a chain of PROBLEMS, not a timeline:\n  LISP, ALGOL and COBOL were all being settled\n  around 1960 and did not queue politely.",
+    "takeaway": "Every language in the chain trades one scarcity for another, so read each as a wall and a cost rather than a feature list — two facts per design, which is enough to predict both the benefits and the complaints of a language you have never seen."
+  },
+  "C.1": {
+    "id": "C.1",
+    "trackId": "C",
+    "trackName": "Languages: the chain of walls",
+    "title": "1940s. Machine code and assembly",
+    "status": "traced",
+    "seed": "C.1",
+    "story": "A stored-program machine executes numbers. That is not a design choice you can argue with; it is what the hardware is. So the first programs were written as the numbers themselves, and the cost of that was not mainly the tedium. It was that the program had no joints. Insert one instruction near the top and every address below it refers to the wrong word, so you go through the whole listing by hand and renumber it, and any one of those corrections can be wrong in a way that still runs.\n\nThe escape is smaller than it sounds. Write a letter where the operation goes and a decimal number where the address goes, then have a program on the machine turn that into the numbers. On the first machine to run a regular computing service this arrived almost immediately: EDSAC ran its first program in May 1949, and the initial orders that David Wheeler wrote that same month sat in locations 0 to 30 and read the rest of the program in from paper tape.\n\nWhat makes it a good demonstration is how little was needed. An order was one character giving the operation code, some decimal digits giving the address, and a final letter for the operand length — so R16S became 00100 0 0000010000 0. The character was not looked up in a table so much as used directly, because the five-bit code for the letter was the operation code. The translation is real but it is thin, and that thinness is the point: the notation is not a different language, it is the same instructions written in a form a person can edit.\n\nWho did it first is less settled than the date suggests. Coding for A.R.C., a 1947 report by Andrew Booth and Kathleen Britten, is usually named as the first published description of an assembly language, but the report is not something you can pull up and read, so the claim travels as an attribution rather than as evidence. Worth separating from the EDSAC facts, which come with a listing. The word itself drifted too: assembler in Wilkes, Wheeler and Gill in 1951 meant a program that assembled separate sections into one program, not the mnemonic translator everyone now means by it.",
+    "problem": {
+      "name": "Symbolic assembly",
+      "aka": [
+        "assembly language",
+        "symbolic machine code"
+      ],
+      "shape": "A program is written in the exact encoding a machine consumes, so editing it means recomputing the encoding by hand.",
+      "tell": [
+        "positions carry meaning, so inserting anything shifts everything after it",
+        "the thing you edit is the thing the machine consumes, with no step between",
+        "a mistake produces a different valid program rather than an error"
+      ],
+      "move": "Put one mechanical translation step between the text a person edits and the encoding the machine runs. The text names operations and addresses symbolically; the translator resolves the names to numbers at load time.",
+      "invariant": "The translation is one-to-one with the instruction set. Every line of source is one instruction, so what runs is what was written and the translator has no decisions of its own to make.",
+      "breaks": "It breaks the moment you want the same program on another machine. Because the mapping is one-to-one with one instruction set, there is nothing in the source that is not about that machine, so there is nothing to carry across. That is the wall the next link in the chain exists to get over.",
+      "cost": {
+        "time": "one pass over the source, resolving symbols to addresses",
+        "space": "a symbol table proportional to the number of labels",
+        "beats": "hand-encoding, where every insertion costs a manual renumbering of the whole program"
+      },
+      "worked": {
+        "problem": "Why does adding one instruction to a hand-encoded program break the rest of it?",
+        "reasoning": "Jumps are written as absolute addresses. A jump to word 17 means the seventeenth word, not \"the instruction that begins the loop\". Insert a word above it and the loop now begins at 18, while every jump still says 17. Nothing detects this: 17 is still a valid address and the program still runs, it just runs the wrong instruction.\n\nWith symbols the jump says the name, and the name is resolved after the insertion, so the address is recomputed rather than remembered.",
+        "code": "; hand-encoded            ; symbolic\n  0  LOAD  20                  LOAD  count\n  1  SUB   21                  loop: SUB one\n  2  JNZ   1                   JNZ   loop\n  3  HALT                      HALT\n\ninsert a word at the top and the hand-encoded JNZ 1\nnow jumps to the LOAD. The symbolic JNZ loop does not\nchange at all -- \"loop\" is resolved, not stored."
+      },
+      "practice": "Take a short assembly listing with two jumps, insert an instruction at the top, and write out what the encoded form must become. Then say precisely which part of that work the assembler is doing for you, and which part it is not."
+    },
+    "beats": {
+      "broke": "A program had to be written as the numbers the machine executes. The numbers are positional, so inserting a single instruction moved everything below it and silently falsified every jump that pointed there — and the falsified program still ran.",
+      "fix": "A symbolic notation with a translator small enough to live on the machine itself. The initial orders for EDSAC, written by David Wheeler in May 1949, occupied locations 0 to 30 and read a symbolic program in from paper tape, resolving each order as it went.",
+      "cost": "The notation is one-to-one with one instruction set, so it buys editability and nothing else. It does not abstract the machine, it does not check types, and it does not travel — a program written this way is written for exactly one computer.",
+      "interview": {
+        "q": "What does an assembler actually do, and why is it not a compiler?",
+        "trap": "Answering \"it turns human-readable code into machine code\", which is also true of a compiler and therefore distinguishes nothing.",
+        "answer": "An assembler performs a substitution, not a translation of meaning. Each source line corresponds to one machine instruction; the assembler resolves mnemonics to operation codes and labels to addresses, and that is the whole job. It makes no decisions about how to express the program, because the program is already expressed.\n\nA compiler is given a description of what to compute and chooses instructions to achieve it. It decides which values live in registers, what order operations happen in, whether a loop becomes a loop. Two compilers can emit different correct output for the same source; two assemblers cannot.\n\nThe consequence is the interesting part. Because the assembler makes no choices, you can read its output and recognise your program in it — which is why the early objection to compilers was not philosophical but about whether a machine could choose as well as a person."
+      }
+    },
+    "blueprint": "What the assembler resolves, and what it does not:\n\n  source                    assembler          machine\n  ------                    ---------          -------\n  loop: SUB one        ->   symbol table  ->   00100 0 ...\n  JNZ loop                  loop  = 1\n                            one   = 21\n\n  It looks up names. That is all it looks up.\n  One source line in, one instruction out, always.\n\n  Compare: a compiler is handed \"x = a*2 + b\" and must\n  CHOOSE instructions. Different choices, same meaning.\n  The assembler has no such freedom, which is exactly\n  why its output is predictable and why it cannot port.",
+    "takeaway": "Assembly buys you edit-safety, not abstraction: names get resolved to addresses so insertions stop breaking jumps, but the notation stays welded one-to-one to a single instruction set."
+  },
+  "C.10": {
+    "id": "C.10",
+    "trackId": "C",
+    "trackName": "Languages: the chain of walls",
+    "title": "1987. Perl. Wall",
+    "status": "traced",
+    "seed": "C.10",
+    "story": "By the middle of the 1980s the Unix toolchain had a gap in it that everybody worked around and nobody named. Small text jobs went to the shell tools, each excellent and each deliberately narrow. Large programs went to C. In between sat a large class of real work — read these logs, correlate them with that file, produce a report — that was too much for the narrow tools and not worth the ceremony of a compiled program with its own memory management.\n\nThe manual page names the gap rather than the language, which is why it is still the clearest statement of the design: if you have a problem that would ordinarily use sed or awk or sh, but it exceeds their capabilities or must run a little faster, and you do not want to write the silly thing in C, then it may be for you. Wall wrote it at Unisys for exactly such a job — reports about information being synchronised between two sites — and released version 1.0 on 18 December 1987.\n\nThe design choice underneath is to refuse minimality on purpose. The manual states the preference as practical, meaning easy to use, efficient and complete, rather than beautiful, meaning tiny, elegant and minimal. So it takes the best features of C, sed, awk and sh rather than choosing among them, and it makes pattern matching a construct of the language rather than a call into a library — which is the single decision that makes the target class of work short to write, because that work is almost entirely pattern matching.\n\nThe cost is the one that reputation is built on, and it is better stated as a trade than as a flaw. A language that makes the common case short does so by giving the common case defaults, context sensitivity and multiple spellings; all three make a program quick to write and slow to read, because reading requires knowing what was left out. That is the right trade for a program that runs once and is deleted, and the wrong one for a program that is maintained for a decade — and the failure mode of the tool is that nothing stops the first kind from quietly becoming the second.",
+    "problem": {
+      "name": "Glue language",
+      "aka": [
+        "scripting language",
+        "text processing language"
+      ],
+      "shape": "A task sits between the tools you have: too large for the narrow single-purpose ones, too small to justify the ceremony of a systems language.",
+      "tell": [
+        "the job is mostly reading text, matching patterns in it, and writing other text",
+        "the current solution is a pipeline of several tools with a shell script holding it together",
+        "the program will be run a handful of times and then thrown away — or so everyone assumes"
+      ],
+      "move": "Provide one language that subsumes the whole toolchain, with the dominant operation of the domain — pattern matching over text — built in as syntax rather than reached through a library, and with defaults that make the common case short.",
+      "invariant": "The cost of writing the program stays below the cost of assembling the pipeline it replaces. That is the only property that matters here, and everything else in the design is subordinate to it.",
+      "breaks": "It breaks when the program outlives its occasion. Short-to-write is bought with implicit context and several ways to say the same thing, which means reading requires reconstructing what was omitted. Nothing in the tool signals when a throwaway script has become infrastructure, so the trade silently becomes wrong while the code stays the same.",
+      "cost": {
+        "time": "interpreted, so slower than compiled code and vastly faster than writing compiled code",
+        "space": "a whole interpreter, where the shell tools were small and separate",
+        "beats": "a pipeline of narrow tools, which is quicker for small jobs and falls apart as the logic grows"
+      },
+      "worked": {
+        "problem": "Why does making the common case short necessarily make programs harder to read?",
+        "reasoning": "Shortness comes from not writing things down. There are only three ways to achieve it: supply a default so the value need not be stated, infer from context so the subject need not be named, or offer a spelling that fuses several steps.\n\nEach of those removes something from the text and puts it in the reader’s head. The writer benefits immediately, because they already know what they omitted. The reader pays later, because they must reconstruct it — and a reader a year on has no access to the context that made the omission obvious.\n\nSo this is not a defect of one language. It is the arithmetic of terseness, and it predicts where every terse notation is a good idea: where the writer and the reader are the same person within the same hour.",
+        "code": "explicit                      terse\n--------                      -----\nfor line in input:            while (<>) {\n    if match(line, pat):          /pat/ and print;\n        write(out, line)      }\n\n  what the terse form omits: the input source, the\n  loop variable, the current subject of the match,\n  the output destination\n\n  writer: knows all four, saves four lines\n  reader: must know all four to read one line\n\n  Right trade when writer == reader == now.\n  Wrong trade the moment that stops being true --\n  and nothing tells you when it stopped."
+      },
+      "practice": "Take a script you wrote more than six months ago and time how long it takes to state exactly what it does. Then find which of the three shortening devices — defaults, implicit context, fused spellings — cost you the most, and whether you would still choose it."
+    },
+    "beats": {
+      "broke": "Work too large for the narrow shell tools and too small to justify a compiled program had no home. It got done in whichever tool was nearest, which meant shell scripts straining past what they could express.",
+      "fix": "One language absorbing the whole toolchain, with pattern matching built in as syntax. Released as version 1.0 on 18 December 1987, written for a real reporting job, and stated in its own manual as practical rather than beautiful.",
+      "cost": "Shortness is bought by omission — defaults, implicit context, several spellings for one thing — so the writer saves and the reader pays. The trade is correct for a program that runs once and wrong for one that is maintained, and nothing marks the transition.",
+      "interview": {
+        "q": "What does a language optimised for writing rather than reading actually cost, and when is that the right trade?",
+        "trap": "Treating readability as a property of syntax — sigils and punctuation — rather than of how much the text omits.",
+        "answer": "The cost is that information moves out of the text and into the reader’s head. Terseness has only three mechanisms — defaults, inference from context, and fused spellings — and each works by not writing something down. The writer already knows the omitted part; the reader has to reconstruct it.\n\nThat makes the trade correct in one specific circumstance: when the writer and the reader are the same person within a short window. A report assembled at a terminal to answer a question today is exactly that, and it is the case the design names in its own manual — problems too big for the narrow tools and not worth writing in a compiled language.\n\nThe failure is structural rather than linguistic. Programs that were written once and kept become long-lived without anything changing in the code, so the conditions that justified the trade expire silently. The judgement to carry is that terseness is a bet on a program’s lifetime, and lifetimes are routinely underestimated."
+      }
+    },
+    "blueprint": "Where the gap was, and what fits in it:\n\n  sed / awk / sh        [ the gap ]        C\n  --------------                          -\n  narrow, excellent                       general, fast\n  one job each                            manual memory\n  compose by pipe                         compile, link\n  breaks when logic                       ceremony too\n    gets real                               heavy for a\n                                            one-off report\n\n  Fill it by subsuming the left side, not competing\n  with the right: take C, sed, awk and sh features\n  together, make pattern matching SYNTAX.\n\n  The bill arrives later, and always the same way:\n      terse = omitted = reader reconstructs\n      fine while writer == reader == now",
+    "takeaway": "It filled the gap between the narrow text tools and a compiled language by making pattern matching syntax — and paid for shortness with omission, which is the right trade only while the writer and the reader are the same person."
+  },
+  "C.11": {
+    "id": "C.11",
+    "trackId": "C",
+    "trackName": "Languages: the chain of walls",
+    "title": "1991. Python. van Rossum",
+    "status": "traced",
+    "seed": "C.11",
+    "story": "The interesting fact about this link is that its author had already helped build the pleasant language, and it had not been enough. Van Rossum worked in the early 1980s on the team at CWI that built ABC, and describes himself as both indebted to it and frustrated by it. Knowing precisely which part was good and which part failed is what makes a successor different from a rewrite.\n\nThe failure was not the notation. In 1989 he was writing system utilities for Amoeba, a distributed operating system, and found that developing in C took too much time — the classic gap. But the pleasant language could not be used either, because a language that cannot reach the operating system it runs on and cannot be extended is a closed world: excellent inside its walls and unable to do the job in front of you. So the successor is described from the outset by what it could reach — capable of exception handling and of interfacing with Amoeba.\n\nRead the initial feature list with that in mind and it stops looking like a list of nice things. Classes and exceptions, a module system borrowed from Modula-3, an exception model also taken from Modula-3 with an else clause added. Those are not conveniences; they are seams. A module system is a seam between your code and other people’s, exceptions are a seam between the path you planned and the one you got, and the ability to interface with the operating system is a seam between the language and everything that is not the language.\n\nEven the release is a seam story. Begun in December 1989 over a Christmas holiday, a working draft some months into 1990, and published to a newsgroup in February 1991 — split into 21 uuencoded messages, because that was the largest thing the channel would carry. The point is not the charm of the detail. A language designed to connect to things was handed to the world through the only connection available, and that is the same decision as all the others.",
+    "problem": {
+      "name": "Extensibility and embedding",
+      "aka": [
+        "escape hatch",
+        "foreign function interface",
+        "the seam"
+      ],
+      "shape": "A language is pleasant and self-consistent within its own world, but the work requires reaching things outside that world.",
+      "tell": [
+        "the language has no supported way to call code written in another one",
+        "a section is unacceptably slow and there is nowhere to put a faster implementation",
+        "the elegant tool is being rejected for real work, and not on grounds of syntax"
+      ],
+      "move": "Design the boundaries as first-class parts of the language: a module system for other people’s code, an exception mechanism for paths you did not plan, and a defined interface to the system underneath.",
+      "invariant": "Anything the language cannot do can be reached from it without leaving it. That is what stops the language being abandoned at its first hard requirement, and it is a property of the boundaries, not of the core.",
+      "breaks": "Every seam is a place where the guarantees stop. Code reached through a foreign interface is not bound by the language’s safety, its error handling or its memory model, so the properties that make the language pleasant hold only in the region you have not yet had to escape from. The more useful the escape hatch, the more of the program is on the far side of it.",
+      "cost": {
+        "time": "interpretation is slow, and the standard remedy is to move hot code across a seam into something that is not the language",
+        "space": "a runtime plus whatever the extensions bring with them",
+        "beats": "a closed language, which is more consistent and gets abandoned at the first requirement it cannot meet"
+      },
+      "worked": {
+        "problem": "Why do escape hatches decide a language’s fate more reliably than its syntax does?",
+        "reasoning": "Syntax is judged once, when someone reads an example, and taste varies. Escape hatches are judged at the first requirement the language cannot meet on its own — and every language that is used for real work meets one.\n\nAt that moment there are two outcomes. If there is a supported way out, the requirement is satisfied by one awkward module and the rest of the program stays in the language. If there is not, the whole program leaves, because you cannot keep half a program in a language that cannot express the other half.\n\nSo the hatch does not need to be pleasant. It needs to exist, because its absence converts a local problem into a total one. That is why the predecessor could be admired and unused while the successor, defined from the start by what it could interface with, was neither.",
+        "code": "closed language               language with seams\n---------------               -------------------\nhits a requirement            hits a requirement\n  it can't meet                 it can't meet\n       |                             |\n  no way out                    write that part in C,\n       |                          import it as a module\n  rewrite ENTIRE                     |\n  program elsewhere             rest of program unchanged\n\n  Cost of the hatch: the imported part obeys none of\n  the language's rules -- not its types, not its error\n  handling, not its memory model.\n\n  You are trading a total failure for a local hole.\n  That is a good trade, and it is still a hole."
+      },
+      "practice": "Find the foreign-code boundary in a project you work on and list what stops being true across it — type checking, exception propagation, memory safety, thread rules. Then ask how much of the program’s actual work happens on the far side."
+    },
+    "beats": {
+      "broke": "The pleasant high-level language could not reach the operating system it ran on and could not be extended, so it was unusable for the job at hand — while writing that job in C took too much time. Neither side of the choice was acceptable.",
+      "fix": "A readable language whose boundaries were designed in: exceptions, a module system taken from Modula-3, and an interface to the system underneath. Begun at CWI in December 1989 and released publicly in February 1991.",
+      "cost": "The language’s guarantees stop at each seam. Code reached across the foreign interface is outside its safety, its error handling and its memory model — and since the usual cure for slowness is to move work across that boundary, the fast parts of a program are the parts the language is not protecting.",
+      "interview": {
+        "q": "Why do a language’s escape hatches decide its fate more than its syntax does?",
+        "trap": "Arguing that escape hatches make a language practical while syntax makes it pleasant, and leaving it as a preference. The asymmetry is structural, not a matter of priorities.",
+        "answer": "Because the two are judged at different moments with different stakes. Syntax is judged when someone reads an example and the verdict is a matter of taste. The escape hatch is judged at the first requirement the language cannot meet on its own, and any language used for real work meets one.\n\nAt that point the outcomes are asymmetric. With a supported way out, the problem stays local: one awkward module, and the rest of the program is unaffected. Without one, the problem is total, because you cannot keep half a program in a language that cannot express the other half — so the language is not merely inconvenient, it is discarded.\n\nThat asymmetry is why a predecessor can be widely admired and unused. It also explains the cost honestly: the hatch converts total failure into a local hole where the language’s guarantees do not apply, and since slow code is moved across that boundary by habit, the hole tends to sit exactly where the program does its work."
+      }
+    },
+    "blueprint": "Read the first feature list as boundaries, not features:\n\n  classes + inheritance   -> boundary between your parts\n  module system           -> boundary to other people's code\n  exceptions              -> boundary between planned and\n                               actual control flow\n  interfaces with the OS  -> boundary to everything that\n                               is not this language\n\n  The predecessor had the notation and none of these.\n  Admired; unused.\n\n  What each boundary costs is the same thing:\n\n     inside  |  outside\n     types   |  no types\n     errors  |  your problem\n     safety  |  none\n\n  and slow code migrates OUTWARD, by habit.",
+    "takeaway": "The predecessor failed on its boundaries rather than its notation — so the successor designed the seams first, accepting that a language’s guarantees end exactly where its escape hatches begin."
+  },
+  "C.2": {
+    "id": "C.2",
+    "trackId": "C",
+    "trackName": "Languages: the chain of walls",
+    "title": "1957. Fortran. Backus, IBM",
+    "status": "traced",
+    "seed": "C.2",
+    "story": "Assembly made programs editable without making them cheap. A scientific calculation still had to be expressed as a sequence of machine operations, by hand, for one machine, and the labour of writing and debugging it had grown large enough to rival the cost of the computer it ran on. The obvious fix — write the formula and have the machine work out the instructions — was not a new idea in 1954. What was missing was any reason to believe a machine could do it well enough.\n\nThat is the thing worth keeping about this link in the chain: the objection was not that a compiler was impossible, it was that its output would be slower than a good programmer’s, and speed was the entire reason to own the machine. Backus states the fear plainly — that translating a reasonable scientific program into an object program only half as fast as its hand coded counterpart would put acceptance of the system in serious danger, and that this belief made the translator the real challenge rather than the language.\n\nSo the language is, deliberately, not the achievement. It is close to the algebra a physicist already writes, and it was specified early: the Preliminary Report was dated November 1954 and went out to prospective customers before there was anything to run. The compiler is what took the time. A six-month project ran about three years, and shipment to 704 users began in April 1957.\n\nThe result reset what programming meant. Once a compiler could produce code competitive with hand coding, the argument for writing machine instructions by hand stopped being about performance and became about the few places where performance still could not be had any other way — which is roughly where it remains. The cost arrived with the benefit: from this point on, what executes is not what you wrote. It is the compiler’s rendering of what you wrote, and reading a program no longer tells you what the machine does.",
+    "problem": {
+      "name": "Compilation",
+      "aka": [
+        "automatic coding",
+        "high-level translation"
+      ],
+      "shape": "The notation that is natural to state a computation in is not the notation the machine executes, and translating between them by hand is where the cost and the errors live.",
+      "tell": [
+        "the program describes a result, while the machine needs a sequence of steps",
+        "the same computation must run on more than one kind of machine",
+        "the person who understands the problem is not the person who understands the instruction set"
+      ],
+      "move": "Define a notation for what is to be computed, then write a program that chooses machine instructions to compute it. The translation is many-to-one in both directions: one source construct may become many instructions, and many instruction sequences would be correct.",
+      "invariant": "The compiler preserves meaning while being free to choose instructions. This is only useful if the generated code is good enough that no one is tempted to bypass it — which is why efficiency of output, not expressiveness of input, was treated as the make-or-break property.",
+      "breaks": "It breaks when the generated code is not good enough and the programmer cannot see why. Because the compiler chooses, the mapping from source to execution is no longer visible, so a performance problem is now a question about a translator you did not write. This is the permanent cost, and it is why the reflex to inspect generated output never went away.",
+      "cost": {
+        "time": "compile once, run many times: translation cost is paid at build, not per execution",
+        "space": "the compiler itself, which on early machines was a serious fraction of available memory",
+        "beats": "hand coding, which pays the translation cost in human time on every change"
+      },
+      "worked": {
+        "problem": "Why was the compiler treated as the risk, when writing the language seems like the harder design problem?",
+        "reasoning": "Work out who has to be convinced. The people with machines were running numerical work where the machine was the bottleneck, so a system that made programs easier to write but a third slower to run would have cost them more than it saved. There is no argument about elegance that survives that arithmetic.\n\nSo the acceptance condition was not \"is this language good\" but \"is the generated code close enough to hand coding that nobody bothers\". Language design cannot fail that test and cannot pass it either. Only the translator can.",
+        "code": "        what the programmer writes\n                    |\n        A = B * C + D\n                    |\n        the compiler CHOOSES, e.g.\n            LOAD  B          or   LOAD  B\n            MUL   C               MUL   C\n            ADD   D               STORE t\n            STORE A               LOAD  t\n                                  ADD   D\n                                  STORE A\n\n  Both correct. One is worse. The whole bet was that\n  the compiler picks the left one often enough that\n  no one goes back to writing it out by hand."
+      },
+      "practice": "Take a small loop in a compiled language and read the assembly your compiler emits at two optimisation levels. Then state which differences change the meaning of the program and which only change how it is carried out — and check whether you can tell."
+    },
+    "beats": {
+      "broke": "Scientific programs had to be expressed as machine operations for one machine, by hand. The cost of writing and debugging them had become comparable to the cost of the computer, and none of that labour transferred to the next machine.",
+      "fix": "A notation close to the algebra, plus a translator that chooses the instructions. Specified in the Preliminary Report of November 1954 and shipped to IBM 704 users in April 1957, after a six-month plan turned into roughly three years of work.",
+      "cost": "What runs is the compiler’s rendering of your program rather than your program. That is the trade the whole rest of the chain inherits: every later language buys expressiveness with a wider gap between the text and the execution.",
+      "interview": {
+        "q": "Why was the compiler, rather than the language, treated as the real challenge?",
+        "trap": "Explaining that compilers are technically harder to build than languages are to design. True but beside the point — it explains effort, not risk.",
+        "answer": "Because the system’s acceptance depended on a property only the translator could deliver. Buyers of these machines were running numerical work where machine time was the scarce resource, and their stated objection was that generated code would be worse than their best programmers’ code. A language that was pleasant to write and produced code a third slower would have been rejected on arithmetic, not on taste.\n\nBackus puts the threshold at roughly half the speed of hand coding as the point where acceptance would be in serious danger, and says explicitly that this belief is what made the translator the challenge and the language the simple task.\n\nThe general lesson is about where risk actually sits. The visible artefact was the notation; the thing that could kill the project was a non-functional property of the implementation. Recognising which of those you are betting on is the judgement call, and it is usually not the visible one."
+      }
+    },
+    "blueprint": "The bet, stated as the arithmetic its buyers would do:\n\n  hand coding      write: weeks     run: 1.00x\n  compiled         write: days      run: ?\n\n  if ? is 1.1x  -> everyone switches, labour dominates\n  if ? is 2.0x  -> nobody switches, machine time dominates\n                   and the project is dead regardless of\n                   how good the language is\n\n  Therefore: the language was specified first and fast\n  (Nov 1954, before anything ran), and three years went\n  into the translator. The risk was never in the syntax.",
+    "takeaway": "Fortran’s achievement was not a notation close to algebra but a translator good enough that hand coding stopped paying — and the price, permanent from here on, is that the program you read is no longer the program that runs."
+  },
+  "C.3": {
+    "id": "C.3",
+    "trackId": "C",
+    "trackName": "Languages: the chain of walls",
+    "title": "1959. COBOL. CODASYL, Hopper’s influence",
+    "status": "traced",
+    "seed": "C.3",
+    "story": "Fortran solved the cost of writing a program. It did not solve the fact that the program you had written was an asset welded to one manufacturer’s machine. For a scientific lab with one computer that is an annoyance. For the government that convened this one, buying from several manufacturers at once and expecting to keep buying, it is a procurement problem: every machine purchase silently included the cost of rewriting everything.\n\nThe response was procedural before it was technical. A meeting at the Pentagon in May 1959 set up committees; the steering group met that June and named the activity the Committee on Data Systems Languages. The short range committee, chaired by Joseph Wegstein of the National Bureau of Standards, was supposed to produce an interim specification. It produced the one that lasted.\n\nThe design borrowed from the only candidate that had actually been built. FLOW-MATIC, invented by Grace Hopper, contributed long variable names, English words for commands, and the separation of data descriptions from instructions — and it was attractive precisely because it existed, while the alternatives were proposals. Hopper advised the committee. She is often called the language’s creator, and that is worth stating carefully: Jean Sammet, one of its lead designers, said flatly that Hopper was not the mother, creator, or developer of Cobol. Influence and authorship are different claims, and the second one is contested by someone who was in the room.\n\nThe proof came a year later. In December 1960, essentially the same program ran on an RCA machine and on a Remington-Rand UNIVAC machine. That demonstration is the entire argument for the approach: the specification, not any implementation, is the language. Everything people dislike about the result — the verbosity, the committee compromises, the English-like syntax that reads well and writes slowly — follows from taking that goal seriously, because a specification that two rival vendors can both implement has to be written down in a form neither of them owns.",
+    "problem": {
+      "name": "Portability by specification",
+      "aka": [
+        "language standardisation",
+        "vendor-independent language"
+      ],
+      "shape": "Programs are assets, but each is written against one vendor’s implementation, so changing vendor means rewriting the assets.",
+      "tell": [
+        "the same work is being redone for each supplier rather than each problem",
+        "the buyer has more leverage over suppliers than any one supplier has over the buyer",
+        "the thing being purchased has a longer life than the machine it runs on"
+      ],
+      "move": "Write the language down as a specification independent of any implementation, agreed before implementations exist, and make conformance to the document rather than compatibility with a product the test.",
+      "invariant": "The specification is the authority and no implementation is. This only holds while the document is precise enough that two independent implementers reading it produce compatible behaviour — which is why the demonstration on two makes of machine mattered more than any feature.",
+      "breaks": "It breaks where the specification is ambiguous or silent, because then each implementer resolves it differently and the resolutions become de facto dialects. It also breaks when one implementation becomes dominant enough that its behaviour, rather than the document, is what programs are tested against.",
+      "cost": {
+        "time": "agreement is paid up front, in committee, before any code runs",
+        "space": "a written standard that must be maintained separately from every implementation of it",
+        "beats": "per-vendor rewriting, where the cost is paid again on every machine purchase"
+      },
+      "worked": {
+        "problem": "Why did the two-machine demonstration prove the thing that mattered, when a single working compiler would have been a more impressive engineering result?",
+        "reasoning": "A single compiler proves that the language can be implemented. That was not in doubt, and it is not what was being bought.\n\nThe claim under test was that the written specification was complete enough to be the authority. The only way to falsify that is to have two parties who share no code implement it separately and see whether a program moves. One machine cannot distinguish \"the specification is sound\" from \"this implementation defines the language\". Two rival machines can.\n\nWhich is also why the demonstration used essentially the same program rather than an identical one. The residue — what had to change — is the measurement.",
+        "code": "one vendor                    two vendors\n----------                    -----------\nspec  --> compiler A          spec --> compiler A --\\\n          program runs             \\-> compiler B --+-> same program?\n\nproves: it can be built      proves: the SPEC is the language,\n        (never in doubt)             because nothing else is shared\n\nThe residue -- whatever had to be changed to move the\nprogram -- is exactly the part of the spec that was\nambiguous. That residue is the measurement."
+      },
+      "practice": "Find a feature in a language standard you use that implementations are permitted to define differently. Then work out how you would discover, from the outside, that you had depended on one implementation’s choice."
+    },
+    "beats": {
+      "broke": "A program was tied to one manufacturer’s machine, so a buyer with several manufacturers paid for the same software repeatedly. For a buyer running machines from several manufacturers — here the Air Force, the Navy and the agencies around them — that is a procurement cost, not an inconvenience.",
+      "fix": "A language agreed by committee and written down before it was implemented. Set up at the Pentagon in May 1959, named at the June steering meeting, specified by a short range committee under Joseph Wegstein, and approved in January 1960.",
+      "cost": "Committee design against a deadline, and deliberate verbosity: English words and long names were chosen so that people who do not program could read the result, which makes it slow to write and hard to compress.",
+      "interview": {
+        "q": "What did the December 1960 demonstration on two makes of machine actually prove?",
+        "trap": "Saying it proved the language worked, or that the compilers were correct. Both were already demonstrable with one machine.",
+        "answer": "It proved that the specification, and not any implementation, was the language. That is a claim about a document, and it can only be tested by parties who share nothing but the document.\n\nRunning essentially the same program on an RCA machine and on a Remington-Rand UNIVAC machine meant two competing manufacturers had read the same text and arrived at compatible behaviour independently. One implementation, however good, cannot distinguish a sound specification from a specification whose gaps are being filled in consistently by the same team.\n\nThe word \"essentially\" carries the rest of the result. Whatever had to be adjusted to move the program marks where the document was ambiguous, and that residue is the real output of the experiment."
+      }
+    },
+    "blueprint": "Why the authority has to live outside every implementation:\n\n  vendor-defined                 spec-defined\n  --------------                 ------------\n  compiler IS the language       document IS the language\n  bug = new feature              bug = deviation, provable\n  port = rewrite                 port = recompile\n  leverage: vendor               leverage: buyer\n\n  The test is not \"does it run\" but \"do two parties who\n  share no code agree\". Hence: RCA and Remington-Rand,\n  December 1960, essentially the same program.\n\n  Everything disliked about the result -- verbosity,\n  compromise, English-like syntax -- is the cost of\n  a document neither vendor owns.",
+    "takeaway": "COBOL’s point was never its syntax: it was that a language can be defined by a document rather than by a product, which is what lets a program outlive the machine it was bought for."
+  },
+  "C.4": {
+    "id": "C.4",
+    "trackId": "C",
+    "trackName": "Languages: the chain of walls",
+    "title": "1958. LISP. McCarthy",
+    "status": "traced",
+    "seed": "C.4",
+    "story": "Fortran assumed you knew the shape of your data. A scientific program has arrays of known size and the compiler can lay them out. But the problem McCarthy was working on — a system called the Advice Taker, meant to draw conclusions from things it was told — has no such shape. A symbolic expression is built and taken apart as the program runs, its size is not known in advance, and the pieces outlive the routine that made them. Neither the layout nor the memory management existed.\n\nThe answer was to stop treating structure as a feature and make it the whole substrate. Everything is either an atom or a pair of two things, and there are five operations: test for an atom, test for equality, take the first part, take the second part, make a new pair. Conditional expressions and recursion do the rest. The 1960 paper gets from those five to substitution, structural equality, list append and symbolic differentiation, and the reason it can is that there is only ever one kind of thing to work on.\n\nTwo consequences arrive without being asked for. First, if structures are made freely at run time, something has to reclaim them, so the same paper contains the first published description of garbage collection — not as a convenience but as a requirement of the design. Second, a program written in this notation is itself a structure of pairs, so a program can be given to another program as ordinary data.\n\nThat second consequence is where the history turns, and it turned by accident. McCarthy wrote a function, eval, as a way of describing the language in the paper — his words are that the notation was created for the purposes of the paper with no thought that it would be used to express programs in practice. Then, in his account, Russell noticed that eval could serve as an interpreter, promptly hand coded it, and there was a programming language with an interpreter. McCarthy’s own verdict on this is not triumphant: the interpreter, he says, tended to freeze the form of the language. The intended notation never replaced the interim one, because the interim one had a working implementation and the intended one did not.",
+    "problem": {
+      "name": "Homoiconicity",
+      "aka": [
+        "code as data",
+        "symbolic computation",
+        "program-as-structure"
+      ],
+      "shape": "A program needs to build, inspect and transform structures whose shape is decided while it runs — including, sometimes, programs.",
+      "tell": [
+        "the data is a tree rather than a table, and its depth is not known in advance",
+        "the program has to construct something and then examine what it constructed",
+        "you find yourself writing a language, or an interpreter, inside the program"
+      ],
+      "move": "Reduce everything to one recursive structure — atoms and pairs — with a handful of operations over it, and write the language’s own programs in that same structure so that a program is an ordinary value.",
+      "invariant": "There is exactly one kind of thing. Every operation is closed over it: taking a structure apart yields the same kind of structure, so recursion terminates on atoms and nothing needs a special case.",
+      "breaks": "It breaks where the uniformity is a lie about the machine. Uniform pairs mean allocation at run time, which forces automatic reclamation and makes memory behaviour hard to predict; and treating programs as data makes it correspondingly hard to know, before running, what a program will do. You are trading static knowledge for run-time freedom, and getting both is not on offer.",
+      "cost": {
+        "time": "traversal is proportional to the structure, but each step is a pointer hop rather than an indexed read",
+        "space": "every pair is allocated, so live memory is whatever has not yet been reclaimed",
+        "beats": "fixed layouts, which cannot represent a structure whose shape is decided at run time"
+      },
+      "worked": {
+        "problem": "Why does representing programs as ordinary structures follow from the data design, rather than being a separate decision?",
+        "reasoning": "Start from the constraint: build and take apart structures of unknown shape at run time. The minimal thing that supports it is a pair, since anything larger can be built from pairs and anything built from pairs can be taken apart by the same two operations.\n\nNow ask what a program is. A program is a nested expression — an operation and its arguments, where the arguments may themselves be expressions. That is a tree. There is already exactly one representation of a tree in the system, so writing programs in it is not an extra feature; writing them in something else would be the extra feature.\n\nOnce that holds, an evaluator is an ordinary function over ordinary data, which is why one could be hand coded from a description written for a paper.",
+        "code": "data:     (a . (b . (c . nil)))        a list\nprogram:  (times x (plus y 2))         also a list\n\n  same constructor, same accessors, same traversal\n\n  eval(e, env):\n      if atom(e):        look e up in env\n      else:              apply(eval(car(e), env),\n                               map(eval, cdr(e)))\n\n  Nothing here knows it is \"running a program\". It is\n  walking a pair structure. That is why the evaluator\n  fits on a page, and why hand coding it was possible."
+      },
+      "practice": "Write out a small arithmetic expression as nested pairs, then write the evaluator for it in a language of your choice. Then note which parts of your evaluator exist only because your language does not represent programs as data."
+    },
+    "beats": {
+      "broke": "Symbolic work builds structures whose size and shape are decided as the program runs, and outlives the routine that built them. Fixed array layouts cannot express that, and nothing in the languages of the day reclaimed the memory.",
+      "fix": "One recursive structure — atoms and pairs — with five operations over it and recursion for control. Described in the paper published in Communications of the ACM in April 1960, with implementation begun at MIT in the autumn of 1958.",
+      "cost": "Uniformity is paid for in predictability. Allocation at run time forces automatic reclamation, so memory behaviour becomes a property of the system rather than the program; and the notation froze around an implementation that was never meant to be the final one.",
+      "interview": {
+        "q": "Why is a program being the same structure as its data a design property rather than a syntax quirk?",
+        "trap": "Treating it as an aesthetic preference for parentheses, or claiming any language with a parser has it because source text can be read as a string.",
+        "answer": "Because it follows from the data model rather than from the surface syntax. If the only structure is the pair, then a nested expression — which is what a program is — already has exactly one representation in the system, and choosing a different one for programs would be the additional decision.\n\nWhat that buys is that an evaluator is an ordinary function over ordinary values, so programs can be constructed, inspected and transformed by other programs using the operations that already exist. Parsing text into a string does not give you this, because a string is not the structure the operations work on; you would have to build the structure first, which is the step that has been removed.\n\nThe cost is symmetric and worth saying: if programs are built at run time, then what a program does is not knowable before it runs, which is the same freedom viewed from the other side."
+      }
+    },
+    "blueprint": "One structure, and what falls out of it:\n\n  atom | (x . y)          <- the entire data model\n\n  take apart:  car, cdr          make: cons\n  compare:     eq                test: atom\n\n     |\n     +-- trees of unknown shape        (the original need)\n     +-- allocation at run time  -->   garbage collection\n     +-- programs are trees      -->   programs are data\n                                  -->   eval is just a function\n                                  -->   hand coding it made it real\n\n  Note the direction of the arrows. Nobody designed\n  \"code as data\" as a feature; it is what you get when\n  there is only one kind of thing and a program has\n  the shape of that thing.",
+    "takeaway": "Reduce everything to one recursive structure and the rest follows without being designed: run-time allocation forces garbage collection, and programs become data because a program was already the shape the data model had."
+  },
+  "C.5": {
+    "id": "C.5",
+    "trackId": "C",
+    "trackName": "Languages: the chain of walls",
+    "title": "1960. ALGOL",
+    "status": "traced",
+    "seed": "C.5",
+    "story": "COBOL tried to make the written specification the authority. It was written in English, which means the document can be read two ways and nobody can prove which is right. So the wall left standing after 1959 is not \"we need a standard\" — it is that there was no way to state precisely what a language is. A language existed as whatever its compiler happened to accept, and disagreements about it were disagreements about behaviour.\n\nThe Paris conference in January 1960 — thirteen people from seven countries, working from a draft Naur had written beforehand — produced a report that answered this by describing the syntax in a formal grammar rather than in prose. The notation had come from Backus and was revised and expanded by Naur; Knuth later suggested the name it now carries, Backus-Naur form. The effect is that a question about whether something is a legal program stops being a matter of opinion and becomes a derivation you can carry out.\n\nThe language it defined is where several things you now take for granted first appear together: blocks delimited by begin and end, procedures that can call themselves, procedures nested inside one another, and lexical scope — a name refers to the declaration that encloses it in the text, which you can determine by reading, without running anything. Hoare’s verdict, in his 1980 Turing Award lecture, is the one usually quoted: a language so far ahead of its time that it was not only an improvement on its predecessors but also on nearly all its successors.\n\nAnd it was barely used. The report defines no input and no output, on the reasoning that these belong to the machine rather than the language, so every implementation invented its own and programs stopped being portable at exactly the point where a program has to interact with anything. The lineage is the legacy instead: CPL, Simula, BCPL, Pascal and C descend from it. What survived was not the language but the two things underneath it — the grammar notation, and the idea that scope is a property of the text.",
+    "problem": {
+      "name": "Formal syntax specification",
+      "aka": [
+        "context-free grammar",
+        "Backus-Naur form",
+        "language definition"
+      ],
+      "shape": "A language has to be described precisely enough that two people can settle a disagreement about it without running a program.",
+      "tell": [
+        "the answer to \"is this legal\" is currently \"try it and see\"",
+        "two implementations disagree and there is no document that decides which is wrong",
+        "the specification is prose, so it can be read more than one way in good faith"
+      ],
+      "move": "Define the legal forms with a finite set of production rules over symbols, where each rule says how one construct is built from others. Legality becomes derivability from the start symbol.",
+      "invariant": "The rules are finite and each rule is local — it refers only to its own parts, never to context elsewhere in the program. That is what makes derivation mechanical, and therefore what makes a machine able to parse it and a person able to check it.",
+      "breaks": "It only covers form, never meaning. A grammar cannot state that a variable must be declared before use, that the types must agree, or what the program computes — those are not local properties of the text. Treating a grammar as a full definition is the standard error, and it is why the report needed prose for semantics and why the semantics is where the ambiguities went.",
+      "cost": {
+        "time": "parsing is mechanical and efficient for the grammar classes in practical use",
+        "space": "the grammar itself is small and finite, which is the point",
+        "beats": "prose specification, where disagreement has no procedure for resolving it"
+      },
+      "worked": {
+        "problem": "Why does a formal grammar settle disputes that a careful prose specification cannot?",
+        "reasoning": "Prose asserts. A grammar generates. Given a grammar and a candidate program, there is a procedure — attempt a derivation — whose outcome does not depend on who runs it. Given prose and a candidate program, there is only reading, and two competent readers who disagree have nothing further to appeal to.\n\nThe move is the same one that makes proofs different from arguments: replace a claim about a thing with a construction of it. Notice also what it does not do. Nothing in a derivation says what the program means, so the grammar removes one class of dispute completely and leaves the other class untouched.",
+        "code": "  <block> ::= begin <stmts> end\n  <stmts> ::= <stmt> | <stmt> ; <stmts>\n\n  is \"begin x := 1 ; y := 2 end\" legal?\n\n     <block>\n     -> begin <stmts> end\n     -> begin <stmt> ; <stmts> end\n     -> begin x := 1 ; <stmt> end\n     -> begin x := 1 ; y := 2 end        derivable: yes\n\n  The answer is a construction anyone can repeat.\n  What it does NOT tell you: whether x was declared,\n  whether the types agree, or what the block computes."
+      },
+      "practice": "Take four lines of a grammar for a language you use and derive one legal and one illegal statement from it. Then find a rule your language enforces that the grammar cannot express, and say why it cannot."
+    },
+    "beats": {
+      "broke": "A language was whatever its compiler accepted. With the definition written in prose, two readers could disagree in good faith and there was no procedure that settled it, so specifications could not actually specify.",
+      "fix": "A formal grammar for the syntax, published as the report of the Paris conference of January 1960 with Naur as editor — the notation from Backus, revised by Naur, later named Backus-Naur form at Knuth’s suggestion.",
+      "cost": "The report defines no input or output at all, so every implementation added its own incompatibly and programs stopped being portable exactly where they touched the world. The language was admired and little used.",
+      "interview": {
+        "q": "Why did the notation for describing the language end up mattering more than the language itself?",
+        "trap": "Answering that the language failed because it lacked input and output, and the notation happened to survive. That is the outcome, not the reason.",
+        "answer": "Because the notation solved a problem that every subsequent language also has, while the language solved a problem that a particular generation had.\n\nA grammar turns \"is this a legal program\" into a derivation, which is a procedure whose result does not depend on who performs it. That is reusable by construction: any language that wants a checkable definition needs the same machinery, and every one since has used it. The language, by contrast, competed on features against successors that had the same features plus input and output.\n\nThe general shape is worth carrying: the durable artefact from a piece of work is often the tool built to express it rather than the thing expressed. It is also why the descendants — CPL, Simula, BCPL, Pascal, C — are the legacy rather than any programs written in the original."
+      }
+    },
+    "blueprint": "Two things came out of the same report. Only one travelled:\n\n  the language                      the notation\n  ------------                      ------------\n  begin/end blocks                  <x> ::= <y> | <z>\n  recursion                         finite rules\n  lexical scope                     derivation decides legality\n  no I/O  <-- fatal                 says nothing about meaning\n\n  used by:  almost nobody           used by:  every language since\n  survives as: CPL, Simula,         survives as: the way a language\n     BCPL, Pascal, C                    is defined at all\n\n  A grammar answers \"legal?\" mechanically and answers\n  \"means what?\" not at all. Both halves are the point.",
+    "takeaway": "The report’s lasting contribution was a way to say what a language is — a grammar makes legality a derivation rather than an opinion — while the language it defined went unused for want of input and output."
+  },
+  "C.6": {
+    "id": "C.6",
+    "trackId": "C",
+    "trackName": "Languages: the chain of walls",
+    "title": "1964. BASIC. Kemeny and Kurtz",
+    "status": "traced",
+    "seed": "C.6",
+    "story": "Every language so far had made programming cheaper for programmers. None of them touched the fact that using a computer meant handing a deck to an operator and coming back later, which means the machine was available only to people whose job was the machine. A chemist with a calculation did not write a slow program; a chemist with a calculation did not get to use the computer.\n\nWhat Dartmouth built was two things at once, and the pairing is the whole point. Kemeny had applied in 1963 for a National Science Foundation grant to put a GE-225 on campus and build a general-purpose time-sharing system, with the work done by undergraduates over the referees’ objections; he began drafting the language that September. On 1 May 1964, in the basement of College Hall, he and a student typed RUN on adjacent terminals and both got correct answers back.\n\nThe language is the part everyone remembers, and it is the smaller half. Fourteen statements and nine built-in functions is a deliberate ceiling: it is the amount of language a person can be taught in one sitting, which is the requirement when the users are the whole faculty rather than a computing staff. By that autumn hundreds of students were using it on twenty terminals, and faculty in unrelated disciplines were writing their own programs — not because the language was powerful but because the loop from typing to answer had closed.\n\nOne detail is routinely got wrong, and it matters for the argument. The original was a compiler, translating the whole program at once, not an interpreter working line by line at each run. The interpreted, line-numbered BASIC that later became famous on home machines is a different artefact: it kept the language and discarded the time-sharing system, which was the half that had actually removed the wall. That is why the copy is remembered as a toy while the original is remembered as an event.",
+    "problem": {
+      "name": "Interactive feedback loop",
+      "aka": [
+        "time-sharing",
+        "conversational computing",
+        "REPL"
+      ],
+      "shape": "The cost of finding out whether your work is right is so high, or so delayed, that only specialists can afford to attempt it.",
+      "tell": [
+        "the turnaround between an attempt and its result is measured in hours rather than seconds",
+        "a batch of work is submitted to someone else and comes back later",
+        "the people who need answers from the system are not the people permitted to operate it"
+      ],
+      "move": "Shorten the loop from attempt to result until it fits inside the attention span of the person attempting, and make the interface to it small enough to learn in one sitting. Both halves are needed; either alone leaves the wall standing.",
+      "invariant": "The result arrives while the question is still live in the user’s head. That is what allows learning by attempt rather than by study, and it is a property of the whole system — machine, scheduler and language together — never of the language alone.",
+      "breaks": "It breaks when the loop lengthens again for any reason: a slow build, a queue, a scheduler that hands you one slice an hour. Note that nothing about the language changes when this happens, which is why keeping the language and dropping the system — as the later home-computer versions did — preserves the visible part and loses the effect.",
+      "cost": {
+        "time": "the system now pays scheduling and context-switching overhead it did not pay in batch",
+        "space": "concurrent users need concurrent state resident at once",
+        "beats": "batch submission, which uses the machine more efficiently and the people far less so"
+      },
+      "worked": {
+        "problem": "Why was the time-sharing system, rather than the language, the part that removed the wall?",
+        "reasoning": "Run the counterfactual both ways.\n\nGive a chemist the small language but keep batch submission: they learn it in an afternoon, then wait hours per attempt. Learning by attempt is impossible at that latency, so they need someone who can get it right without attempts — a programmer. The wall stands.\n\nNow give them a terminal with a short loop but a large language: attempts are cheap, so the language can be learned by making them. Slower, but the wall is gone.\n\nThe language is what makes the second case pleasant. The system is what makes any of it possible. Which is testable: the later versions kept the language, dropped the system, and produced a hobbyist curiosity rather than a campus in which faculty wrote their own programs.",
+        "code": "batch                        time-sharing\n-----                        ------------\nwrite deck                   type program\nhand to operator             RUN\nwait ~hours        <-- the   read answer\nread printout          wall  fix it\nfix                          RUN again\nhand to operator             ...\nwait ~hours\n\n  attempts/day: ~2             attempts/hour: ~20\n  who can use it: experts      who can use it: anyone\n                               who can be taught the\n                               language in an afternoon\n\n  The language sets the second number's ceiling.\n  The system sets whether the column exists at all."
+      },
+      "practice": "Measure the real loop time in a project you work on — edit to observed result, including any build or deploy. Then ask which of your habits exist only because that number is large, and which would disappear if it were two seconds."
+    },
+    "beats": {
+      "broke": "Using a computer meant submitting work and collecting the result hours later, so the machine was reachable only by people employed to operate it. A specialist was required not because programs were hard but because attempts were expensive.",
+      "fix": "A time-sharing system and a small language built together at Dartmouth, funded by a National Science Foundation grant applied for in 1963 and demonstrated on 1 May 1964 — fourteen statements, nine functions, and an answer that came back at the terminal.",
+      "cost": "The language was bounded by what a beginner could hold in mind, so it is limited by design. And the two halves came apart: later versions kept the small language and abandoned the system, which is the half that had removed the barrier.",
+      "interview": {
+        "q": "Was the language or the time-sharing system underneath it the actual invention?",
+        "trap": "Crediting the language because it is the thing that has a name, spread, and is still recognisable. Popularity is a poor test of which component did the work.",
+        "answer": "The system. The barrier was not that programs were hard to write, it was that each attempt cost hours, so the only viable users were people who could get it right with few attempts — which is what a specialist is.\n\nShortening the loop is what lets a non-specialist substitute attempts for expertise. The small language then determines how quickly they can start, so it sets the slope, but the system decides whether the approach works at all.\n\nThe evidence is the natural experiment that followed. The later home-computer versions kept the language, kept the name, and did not have the underlying system. They produced hobbyists rather than a faculty writing its own programs, which is what you would expect if the language were the smaller half."
+      }
+    },
+    "blueprint": "Two components, and which one carries the load:\n\n  small language        +      short loop\n  --------------               ----------\n  learn in an afternoon        result in seconds\n  sets how fast you start      sets whether attempts\n                                 are affordable at all\n\n  keep both     -> faculty across a campus write programs\n  drop the loop -> back to needing a specialist\n  drop the lang -> slower start, wall still gone\n\n  The later home versions kept the LANGUAGE and dropped\n  the LOOP, and got a toy. That is the experiment being\n  run for you: the famous half was the cheap half.",
+    "takeaway": "The barrier was the cost of one attempt, not the difficulty of the language — so the time-sharing system did the work, and keeping the language while dropping the system reproduces the name without the effect."
+  },
+  "C.7": {
+    "id": "C.7",
+    "trackId": "C",
+    "trackName": "Languages: the chain of walls",
+    "title": "1972. C. Ritchie, Bell Labs",
+    "status": "traced",
+    "seed": "C.7",
+    "story": "The languages above this one in the chain all bought abstraction by putting distance between the program and the machine, and an operating system is the one program that cannot afford that distance. A kernel has to know that these sixteen bits at this address are a device register and that this block of memory has exactly that layout, because the hardware says so. So operating systems were assembly, which meant an operating system was welded to one machine, and porting it meant writing it again.\n\nThere is a documented failed attempt, and it is the most useful fact here. Ritchie records that Thompson tried in 1972 to produce a system coded in an early version of the language and gave up — and notes in the same breath what that version lacked: structures. A typeless language, inherited through B from Richards’s BCPL, can express arithmetic and addresses perfectly well. What it cannot express is that a particular region of memory has a shape, which is precisely and only what a kernel spends its time asserting.\n\nWith structures the language could say it, and the rest followed quickly. By early 1973 the essentials were complete, and the kernel was rewritten for the PDP-11 that summer. The portability claim was then actually tested rather than asserted: the compiler was retargeted to quite different machines, the Honeywell 635 and the IBM 360 and 370, in the period when Unix portability was being demonstrated between 1977 and 1979.\n\nThe price is one Ritchie himself is blunt about. He names the relationship between arrays and pointers and the declaration syntax as the language’s most characteristic features and, in the same sentence, as major sources of difficulty; he lists limited support for modularisation, automatic memory management and strong type checking. That is not a lament, it is the shape of the bargain. A language that lets you describe the machine’s layout is a language in which you can describe it wrongly, and there is no version of the first property that does not come with the second.",
+    "problem": {
+      "name": "Systems programming language",
+      "aka": [
+        "portable low-level language",
+        "kernel language"
+      ],
+      "shape": "Code must control the exact layout and addressing the hardware imposes, while not being written again for each machine that imposes it.",
+      "tell": [
+        "the program asserts things about memory layout that the hardware, not the programmer, decided",
+        "the same logic must run on machines with different word sizes and instruction sets",
+        "the runtime you would normally rely on is the thing you are writing"
+      ],
+      "move": "Give the language types that describe layout — above all a record type that names the parts of a region of memory — while keeping every construct cheap to compile into instructions on any reasonable machine.",
+      "invariant": "Every construct has an obvious, cheap translation to machine instructions, and the type system describes layout rather than restricting behaviour. That is what allows the language to be used where no runtime support exists.",
+      "breaks": "It breaks as safety. Because types describe layout rather than constrain use, the language will translate a description that is wrong about the machine just as readily as one that is right, and there is nothing underneath to catch it. Ritchie names the array-and-pointer relationship and the declaration syntax as both the characteristic features and the major sources of difficulty, which is the same trade seen from the author’s side.",
+      "cost": {
+        "time": "close to hand-written assembly, which was the acceptance condition",
+        "space": "no runtime and no collector, so memory is exactly what the program asked for",
+        "beats": "assembly, which achieves the same control at the cost of being unportable by construction"
+      },
+      "worked": {
+        "problem": "Why were structures the addition that made a kernel possible, when the language could already do arithmetic on addresses?",
+        "reasoning": "A kernel’s real work is asserting that a region of memory has a shape that the hardware chose. A device register block is not \"some words\"; it is a status word here, then a count, then a data word, at fixed offsets.\n\nWithout a record type you can still reach those words, by computing offsets from a base address by hand. That works, and it is why the attempt was reasonable. What it costs is that the layout now lives in arithmetic scattered across the code rather than in one declaration, so changing the layout means finding every site, and the compiler cannot help because to it these are just integers.\n\nThat is the difference between being able to express something and being able to maintain it, which is why the earlier typeless attempt was abandoned rather than merely being unpleasant.",
+        "code": "without structures          with structures\n------------------          ---------------\nbase = 0177560;             struct tty {\nw(base + 0, ...)                short status;\nw(base + 2, ...)                short count;\nw(base + 4, ...)                short data;\n                            };\noffsets are arithmetic      t->count = n;\nspread over the code\n\n  Both compile to the same instructions.\n  Only the right-hand one states the layout ONCE,\n  in a place the compiler can check the uses against.\n\n  That is why the 1972 attempt was given up and the\n  1973 one worked: not new power, a single point of truth."
+      },
+      "practice": "Take a struct that maps onto a real binary format and write the equivalent access using only a base pointer and arithmetic offsets. Then change one field’s width in both versions and count the edits each requires, and how many the compiler would catch."
+    },
+    "beats": {
+      "broke": "An operating system had to be written in assembly, so it belonged to one machine and porting it meant rewriting it. The attempt to escape that with a typeless higher-level language was made in 1972 and abandoned.",
+      "fix": "Types that describe layout, and in particular structures. With those, the essentials were complete by early 1973 and the Unix kernel was rewritten for the PDP-11 that summer, then retargeted to the Honeywell 635 and the IBM 360 and 370.",
+      "cost": "The type system describes memory rather than restricting use, so a wrong description compiles as readily as a right one. Ritchie lists the array-and-pointer relationship, the declaration syntax, and the absence of modularisation, automatic memory management and strong type checking.",
+      "interview": {
+        "q": "Why were structures the feature that made the kernel rewrite possible?",
+        "trap": "Saying the language needed structs to access hardware registers. It did not — address arithmetic reaches any word you like, and that is exactly what the abandoned attempt used.",
+        "answer": "Because they move the layout from being implied by arithmetic everywhere to being stated once in a declaration.\n\nA kernel’s work is largely assertions that a region of memory has a shape the hardware chose. Both forms can reach the right words and both compile to the same instructions. The difference is where the layout lives: as offsets computed at every use site, it is invisible to the compiler and must be found by hand when it changes; as a record type, it is one declaration that every use is checked against.\n\nSo the gain is maintainability rather than capability, and that is the point worth taking. The 1972 attempt was not blocked, it was abandoned — and abandonment under sustained editing is what a missing single point of truth looks like."
+      }
+    },
+    "blueprint": "The bargain, stated in one line each way:\n\n  types that DESCRIBE layout    types that RESTRICT use\n  --------------------------    -----------------------\n  can name the hardware's       can refuse a program\n    shape                         that would be wrong\n  compiles anywhere cheaply     needs a runtime\n  wrong description compiles    wrong use caught\n    silently\n\n  A kernel needs the left column and cannot have the\n  right one, because the runtime that would enforce it\n  is the thing being written.\n\n     1972: no structures -> attempt abandoned\n     1973: structures    -> kernel rewritten, then\n           retargeted (Honeywell 635, IBM 360/370)",
+    "takeaway": "Structures let a program state a memory layout once instead of implying it in arithmetic everywhere — which is why the kernel rewrite succeeded in 1973 after being abandoned in 1972, and why the language describes the machine without ever protecting you from it."
+  },
+  "C.8": {
+    "id": "C.8",
+    "trackId": "C",
+    "trackName": "Languages: the chain of walls",
+    "title": "1972 to 1980. Smalltalk. Kay, Xerox PARC",
+    "status": "traced",
+    "seed": "C.8",
+    "story": "Everything in the chain so far organises a program as procedures operating on data. That scales badly for a reason that is structural rather than stylistic: the data is reachable from everywhere, so a program’s real interface is not what its authors documented but every access any procedure makes. Grow it and you cannot change a representation without auditing the whole program, because nothing in the language ever said which parts were entitled to know.\n\nThe proposed answer was to make the boundary the only thing there is. Every value is an object holding its own state; the sole operation is to send an object a message and let it decide what to do. Kay’s phrase is that objects are little computers, a recursion on the notion of computer itself — which is the real claim, because if each part is a whole machine then the interface between parts is the only thing that exists.\n\nHow it got built is instructive about small ideas. In a hallway argument with Ted Kaehler and Dan Ingalls about how large a language needs to be to have real power, Kay boasted he could define the most powerful language in the world in a page of code, and was told to put up or shut up. He had a reason to believe it: McCarthy’s self-describing interpreter was about that length. He worked two weeks of very early mornings; then, in his words, only a few days later Ingalls showed him the scheme working on the NOVA — written in BASIC, of all things. It ran three plus four so slowly that Butler Lampson called it glacial, and it always returned seven.\n\nNow the fact that settles what the term originally meant. The first version had no inheritance at all. Not as an oversight: Simula’s single static inheritance was judged too limiting, so it was left out of the language that named the idea. Whatever object-oriented meant in 1972, it did not mean class hierarchies. It meant state behind a boundary and late-bound messages across it — and the cost of that, then and now, is that a line of code no longer tells you what will run.",
+    "problem": {
+      "name": "Encapsulation with late binding",
+      "aka": [
+        "message passing",
+        "object-oriented programming",
+        "information hiding"
+      ],
+      "shape": "Any part of the program can reach any part of the state, so the effective interface of a component is every access anyone makes to it.",
+      "tell": [
+        "changing a data representation requires auditing code that has nothing to do with it",
+        "the documented interface and the actual coupling have drifted apart",
+        "you cannot say which parts of the program depend on a decision you want to reverse"
+      ],
+      "move": "Put state behind a boundary that can only be crossed by request, and let the receiver — not the caller, and not the compiler — decide what the request means.",
+      "invariant": "No part of the program can observe another part’s representation. That is what makes a representation changeable without a global audit, and it must hold universally: one privileged accessor that reaches inside voids the guarantee for the whole component.",
+      "breaks": "Late binding means the target of a call is not knowable from the text, so what you can no longer do is read a program and know what it runs. That costs static checking, whole-program optimisation, and the ability to find every caller of anything. It is the same property paying out and charging.",
+      "cost": {
+        "time": "a dispatch per call rather than a jump to a known address",
+        "space": "each object carries its own state and a route to its behaviour",
+        "beats": "shared mutable data, which is faster and offers no way to bound the effect of a change"
+      },
+      "worked": {
+        "problem": "If the idea is objects and classes, why did the language that named it ship without inheritance?",
+        "reasoning": "Take the two candidate definitions and test them against that fact.\n\nIf object-oriented means organising a program as a hierarchy of classes, then the first version of the language that coined the term was not object-oriented, which is absurd.\n\nIf it means state behind a boundary crossed only by messages resolved at run time, the fact is unremarkable: inheritance is one way to share implementation between objects, useful but separate, and it was left out because the available form — single and static — was judged too limiting.\n\nOnly the second definition survives contact with the evidence. Inheritance arrived later and became the popular summary because it is the part that is visible in source code, which is a poor reason to treat it as the idea.",
+        "code": "procedures over shared data     objects and messages\n---------------------------     --------------------\nrecord.balance -= 100           account <- withdraw: 100\n\n  who may do this? anyone        who may do this? the\n  what does it mean? fixed         object decides\n  change the field -> audit      change the field -> nobody\n     every use site                 outside could see it\n\n  Note what the right-hand column costs: you cannot\n  tell, by reading, what code \"withdraw:\" runs. That is\n  not a defect of the notation. It is the same property."
+      },
+      "practice": "Take a class you have written and list every place outside it that depends on how it stores its data, including through getters that expose the representation. Then decide which of those you could change without touching anything else — that count, not the presence of the keyword, is how encapsulated it is."
+    },
+    "beats": {
+      "broke": "Procedures over shared data give a component no enforceable boundary: every access anyone makes is part of its real interface, so no representation can be changed without auditing the program.",
+      "fix": "Objects holding their own state, reached only by sending messages the receiver interprets. Demonstrated on the NOVA in roughly September 1972 after a hallway challenge, moved onto the Interim Dynabook in 1973, and reaching its released form by 1980.",
+      "cost": "A message resolved at run time cannot be resolved by reading. That forfeits static checking of calls, whole-program optimisation, and the ability to enumerate callers — and the first working version computed three plus four so slowly it was called glacial.",
+      "interview": {
+        "q": "What did object-oriented mean when the term was coined, and how does that differ from what it now denotes?",
+        "trap": "Answering with the four-pillar summary — encapsulation, inheritance, polymorphism, abstraction — as though it were a definition rather than a later teaching device.",
+        "answer": "It meant state behind a boundary, with the only way across being a message the receiver interprets at run time. Objects were described as little computers, a recursion on the notion of computer itself, which is the operative idea: if a part is a whole machine, the interface is all there is.\n\nThe decisive evidence is that the first version of the language had no inheritance, and not by oversight — the single static form available was judged too limiting. A definition that makes the language that coined the term fail its own test is the wrong definition.\n\nWhat the term now denotes is mostly class hierarchies and static typing over them, which is nearly the opposite emphasis: it recovers the compile-time knowledge that late binding gave up. That is a defensible trade, but it is a different design, and the shared name hides the fact that the two disagree about what the cost was for."
+      }
+    },
+    "blueprint": "Which property is load-bearing? Use the 1972 fact:\n\n  the first version shipped with NO inheritance\n       |\n       +-- if OOP == class hierarchies\n       |      -> the language that named it wasn't OOP\n       |      -> definition fails\n       |\n       +-- if OOP == state behind a boundary,\n              messages resolved at run time\n              -> fact is unremarkable\n              -> definition holds\n\n  What you buy:  change a representation, audit nothing\n  What you pay:  read a call site, learn nothing\n\n  Both come from the same place. Inheritance became the\n  popular summary because it is the part you can SEE in\n  the source -- which is not an argument.",
+    "takeaway": "The idea was a boundary around state with messages resolved by the receiver, not class hierarchies — the first version had no inheritance at all — and its cost is that a call site stops telling you what runs."
+  },
+  "C.9": {
+    "id": "C.9",
+    "trackId": "C",
+    "trackName": "Languages: the chain of walls",
+    "title": "1983. C++. Stroustrup",
+    "status": "traced",
+    "seed": "C.9",
+    "story": "Two of the links above this one solve halves of the same problem and refuse to combine. One gives you the machine — layout, addresses, no runtime — and no way whatever to organise a large program. The other gives you organisation, objects with boundaries, and asks for a run-time apparatus that systems work cannot afford. The usual response is to pick a side and call the other one unsuitable.\n\nStroustrup’s account of the motivation is to want both: efficient systems programs written in the styles the object language encouraged, with the goal stated as designing a language in which programs could be both efficient and elegant. The triggering work was distributing operating system facilities across a network, which is exactly the case where you need a large program and cannot pay a large runtime.\n\nThe move that makes it possible is that the abstraction is compiled away rather than interpreted. It began literally as a preprocessor: by October 1979 a pre-processor was adding classes to C, and what it accepted was called C with Classes; the front end that replaced it was built between 1982 and 1983. A class became a description consumed at compile time, which is why the organisation costs nothing at run time and why the existing compilers, linkers and debuggers kept working. The name arrived late — suggested by Rick Mascitti, first used in December 1983 — and the first commercial release came in October 1985 alongside the book.\n\nThe criterion Stroustrup states is the one to carry away: a facility must not just be useful, it must be affordable. That is a strong constraint, and it cuts both ways. It rules out any feature requiring machinery the program did not ask for, which is why the language has no mandatory garbage collector and why its abstractions resolve statically wherever they can. It also rules out removing anything, because compatibility with the existing language and its code was part of what made adoption affordable — so every sharp edge inherited from below is still there, underneath the abstractions built on top.",
+    "problem": {
+      "name": "Zero-cost abstraction",
+      "aka": [
+        "compile-time abstraction",
+        "abstraction without runtime penalty"
+      ],
+      "shape": "The organising constructs that make a large program tractable are exactly the ones that cost time and space at run time, and some programs cannot pay.",
+      "tell": [
+        "the abstraction you want is rejected on performance grounds rather than on clarity grounds",
+        "the code is organised well in the design document and badly in the source",
+        "there is no runtime available to support the construct, because you are writing the runtime"
+      ],
+      "move": "Make the abstraction a description consumed at compile time rather than an entity present at run time, so that the generated code is what the programmer would have written by hand without it.",
+      "invariant": "A program pays nothing for a facility it does not use, and no more for one it does use than an equivalent hand-written version would cost. If either half fails, the people with the tightest constraints go back to writing it by hand, which puts the language back where it started.",
+      "breaks": "It breaks anywhere the abstraction genuinely needs run-time information — dynamic dispatch, run-time type identification, exceptions — which is why those are the features that carry a cost and the ones people disable. And the affordability rule forbids removals as well as additions, since compatibility is itself part of the cost of adoption, so unsafe constructs accumulate rather than being replaced.",
+      "cost": {
+        "time": "nothing at run time for the abstractions resolved statically; compile time and code size absorb it instead",
+        "space": "code is duplicated per instantiation rather than shared through indirection",
+        "beats": "run-time abstraction, which is more flexible and cannot be used where there is no runtime"
+      },
+      "worked": {
+        "problem": "What does \"it must be affordable\" actually forbid, beyond the obvious slow features?",
+        "reasoning": "Read the criterion as a constraint on the whole language rather than on features one at a time.\n\nFirst: no facility may impose cost on programs that do not use it. That rules out anything needing ambient machinery — a mandatory collector, a universal object header, a required dispatch table — because those charge every program for something only some programs want.\n\nSecond, less obviously: it rules out removal. Existing code and existing tools are part of what a language costs to adopt. Break them and you have made the language unaffordable in the sense that matters to the people deciding.\n\nThose two together predict the actual shape: features resolved at compile time wherever possible, run-time features present but optional, and nothing ever taken away.",
+        "code": "run-time abstraction         compile-time abstraction\n--------------------         ------------------------\nevery object carries a       the type is known when\n  header / vtable / tag        the code is generated\n\ncost: paid by all            cost: paid by users only\nflexible: decided later      fixed: decided at build\nneeds: a runtime             needs: a compiler\n\n  affordable? -> use it where the information is\n                 available at compile time\n              -> make it OPTIONAL where it isn't\n              -> and never remove what code depends on\n\n  The third line is why the sharp edges are still there."
+      },
+      "practice": "Take an abstraction in a language you use — an interface, a generic, a closure — and determine whether it is resolved at compile time or at run time. Then find the observable consequence: binary size, dispatch cost, or what the debugger shows you."
+    },
+    "beats": {
+      "broke": "The language that reached the machine had no way to organise a large program; the language that organised one needed a runtime that systems work could not afford. Choosing either meant giving up something the work actually required.",
+      "fix": "Abstraction consumed at compile time. Begun in 1979 as a preprocessor adding classes to C, replaced by a front end built between 1982 and 1983, named in December 1983 and released commercially in October 1985.",
+      "cost": "Affordability forbids removal as well as expense, because existing code and tools are part of the cost of adoption. Nothing unsafe inherited from below was ever taken away, so the language grows by accumulation and the old sharp edges sit under the new abstractions.",
+      "interview": {
+        "q": "What does the rule that a facility must be affordable, not merely useful, actually constrain?",
+        "trap": "Reading it as \"avoid slow features\". It is a constraint on distribution of cost, not on magnitude, and its second consequence is about compatibility rather than speed.",
+        "answer": "Two things. First, no facility may charge programs that do not use it. That rules out ambient machinery — a mandatory collector, a universal object header — regardless of how fast that machinery is, because the cost falls on programs that asked for nothing.\n\nSecond, and less often noticed, it rules out removing things. Existing code and existing tools are part of what adopting a language costs; breaking them makes it unaffordable in the sense the decision actually turns on. Starting as a preprocessor over an existing language was that reasoning applied at the beginning.\n\nPut together, they predict the language you get: static resolution wherever the information exists, run-time features made optional, and nothing ever deleted. The criticism that it accumulates rather than simplifies is correct, and it is a consequence of the criterion rather than a failure to apply it."
+      }
+    },
+    "blueprint": "\"Useful\" and \"affordable\" are different tests:\n\n  useful          -> does it help you write the program?\n  affordable      -> who pays, and do they use it?\n\n  facility         cost falls on        verdict\n  --------         -------------        -------\n  class layout     users only, at       in, free\n                     compile time\n  virtual call     users only, at       in, optional\n                     run time\n  mandatory GC     everyone, always     out\n  removing a       everyone with        out -- and this\n    sharp edge       existing code        is why they stay\n\n  Same rule admits the first two, rejects the third,\n  and forbids the cleanup. All three follow from one line.",
+    "takeaway": "Make the abstraction a compile-time description and the organisation costs nothing at run time — but the affordability rule that buys this also forbids removing anything, which is why every inherited sharp edge is still there."
+  },
   "D.1": {
     "id": "D.1",
     "trackId": "D",

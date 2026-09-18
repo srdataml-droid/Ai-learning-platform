@@ -1,0 +1,48 @@
+{
+  "id": "C.10",
+  "trackId": "C",
+  "trackName": "Languages: the chain of walls",
+  "title": "1987. Perl. Wall",
+  "status": "traced",
+  "seed": "C.10",
+  "story": "By the middle of the 1980s the Unix toolchain had a gap in it that everybody worked around and nobody named. Small text jobs went to the shell tools, each excellent and each deliberately narrow. Large programs went to C. In between sat a large class of real work — read these logs, correlate them with that file, produce a report — that was too much for the narrow tools and not worth the ceremony of a compiled program with its own memory management.\n\nThe manual page names the gap rather than the language, which is why it is still the clearest statement of the design: if you have a problem that would ordinarily use sed or awk or sh, but it exceeds their capabilities or must run a little faster, and you do not want to write the silly thing in C, then it may be for you. Wall wrote it at Unisys for exactly such a job — reports about information being synchronised between two sites — and released version 1.0 on 18 December 1987.\n\nThe design choice underneath is to refuse minimality on purpose. The manual states the preference as practical, meaning easy to use, efficient and complete, rather than beautiful, meaning tiny, elegant and minimal. So it takes the best features of C, sed, awk and sh rather than choosing among them, and it makes pattern matching a construct of the language rather than a call into a library — which is the single decision that makes the target class of work short to write, because that work is almost entirely pattern matching.\n\nThe cost is the one that reputation is built on, and it is better stated as a trade than as a flaw. A language that makes the common case short does so by giving the common case defaults, context sensitivity and multiple spellings; all three make a program quick to write and slow to read, because reading requires knowing what was left out. That is the right trade for a program that runs once and is deleted, and the wrong one for a program that is maintained for a decade — and the failure mode of the tool is that nothing stops the first kind from quietly becoming the second.",
+  "problem": {
+    "name": "Glue language",
+    "aka": [
+      "scripting language",
+      "text processing language"
+    ],
+    "shape": "A task sits between the tools you have: too large for the narrow single-purpose ones, too small to justify the ceremony of a systems language.",
+    "tell": [
+      "the job is mostly reading text, matching patterns in it, and writing other text",
+      "the current solution is a pipeline of several tools with a shell script holding it together",
+      "the program will be run a handful of times and then thrown away — or so everyone assumes"
+    ],
+    "move": "Provide one language that subsumes the whole toolchain, with the dominant operation of the domain — pattern matching over text — built in as syntax rather than reached through a library, and with defaults that make the common case short.",
+    "invariant": "The cost of writing the program stays below the cost of assembling the pipeline it replaces. That is the only property that matters here, and everything else in the design is subordinate to it.",
+    "breaks": "It breaks when the program outlives its occasion. Short-to-write is bought with implicit context and several ways to say the same thing, which means reading requires reconstructing what was omitted. Nothing in the tool signals when a throwaway script has become infrastructure, so the trade silently becomes wrong while the code stays the same.",
+    "cost": {
+      "time": "interpreted, so slower than compiled code and vastly faster than writing compiled code",
+      "space": "a whole interpreter, where the shell tools were small and separate",
+      "beats": "a pipeline of narrow tools, which is quicker for small jobs and falls apart as the logic grows"
+    },
+    "worked": {
+      "problem": "Why does making the common case short necessarily make programs harder to read?",
+      "reasoning": "Shortness comes from not writing things down. There are only three ways to achieve it: supply a default so the value need not be stated, infer from context so the subject need not be named, or offer a spelling that fuses several steps.\n\nEach of those removes something from the text and puts it in the reader’s head. The writer benefits immediately, because they already know what they omitted. The reader pays later, because they must reconstruct it — and a reader a year on has no access to the context that made the omission obvious.\n\nSo this is not a defect of one language. It is the arithmetic of terseness, and it predicts where every terse notation is a good idea: where the writer and the reader are the same person within the same hour.",
+      "code": "explicit                      terse\n--------                      -----\nfor line in input:            while (<>) {\n    if match(line, pat):          /pat/ and print;\n        write(out, line)      }\n\n  what the terse form omits: the input source, the\n  loop variable, the current subject of the match,\n  the output destination\n\n  writer: knows all four, saves four lines\n  reader: must know all four to read one line\n\n  Right trade when writer == reader == now.\n  Wrong trade the moment that stops being true --\n  and nothing tells you when it stopped."
+    },
+    "practice": "Take a script you wrote more than six months ago and time how long it takes to state exactly what it does. Then find which of the three shortening devices — defaults, implicit context, fused spellings — cost you the most, and whether you would still choose it."
+  },
+  "beats": {
+    "broke": "Work too large for the narrow shell tools and too small to justify a compiled program had no home. It got done in whichever tool was nearest, which meant shell scripts straining past what they could express.",
+    "fix": "One language absorbing the whole toolchain, with pattern matching built in as syntax. Released as version 1.0 on 18 December 1987, written for a real reporting job, and stated in its own manual as practical rather than beautiful.",
+    "cost": "Shortness is bought by omission — defaults, implicit context, several spellings for one thing — so the writer saves and the reader pays. The trade is correct for a program that runs once and wrong for one that is maintained, and nothing marks the transition.",
+    "interview": {
+      "q": "What does a language optimised for writing rather than reading actually cost, and when is that the right trade?",
+      "trap": "Treating readability as a property of syntax — sigils and punctuation — rather than of how much the text omits.",
+      "answer": "The cost is that information moves out of the text and into the reader’s head. Terseness has only three mechanisms — defaults, inference from context, and fused spellings — and each works by not writing something down. The writer already knows the omitted part; the reader has to reconstruct it.\n\nThat makes the trade correct in one specific circumstance: when the writer and the reader are the same person within a short window. A report assembled at a terminal to answer a question today is exactly that, and it is the case the design names in its own manual — problems too big for the narrow tools and not worth writing in a compiled language.\n\nThe failure is structural rather than linguistic. Programs that were written once and kept become long-lived without anything changing in the code, so the conditions that justified the trade expire silently. The judgement to carry is that terseness is a bet on a program’s lifetime, and lifetimes are routinely underestimated."
+    }
+  },
+  "blueprint": "Where the gap was, and what fits in it:\n\n  sed / awk / sh        [ the gap ]        C\n  --------------                          -\n  narrow, excellent                       general, fast\n  one job each                            manual memory\n  compose by pipe                         compile, link\n  breaks when logic                       ceremony too\n    gets real                               heavy for a\n                                            one-off report\n\n  Fill it by subsuming the left side, not competing\n  with the right: take C, sed, awk and sh features\n  together, make pattern matching SYNTAX.\n\n  The bill arrives later, and always the same way:\n      terse = omitted = reader reconstructs\n      fine while writer == reader == now",
+  "takeaway": "It filled the gap between the narrow text tools and a compiled language by making pattern matching syntax — and paid for shortness with omission, which is the right trade only while the writer and the reader are the same person."
+}

@@ -1,0 +1,109 @@
+{
+  "taskId": "C.2",
+  "title": "1957. Fortran. Backus, IBM",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The Preliminary Report specifying the system was dated November 10, 1954, and was issued by the Programming Research Group of the Applied Science Division at IBM and distributed to prospective 704 customers.",
+      "type": "date",
+      "tokens": [
+        "IBM",
+        "Preliminary Report",
+        "Programming Research Group",
+        "Applied Science Division",
+        "1954"
+      ],
+      "source": {
+        "title": "Preliminary Report: Specifications for the IBM Mathematical Formula Translating System, IBM Programming Research Group, November 10, 1954",
+        "url": "https://www.historyofinformation.com/detail.php?id=755",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Backus proposed the project to his manager at IBM in 1953 and was given a budget to test its feasibility. The 704 was the target because it had floating-point operations built into the hardware, which Backus had lobbied for.",
+      "type": "person",
+      "tokens": [
+        "Backus",
+        "IBM",
+        "1953"
+      ],
+      "source": {
+        "title": "Backus, J., The History of Fortran I, II and III, in History of Programming Languages, ACM/Academic Press, 1978",
+        "url": "https://cse.sc.edu/~mgv/csce330f12/Backus78.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Backus wrote: \"It was our belief that if FORTRAN, during its first months, were to translate any reasonable ‘scientific’ source program into an object program only half as fast as its hand coded counterpart, then acceptance of our system would be in serious danger.\" He continued: \"This belief caused us to regard the design of the translator as the real challenge, not the simple task of designing the language.\"",
+      "type": "quote",
+      "tokens": [
+        "FORTRAN",
+        "Backus"
+      ],
+      "source": {
+        "title": "Backus, J., The History of Fortran I, II and III, in History of Programming Languages, ACM/Academic Press, 1978",
+        "url": "https://cse.sc.edu/~mgv/csce330f12/Backus78.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "What was planned as roughly a six-month effort took about three years: the language was largely defined by late 1954, the compiler was programmed and tested through 1955 and 1956, and shipment of the system to IBM 704 users began in April 1957.",
+      "type": "date",
+      "tokens": [
+        "IBM",
+        "1954",
+        "1955",
+        "1956",
+        "1957"
+      ],
+      "source": {
+        "title": "Backus, J., The History of Fortran I, II and III, in History of Programming Languages, ACM/Academic Press, 1978",
+        "url": "https://cse.sc.edu/~mgv/csce330f12/Backus78.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "The system was described publicly as Backus et al., The FORTRAN Automatic Coding System, Proceedings of the Western Joint Computer Conference, Los Angeles, February 1957.",
+      "type": "event",
+      "tokens": [
+        "FORTRAN",
+        "Backus",
+        "Automatic Coding System",
+        "Western Joint Computer Conference",
+        "Los Angeles",
+        "1957"
+      ],
+      "source": {
+        "title": "Backus, J. W. et al., The FORTRAN Automatic Coding System, Proc. Western Joint Computer Conference, Los Angeles, February 1957",
+        "url": "https://dl.acm.org/doi/10.1145/1455567.1455599",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c6",
+      "text": "Customers’ foremost objection to a compiler was that it probably could not turn out object code as good as their best programmers could. Backus’s own retrospective judgement, given at the 1978 History of Programming Languages conference, was that prioritising object program efficiency over language design had been correct.",
+      "type": "event",
+      "tokens": [
+        "Backus",
+        "History of Programming Languages",
+        "1978"
+      ],
+      "source": {
+        "title": "Backus, J., The History of Fortran I, II and III, in History of Programming Languages, ACM/Academic Press, 1978",
+        "url": "https://cse.sc.edu/~mgv/csce330f12/Backus78.pdf",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "every scientific program was hand-coded for one machine, and writing and debugging it cost more than the machine time it saved",
+    "fix": "a notation close to the formula being computed, and a translator whose design goal was output no hand coder could beat",
+    "cost": "the translator now makes the choices, so what executes is no longer what you wrote",
+    "interview": "why the hard part of Fortran was the compiler and not the language"
+  }
+}

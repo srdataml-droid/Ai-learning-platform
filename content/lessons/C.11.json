@@ -1,0 +1,49 @@
+{
+  "id": "C.11",
+  "trackId": "C",
+  "trackName": "Languages: the chain of walls",
+  "title": "1991. Python. van Rossum",
+  "status": "traced",
+  "seed": "C.11",
+  "story": "The interesting fact about this link is that its author had already helped build the pleasant language, and it had not been enough. Van Rossum worked in the early 1980s on the team at CWI that built ABC, and describes himself as both indebted to it and frustrated by it. Knowing precisely which part was good and which part failed is what makes a successor different from a rewrite.\n\nThe failure was not the notation. In 1989 he was writing system utilities for Amoeba, a distributed operating system, and found that developing in C took too much time — the classic gap. But the pleasant language could not be used either, because a language that cannot reach the operating system it runs on and cannot be extended is a closed world: excellent inside its walls and unable to do the job in front of you. So the successor is described from the outset by what it could reach — capable of exception handling and of interfacing with Amoeba.\n\nRead the initial feature list with that in mind and it stops looking like a list of nice things. Classes and exceptions, a module system borrowed from Modula-3, an exception model also taken from Modula-3 with an else clause added. Those are not conveniences; they are seams. A module system is a seam between your code and other people’s, exceptions are a seam between the path you planned and the one you got, and the ability to interface with the operating system is a seam between the language and everything that is not the language.\n\nEven the release is a seam story. Begun in December 1989 over a Christmas holiday, a working draft some months into 1990, and published to a newsgroup in February 1991 — split into 21 uuencoded messages, because that was the largest thing the channel would carry. The point is not the charm of the detail. A language designed to connect to things was handed to the world through the only connection available, and that is the same decision as all the others.",
+  "problem": {
+    "name": "Extensibility and embedding",
+    "aka": [
+      "escape hatch",
+      "foreign function interface",
+      "the seam"
+    ],
+    "shape": "A language is pleasant and self-consistent within its own world, but the work requires reaching things outside that world.",
+    "tell": [
+      "the language has no supported way to call code written in another one",
+      "a section is unacceptably slow and there is nowhere to put a faster implementation",
+      "the elegant tool is being rejected for real work, and not on grounds of syntax"
+    ],
+    "move": "Design the boundaries as first-class parts of the language: a module system for other people’s code, an exception mechanism for paths you did not plan, and a defined interface to the system underneath.",
+    "invariant": "Anything the language cannot do can be reached from it without leaving it. That is what stops the language being abandoned at its first hard requirement, and it is a property of the boundaries, not of the core.",
+    "breaks": "Every seam is a place where the guarantees stop. Code reached through a foreign interface is not bound by the language’s safety, its error handling or its memory model, so the properties that make the language pleasant hold only in the region you have not yet had to escape from. The more useful the escape hatch, the more of the program is on the far side of it.",
+    "cost": {
+      "time": "interpretation is slow, and the standard remedy is to move hot code across a seam into something that is not the language",
+      "space": "a runtime plus whatever the extensions bring with them",
+      "beats": "a closed language, which is more consistent and gets abandoned at the first requirement it cannot meet"
+    },
+    "worked": {
+      "problem": "Why do escape hatches decide a language’s fate more reliably than its syntax does?",
+      "reasoning": "Syntax is judged once, when someone reads an example, and taste varies. Escape hatches are judged at the first requirement the language cannot meet on its own — and every language that is used for real work meets one.\n\nAt that moment there are two outcomes. If there is a supported way out, the requirement is satisfied by one awkward module and the rest of the program stays in the language. If there is not, the whole program leaves, because you cannot keep half a program in a language that cannot express the other half.\n\nSo the hatch does not need to be pleasant. It needs to exist, because its absence converts a local problem into a total one. That is why the predecessor could be admired and unused while the successor, defined from the start by what it could interface with, was neither.",
+      "code": "closed language               language with seams\n---------------               -------------------\nhits a requirement            hits a requirement\n  it can't meet                 it can't meet\n       |                             |\n  no way out                    write that part in C,\n       |                          import it as a module\n  rewrite ENTIRE                     |\n  program elsewhere             rest of program unchanged\n\n  Cost of the hatch: the imported part obeys none of\n  the language's rules -- not its types, not its error\n  handling, not its memory model.\n\n  You are trading a total failure for a local hole.\n  That is a good trade, and it is still a hole."
+    },
+    "practice": "Find the foreign-code boundary in a project you work on and list what stops being true across it — type checking, exception propagation, memory safety, thread rules. Then ask how much of the program’s actual work happens on the far side."
+  },
+  "beats": {
+    "broke": "The pleasant high-level language could not reach the operating system it ran on and could not be extended, so it was unusable for the job at hand — while writing that job in C took too much time. Neither side of the choice was acceptable.",
+    "fix": "A readable language whose boundaries were designed in: exceptions, a module system taken from Modula-3, and an interface to the system underneath. Begun at CWI in December 1989 and released publicly in February 1991.",
+    "cost": "The language’s guarantees stop at each seam. Code reached across the foreign interface is outside its safety, its error handling and its memory model — and since the usual cure for slowness is to move work across that boundary, the fast parts of a program are the parts the language is not protecting.",
+    "interview": {
+      "q": "Why do a language’s escape hatches decide its fate more than its syntax does?",
+      "trap": "Arguing that escape hatches make a language practical while syntax makes it pleasant, and leaving it as a preference. The asymmetry is structural, not a matter of priorities.",
+      "answer": "Because the two are judged at different moments with different stakes. Syntax is judged when someone reads an example and the verdict is a matter of taste. The escape hatch is judged at the first requirement the language cannot meet on its own, and any language used for real work meets one.\n\nAt that point the outcomes are asymmetric. With a supported way out, the problem stays local: one awkward module, and the rest of the program is unaffected. Without one, the problem is total, because you cannot keep half a program in a language that cannot express the other half — so the language is not merely inconvenient, it is discarded.\n\nThat asymmetry is why a predecessor can be widely admired and unused. It also explains the cost honestly: the hatch converts total failure into a local hole where the language’s guarantees do not apply, and since slow code is moved across that boundary by habit, the hole tends to sit exactly where the program does its work."
+    }
+  },
+  "blueprint": "Read the first feature list as boundaries, not features:\n\n  classes + inheritance   -> boundary between your parts\n  module system           -> boundary to other people's code\n  exceptions              -> boundary between planned and\n                               actual control flow\n  interfaces with the OS  -> boundary to everything that\n                               is not this language\n\n  The predecessor had the notation and none of these.\n  Admired; unused.\n\n  What each boundary costs is the same thing:\n\n     inside  |  outside\n     types   |  no types\n     errors  |  your problem\n     safety  |  none\n\n  and slow code migrates OUTWARD, by habit.",
+  "takeaway": "The predecessor failed on its boundaries rather than its notation — so the successor designed the seams first, accepting that a language’s guarantees end exactly where its escape hatches begin."
+}

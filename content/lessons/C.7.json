@@ -1,0 +1,48 @@
+{
+  "id": "C.7",
+  "trackId": "C",
+  "trackName": "Languages: the chain of walls",
+  "title": "1972. C. Ritchie, Bell Labs",
+  "status": "traced",
+  "seed": "C.7",
+  "story": "The languages above this one in the chain all bought abstraction by putting distance between the program and the machine, and an operating system is the one program that cannot afford that distance. A kernel has to know that these sixteen bits at this address are a device register and that this block of memory has exactly that layout, because the hardware says so. So operating systems were assembly, which meant an operating system was welded to one machine, and porting it meant writing it again.\n\nThere is a documented failed attempt, and it is the most useful fact here. Ritchie records that Thompson tried in 1972 to produce a system coded in an early version of the language and gave up — and notes in the same breath what that version lacked: structures. A typeless language, inherited through B from Richards’s BCPL, can express arithmetic and addresses perfectly well. What it cannot express is that a particular region of memory has a shape, which is precisely and only what a kernel spends its time asserting.\n\nWith structures the language could say it, and the rest followed quickly. By early 1973 the essentials were complete, and the kernel was rewritten for the PDP-11 that summer. The portability claim was then actually tested rather than asserted: the compiler was retargeted to quite different machines, the Honeywell 635 and the IBM 360 and 370, in the period when Unix portability was being demonstrated between 1977 and 1979.\n\nThe price is one Ritchie himself is blunt about. He names the relationship between arrays and pointers and the declaration syntax as the language’s most characteristic features and, in the same sentence, as major sources of difficulty; he lists limited support for modularisation, automatic memory management and strong type checking. That is not a lament, it is the shape of the bargain. A language that lets you describe the machine’s layout is a language in which you can describe it wrongly, and there is no version of the first property that does not come with the second.",
+  "problem": {
+    "name": "Systems programming language",
+    "aka": [
+      "portable low-level language",
+      "kernel language"
+    ],
+    "shape": "Code must control the exact layout and addressing the hardware imposes, while not being written again for each machine that imposes it.",
+    "tell": [
+      "the program asserts things about memory layout that the hardware, not the programmer, decided",
+      "the same logic must run on machines with different word sizes and instruction sets",
+      "the runtime you would normally rely on is the thing you are writing"
+    ],
+    "move": "Give the language types that describe layout — above all a record type that names the parts of a region of memory — while keeping every construct cheap to compile into instructions on any reasonable machine.",
+    "invariant": "Every construct has an obvious, cheap translation to machine instructions, and the type system describes layout rather than restricting behaviour. That is what allows the language to be used where no runtime support exists.",
+    "breaks": "It breaks as safety. Because types describe layout rather than constrain use, the language will translate a description that is wrong about the machine just as readily as one that is right, and there is nothing underneath to catch it. Ritchie names the array-and-pointer relationship and the declaration syntax as both the characteristic features and the major sources of difficulty, which is the same trade seen from the author’s side.",
+    "cost": {
+      "time": "close to hand-written assembly, which was the acceptance condition",
+      "space": "no runtime and no collector, so memory is exactly what the program asked for",
+      "beats": "assembly, which achieves the same control at the cost of being unportable by construction"
+    },
+    "worked": {
+      "problem": "Why were structures the addition that made a kernel possible, when the language could already do arithmetic on addresses?",
+      "reasoning": "A kernel’s real work is asserting that a region of memory has a shape that the hardware chose. A device register block is not \"some words\"; it is a status word here, then a count, then a data word, at fixed offsets.\n\nWithout a record type you can still reach those words, by computing offsets from a base address by hand. That works, and it is why the attempt was reasonable. What it costs is that the layout now lives in arithmetic scattered across the code rather than in one declaration, so changing the layout means finding every site, and the compiler cannot help because to it these are just integers.\n\nThat is the difference between being able to express something and being able to maintain it, which is why the earlier typeless attempt was abandoned rather than merely being unpleasant.",
+      "code": "without structures          with structures\n------------------          ---------------\nbase = 0177560;             struct tty {\nw(base + 0, ...)                short status;\nw(base + 2, ...)                short count;\nw(base + 4, ...)                short data;\n                            };\noffsets are arithmetic      t->count = n;\nspread over the code\n\n  Both compile to the same instructions.\n  Only the right-hand one states the layout ONCE,\n  in a place the compiler can check the uses against.\n\n  That is why the 1972 attempt was given up and the\n  1973 one worked: not new power, a single point of truth."
+    },
+    "practice": "Take a struct that maps onto a real binary format and write the equivalent access using only a base pointer and arithmetic offsets. Then change one field’s width in both versions and count the edits each requires, and how many the compiler would catch."
+  },
+  "beats": {
+    "broke": "An operating system had to be written in assembly, so it belonged to one machine and porting it meant rewriting it. The attempt to escape that with a typeless higher-level language was made in 1972 and abandoned.",
+    "fix": "Types that describe layout, and in particular structures. With those, the essentials were complete by early 1973 and the Unix kernel was rewritten for the PDP-11 that summer, then retargeted to the Honeywell 635 and the IBM 360 and 370.",
+    "cost": "The type system describes memory rather than restricting use, so a wrong description compiles as readily as a right one. Ritchie lists the array-and-pointer relationship, the declaration syntax, and the absence of modularisation, automatic memory management and strong type checking.",
+    "interview": {
+      "q": "Why were structures the feature that made the kernel rewrite possible?",
+      "trap": "Saying the language needed structs to access hardware registers. It did not — address arithmetic reaches any word you like, and that is exactly what the abandoned attempt used.",
+      "answer": "Because they move the layout from being implied by arithmetic everywhere to being stated once in a declaration.\n\nA kernel’s work is largely assertions that a region of memory has a shape the hardware chose. Both forms can reach the right words and both compile to the same instructions. The difference is where the layout lives: as offsets computed at every use site, it is invisible to the compiler and must be found by hand when it changes; as a record type, it is one declaration that every use is checked against.\n\nSo the gain is maintainability rather than capability, and that is the point worth taking. The 1972 attempt was not blocked, it was abandoned — and abandonment under sustained editing is what a missing single point of truth looks like."
+    }
+  },
+  "blueprint": "The bargain, stated in one line each way:\n\n  types that DESCRIBE layout    types that RESTRICT use\n  --------------------------    -----------------------\n  can name the hardware's       can refuse a program\n    shape                         that would be wrong\n  compiles anywhere cheaply     needs a runtime\n  wrong description compiles    wrong use caught\n    silently\n\n  A kernel needs the left column and cannot have the\n  right one, because the runtime that would enforce it\n  is the thing being written.\n\n     1972: no structures -> attempt abandoned\n     1973: structures    -> kernel rewritten, then\n           retargeted (Honeywell 635, IBM 360/370)",
+  "takeaway": "Structures let a program state a memory layout once instead of implying it in arithmetic everywhere — which is why the kernel rewrite succeeded in 1973 after being abandoned in 1972, and why the language describes the machine without ever protecting you from it."
+}

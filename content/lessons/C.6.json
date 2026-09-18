@@ -1,0 +1,49 @@
+{
+  "id": "C.6",
+  "trackId": "C",
+  "trackName": "Languages: the chain of walls",
+  "title": "1964. BASIC. Kemeny and Kurtz",
+  "status": "traced",
+  "seed": "C.6",
+  "story": "Every language so far had made programming cheaper for programmers. None of them touched the fact that using a computer meant handing a deck to an operator and coming back later, which means the machine was available only to people whose job was the machine. A chemist with a calculation did not write a slow program; a chemist with a calculation did not get to use the computer.\n\nWhat Dartmouth built was two things at once, and the pairing is the whole point. Kemeny had applied in 1963 for a National Science Foundation grant to put a GE-225 on campus and build a general-purpose time-sharing system, with the work done by undergraduates over the referees’ objections; he began drafting the language that September. On 1 May 1964, in the basement of College Hall, he and a student typed RUN on adjacent terminals and both got correct answers back.\n\nThe language is the part everyone remembers, and it is the smaller half. Fourteen statements and nine built-in functions is a deliberate ceiling: it is the amount of language a person can be taught in one sitting, which is the requirement when the users are the whole faculty rather than a computing staff. By that autumn hundreds of students were using it on twenty terminals, and faculty in unrelated disciplines were writing their own programs — not because the language was powerful but because the loop from typing to answer had closed.\n\nOne detail is routinely got wrong, and it matters for the argument. The original was a compiler, translating the whole program at once, not an interpreter working line by line at each run. The interpreted, line-numbered BASIC that later became famous on home machines is a different artefact: it kept the language and discarded the time-sharing system, which was the half that had actually removed the wall. That is why the copy is remembered as a toy while the original is remembered as an event.",
+  "problem": {
+    "name": "Interactive feedback loop",
+    "aka": [
+      "time-sharing",
+      "conversational computing",
+      "REPL"
+    ],
+    "shape": "The cost of finding out whether your work is right is so high, or so delayed, that only specialists can afford to attempt it.",
+    "tell": [
+      "the turnaround between an attempt and its result is measured in hours rather than seconds",
+      "a batch of work is submitted to someone else and comes back later",
+      "the people who need answers from the system are not the people permitted to operate it"
+    ],
+    "move": "Shorten the loop from attempt to result until it fits inside the attention span of the person attempting, and make the interface to it small enough to learn in one sitting. Both halves are needed; either alone leaves the wall standing.",
+    "invariant": "The result arrives while the question is still live in the user’s head. That is what allows learning by attempt rather than by study, and it is a property of the whole system — machine, scheduler and language together — never of the language alone.",
+    "breaks": "It breaks when the loop lengthens again for any reason: a slow build, a queue, a scheduler that hands you one slice an hour. Note that nothing about the language changes when this happens, which is why keeping the language and dropping the system — as the later home-computer versions did — preserves the visible part and loses the effect.",
+    "cost": {
+      "time": "the system now pays scheduling and context-switching overhead it did not pay in batch",
+      "space": "concurrent users need concurrent state resident at once",
+      "beats": "batch submission, which uses the machine more efficiently and the people far less so"
+    },
+    "worked": {
+      "problem": "Why was the time-sharing system, rather than the language, the part that removed the wall?",
+      "reasoning": "Run the counterfactual both ways.\n\nGive a chemist the small language but keep batch submission: they learn it in an afternoon, then wait hours per attempt. Learning by attempt is impossible at that latency, so they need someone who can get it right without attempts — a programmer. The wall stands.\n\nNow give them a terminal with a short loop but a large language: attempts are cheap, so the language can be learned by making them. Slower, but the wall is gone.\n\nThe language is what makes the second case pleasant. The system is what makes any of it possible. Which is testable: the later versions kept the language, dropped the system, and produced a hobbyist curiosity rather than a campus in which faculty wrote their own programs.",
+      "code": "batch                        time-sharing\n-----                        ------------\nwrite deck                   type program\nhand to operator             RUN\nwait ~hours        <-- the   read answer\nread printout          wall  fix it\nfix                          RUN again\nhand to operator             ...\nwait ~hours\n\n  attempts/day: ~2             attempts/hour: ~20\n  who can use it: experts      who can use it: anyone\n                               who can be taught the\n                               language in an afternoon\n\n  The language sets the second number's ceiling.\n  The system sets whether the column exists at all."
+    },
+    "practice": "Measure the real loop time in a project you work on — edit to observed result, including any build or deploy. Then ask which of your habits exist only because that number is large, and which would disappear if it were two seconds."
+  },
+  "beats": {
+    "broke": "Using a computer meant submitting work and collecting the result hours later, so the machine was reachable only by people employed to operate it. A specialist was required not because programs were hard but because attempts were expensive.",
+    "fix": "A time-sharing system and a small language built together at Dartmouth, funded by a National Science Foundation grant applied for in 1963 and demonstrated on 1 May 1964 — fourteen statements, nine functions, and an answer that came back at the terminal.",
+    "cost": "The language was bounded by what a beginner could hold in mind, so it is limited by design. And the two halves came apart: later versions kept the small language and abandoned the system, which is the half that had removed the barrier.",
+    "interview": {
+      "q": "Was the language or the time-sharing system underneath it the actual invention?",
+      "trap": "Crediting the language because it is the thing that has a name, spread, and is still recognisable. Popularity is a poor test of which component did the work.",
+      "answer": "The system. The barrier was not that programs were hard to write, it was that each attempt cost hours, so the only viable users were people who could get it right with few attempts — which is what a specialist is.\n\nShortening the loop is what lets a non-specialist substitute attempts for expertise. The small language then determines how quickly they can start, so it sets the slope, but the system decides whether the approach works at all.\n\nThe evidence is the natural experiment that followed. The later home-computer versions kept the language, kept the name, and did not have the underlying system. They produced hobbyists rather than a faculty writing its own programs, which is what you would expect if the language were the smaller half."
+    }
+  },
+  "blueprint": "Two components, and which one carries the load:\n\n  small language        +      short loop\n  --------------               ----------\n  learn in an afternoon        result in seconds\n  sets how fast you start      sets whether attempts\n                                 are affordable at all\n\n  keep both     -> faculty across a campus write programs\n  drop the loop -> back to needing a specialist\n  drop the lang -> slower start, wall still gone\n\n  The later home versions kept the LANGUAGE and dropped\n  the LOOP, and got a toy. That is the experiment being\n  run for you: the famous half was the cheap half.",
+  "takeaway": "The barrier was the cost of one attempt, not the difficulty of the language — so the time-sharing system did the work, and keeping the language while dropping the system reproduces the name without the effect."
+}

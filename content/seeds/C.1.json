@@ -1,0 +1,100 @@
+{
+  "taskId": "C.1",
+  "title": "1940s. Machine code and assembly",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "EDSAC was the first stored-program computer to operate a regular computing service. Maurice Wilkes led the team responsible for its design and construction, and it ran its first program successfully on May 6, 1949.",
+      "type": "date",
+      "tokens": [
+        "EDSAC",
+        "Maurice Wilkes",
+        "Wilkes",
+        "1949"
+      ],
+      "source": {
+        "title": "Richards, M., EDSAC Initial Orders and Squares Program, University of Cambridge Computer Laboratory",
+        "url": "https://www.cl.cam.ac.uk/~mr10/Edsac/edsacposter.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The EDSAC initial orders were written by David Wheeler in May 1949 to load and enter a paper tape representation of a program. They were placed in memory locations 0 to 30 by a mechanism involving uniselectors, before execution started from location 0.",
+      "type": "event",
+      "tokens": [
+        "David Wheeler",
+        "Wheeler",
+        "EDSAC",
+        "1949"
+      ],
+      "source": {
+        "title": "Richards, M., EDSAC Initial Orders and Squares Program, University of Cambridge Computer Laboratory",
+        "url": "https://www.cl.cam.ac.uk/~mr10/Edsac/edsacposter.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "An EDSAC order was punched on paper tape as a character that directly gave the 5-bit operation code, followed by zero or more decimal digits giving the address, terminated by S or L specifying the operand length bit. R16S assembled to 00100 0 0000010000 0 and T11L to 00101 0 0000001011 1; the characters R and T had codes 4 and 5 respectively.",
+      "type": "event",
+      "tokens": [
+        "EDSAC",
+        "R16S",
+        "T11L"
+      ],
+      "source": {
+        "title": "Richards, M., EDSAC Initial Orders and Squares Program, University of Cambridge Computer Laboratory",
+        "url": "https://www.cl.cam.ac.uk/~mr10/Edsac/edsacposter.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "The first published description of an assembly language is generally identified as Coding for A.R.C., a 1947 report by Andrew Booth and Kathleen Britten, later Kathleen Booth, produced while visiting the Institute for Advanced Study at Princeton. The report is not readily available in digital form, so the attribution rests on later accounts rather than on a document a reader can inspect.",
+      "type": "event",
+      "tokens": [
+        "Kathleen Booth",
+        "Kathleen Britten",
+        "Booth",
+        "Britten",
+        "Andrew Booth",
+        "Princeton",
+        "Institute",
+        "Advanced Study",
+        "Coding",
+        "1947"
+      ],
+      "source": {
+        "title": "Assembly language: history, citing Booth, A. D. and Britten, K. H. V., Coding for A.R.C., Institute for Advanced Study, 1947 — an attribution repeated from secondary accounts rather than an inspectable scan",
+        "url": "https://en.wikipedia.org/wiki/Assembly_language",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "The word assembler is generally attributed to Wilkes, Wheeler and Gill, The Preparation of Programs for an Electronic Digital Computer, 1951, where it named a program that assembled several sections into one program rather than one that translated mnemonics.",
+      "type": "event",
+      "tokens": [
+        "Wilkes",
+        "Wheeler",
+        "Gill",
+        "Preparation",
+        "Electronic Digital Computer",
+        "1951"
+      ],
+      "source": {
+        "title": "In Praise of Wilkes, Wheeler, and Gill, Communications of the ACM, on The Preparation of Programs for an Electronic Digital Computer, 1951",
+        "url": "https://cacm.acm.org/opinion/in-praise-of-wilkes-wheeler-and-gill/",
+        "kind": "secondary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a program is the numbers the machine executes, so writing it means writing numbers, and moving one instruction invalidates every address after it",
+    "fix": "a symbolic notation plus a small program that translates it: a letter for the operation, a decimal number for the address",
+    "cost": "the notation stays one-to-one with one machine, so nothing is portable and nothing is checked",
+    "interview": "what an assembler actually does, and why it is not a compiler"
+  }
+}

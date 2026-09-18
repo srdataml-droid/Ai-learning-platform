@@ -1,0 +1,48 @@
+{
+  "id": "C.9",
+  "trackId": "C",
+  "trackName": "Languages: the chain of walls",
+  "title": "1983. C++. Stroustrup",
+  "status": "traced",
+  "seed": "C.9",
+  "story": "Two of the links above this one solve halves of the same problem and refuse to combine. One gives you the machine — layout, addresses, no runtime — and no way whatever to organise a large program. The other gives you organisation, objects with boundaries, and asks for a run-time apparatus that systems work cannot afford. The usual response is to pick a side and call the other one unsuitable.\n\nStroustrup’s account of the motivation is to want both: efficient systems programs written in the styles the object language encouraged, with the goal stated as designing a language in which programs could be both efficient and elegant. The triggering work was distributing operating system facilities across a network, which is exactly the case where you need a large program and cannot pay a large runtime.\n\nThe move that makes it possible is that the abstraction is compiled away rather than interpreted. It began literally as a preprocessor: by October 1979 a pre-processor was adding classes to C, and what it accepted was called C with Classes; the front end that replaced it was built between 1982 and 1983. A class became a description consumed at compile time, which is why the organisation costs nothing at run time and why the existing compilers, linkers and debuggers kept working. The name arrived late — suggested by Rick Mascitti, first used in December 1983 — and the first commercial release came in October 1985 alongside the book.\n\nThe criterion Stroustrup states is the one to carry away: a facility must not just be useful, it must be affordable. That is a strong constraint, and it cuts both ways. It rules out any feature requiring machinery the program did not ask for, which is why the language has no mandatory garbage collector and why its abstractions resolve statically wherever they can. It also rules out removing anything, because compatibility with the existing language and its code was part of what made adoption affordable — so every sharp edge inherited from below is still there, underneath the abstractions built on top.",
+  "problem": {
+    "name": "Zero-cost abstraction",
+    "aka": [
+      "compile-time abstraction",
+      "abstraction without runtime penalty"
+    ],
+    "shape": "The organising constructs that make a large program tractable are exactly the ones that cost time and space at run time, and some programs cannot pay.",
+    "tell": [
+      "the abstraction you want is rejected on performance grounds rather than on clarity grounds",
+      "the code is organised well in the design document and badly in the source",
+      "there is no runtime available to support the construct, because you are writing the runtime"
+    ],
+    "move": "Make the abstraction a description consumed at compile time rather than an entity present at run time, so that the generated code is what the programmer would have written by hand without it.",
+    "invariant": "A program pays nothing for a facility it does not use, and no more for one it does use than an equivalent hand-written version would cost. If either half fails, the people with the tightest constraints go back to writing it by hand, which puts the language back where it started.",
+    "breaks": "It breaks anywhere the abstraction genuinely needs run-time information — dynamic dispatch, run-time type identification, exceptions — which is why those are the features that carry a cost and the ones people disable. And the affordability rule forbids removals as well as additions, since compatibility is itself part of the cost of adoption, so unsafe constructs accumulate rather than being replaced.",
+    "cost": {
+      "time": "nothing at run time for the abstractions resolved statically; compile time and code size absorb it instead",
+      "space": "code is duplicated per instantiation rather than shared through indirection",
+      "beats": "run-time abstraction, which is more flexible and cannot be used where there is no runtime"
+    },
+    "worked": {
+      "problem": "What does \"it must be affordable\" actually forbid, beyond the obvious slow features?",
+      "reasoning": "Read the criterion as a constraint on the whole language rather than on features one at a time.\n\nFirst: no facility may impose cost on programs that do not use it. That rules out anything needing ambient machinery — a mandatory collector, a universal object header, a required dispatch table — because those charge every program for something only some programs want.\n\nSecond, less obviously: it rules out removal. Existing code and existing tools are part of what a language costs to adopt. Break them and you have made the language unaffordable in the sense that matters to the people deciding.\n\nThose two together predict the actual shape: features resolved at compile time wherever possible, run-time features present but optional, and nothing ever taken away.",
+      "code": "run-time abstraction         compile-time abstraction\n--------------------         ------------------------\nevery object carries a       the type is known when\n  header / vtable / tag        the code is generated\n\ncost: paid by all            cost: paid by users only\nflexible: decided later      fixed: decided at build\nneeds: a runtime             needs: a compiler\n\n  affordable? -> use it where the information is\n                 available at compile time\n              -> make it OPTIONAL where it isn't\n              -> and never remove what code depends on\n\n  The third line is why the sharp edges are still there."
+    },
+    "practice": "Take an abstraction in a language you use — an interface, a generic, a closure — and determine whether it is resolved at compile time or at run time. Then find the observable consequence: binary size, dispatch cost, or what the debugger shows you."
+  },
+  "beats": {
+    "broke": "The language that reached the machine had no way to organise a large program; the language that organised one needed a runtime that systems work could not afford. Choosing either meant giving up something the work actually required.",
+    "fix": "Abstraction consumed at compile time. Begun in 1979 as a preprocessor adding classes to C, replaced by a front end built between 1982 and 1983, named in December 1983 and released commercially in October 1985.",
+    "cost": "Affordability forbids removal as well as expense, because existing code and tools are part of the cost of adoption. Nothing unsafe inherited from below was ever taken away, so the language grows by accumulation and the old sharp edges sit under the new abstractions.",
+    "interview": {
+      "q": "What does the rule that a facility must be affordable, not merely useful, actually constrain?",
+      "trap": "Reading it as \"avoid slow features\". It is a constraint on distribution of cost, not on magnitude, and its second consequence is about compatibility rather than speed.",
+      "answer": "Two things. First, no facility may charge programs that do not use it. That rules out ambient machinery — a mandatory collector, a universal object header — regardless of how fast that machinery is, because the cost falls on programs that asked for nothing.\n\nSecond, and less often noticed, it rules out removing things. Existing code and existing tools are part of what adopting a language costs; breaking them makes it unaffordable in the sense the decision actually turns on. Starting as a preprocessor over an existing language was that reasoning applied at the beginning.\n\nPut together, they predict the language you get: static resolution wherever the information exists, run-time features made optional, and nothing ever deleted. The criticism that it accumulates rather than simplifies is correct, and it is a consequence of the criterion rather than a failure to apply it."
+    }
+  },
+  "blueprint": "\"Useful\" and \"affordable\" are different tests:\n\n  useful          -> does it help you write the program?\n  affordable      -> who pays, and do they use it?\n\n  facility         cost falls on        verdict\n  --------         -------------        -------\n  class layout     users only, at       in, free\n                     compile time\n  virtual call     users only, at       in, optional\n                     run time\n  mandatory GC     everyone, always     out\n  removing a       everyone with        out -- and this\n    sharp edge       existing code        is why they stay\n\n  Same rule admits the first two, rejects the third,\n  and forbids the cleanup. All three follow from one line.",
+  "takeaway": "Make the abstraction a compile-time description and the organisation costs nothing at run time — but the affordability rule that buys this also forbids removing anything, which is why every inherited sharp edge is still there."
+}

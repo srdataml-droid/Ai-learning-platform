@@ -1,0 +1,48 @@
+{
+  "id": "C.2",
+  "trackId": "C",
+  "trackName": "Languages: the chain of walls",
+  "title": "1957. Fortran. Backus, IBM",
+  "status": "traced",
+  "seed": "C.2",
+  "story": "Assembly made programs editable without making them cheap. A scientific calculation still had to be expressed as a sequence of machine operations, by hand, for one machine, and the labour of writing and debugging it had grown large enough to rival the cost of the computer it ran on. The obvious fix — write the formula and have the machine work out the instructions — was not a new idea in 1954. What was missing was any reason to believe a machine could do it well enough.\n\nThat is the thing worth keeping about this link in the chain: the objection was not that a compiler was impossible, it was that its output would be slower than a good programmer’s, and speed was the entire reason to own the machine. Backus states the fear plainly — that translating a reasonable scientific program into an object program only half as fast as its hand coded counterpart would put acceptance of the system in serious danger, and that this belief made the translator the real challenge rather than the language.\n\nSo the language is, deliberately, not the achievement. It is close to the algebra a physicist already writes, and it was specified early: the Preliminary Report was dated November 1954 and went out to prospective customers before there was anything to run. The compiler is what took the time. A six-month project ran about three years, and shipment to 704 users began in April 1957.\n\nThe result reset what programming meant. Once a compiler could produce code competitive with hand coding, the argument for writing machine instructions by hand stopped being about performance and became about the few places where performance still could not be had any other way — which is roughly where it remains. The cost arrived with the benefit: from this point on, what executes is not what you wrote. It is the compiler’s rendering of what you wrote, and reading a program no longer tells you what the machine does.",
+  "problem": {
+    "name": "Compilation",
+    "aka": [
+      "automatic coding",
+      "high-level translation"
+    ],
+    "shape": "The notation that is natural to state a computation in is not the notation the machine executes, and translating between them by hand is where the cost and the errors live.",
+    "tell": [
+      "the program describes a result, while the machine needs a sequence of steps",
+      "the same computation must run on more than one kind of machine",
+      "the person who understands the problem is not the person who understands the instruction set"
+    ],
+    "move": "Define a notation for what is to be computed, then write a program that chooses machine instructions to compute it. The translation is many-to-one in both directions: one source construct may become many instructions, and many instruction sequences would be correct.",
+    "invariant": "The compiler preserves meaning while being free to choose instructions. This is only useful if the generated code is good enough that no one is tempted to bypass it — which is why efficiency of output, not expressiveness of input, was treated as the make-or-break property.",
+    "breaks": "It breaks when the generated code is not good enough and the programmer cannot see why. Because the compiler chooses, the mapping from source to execution is no longer visible, so a performance problem is now a question about a translator you did not write. This is the permanent cost, and it is why the reflex to inspect generated output never went away.",
+    "cost": {
+      "time": "compile once, run many times: translation cost is paid at build, not per execution",
+      "space": "the compiler itself, which on early machines was a serious fraction of available memory",
+      "beats": "hand coding, which pays the translation cost in human time on every change"
+    },
+    "worked": {
+      "problem": "Why was the compiler treated as the risk, when writing the language seems like the harder design problem?",
+      "reasoning": "Work out who has to be convinced. The people with machines were running numerical work where the machine was the bottleneck, so a system that made programs easier to write but a third slower to run would have cost them more than it saved. There is no argument about elegance that survives that arithmetic.\n\nSo the acceptance condition was not \"is this language good\" but \"is the generated code close enough to hand coding that nobody bothers\". Language design cannot fail that test and cannot pass it either. Only the translator can.",
+      "code": "        what the programmer writes\n                    |\n        A = B * C + D\n                    |\n        the compiler CHOOSES, e.g.\n            LOAD  B          or   LOAD  B\n            MUL   C               MUL   C\n            ADD   D               STORE t\n            STORE A               LOAD  t\n                                  ADD   D\n                                  STORE A\n\n  Both correct. One is worse. The whole bet was that\n  the compiler picks the left one often enough that\n  no one goes back to writing it out by hand."
+    },
+    "practice": "Take a small loop in a compiled language and read the assembly your compiler emits at two optimisation levels. Then state which differences change the meaning of the program and which only change how it is carried out — and check whether you can tell."
+  },
+  "beats": {
+    "broke": "Scientific programs had to be expressed as machine operations for one machine, by hand. The cost of writing and debugging them had become comparable to the cost of the computer, and none of that labour transferred to the next machine.",
+    "fix": "A notation close to the algebra, plus a translator that chooses the instructions. Specified in the Preliminary Report of November 1954 and shipped to IBM 704 users in April 1957, after a six-month plan turned into roughly three years of work.",
+    "cost": "What runs is the compiler’s rendering of your program rather than your program. That is the trade the whole rest of the chain inherits: every later language buys expressiveness with a wider gap between the text and the execution.",
+    "interview": {
+      "q": "Why was the compiler, rather than the language, treated as the real challenge?",
+      "trap": "Explaining that compilers are technically harder to build than languages are to design. True but beside the point — it explains effort, not risk.",
+      "answer": "Because the system’s acceptance depended on a property only the translator could deliver. Buyers of these machines were running numerical work where machine time was the scarce resource, and their stated objection was that generated code would be worse than their best programmers’ code. A language that was pleasant to write and produced code a third slower would have been rejected on arithmetic, not on taste.\n\nBackus puts the threshold at roughly half the speed of hand coding as the point where acceptance would be in serious danger, and says explicitly that this belief is what made the translator the challenge and the language the simple task.\n\nThe general lesson is about where risk actually sits. The visible artefact was the notation; the thing that could kill the project was a non-functional property of the implementation. Recognising which of those you are betting on is the judgement call, and it is usually not the visible one."
+    }
+  },
+  "blueprint": "The bet, stated as the arithmetic its buyers would do:\n\n  hand coding      write: weeks     run: 1.00x\n  compiled         write: days      run: ?\n\n  if ? is 1.1x  -> everyone switches, labour dominates\n  if ? is 2.0x  -> nobody switches, machine time dominates\n                   and the project is dead regardless of\n                   how good the language is\n\n  Therefore: the language was specified first and fast\n  (Nov 1954, before anything ran), and three years went\n  into the translator. The risk was never in the syntax.",
+  "takeaway": "Fortran’s achievement was not a notation close to algebra but a translator good enough that hand coding stopped paying — and the price, permanent from here on, is that the program you read is no longer the program that runs."
+}

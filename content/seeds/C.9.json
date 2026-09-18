@@ -1,0 +1,106 @@
+{
+  "taskId": "C.9",
+  "title": "1983. C++. Stroustrup",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Stroustrup states the motivation as wanting to write efficient systems programs in the styles encouraged by Simula, so he added better type checking, data abstraction and object-oriented programming to C. His stated goal was \"to design a language in which I could write programs that were both efficient and elegant\", and the triggering tasks concerned distributing operating system facilities across a network.",
+      "type": "quote",
+      "tokens": [
+        "Stroustrup",
+        "Simula"
+      ],
+      "source": {
+        "title": "Stroustrup, B., Bjarne Stroustrup’s FAQ — the author’s own answers on motivation, naming and design criteria",
+        "url": "https://www.stroustrup.com/bs_faq.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Stroustrup gives the design criterion that \"a facility must not just be useful, it must be affordable\".",
+      "type": "quote",
+      "tokens": [
+        "Stroustrup"
+      ],
+      "source": {
+        "title": "Stroustrup, B., Bjarne Stroustrup’s FAQ — the author’s own answers on motivation, naming and design criteria",
+        "url": "https://www.stroustrup.com/bs_faq.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Work began in 1979. By October 1979 a pre-processor named Cpre added classes in the style of Simula to C, and by March 1980 it had been refined to support one real project and several experiments. The language it accepted was called C with Classes.",
+      "type": "date",
+      "tokens": [
+        "Cpre",
+        "Simula",
+        "Classes",
+        "1979",
+        "1980"
+      ],
+      "source": {
+        "title": "Stroustrup, B., A History of C++: 1979-1991, HOPL-II, ACM SIGPLAN Notices 28(3), March 1993",
+        "url": "https://www.stroustrup.com/hopl2.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "The work and experience with C with Classes from 1979 to 1983 determined the shape of the successor. Cfront, the compiler front end, was designed and implemented between spring 1982 and summer 1983; the features added to C through it included the class, the derived class, strong type checking, inlining and default arguments.",
+      "type": "date",
+      "tokens": [
+        "Cfront",
+        "Classes",
+        "1979",
+        "1982",
+        "1983"
+      ],
+      "source": {
+        "title": "Stroustrup, B., A History of C++: 1979-1991, HOPL-II, ACM SIGPLAN Notices 28(3), March 1993",
+        "url": "https://www.stroustrup.com/hopl2.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "The first version was used internally at AT&T in August 1983. The name was suggested by Rick Mascitti; it was first used in December 1983, when it was edited into the final copies of the 1984 papers, and signifies evolution from C via the increment operator.",
+      "type": "date",
+      "tokens": [
+        "AT&T",
+        "AT",
+        "Rick Mascitti",
+        "Mascitti",
+        "1983",
+        "1984"
+      ],
+      "source": {
+        "title": "Stroustrup, B., Bjarne Stroustrup’s FAQ — the author’s own answers on motivation, naming and design criteria",
+        "url": "https://www.stroustrup.com/bs_faq.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c6",
+      "text": "The first commercial implementation was released in October 1985, at the same time as the publication of the first edition of The C++ Programming Language.",
+      "type": "date",
+      "tokens": [
+        "Programming Language",
+        "1985"
+      ],
+      "source": {
+        "title": "Stroustrup, B., A History of C++: 1979-1991, HOPL-II, ACM SIGPLAN Notices 28(3), March 1993",
+        "url": "https://www.stroustrup.com/hopl2.pdf",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "one language could reach the machine but gave no way to organise a large program; another organised it well but at a run-time cost systems work could not pay",
+    "fix": "abstraction that compiles away — classes implemented over C by a preprocessor, so the organisation is free at run time and the whole existing toolchain still applies",
+    "cost": "compatibility was kept, so nothing unsafe was ever removed and the language grew by accumulation",
+    "interview": "what the affordability criterion actually rules out, and what it forces into the language"
+  }
+}

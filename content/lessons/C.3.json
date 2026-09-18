@@ -1,0 +1,48 @@
+{
+  "id": "C.3",
+  "trackId": "C",
+  "trackName": "Languages: the chain of walls",
+  "title": "1959. COBOL. CODASYL, Hopper’s influence",
+  "status": "traced",
+  "seed": "C.3",
+  "story": "Fortran solved the cost of writing a program. It did not solve the fact that the program you had written was an asset welded to one manufacturer’s machine. For a scientific lab with one computer that is an annoyance. For the government that convened this one, buying from several manufacturers at once and expecting to keep buying, it is a procurement problem: every machine purchase silently included the cost of rewriting everything.\n\nThe response was procedural before it was technical. A meeting at the Pentagon in May 1959 set up committees; the steering group met that June and named the activity the Committee on Data Systems Languages. The short range committee, chaired by Joseph Wegstein of the National Bureau of Standards, was supposed to produce an interim specification. It produced the one that lasted.\n\nThe design borrowed from the only candidate that had actually been built. FLOW-MATIC, invented by Grace Hopper, contributed long variable names, English words for commands, and the separation of data descriptions from instructions — and it was attractive precisely because it existed, while the alternatives were proposals. Hopper advised the committee. She is often called the language’s creator, and that is worth stating carefully: Jean Sammet, one of its lead designers, said flatly that Hopper was not the mother, creator, or developer of Cobol. Influence and authorship are different claims, and the second one is contested by someone who was in the room.\n\nThe proof came a year later. In December 1960, essentially the same program ran on an RCA machine and on a Remington-Rand UNIVAC machine. That demonstration is the entire argument for the approach: the specification, not any implementation, is the language. Everything people dislike about the result — the verbosity, the committee compromises, the English-like syntax that reads well and writes slowly — follows from taking that goal seriously, because a specification that two rival vendors can both implement has to be written down in a form neither of them owns.",
+  "problem": {
+    "name": "Portability by specification",
+    "aka": [
+      "language standardisation",
+      "vendor-independent language"
+    ],
+    "shape": "Programs are assets, but each is written against one vendor’s implementation, so changing vendor means rewriting the assets.",
+    "tell": [
+      "the same work is being redone for each supplier rather than each problem",
+      "the buyer has more leverage over suppliers than any one supplier has over the buyer",
+      "the thing being purchased has a longer life than the machine it runs on"
+    ],
+    "move": "Write the language down as a specification independent of any implementation, agreed before implementations exist, and make conformance to the document rather than compatibility with a product the test.",
+    "invariant": "The specification is the authority and no implementation is. This only holds while the document is precise enough that two independent implementers reading it produce compatible behaviour — which is why the demonstration on two makes of machine mattered more than any feature.",
+    "breaks": "It breaks where the specification is ambiguous or silent, because then each implementer resolves it differently and the resolutions become de facto dialects. It also breaks when one implementation becomes dominant enough that its behaviour, rather than the document, is what programs are tested against.",
+    "cost": {
+      "time": "agreement is paid up front, in committee, before any code runs",
+      "space": "a written standard that must be maintained separately from every implementation of it",
+      "beats": "per-vendor rewriting, where the cost is paid again on every machine purchase"
+    },
+    "worked": {
+      "problem": "Why did the two-machine demonstration prove the thing that mattered, when a single working compiler would have been a more impressive engineering result?",
+      "reasoning": "A single compiler proves that the language can be implemented. That was not in doubt, and it is not what was being bought.\n\nThe claim under test was that the written specification was complete enough to be the authority. The only way to falsify that is to have two parties who share no code implement it separately and see whether a program moves. One machine cannot distinguish \"the specification is sound\" from \"this implementation defines the language\". Two rival machines can.\n\nWhich is also why the demonstration used essentially the same program rather than an identical one. The residue — what had to change — is the measurement.",
+      "code": "one vendor                    two vendors\n----------                    -----------\nspec  --> compiler A          spec --> compiler A --\\\n          program runs             \\-> compiler B --+-> same program?\n\nproves: it can be built      proves: the SPEC is the language,\n        (never in doubt)             because nothing else is shared\n\nThe residue -- whatever had to be changed to move the\nprogram -- is exactly the part of the spec that was\nambiguous. That residue is the measurement."
+    },
+    "practice": "Find a feature in a language standard you use that implementations are permitted to define differently. Then work out how you would discover, from the outside, that you had depended on one implementation’s choice."
+  },
+  "beats": {
+    "broke": "A program was tied to one manufacturer’s machine, so a buyer with several manufacturers paid for the same software repeatedly. For a buyer running machines from several manufacturers — here the Air Force, the Navy and the agencies around them — that is a procurement cost, not an inconvenience.",
+    "fix": "A language agreed by committee and written down before it was implemented. Set up at the Pentagon in May 1959, named at the June steering meeting, specified by a short range committee under Joseph Wegstein, and approved in January 1960.",
+    "cost": "Committee design against a deadline, and deliberate verbosity: English words and long names were chosen so that people who do not program could read the result, which makes it slow to write and hard to compress.",
+    "interview": {
+      "q": "What did the December 1960 demonstration on two makes of machine actually prove?",
+      "trap": "Saying it proved the language worked, or that the compilers were correct. Both were already demonstrable with one machine.",
+      "answer": "It proved that the specification, and not any implementation, was the language. That is a claim about a document, and it can only be tested by parties who share nothing but the document.\n\nRunning essentially the same program on an RCA machine and on a Remington-Rand UNIVAC machine meant two competing manufacturers had read the same text and arrived at compatible behaviour independently. One implementation, however good, cannot distinguish a sound specification from a specification whose gaps are being filled in consistently by the same team.\n\nThe word \"essentially\" carries the rest of the result. Whatever had to be adjusted to move the program marks where the document was ambiguous, and that residue is the real output of the experiment."
+    }
+  },
+  "blueprint": "Why the authority has to live outside every implementation:\n\n  vendor-defined                 spec-defined\n  --------------                 ------------\n  compiler IS the language       document IS the language\n  bug = new feature              bug = deviation, provable\n  port = rewrite                 port = recompile\n  leverage: vendor               leverage: buyer\n\n  The test is not \"does it run\" but \"do two parties who\n  share no code agree\". Hence: RCA and Remington-Rand,\n  December 1960, essentially the same program.\n\n  Everything disliked about the result -- verbosity,\n  compromise, English-like syntax -- is the cost of\n  a document neither vendor owns.",
+  "takeaway": "COBOL’s point was never its syntax: it was that a language can be defined by a document rather than by a product, which is what lets a program outlive the machine it was bought for."
+}

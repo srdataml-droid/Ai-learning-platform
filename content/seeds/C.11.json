@@ -1,0 +1,123 @@
+{
+  "taskId": "C.11",
+  "title": "1991. Python. van Rossum",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Implementation was started in December 1989 by Guido van Rossum at CWI in the Netherlands, as a successor to ABC capable of exception handling and of interfacing with the Amoeba operating system. It was begun over a Christmas holiday.",
+      "type": "date",
+      "tokens": [
+        "Guido",
+        "Rossum",
+        "CWI",
+        "Netherlands",
+        "ABC",
+        "Amoeba",
+        "Christmas",
+        "1989"
+      ],
+      "source": {
+        "title": "History of Python: the December 1989 start at CWI, the ABC and Amoeba context, the Modula-3 module system, and the February 1991 release to alt.sources",
+        "url": "https://en.wikipedia.org/wiki/History_of_Python",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "In 1989 van Rossum was working on Amoeba, a microkernel-based distributed system, developing system utilities for it. He found that developing in C took too much time and decided to spend his free time building a language that would let him work faster.",
+      "type": "event",
+      "tokens": [
+        "Rossum",
+        "Amoeba",
+        "1989"
+      ],
+      "source": {
+        "title": "History of Python: the December 1989 start at CWI, the ABC and Amoeba context, the Modula-3 module system, and the February 1991 release to alt.sources",
+        "url": "https://en.wikipedia.org/wiki/History_of_Python",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Van Rossum had worked in the early 1980s as an implementer on the team at CWI that built ABC, and has said he feels indebted to what he learned on that project, while also remembering his frustration with it.",
+      "type": "person",
+      "tokens": [
+        "Rossum",
+        "CWI",
+        "ABC"
+      ],
+      "source": {
+        "title": "History of Python: the December 1989 start at CWI, the ABC and Amoeba context, the Modula-3 module system, and the February 1991 release to alt.sources",
+        "url": "https://en.wikipedia.org/wiki/History_of_Python",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "CWI records that the language was designed in December 1989, that the first working draft was finished some months later in 1990, and that the first public release, version 0.9.0, came on 20 February 1991.",
+      "type": "date",
+      "tokens": [
+        "CWI",
+        "1989",
+        "1990",
+        "1991"
+      ],
+      "source": {
+        "title": "25 Years of Python at CWI — Centrum Wiskunde & Informatica’s own account",
+        "url": "https://www.cwi.nl/en/news/25-years-of-python-at-cwi/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "The code was published to the alt.sources newsgroup in February 1991; the interpreter source had to be split into 21 uuencoded messages to be posted there. Accounts differ on whether the version posted was labelled 0.9.0 or 0.9.1.",
+      "type": "event",
+      "tokens": [
+        "1991"
+      ],
+      "source": {
+        "title": "History of Python: the December 1989 start at CWI, the ABC and Amoeba context, the Modula-3 module system, and the February 1991 release to alt.sources",
+        "url": "https://en.wikipedia.org/wiki/History_of_Python",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c6",
+      "text": "Several features were present in the initial release: classes with inheritance, exception handling, functions, and the core datatypes list, dict and str. The module system was borrowed from Modula-3, and the exception model also resembled that of Modula-3, with the addition of an else clause.",
+      "type": "event",
+      "tokens": [
+        "Modula-3",
+        "Modula"
+      ],
+      "source": {
+        "title": "History of Python: the December 1989 start at CWI, the ABC and Amoeba context, the Modula-3 module system, and the February 1991 release to alt.sources",
+        "url": "https://en.wikipedia.org/wiki/History_of_Python",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c7",
+      "text": "The language is named after the British comedy series Monty Python’s Flying Circus.",
+      "type": "event",
+      "tokens": [
+        "Monty Python",
+        "Monty",
+        "Python",
+        "Flying Circus",
+        "British"
+      ],
+      "source": {
+        "title": "History of Python: the December 1989 start at CWI, the ABC and Amoeba context, the Modula-3 module system, and the February 1991 release to alt.sources",
+        "url": "https://en.wikipedia.org/wiki/History_of_Python",
+        "kind": "secondary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "the pleasant high-level language of the day was a closed world: it could not reach the operating system and could not be extended, so it could not be used for the work in front of you",
+    "fix": "keep the readable notation but build in the seams — exceptions, a module system taken from elsewhere, and the ability to interface with the system it runs on",
+    "cost": "every seam is a point where the pleasant language is not what runs, and speed and correctness leak out through them",
+    "interview": "why a language’s escape hatches decide its fate more than its syntax does"
+  }
+}

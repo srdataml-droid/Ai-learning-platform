@@ -1,6 +1,6 @@
 # Lesson writing plan
 
-Generated 2026-09-17 by `tools/lesson-plan.mjs`. Regenerate after each batch; completed items disappear from it because it is derived from `content/lessons/`, not ticked by hand.
+Generated 2026-09-18 by `tools/lesson-plan.mjs`. Regenerate after each batch; completed items disappear from it because it is derived from `content/lessons/`, not ticked by hand.
 
 A batch is one writing session and never spans two tracks.
 
@@ -8,40 +8,23 @@ A batch is one writing session and never spans two tracks.
 
 | # | Track | Missing | Batches | Why here |
 |---|---|---|---|---|
-| 1–3 | **C** Languages: the chain of walls | 34 | 3 | Languages. Feeds the storyline pages already built; C.27.x are the synthesis tasks. |
-| 4 | **D** Software development craft | 10 | 1 | Software development craft. Small and self-contained. |
-| 5 | **F** Logic | 10 | 1 | Logic. Small, and underpins the debugging and ML tracks. |
-| 6 | **P** Security | 10 | 1 | Security. Small, and every claim in it needs care. |
-| 7–8 | **E** Data structures and algorithms | 20 | 2 | Data structures and algorithms. Large, and the most citation-heavy of the foundations. |
-| 9–10 | **M** Math for machines | 14 | 2 | Math for machines. Notation-heavy; blueprints matter more than prose here. |
-| 11–12 | **N** Data work | 14 | 2 | Data work. Practical; much of it is about failure modes rather than history. |
-| 13–14 | **O** Classical ML | 19 | 2 | Classical ML. Large, and needs real sourcing for every named method. |
-| 15–16 | **K** Neural networks | 14 | 2 | Neural networks. Dates and papers throughout, so these want seeds, not just prose. |
-| 17–18 | **L** AI engineering | 23 | 2 | AI engineering. Fastest-moving material, so the most likely to date badly. |
-| 19–22 | **B** System design | 37 | 4 | System design. The largest single track and the heaviest research load. |
+| 1–2 | **C** Languages: the chain of walls | 22 | 2 | Languages. Feeds the storyline pages already built; C.27.x are the synthesis tasks. |
+| 3 | **D** Software development craft | 10 | 1 | Software development craft. Small and self-contained. |
+| 4 | **F** Logic | 10 | 1 | Logic. Small, and underpins the debugging and ML tracks. |
+| 5 | **P** Security | 10 | 1 | Security. Small, and every claim in it needs care. |
+| 6–7 | **E** Data structures and algorithms | 20 | 2 | Data structures and algorithms. Large, and the most citation-heavy of the foundations. |
+| 8–9 | **M** Math for machines | 14 | 2 | Math for machines. Notation-heavy; blueprints matter more than prose here. |
+| 10–11 | **N** Data work | 14 | 2 | Data work. Practical; much of it is about failure modes rather than history. |
+| 12–13 | **O** Classical ML | 19 | 2 | Classical ML. Large, and needs real sourcing for every named method. |
+| 14–15 | **K** Neural networks | 14 | 2 | Neural networks. Dates and papers throughout, so these want seeds, not just prose. |
+| 16–17 | **L** AI engineering | 23 | 2 | AI engineering. Fastest-moving material, so the most likely to date badly. |
+| 18–21 | **B** System design | 37 | 4 | System design. The largest single track and the heaviest research load. |
 
-**205 lessons across 22 batches.**
+**193 lessons across 21 batches.**
 
 ---
 
-### Batch 1 — Track C: Languages: the chain of walls (part 1 of 3)
-
-12 lessons.
-
-- [ ] `C.0` Learn the chain itself first, as one story
-- [ ] `C.1` 1940s. Machine code and assembly
-- [ ] `C.2` 1957. Fortran. Backus, IBM
-- [ ] `C.3` 1959. COBOL. CODASYL, Hopper's influence
-- [ ] `C.4` 1958. LISP. McCarthy
-- [ ] `C.5` 1960. ALGOL
-- [ ] `C.6` 1964. BASIC. Kemeny and Kurtz
-- [ ] `C.7` 1972. C. Ritchie, Bell Labs
-- [ ] `C.8` 1972 to 1980. Smalltalk. Kay, Xerox PARC
-- [ ] `C.9` 1983. C++. Stroustrup
-- [ ] `C.10` 1987. Perl. Wall
-- [ ] `C.11` 1991. Python. van Rossum
-
-### Batch 2 — Track C: Languages: the chain of walls (part 2 of 3)
+### Batch 1 — Track C: Languages: the chain of walls (part 1 of 2)
 
 12 lessons.
 
@@ -58,7 +41,7 @@ A batch is one writing session and never spans two tracks.
 - [ ] `C.22` 1974. SQL. Chamberlin and Boyce, IBM
 - [ ] `C.23` 2007. CUDA. NVIDIA
 
-### Batch 3 — Track C: Languages: the chain of walls (part 3 of 3)
+### Batch 2 — Track C: Languages: the chain of walls (part 2 of 2)
 
 10 lessons.
 
@@ -74,7 +57,7 @@ A batch is one writing session and never spans two tracks.
 - [ ] `C.27.6` Write the same small program in Python, JavaScript and Go
 - [ ] `C.27.7` Defend a language choice for three different hypothetical systems
 
-### Batch 4 — Track D: Software development craft
+### Batch 3 — Track D: Software development craft
 
 10 lessons.
 
@@ -89,7 +72,7 @@ A batch is one writing session and never spans two tracks.
 - [ ] `D.10` Documentation that survives: README, architecture notes, decision records
 - [ ] `D.11` Code review, on both sides of it
 
-### Batch 5 — Track F: Logic
+### Batch 4 — Track F: Logic
 
 10 lessons.
 
@@ -105,7 +88,7 @@ A batch is one writing session and never spans two tracks.
 - [ ] `F.12` Type systems as logic, lightly
 - [ ] `F.13` Computability: what Turing proved cannot be done, 1936
 
-### Batch 6 — Track P: Security
+### Batch 5 — Track P: Security
 
 10 lessons.
 
@@ -120,7 +103,7 @@ A batch is one writing session and never spans two tracks.
 - [ ] `P.12` Prompt injection and tool abuse
 - [ ] `P.13` PII, retention, consent
 
-### Batch 7 — Track E: Data structures and algorithms (part 1 of 2)
+### Batch 6 — Track E: Data structures and algorithms (part 1 of 2)
 
 12 lessons.
 
@@ -138,7 +121,7 @@ A batch is one writing session and never spans two tracks.
 - [ ] `E.15` Graphs: adjacency list versus matrix
 - [ ] `E.16` Breadth first search
 
-### Batch 8 — Track E: Data structures and algorithms (part 2 of 2)
+### Batch 7 — Track E: Data structures and algorithms (part 2 of 2)
 
 8 lessons.
 
@@ -151,7 +134,7 @@ A batch is one writing session and never spans two tracks.
 - [ ] `E.27` The cadence: a small near daily block, medium difficulty, timed after month one
 - [ ] `E.28` A log of every pattern you miss, revisited a week later
 
-### Batch 9 — Track M: Math for machines (part 1 of 2)
+### Batch 8 — Track M: Math for machines (part 1 of 2)
 
 12 lessons.
 
@@ -168,14 +151,14 @@ A batch is one writing session and never spans two tracks.
 - [ ] `M.13` Conditional probability and Bayes
 - [ ] `M.14` Sampling and bias
 
-### Batch 10 — Track M: Math for machines (part 2 of 2)
+### Batch 9 — Track M: Math for machines (part 2 of 2)
 
 2 lessons.
 
 - [ ] `M.15` Logs and exponents, and why loss functions use them
 - [ ] `M.16` Do all of the above in numpy
 
-### Batch 11 — Track N: Data work (part 1 of 2)
+### Batch 10 — Track N: Data work (part 1 of 2)
 
 12 lessons.
 
@@ -192,14 +175,14 @@ A batch is one writing session and never spans two tracks.
 - [ ] `N.11` Exploratory analysis: look before you model
 - [ ] `N.12` Plotting to understand, not to present
 
-### Batch 12 — Track N: Data work (part 2 of 2)
+### Batch 11 — Track N: Data work (part 2 of 2)
 
 2 lessons.
 
 - [ ] `N.14` Splitting data honestly
 - [ ] `N.15` A reusable pipeline
 
-### Batch 13 — Track O: Classical ML (part 1 of 2)
+### Batch 12 — Track O: Classical ML (part 1 of 2)
 
 12 lessons.
 
@@ -216,7 +199,7 @@ A batch is one writing session and never spans two tracks.
 - [ ] `O.11` PCA
 - [ ] `O.12` Train, validation, test
 
-### Batch 14 — Track O: Classical ML (part 2 of 2)
+### Batch 13 — Track O: Classical ML (part 2 of 2)
 
 7 lessons.
 
@@ -228,7 +211,7 @@ A batch is one writing session and never spans two tracks.
 - [ ] `O.19` When classical ML beats a neural network, which is often
 - [ ] `O.20` Always build the dumb baseline first
 
-### Batch 15 — Track K: Neural networks (part 1 of 2)
+### Batch 14 — Track K: Neural networks (part 1 of 2)
 
 12 lessons.
 
@@ -247,14 +230,14 @@ A batch is one writing session and never spans two tracks.
 - [ ] `K.16` Instruction tuning and RLHF
       <br>_note: why ChatGPT in 2022 felt different from GPT-3 in 2020. The base model was not the change, the alignment step was_
 
-### Batch 16 — Track K: Neural networks (part 2 of 2)
+### Batch 15 — Track K: Neural networks (part 2 of 2)
 
 2 lessons.
 
 - [ ] `K.17` Tokenisation, context windows, and why cost grows the way it does
 - [ ] `K.18` Inference versus training: completely different engineering problems
 
-### Batch 17 — Track L: AI engineering (part 1 of 2)
+### Batch 16 — Track L: AI engineering (part 1 of 2)
 
 12 lessons.
 
@@ -271,7 +254,7 @@ A batch is one writing session and never spans two tracks.
 - [ ] `L.14` Guardrails: input filtering, output checking, prompt injection
 - [ ] `L.15` Cost control: caching, model routing, batching, token accounting
 
-### Batch 18 — Track L: AI engineering (part 2 of 2)
+### Batch 17 — Track L: AI engineering (part 2 of 2)
 
 11 lessons.
 
@@ -287,7 +270,7 @@ A batch is one writing session and never spans two tracks.
 - [ ] `L.25` Feedback loops into evaluation
 - [ ] `L.26` Safety: bias, red teaming, failure disclosure
 
-### Batch 19 — Track B: System design (part 1 of 4)
+### Batch 18 — Track B: System design (part 1 of 4)
 
 12 lessons.
 
@@ -306,7 +289,7 @@ A batch is one writing session and never spans two tracks.
 - [ ] `B.15` Tables, keys, relationships
 - [ ] `B.17` Indexes: why your query is slow
 
-### Batch 20 — Track B: System design (part 2 of 4)
+### Batch 19 — Track B: System design (part 2 of 4)
 
 12 lessons.
 
@@ -325,7 +308,7 @@ A batch is one writing session and never spans two tracks.
 - [ ] `B.34` Reliability patterns: circuit breakers, graceful degradation, health checks
       <br>_note: Chaos Monkey 2011_
 
-### Batch 21 — Track B: System design (part 3 of 4)
+### Batch 20 — Track B: System design (part 3 of 4)
 
 12 lessons.
 
@@ -342,7 +325,7 @@ A batch is one writing session and never spans two tracks.
 - [ ] `B.46` Back of envelope estimation drills
 - [ ] `B.47` How to open, scope and drive a design round
 
-### Batch 22 — Track B: System design (part 4 of 4)
+### Batch 21 — Track B: System design (part 4 of 4)
 
 1 lessons.
 
@@ -353,6 +336,7 @@ A batch is one writing session and never spans two tracks.
 ## Done so far
 
 - **Track 0 — Before any code: complete (12).**
+- Track C — Languages: the chain of walls: 12 of 34.
 - Track D — Software development craft: 3 of 13.
 - Track E — Data structures and algorithms: 8 of 28.
 - Track F — Logic: 3 of 13.

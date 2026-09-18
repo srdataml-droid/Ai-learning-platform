@@ -1,0 +1,49 @@
+{
+  "id": "C.4",
+  "trackId": "C",
+  "trackName": "Languages: the chain of walls",
+  "title": "1958. LISP. McCarthy",
+  "status": "traced",
+  "seed": "C.4",
+  "story": "Fortran assumed you knew the shape of your data. A scientific program has arrays of known size and the compiler can lay them out. But the problem McCarthy was working on — a system called the Advice Taker, meant to draw conclusions from things it was told — has no such shape. A symbolic expression is built and taken apart as the program runs, its size is not known in advance, and the pieces outlive the routine that made them. Neither the layout nor the memory management existed.\n\nThe answer was to stop treating structure as a feature and make it the whole substrate. Everything is either an atom or a pair of two things, and there are five operations: test for an atom, test for equality, take the first part, take the second part, make a new pair. Conditional expressions and recursion do the rest. The 1960 paper gets from those five to substitution, structural equality, list append and symbolic differentiation, and the reason it can is that there is only ever one kind of thing to work on.\n\nTwo consequences arrive without being asked for. First, if structures are made freely at run time, something has to reclaim them, so the same paper contains the first published description of garbage collection — not as a convenience but as a requirement of the design. Second, a program written in this notation is itself a structure of pairs, so a program can be given to another program as ordinary data.\n\nThat second consequence is where the history turns, and it turned by accident. McCarthy wrote a function, eval, as a way of describing the language in the paper — his words are that the notation was created for the purposes of the paper with no thought that it would be used to express programs in practice. Then, in his account, Russell noticed that eval could serve as an interpreter, promptly hand coded it, and there was a programming language with an interpreter. McCarthy’s own verdict on this is not triumphant: the interpreter, he says, tended to freeze the form of the language. The intended notation never replaced the interim one, because the interim one had a working implementation and the intended one did not.",
+  "problem": {
+    "name": "Homoiconicity",
+    "aka": [
+      "code as data",
+      "symbolic computation",
+      "program-as-structure"
+    ],
+    "shape": "A program needs to build, inspect and transform structures whose shape is decided while it runs — including, sometimes, programs.",
+    "tell": [
+      "the data is a tree rather than a table, and its depth is not known in advance",
+      "the program has to construct something and then examine what it constructed",
+      "you find yourself writing a language, or an interpreter, inside the program"
+    ],
+    "move": "Reduce everything to one recursive structure — atoms and pairs — with a handful of operations over it, and write the language’s own programs in that same structure so that a program is an ordinary value.",
+    "invariant": "There is exactly one kind of thing. Every operation is closed over it: taking a structure apart yields the same kind of structure, so recursion terminates on atoms and nothing needs a special case.",
+    "breaks": "It breaks where the uniformity is a lie about the machine. Uniform pairs mean allocation at run time, which forces automatic reclamation and makes memory behaviour hard to predict; and treating programs as data makes it correspondingly hard to know, before running, what a program will do. You are trading static knowledge for run-time freedom, and getting both is not on offer.",
+    "cost": {
+      "time": "traversal is proportional to the structure, but each step is a pointer hop rather than an indexed read",
+      "space": "every pair is allocated, so live memory is whatever has not yet been reclaimed",
+      "beats": "fixed layouts, which cannot represent a structure whose shape is decided at run time"
+    },
+    "worked": {
+      "problem": "Why does representing programs as ordinary structures follow from the data design, rather than being a separate decision?",
+      "reasoning": "Start from the constraint: build and take apart structures of unknown shape at run time. The minimal thing that supports it is a pair, since anything larger can be built from pairs and anything built from pairs can be taken apart by the same two operations.\n\nNow ask what a program is. A program is a nested expression — an operation and its arguments, where the arguments may themselves be expressions. That is a tree. There is already exactly one representation of a tree in the system, so writing programs in it is not an extra feature; writing them in something else would be the extra feature.\n\nOnce that holds, an evaluator is an ordinary function over ordinary data, which is why one could be hand coded from a description written for a paper.",
+      "code": "data:     (a . (b . (c . nil)))        a list\nprogram:  (times x (plus y 2))         also a list\n\n  same constructor, same accessors, same traversal\n\n  eval(e, env):\n      if atom(e):        look e up in env\n      else:              apply(eval(car(e), env),\n                               map(eval, cdr(e)))\n\n  Nothing here knows it is \"running a program\". It is\n  walking a pair structure. That is why the evaluator\n  fits on a page, and why hand coding it was possible."
+    },
+    "practice": "Write out a small arithmetic expression as nested pairs, then write the evaluator for it in a language of your choice. Then note which parts of your evaluator exist only because your language does not represent programs as data."
+  },
+  "beats": {
+    "broke": "Symbolic work builds structures whose size and shape are decided as the program runs, and outlives the routine that built them. Fixed array layouts cannot express that, and nothing in the languages of the day reclaimed the memory.",
+    "fix": "One recursive structure — atoms and pairs — with five operations over it and recursion for control. Described in the paper published in Communications of the ACM in April 1960, with implementation begun at MIT in the autumn of 1958.",
+    "cost": "Uniformity is paid for in predictability. Allocation at run time forces automatic reclamation, so memory behaviour becomes a property of the system rather than the program; and the notation froze around an implementation that was never meant to be the final one.",
+    "interview": {
+      "q": "Why is a program being the same structure as its data a design property rather than a syntax quirk?",
+      "trap": "Treating it as an aesthetic preference for parentheses, or claiming any language with a parser has it because source text can be read as a string.",
+      "answer": "Because it follows from the data model rather than from the surface syntax. If the only structure is the pair, then a nested expression — which is what a program is — already has exactly one representation in the system, and choosing a different one for programs would be the additional decision.\n\nWhat that buys is that an evaluator is an ordinary function over ordinary values, so programs can be constructed, inspected and transformed by other programs using the operations that already exist. Parsing text into a string does not give you this, because a string is not the structure the operations work on; you would have to build the structure first, which is the step that has been removed.\n\nThe cost is symmetric and worth saying: if programs are built at run time, then what a program does is not knowable before it runs, which is the same freedom viewed from the other side."
+    }
+  },
+  "blueprint": "One structure, and what falls out of it:\n\n  atom | (x . y)          <- the entire data model\n\n  take apart:  car, cdr          make: cons\n  compare:     eq                test: atom\n\n     |\n     +-- trees of unknown shape        (the original need)\n     +-- allocation at run time  -->   garbage collection\n     +-- programs are trees      -->   programs are data\n                                  -->   eval is just a function\n                                  -->   hand coding it made it real\n\n  Note the direction of the arrows. Nobody designed\n  \"code as data\" as a feature; it is what you get when\n  there is only one kind of thing and a program has\n  the shape of that thing.",
+  "takeaway": "Reduce everything to one recursive structure and the rest follows without being designed: run-time allocation forces garbage collection, and programs become data because a program was already the shape the data model had."
+}

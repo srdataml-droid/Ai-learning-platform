@@ -1,0 +1,48 @@
+{
+  "id": "C.0",
+  "trackId": "C",
+  "trackName": "Languages: the chain of walls",
+  "title": "Learn the chain itself first, as one story",
+  "status": "traced",
+  "seed": "C.0",
+  "story": "Learning languages one at a time teaches you the wrong thing. You end up with a set of feature lists and no way to compare them, so the differences look like matters of taste and any language you have not met is a blank. The sequence is only worth learning as one story, and the story has a single shape repeated eleven times: something was impossible, a design made it possible, and the design made something else expensive. That new expense is the next wall.\n\nRun it once and the shape is unmistakable. Writing programs as numbers meant an insertion falsified every jump below it, so symbolic notation and a translator arrived — the initial orders that Wheeler wrote for EDSAC in 1949 — and the new expense was that the notation was welded to one machine. Fortran removed that by compiling, and Backus is explicit that the risk was whether generated code could rival hand coding; the new expense is that what runs is no longer what you wrote. COBOL made the specification rather than the compiler the authority, proved it by running essentially the same program on two manufacturers’ machines in 1960, and paid in committee compromise. ALGOL made the definition itself formal and paid by defining no input or output at all.\n\nThe pattern does not weaken as the problems get more abstract. LISP made structures of unknown shape expressible and paid in run-time allocation and unpredictability. BASIC and the system under it made attempts cheap enough for non-specialists and paid by bounding the language to what a beginner could hold. Smalltalk put state behind a boundary and paid by making call sites unreadable. C described the machine’s layout and paid by describing it wrongly just as willingly. C++ made abstraction free at run time and paid by never being able to remove anything. Perl made the common text job short and paid in omission. Python designed its seams first and paid at every seam.\n\nTwo cautions, because a frame this neat invites misuse. It is a chain of problems, not a chronology — LISP, ALGOL and COBOL were all being settled around 1960 and did not queue politely. And the frame only works where the constraint is actually recoverable: when you cannot find what was scarce, you are guessing, and a guessed constraint will explain any design at all.",
+  "problem": {
+    "name": "Reading a design by its constraint",
+    "aka": [
+      "design archaeology",
+      "the wall-and-fix pattern"
+    ],
+    "shape": "You are comparing designs by their features, which makes every difference look arbitrary and gives you no way to judge one you have not seen before.",
+    "tell": [
+      "a comparison is being made as a feature table, with no mention of what each design was for",
+      "someone calls a design bad without saying what was scarce when it was made",
+      "a decision inside the design looks arbitrary, which usually means a constraint is missing rather than absent"
+    ],
+    "move": "For each design, name two things: what was impossible before it, and what it made newly expensive. Refuse to record one without the other, because a design with only benefits has been misread.",
+    "invariant": "Every fix trades one scarcity for another. Nothing in the sequence is strictly better than what it replaced — it is better under a stated constraint, and worse under some other.",
+    "breaks": "It breaks when the original constraint is no longer recoverable, or has stopped applying. If you cannot find what was scarce you will invent one, and an invented constraint can justify any design whatever, which makes the frame unfalsifiable. And when a constraint has genuinely expired, the design’s cost remains while its benefit is now free elsewhere — at which point it really is just worse, and insisting on charity is its own error.",
+    "cost": {
+      "time": "slower than memorising features, because each design needs its context reconstructed",
+      "space": "two facts per design instead of a list, which is the compression that makes it usable",
+      "beats": "feature comparison, which is faster to acquire and does not transfer to anything new"
+    },
+    "worked": {
+      "problem": "Apply the frame to a language you have not studied, and see what it yields before you know any of its features.",
+      "reasoning": "Take Rust as the test, since it is not in this chain. The frame does not tell you its syntax. It tells you what to ask.\n\nWhat was impossible before it? Memory safety without a garbage collector — which is the specific gap between the language that describes the machine and the languages that protect you, and the reason both halves of that gap existed is in this chain already.\n\nWhat did it make newly expensive? If safety is checked at compile time rather than maintained at run time, the checking must be satisfied before the program will build, so the cost lands on the author rather than the process. Predict: a hard learning curve and long compile times.\n\nTwo questions, no feature list, and you have the shape of the language and the shape of the complaints about it. That is what the frame is for.",
+      "code": "for each link:   impossible before  ->  newly expensive\n\nassembly      edit without renumbering | welded to one machine\nFortran       generated code competes  | you don't run what you wrote\nCOBOL         spec is the authority    | committee compromise\nALGOL         definition is formal     | no I/O at all\nLISP          shapes unknown until run | allocation, unpredictability\nBASIC         non-specialists compute  | language bounded by beginners\nSmalltalk     state has a boundary     | call sites say nothing\nC             layout is stated         | wrong layout compiles too\nC++           abstraction is free      | nothing can be removed\nPerl          the common job is short  | reader reconstructs\nPython        the seams are designed   | guarantees end at each seam\n\n  Read down the right column: each entry is the next\n  row's reason for existing. That is the chain."
+    },
+    "practice": "Pick a tool you use daily and write its two lines: what was impossible before it, and what it made newly expensive. If the second line is hard to write, you do not yet understand the tool — and if you cannot find what was scarce when it was built, say so rather than inventing one."
+  },
+  "beats": {
+    "broke": "Languages get taught one at a time as feature lists. That makes the differences look like taste, gives no basis for choosing between them, and transfers nothing to a language you have not met.",
+    "fix": "Read each as an answer to a specific scarcity, recording what became possible and what became expensive. The sequence from the initial orders for EDSAC in 1949 through to the release of February 1991 is one argument repeated, not eleven separate topics.",
+    "cost": "The frame needs a recoverable constraint. Where the scarcity cannot be found you will invent one, and an invented constraint explains everything and therefore predicts nothing — and where a constraint has expired, the charitable reading is simply wrong.",
+    "interview": {
+      "q": "Why is no language in this sequence an improvement on the one before it?",
+      "trap": "Answering that each is better for its own use case. That is true and empty — it restates the question without saying what forces the trade.",
+      "answer": "Because every one of them buys its advantage with a specific, nameable loss, and the loss is what the next link exists to address.\n\nCompilation buys code you did not have to write instruction by instruction, and costs you the correspondence between the text and the execution. Encapsulation buys a boundary you can change behind, and costs you the ability to tell from a call site what will run. Compile-time abstraction buys organisation at no run-time price, and costs you the ability to ever remove anything. In each case the cost is not an implementation defect that a better version would fix; it is the same property as the benefit, seen from the other side.\n\nSo \"better\" is only meaningful relative to a stated scarcity. That is also what makes the frame useful rather than merely charitable: it predicts what the complaints about a design will be before you have used it, because the complaints are the cost you already named."
+    }
+  },
+  "blueprint": "The whole track in one shape, repeated:\n\n        wall  ---- fix ---->  new wall  ---- fix ---->  ...\n          |                      |\n     what was              what the fix made\n     impossible            newly expensive\n\n  Two rules that keep it honest:\n\n    1. Never record a fix without its cost.\n       A design with only benefits has been misread,\n       not discovered.\n\n    2. If you cannot find what was scarce, say so.\n       An invented constraint explains every design\n       equally well, which means it explains none.\n\n  And it is a chain of PROBLEMS, not a timeline:\n  LISP, ALGOL and COBOL were all being settled\n  around 1960 and did not queue politely.",
+  "takeaway": "Every language in the chain trades one scarcity for another, so read each as a wall and a cost rather than a feature list — two facts per design, which is enough to predict both the benefits and the complaints of a language you have never seen."
+}

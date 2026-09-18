@@ -1,0 +1,48 @@
+{
+  "id": "C.1",
+  "trackId": "C",
+  "trackName": "Languages: the chain of walls",
+  "title": "1940s. Machine code and assembly",
+  "status": "traced",
+  "seed": "C.1",
+  "story": "A stored-program machine executes numbers. That is not a design choice you can argue with; it is what the hardware is. So the first programs were written as the numbers themselves, and the cost of that was not mainly the tedium. It was that the program had no joints. Insert one instruction near the top and every address below it refers to the wrong word, so you go through the whole listing by hand and renumber it, and any one of those corrections can be wrong in a way that still runs.\n\nThe escape is smaller than it sounds. Write a letter where the operation goes and a decimal number where the address goes, then have a program on the machine turn that into the numbers. On the first machine to run a regular computing service this arrived almost immediately: EDSAC ran its first program in May 1949, and the initial orders that David Wheeler wrote that same month sat in locations 0 to 30 and read the rest of the program in from paper tape.\n\nWhat makes it a good demonstration is how little was needed. An order was one character giving the operation code, some decimal digits giving the address, and a final letter for the operand length — so R16S became 00100 0 0000010000 0. The character was not looked up in a table so much as used directly, because the five-bit code for the letter was the operation code. The translation is real but it is thin, and that thinness is the point: the notation is not a different language, it is the same instructions written in a form a person can edit.\n\nWho did it first is less settled than the date suggests. Coding for A.R.C., a 1947 report by Andrew Booth and Kathleen Britten, is usually named as the first published description of an assembly language, but the report is not something you can pull up and read, so the claim travels as an attribution rather than as evidence. Worth separating from the EDSAC facts, which come with a listing. The word itself drifted too: assembler in Wilkes, Wheeler and Gill in 1951 meant a program that assembled separate sections into one program, not the mnemonic translator everyone now means by it.",
+  "problem": {
+    "name": "Symbolic assembly",
+    "aka": [
+      "assembly language",
+      "symbolic machine code"
+    ],
+    "shape": "A program is written in the exact encoding a machine consumes, so editing it means recomputing the encoding by hand.",
+    "tell": [
+      "positions carry meaning, so inserting anything shifts everything after it",
+      "the thing you edit is the thing the machine consumes, with no step between",
+      "a mistake produces a different valid program rather than an error"
+    ],
+    "move": "Put one mechanical translation step between the text a person edits and the encoding the machine runs. The text names operations and addresses symbolically; the translator resolves the names to numbers at load time.",
+    "invariant": "The translation is one-to-one with the instruction set. Every line of source is one instruction, so what runs is what was written and the translator has no decisions of its own to make.",
+    "breaks": "It breaks the moment you want the same program on another machine. Because the mapping is one-to-one with one instruction set, there is nothing in the source that is not about that machine, so there is nothing to carry across. That is the wall the next link in the chain exists to get over.",
+    "cost": {
+      "time": "one pass over the source, resolving symbols to addresses",
+      "space": "a symbol table proportional to the number of labels",
+      "beats": "hand-encoding, where every insertion costs a manual renumbering of the whole program"
+    },
+    "worked": {
+      "problem": "Why does adding one instruction to a hand-encoded program break the rest of it?",
+      "reasoning": "Jumps are written as absolute addresses. A jump to word 17 means the seventeenth word, not \"the instruction that begins the loop\". Insert a word above it and the loop now begins at 18, while every jump still says 17. Nothing detects this: 17 is still a valid address and the program still runs, it just runs the wrong instruction.\n\nWith symbols the jump says the name, and the name is resolved after the insertion, so the address is recomputed rather than remembered.",
+      "code": "; hand-encoded            ; symbolic\n  0  LOAD  20                  LOAD  count\n  1  SUB   21                  loop: SUB one\n  2  JNZ   1                   JNZ   loop\n  3  HALT                      HALT\n\ninsert a word at the top and the hand-encoded JNZ 1\nnow jumps to the LOAD. The symbolic JNZ loop does not\nchange at all -- \"loop\" is resolved, not stored."
+    },
+    "practice": "Take a short assembly listing with two jumps, insert an instruction at the top, and write out what the encoded form must become. Then say precisely which part of that work the assembler is doing for you, and which part it is not."
+  },
+  "beats": {
+    "broke": "A program had to be written as the numbers the machine executes. The numbers are positional, so inserting a single instruction moved everything below it and silently falsified every jump that pointed there — and the falsified program still ran.",
+    "fix": "A symbolic notation with a translator small enough to live on the machine itself. The initial orders for EDSAC, written by David Wheeler in May 1949, occupied locations 0 to 30 and read a symbolic program in from paper tape, resolving each order as it went.",
+    "cost": "The notation is one-to-one with one instruction set, so it buys editability and nothing else. It does not abstract the machine, it does not check types, and it does not travel — a program written this way is written for exactly one computer.",
+    "interview": {
+      "q": "What does an assembler actually do, and why is it not a compiler?",
+      "trap": "Answering \"it turns human-readable code into machine code\", which is also true of a compiler and therefore distinguishes nothing.",
+      "answer": "An assembler performs a substitution, not a translation of meaning. Each source line corresponds to one machine instruction; the assembler resolves mnemonics to operation codes and labels to addresses, and that is the whole job. It makes no decisions about how to express the program, because the program is already expressed.\n\nA compiler is given a description of what to compute and chooses instructions to achieve it. It decides which values live in registers, what order operations happen in, whether a loop becomes a loop. Two compilers can emit different correct output for the same source; two assemblers cannot.\n\nThe consequence is the interesting part. Because the assembler makes no choices, you can read its output and recognise your program in it — which is why the early objection to compilers was not philosophical but about whether a machine could choose as well as a person."
+    }
+  },
+  "blueprint": "What the assembler resolves, and what it does not:\n\n  source                    assembler          machine\n  ------                    ---------          -------\n  loop: SUB one        ->   symbol table  ->   00100 0 ...\n  JNZ loop                  loop  = 1\n                            one   = 21\n\n  It looks up names. That is all it looks up.\n  One source line in, one instruction out, always.\n\n  Compare: a compiler is handed \"x = a*2 + b\" and must\n  CHOOSE instructions. Different choices, same meaning.\n  The assembler has no such freedom, which is exactly\n  why its output is predictable and why it cannot port.",
+  "takeaway": "Assembly buys you edit-safety, not abstraction: names get resolved to addresses so insertions stop breaking jumps, but the notation stays welded one-to-one to a single instruction set."
+}

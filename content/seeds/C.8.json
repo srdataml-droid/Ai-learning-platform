@@ -1,0 +1,156 @@
+{
+  "taskId": "C.8",
+  "title": "1972 to 1980. Smalltalk. Kay, Xerox PARC",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Kay’s own history of the language was published at the Second History of Programming Languages conference in 1993. In it he states that he centres the account on the events leading to the first version and its transition to the modern form, because most of the ideas occurred there.",
+      "type": "date",
+      "tokens": [
+        "Kay",
+        "History of Programming Languages",
+        "1993"
+      ],
+      "source": {
+        "title": "Kay, A. C., The Early History of Smalltalk, HOPL-II, ACM SIGPLAN Notices 28(3), March 1993 — the author’s own narrative",
+        "url": "https://worrydream.com/EarlyHistoryOfSmalltalk/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "In a hallway conversation with Ted Kaehler and Dan Ingalls about how large a language would have to be to have real power, Kay boasted that he could define \"the most powerful language in the world\" in \"a page of code\". Their reply was \"Put up or shut up.\" No money was wagered. His confidence rested on McCarthy’s self-describing interpreter, which was about a page.",
+      "type": "quote",
+      "tokens": [
+        "Ted Kaehler",
+        "Kaehler",
+        "Dan Ingalls",
+        "Ingalls",
+        "Kay",
+        "McCarthy"
+      ],
+      "source": {
+        "title": "Kay, A. C., The Early History of Smalltalk, HOPL-II, ACM SIGPLAN Notices 28(3), March 1993 — the author’s own narrative",
+        "url": "https://worrydream.com/EarlyHistoryOfSmalltalk/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Kay worked on it for roughly two weeks, arriving at PARC at 4 a.m. each day and working until 8, when Ingalls, Henry Fuchs, John Shoch and Steve Purcell would arrive to critique the morning’s progress.",
+      "type": "event",
+      "tokens": [
+        "Kay",
+        "PARC",
+        "Ingalls",
+        "Henry Fuchs",
+        "John Shoch",
+        "Steve Purcell"
+      ],
+      "source": {
+        "title": "Kay, A. C., The Early History of Smalltalk, HOPL-II, ACM SIGPLAN Notices 28(3), March 1993 — the author’s own narrative",
+        "url": "https://worrydream.com/EarlyHistoryOfSmalltalk/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "Kay writes that \"only a few days later, Dan Ingalls showed me the scheme working on the NOVA\". Ingalls had coded it in BASIC, adding a token scanner, a list maker and other details. Kay quotes Ingalls’s attitude as \"You just do it and it’s done.\"",
+      "type": "quote",
+      "tokens": [
+        "Kay",
+        "Dan Ingalls",
+        "Ingalls",
+        "NOVA",
+        "BASIC"
+      ],
+      "source": {
+        "title": "Kay, A. C., The Early History of Smalltalk, HOPL-II, ACM SIGPLAN Notices 28(3), March 1993 — the author’s own narrative",
+        "url": "https://worrydream.com/EarlyHistoryOfSmalltalk/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "The first working version emerged on the NOVA in roughly September 1972. It computed three plus four extremely slowly — Butler Lampson called it glacial — but always returned seven. It was later bootstrapped onto the Interim Dynabook, the ALTO, after the machine known as Bilbo came alive in early April 1973, and for many months was the only software system running on it.",
+      "type": "date",
+      "tokens": [
+        "NOVA",
+        "Butler Lampson",
+        "Lampson",
+        "Interim Dynabook",
+        "Dynabook",
+        "ALTO",
+        "Bilbo",
+        "1972",
+        "1973"
+      ],
+      "source": {
+        "title": "Kay, A. C., The Early History of Smalltalk, HOPL-II, ACM SIGPLAN Notices 28(3), March 1993 — the author’s own narrative",
+        "url": "https://worrydream.com/EarlyHistoryOfSmalltalk/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c6",
+      "text": "The first version did not include inheritance — not because it was thought unimportant, but because the single static inheritance of Simula seemed too limiting. Kay drew on the simplicity of LISP and the classes and objects of Simula, and described objects as little computers, \"a recursion on the notion of computer itself\".",
+      "type": "quote",
+      "tokens": [
+        "Simula",
+        "LISP",
+        "Kay"
+      ],
+      "source": {
+        "title": "Kay, A. C., The Early History of Smalltalk, HOPL-II, ACM SIGPLAN Notices 28(3), March 1993 — the author’s own narrative",
+        "url": "https://worrydream.com/EarlyHistoryOfSmalltalk/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c7",
+      "text": "The other bet of the period was hardware: Butler Lampson and Chuck Thacker offered to build Kay’s machine using the $230K he had earmarked for other computers. Thacker had his own wager with Bill Vitic that he could build an entire machine in three months; he started on November 22, 1972 and delivered in just over three.",
+      "type": "date",
+      "tokens": [
+        "Butler Lampson",
+        "Lampson",
+        "Chuck Thacker",
+        "Thacker",
+        "Bill Vitic",
+        "Vitic",
+        "Kay",
+        "$230K",
+        "1972"
+      ],
+      "source": {
+        "title": "Kay, A. C., The Early History of Smalltalk, HOPL-II, ACM SIGPLAN Notices 28(3), March 1993 — the author’s own narrative",
+        "url": "https://worrydream.com/EarlyHistoryOfSmalltalk/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c8",
+      "text": "The modern form followed after substantial revision, with a development environment containing most of the now-familiar tools including a class library browser and editor; Ingalls described its design and implementation at the fifth symposium on Principles of Programming Languages in Tucson in January 1978. The release version followed between 1980 and 1983.",
+      "type": "date",
+      "tokens": [
+        "Ingalls",
+        "Principles of Programming Languages",
+        "Tucson",
+        "1978",
+        "1980",
+        "1983"
+      ],
+      "source": {
+        "title": "Kay, A. C., The Early History of Smalltalk, HOPL-II, ACM SIGPLAN Notices 28(3), March 1993 — the author’s own narrative",
+        "url": "https://worrydream.com/EarlyHistoryOfSmalltalk/",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a program built from procedures over shared data has no boundary you can rely on, because any procedure can reach any state",
+    "fix": "make everything an object holding its own state, reachable only by sending it a message, and define the whole language by that one rule",
+    "cost": "if every call is a message resolved at run time, you cannot know from the text what any line will do",
+    "interview": "what object-oriented meant when it was coined, and how it differs from what the term now denotes"
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "taskId": "C.10",
+  "title": "1987. Perl. Wall",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Larry Wall released version 1.0 on 18 December 1987, posting the source to the newsgroup comp.sources.misc. He was working as a programmer at Unisys at the time and needed reports about information being synchronised between two sites.",
+      "type": "date",
+      "tokens": [
+        "Larry Wall",
+        "Wall",
+        "Unisys",
+        "1987"
+      ],
+      "source": {
+        "title": "Perl: the 18 December 1987 release of version 1.0 to comp.sources.misc, Wall’s employment at Unisys, and the account of the name",
+        "url": "https://en.wikipedia.org/wiki/Perl",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Related material appeared separately in comp.sources.unix volume 13 in February 1988, posted by the moderator Rich Salz: issue 12 carried patches 6 to 10, and issue 13 carried a forwarded explanatory article and a sample program together with patches 11 to 14. The original release and these follow-on postings went to different newsgroups, which is why the release is sometimes misattributed.",
+      "type": "event",
+      "tokens": [
+        "Rich Salz",
+        "Salz",
+        "1988"
+      ],
+      "source": {
+        "title": "comp.sources.unix, Volume 13, Issue 13: forwarded posting of perl code, February 1988, archived by The Unix Heritage Society",
+        "url": "https://www.tuhs.org/Usenet/comp.sources.unix/1988-February/005937.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The manual page states the intended niche directly: \"If you have a problem that would ordinarily use sed or awk or sh, but it exceeds their capabilities or must run a little faster, and you don’t want to write the silly thing in C, then perl may be for you.\"",
+      "type": "quote",
+      "tokens": [
+        "Perl"
+      ],
+      "source": {
+        "title": "Wall, L., perl(1) manual page — the description text dating from the original 1987 release, carried forward essentially unchanged into later manuals",
+        "url": "https://perldoc.perl.org/5.005/perl",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "The same manual page describes it as an interpreted language optimized for scanning arbitrary text files, extracting information from those text files and printing reports based on that information, and as combining some of the best features of C, sed, awk and sh. It states the design preference as being practical — easy to use, efficient, complete — rather than beautiful, meaning tiny, elegant, minimal.",
+      "type": "quote",
+      "tokens": [
+        "Perl"
+      ],
+      "source": {
+        "title": "Wall, L., perl(1) manual page — the description text dating from the original 1987 release, carried forward essentially unchanged into later manuals",
+        "url": "https://perldoc.perl.org/5.005/perl",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "On the name: it is commonly expanded as Practical Extraction and Report Language, but Wall has said it is a riff on Pearl, from the parable of the pearl, with the letter dropped because a language called Pearl already existed.",
+      "type": "event",
+      "tokens": [
+        "Practical Extraction and Report Language",
+        "Practical Extraction",
+        "Report Language",
+        "Practical",
+        "Extraction",
+        "Report",
+        "Language",
+        "Pearl",
+        "Wall"
+      ],
+      "source": {
+        "title": "Perl: the 18 December 1987 release of version 1.0 to comp.sources.misc, Wall’s employment at Unisys, and the account of the name",
+        "url": "https://en.wikipedia.org/wiki/Perl",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c6",
+      "text": "The tools it set out to subsume — sed, awk and the shell — are the standard text-processing tools of Unix, and the follow-on postings were carried in the comp.sources.unix newsgroup.",
+      "type": "event",
+      "tokens": [
+        "Unix"
+      ],
+      "source": {
+        "title": "comp.sources.unix, Volume 13, Issue 13: forwarded posting of perl code, February 1988, archived by The Unix Heritage Society",
+        "url": "https://www.tuhs.org/Usenet/comp.sources.unix/1988-February/005937.html",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "work too large for the shell tools and too small to justify writing in C had no home, so it was done badly in whichever tool was nearest",
+    "fix": "one language that absorbed the whole toolchain, with pattern matching as a construct of the language rather than a call into a library",
+    "cost": "it optimises for the program you write once, and the same properties make the program you have to read later expensive",
+    "interview": "what a language optimised for writing rather than reading costs, and when that is the right trade"
+  }
+}

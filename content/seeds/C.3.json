@@ -1,0 +1,119 @@
+{
+  "taskId": "C.3",
+  "title": "1959. COBOL. CODASYL, Hopper’s influence",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "A meeting held at the Pentagon on May 28 and 29, 1959 determined the need for three committees — short, intermediate and long range. The steering committee met on June 4, 1959 and named the whole activity the Committee on Data Systems Languages, abbreviated CODASYL. The intermediate range committee was formed but never operational and the long range committee was never formed.",
+      "type": "date",
+      "tokens": [
+        "Pentagon",
+        "Committee on Data Systems Languages",
+        "CODASYL",
+        "1959"
+      ],
+      "source": {
+        "title": "CODASYL: formation and committee structure, summarising the May 1959 Pentagon meeting and the June 4, 1959 steering committee",
+        "url": "https://en.wikipedia.org/wiki/CODASYL",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The Short Range Committee was tasked with an interim specification for a common business-oriented language and was chaired by Joseph Wegstein of the National Bureau of Standards. Its membership included industry representatives alongside the Air Force, the Navy and the National Bureau of Standards.",
+      "type": "person",
+      "tokens": [
+        "Short Range Committee",
+        "Joseph Wegstein",
+        "Wegstein",
+        "National Bureau of Standards",
+        "Air Force",
+        "Navy",
+        "1959"
+      ],
+      "source": {
+        "title": "Sammet, J. E., The Early History of COBOL, in History of Programming Languages, ACM SIGPLAN Notices, 1978",
+        "url": "https://dl.acm.org/doi/10.1145/960118.808378",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The specifications were inspired to a great extent by FLOW-MATIC, invented by Grace Hopper, which was attractive to the group because it was the only language available to them that had actually been implemented. Its major contributions were long variable names, English words for commands, and the separation of data descriptions from instructions. Hopper served as a technical adviser to the Short Range Committee.",
+      "type": "event",
+      "tokens": [
+        "FLOW-MATIC",
+        "FLOW",
+        "MATIC",
+        "Grace Hopper",
+        "Hopper",
+        "English",
+        "Short Range Committee"
+      ],
+      "source": {
+        "title": "Sammet, J. E., The Early History of COBOL, in History of Programming Languages, ACM SIGPLAN Notices, 1978",
+        "url": "https://dl.acm.org/doi/10.1145/960118.808378",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "Attribution of COBOL to Hopper is disputed by a participant: Jean Sammet, one of its lead designers, said that Hopper \"was not the mother, creator, or developer of Cobol\".",
+      "type": "quote",
+      "tokens": [
+        "COBOL",
+        "Jean Sammet",
+        "Sammet",
+        "Hopper",
+        "Cobol"
+      ],
+      "source": {
+        "title": "COBOL: naming and attribution, quoting Jean Sammet on Hopper’s role",
+        "url": "https://en.wikipedia.org/wiki/COBOL",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "The name COBOL was chosen at a meeting on 18 September 1959; rejected alternatives included BUSY, INFOSYL and COCOSYL. The specifications were approved by the executive committee on January 3, 1960 and printed by the government printing office as COBOL 60.",
+      "type": "date",
+      "tokens": [
+        "COBOL",
+        "BUSY",
+        "INFOSYL",
+        "COCOSYL",
+        "1959",
+        "1960"
+      ],
+      "source": {
+        "title": "CODASYL: formation and committee structure, summarising the May 1959 Pentagon meeting and the June 4, 1959 steering committee",
+        "url": "https://en.wikipedia.org/wiki/CODASYL",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c6",
+      "text": "On December 6 and 7, 1960, essentially the same COBOL program was run on two different makes of computer — an RCA machine and a Remington-Rand UNIVAC machine — demonstrating that compatibility across manufacturers could be achieved.",
+      "type": "event",
+      "tokens": [
+        "COBOL",
+        "RCA",
+        "Remington-Rand",
+        "UNIVAC",
+        "1960"
+      ],
+      "source": {
+        "title": "Sammet, J. E., The Early History of COBOL, in History of Programming Languages, ACM SIGPLAN Notices, 1978",
+        "url": "https://dl.acm.org/doi/10.1145/960118.808378",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a program was an asset tied to one manufacturer’s machine, and the largest buyer of computers was buying from several manufacturers at once",
+    "fix": "specify the language by committee first, in English, so that the written specification rather than any one vendor’s compiler is the standard",
+    "cost": "design by committee against a deadline, and verbosity accepted deliberately as the price of being readable by people who do not program",
+    "interview": "what the December 1960 two-machine demonstration actually proved, and why that was the whole point"
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "taskId": "C.6",
+  "title": "1964. BASIC. Kemeny and Kurtz",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "At 4 a.m. on May 1, 1964, in the basement of College Hall at Dartmouth, John Kemeny and a student programmer typed RUN on neighbouring terminals and both got back correct answers to simple programs. Dartmouth’s own retrospective describes the scene as Dartmouth legend rather than as a documented record, and other accounts credit Kemeny and Thomas Kurtz jointly.",
+      "type": "date",
+      "tokens": [
+        "John Kemeny",
+        "Kemeny",
+        "Thomas Kurtz",
+        "Kurtz",
+        "Dartmouth",
+        "College Hall",
+        "RUN",
+        "1964"
+      ],
+      "source": {
+        "title": "BASIC at Dartmouth, Dartmouth College — the institution’s own account of 1 May 1964",
+        "url": "https://www.dartmouth.edu/basicfifty/basic.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The language was invented by John Kemeny and Thomas Kurtz. Kemeny began work on a draft of it in September 1963, having applied that year for a National Science Foundation grant to bring a GE-225 computer to campus and build a general-purpose time-sharing system; the grant was awarded despite referees’ serious doubts about staffing the work with undergraduates.",
+      "type": "person",
+      "tokens": [
+        "John Kemeny",
+        "Kemeny",
+        "Thomas Kurtz",
+        "Kurtz",
+        "National Science Foundation",
+        "GE-225",
+        "GE",
+        "1963"
+      ],
+      "source": {
+        "title": "BASIC at Dartmouth, Dartmouth College — the institution’s own account of 1 May 1964",
+        "url": "https://www.dartmouth.edu/basicfifty/basic.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The language ran on the Dartmouth Time-Sharing System, was implemented by undergraduate students, and opened to general users in June 1964. The original version had 14 statements and nine built-in functions.",
+      "type": "event",
+      "tokens": [
+        "Dartmouth Time-Sharing System",
+        "Dartmouth",
+        "Time-Sharing",
+        "1964"
+      ],
+      "source": {
+        "title": "Dartmouth BASIC: the Dartmouth Time-Sharing System, the original statement set, and its compile-and-go implementation",
+        "url": "https://en.wikipedia.org/wiki/Dartmouth_BASIC",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "By the autumn of 1964 hundreds of students were using it on 20 terminals around campus, and faculty across disciplines were supplied with teletypes and began writing their own programs.",
+      "type": "event",
+      "tokens": [
+        "1964"
+      ],
+      "source": {
+        "title": "BASIC at Dartmouth, Dartmouth College — the institution’s own account of 1 May 1964",
+        "url": "https://www.dartmouth.edu/basicfifty/basic.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "Unlike many of the later implementations that carried the name, the original was a compiler operating compile-and-go: it converted an entire program at once into machine code, rather than translating it line by line at each run.",
+      "type": "event",
+      "tokens": [
+        "BASIC",
+        "Dartmouth"
+      ],
+      "source": {
+        "title": "Dartmouth BASIC: the Dartmouth Time-Sharing System, the original statement set, and its compile-and-go implementation",
+        "url": "https://en.wikipedia.org/wiki/Dartmouth_BASIC",
+        "kind": "secondary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "getting an answer out of a computer required a specialist and a batch turnaround, so anyone who was not a programmer was locked out of the machine entirely",
+    "fix": "a language small enough to learn in an afternoon, on a time-sharing system that returned the answer while you were still sitting at the terminal",
+    "cost": "the language was shaped by what a beginner could hold in mind, and later implementations kept the language while dropping the system that made it work",
+    "interview": "whether the language or the time-sharing system underneath it was the actual invention"
+  }
+}

@@ -1,0 +1,122 @@
+{
+  "taskId": "C.4",
+  "title": "1958. LISP. McCarthy",
+  "researchedAt": "2026-09-18",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The language was described in McCarthy’s paper Recursive Functions of Symbolic Expressions and Their Computation by Machine, Part I, published in Communications of the ACM in April 1960. The abstract describes LISP, for list processor, as a system developed for the IBM 704 by the Artificial Intelligence group at MIT, designed to facilitate experiments with a proposed system called the Advice Taker.",
+      "type": "date",
+      "tokens": [
+        "McCarthy",
+        "Recursive Functions",
+        "Symbolic Expressions",
+        "Communications",
+        "ACM",
+        "LISP",
+        "IBM",
+        "Artificial Intelligence",
+        "MIT",
+        "Advice Taker",
+        "1960"
+      ],
+      "source": {
+        "title": "McCarthy, J., Recursive Functions of Symbolic Expressions and Their Computation by Machine, Part I, Communications of the ACM 3(4), April 1960",
+        "url": "https://www.cs.tufts.edu/~nr/cs257/archive/john-mccarthy/recursive.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The paper builds everything from symbolic expressions — atoms and recursively constructed ordered pairs — and five elementary operations: atom, eq, car, cdr and cons. Conditional expressions and recursive definitions then define larger functions such as substitution, structural equality, list append and symbolic differentiation.",
+      "type": "event",
+      "tokens": [
+        "LISP"
+      ],
+      "source": {
+        "title": "McCarthy, J., Recursive Functions of Symbolic Expressions and Their Computation by Machine, Part I, Communications of the ACM 3(4), April 1960",
+        "url": "https://www.cs.tufts.edu/~nr/cs257/archive/john-mccarthy/recursive.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "In the list-structure representation on that machine, a word is split into an address part and a decrement part, holding the locations of the subexpressions returned by car and cdr.",
+      "type": "event",
+      "tokens": [
+        "LISP"
+      ],
+      "source": {
+        "title": "McCarthy, J., Recursive Functions of Symbolic Expressions and Their Computation by Machine, Part I, Communications of the ACM 3(4), April 1960",
+        "url": "https://www.cs.tufts.edu/~nr/cs257/archive/john-mccarthy/recursive.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "McCarthy became an assistant professor at MIT in the autumn of 1958, when he and Minsky founded the MIT Artificial Intelligence Project, and implementation of the language began that autumn.",
+      "type": "date",
+      "tokens": [
+        "McCarthy",
+        "MIT",
+        "Minsky",
+        "Artificial Intelligence Project",
+        "1958"
+      ],
+      "source": {
+        "title": "McCarthy, J., History of Lisp, 12 February 1979, Stanford University — the author’s own account",
+        "url": "http://www-formal.stanford.edu/jmc/history/lisp/node3.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "McCarthy wrote: \"S.R. Russell noticed that eval could serve as an interpreter for LISP, promptly hand coded it, and we now had a programming language with an interpreter.\" He adds that the arrival of the interpreter tended to freeze the form of the language.",
+      "type": "quote",
+      "tokens": [
+        "McCarthy",
+        "Russell",
+        "LISP"
+      ],
+      "source": {
+        "title": "McCarthy, J., History of Lisp, 12 February 1979, Stanford University — the author’s own account",
+        "url": "http://www-formal.stanford.edu/jmc/history/lisp/node3.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c6",
+      "text": "McCarthy wrote that the notation for representing functions as data was created \"for the purposes of the paper with no thought that it would be used to express LISP programs in practice\". The s-expression syntax was intended as an interim measure pending m-expressions, which never caught on.",
+      "type": "quote",
+      "tokens": [
+        "McCarthy",
+        "LISP"
+      ],
+      "source": {
+        "title": "McCarthy, J., History of Lisp, 12 February 1979, Stanford University — the author’s own account",
+        "url": "http://www-formal.stanford.edu/jmc/history/lisp/node3.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c7",
+      "text": "Automatic reclamation of unused storage — garbage collection — is among the topics the 1960 paper covers, and the paper is its first published description.",
+      "type": "event",
+      "tokens": [
+        "LISP",
+        "1960"
+      ],
+      "source": {
+        "title": "McCarthy, J., Recursive Functions of Symbolic Expressions and Their Computation by Machine, Part I, Communications of the ACM 3(4), April 1960",
+        "url": "https://www.cs.tufts.edu/~nr/cs257/archive/john-mccarthy/recursive.pdf",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a program that manipulates symbols rather than numbers has to build and take apart structures whose size is not known in advance, and the languages of the day had neither the structures nor the memory management",
+    "fix": "expressions made of pairs, five operations on them, and recursion — with the language’s own programs written in that same structure",
+    "cost": "the interpreter for the notation was written before anyone decided the notation was final, and the language froze around it",
+    "interview": "why code being the same structure as data is a design property and not a syntax quirk"
+  }
+}

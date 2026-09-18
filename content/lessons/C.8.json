@@ -1,0 +1,49 @@
+{
+  "id": "C.8",
+  "trackId": "C",
+  "trackName": "Languages: the chain of walls",
+  "title": "1972 to 1980. Smalltalk. Kay, Xerox PARC",
+  "status": "traced",
+  "seed": "C.8",
+  "story": "Everything in the chain so far organises a program as procedures operating on data. That scales badly for a reason that is structural rather than stylistic: the data is reachable from everywhere, so a program’s real interface is not what its authors documented but every access any procedure makes. Grow it and you cannot change a representation without auditing the whole program, because nothing in the language ever said which parts were entitled to know.\n\nThe proposed answer was to make the boundary the only thing there is. Every value is an object holding its own state; the sole operation is to send an object a message and let it decide what to do. Kay’s phrase is that objects are little computers, a recursion on the notion of computer itself — which is the real claim, because if each part is a whole machine then the interface between parts is the only thing that exists.\n\nHow it got built is instructive about small ideas. In a hallway argument with Ted Kaehler and Dan Ingalls about how large a language needs to be to have real power, Kay boasted he could define the most powerful language in the world in a page of code, and was told to put up or shut up. He had a reason to believe it: McCarthy’s self-describing interpreter was about that length. He worked two weeks of very early mornings; then, in his words, only a few days later Ingalls showed him the scheme working on the NOVA — written in BASIC, of all things. It ran three plus four so slowly that Butler Lampson called it glacial, and it always returned seven.\n\nNow the fact that settles what the term originally meant. The first version had no inheritance at all. Not as an oversight: Simula’s single static inheritance was judged too limiting, so it was left out of the language that named the idea. Whatever object-oriented meant in 1972, it did not mean class hierarchies. It meant state behind a boundary and late-bound messages across it — and the cost of that, then and now, is that a line of code no longer tells you what will run.",
+  "problem": {
+    "name": "Encapsulation with late binding",
+    "aka": [
+      "message passing",
+      "object-oriented programming",
+      "information hiding"
+    ],
+    "shape": "Any part of the program can reach any part of the state, so the effective interface of a component is every access anyone makes to it.",
+    "tell": [
+      "changing a data representation requires auditing code that has nothing to do with it",
+      "the documented interface and the actual coupling have drifted apart",
+      "you cannot say which parts of the program depend on a decision you want to reverse"
+    ],
+    "move": "Put state behind a boundary that can only be crossed by request, and let the receiver — not the caller, and not the compiler — decide what the request means.",
+    "invariant": "No part of the program can observe another part’s representation. That is what makes a representation changeable without a global audit, and it must hold universally: one privileged accessor that reaches inside voids the guarantee for the whole component.",
+    "breaks": "Late binding means the target of a call is not knowable from the text, so what you can no longer do is read a program and know what it runs. That costs static checking, whole-program optimisation, and the ability to find every caller of anything. It is the same property paying out and charging.",
+    "cost": {
+      "time": "a dispatch per call rather than a jump to a known address",
+      "space": "each object carries its own state and a route to its behaviour",
+      "beats": "shared mutable data, which is faster and offers no way to bound the effect of a change"
+    },
+    "worked": {
+      "problem": "If the idea is objects and classes, why did the language that named it ship without inheritance?",
+      "reasoning": "Take the two candidate definitions and test them against that fact.\n\nIf object-oriented means organising a program as a hierarchy of classes, then the first version of the language that coined the term was not object-oriented, which is absurd.\n\nIf it means state behind a boundary crossed only by messages resolved at run time, the fact is unremarkable: inheritance is one way to share implementation between objects, useful but separate, and it was left out because the available form — single and static — was judged too limiting.\n\nOnly the second definition survives contact with the evidence. Inheritance arrived later and became the popular summary because it is the part that is visible in source code, which is a poor reason to treat it as the idea.",
+      "code": "procedures over shared data     objects and messages\n---------------------------     --------------------\nrecord.balance -= 100           account <- withdraw: 100\n\n  who may do this? anyone        who may do this? the\n  what does it mean? fixed         object decides\n  change the field -> audit      change the field -> nobody\n     every use site                 outside could see it\n\n  Note what the right-hand column costs: you cannot\n  tell, by reading, what code \"withdraw:\" runs. That is\n  not a defect of the notation. It is the same property."
+    },
+    "practice": "Take a class you have written and list every place outside it that depends on how it stores its data, including through getters that expose the representation. Then decide which of those you could change without touching anything else — that count, not the presence of the keyword, is how encapsulated it is."
+  },
+  "beats": {
+    "broke": "Procedures over shared data give a component no enforceable boundary: every access anyone makes is part of its real interface, so no representation can be changed without auditing the program.",
+    "fix": "Objects holding their own state, reached only by sending messages the receiver interprets. Demonstrated on the NOVA in roughly September 1972 after a hallway challenge, moved onto the Interim Dynabook in 1973, and reaching its released form by 1980.",
+    "cost": "A message resolved at run time cannot be resolved by reading. That forfeits static checking of calls, whole-program optimisation, and the ability to enumerate callers — and the first working version computed three plus four so slowly it was called glacial.",
+    "interview": {
+      "q": "What did object-oriented mean when the term was coined, and how does that differ from what it now denotes?",
+      "trap": "Answering with the four-pillar summary — encapsulation, inheritance, polymorphism, abstraction — as though it were a definition rather than a later teaching device.",
+      "answer": "It meant state behind a boundary, with the only way across being a message the receiver interprets at run time. Objects were described as little computers, a recursion on the notion of computer itself, which is the operative idea: if a part is a whole machine, the interface is all there is.\n\nThe decisive evidence is that the first version of the language had no inheritance, and not by oversight — the single static form available was judged too limiting. A definition that makes the language that coined the term fail its own test is the wrong definition.\n\nWhat the term now denotes is mostly class hierarchies and static typing over them, which is nearly the opposite emphasis: it recovers the compile-time knowledge that late binding gave up. That is a defensible trade, but it is a different design, and the shared name hides the fact that the two disagree about what the cost was for."
+    }
+  },
+  "blueprint": "Which property is load-bearing? Use the 1972 fact:\n\n  the first version shipped with NO inheritance\n       |\n       +-- if OOP == class hierarchies\n       |      -> the language that named it wasn't OOP\n       |      -> definition fails\n       |\n       +-- if OOP == state behind a boundary,\n              messages resolved at run time\n              -> fact is unremarkable\n              -> definition holds\n\n  What you buy:  change a representation, audit nothing\n  What you pay:  read a call site, learn nothing\n\n  Both come from the same place. Inheritance became the\n  popular summary because it is the part you can SEE in\n  the source -- which is not an argument.",
+  "takeaway": "The idea was a boundary around state with messages resolved by the receiver, not class hierarchies — the first version had no inheritance at all — and its cost is that a call site stops telling you what runs."
+}
