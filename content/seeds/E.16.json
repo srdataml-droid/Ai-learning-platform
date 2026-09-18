@@ -1,0 +1,77 @@
+{
+  "taskId": "E.16",
+  "title": "Breadth first search",
+  "researchedAt": "2026-09-19",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Moore’s paper The shortest path through a maze appeared in the proceedings of an international symposium on the theory of switching, part two, Harvard University Press, 1959, pages 285 to 292. The symposium was held in April 1957, which is why both years are cited in the literature.",
+      "type": "date",
+      "tokens": [
+        "Moore",
+        "Harvard",
+        "1957",
+        "1959"
+      ],
+      "source": {
+        "title": "Moore, E. F., The shortest path through a maze, Proceedings of an International Symposium on the Theory of Switching, Part II, Harvard University Press, 1959, pp. 285-292",
+        "url": "https://bibbase.org/network/publication/moore-theshortestpaththroughamaze-1959",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Moore was motivated by a weakness in Claude Shannon’s maze-solving robot Theseus of 1950, which used a memoised depth-first search implemented with electromechanical relays — almost certainly the first implementation of depth-first search on graphs.",
+      "type": "date",
+      "tokens": [
+        "Moore",
+        "Claude Shannon",
+        "Shannon",
+        "Theseus",
+        "1950"
+      ],
+      "source": {
+        "title": "Moore, E. F., The shortest path through a maze, Proceedings of an International Symposium on the Theory of Switching, Part II, Harvard University Press, 1959, pp. 285-292",
+        "url": "https://bibbase.org/network/publication/moore-theshortestpaththroughamaze-1959",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Priority for the method is contested: in 1945, more than a decade before Moore considered mazes, Konrad Zuse described an implementation of breadth-first search as a method to count and label the components of a disconnected graph, in work that was not published at the time.",
+      "type": "date",
+      "tokens": [
+        "Konrad Zuse",
+        "Zuse",
+        "Moore",
+        "1945"
+      ],
+      "source": {
+        "title": "Moore, E. F., The shortest path through a maze, Proceedings of an International Symposium on the Theory of Switching, Part II, Harvard University Press, 1959, pp. 285-292",
+        "url": "https://bibbase.org/network/publication/moore-theshortestpaththroughamaze-1959",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "The weighted repair is Dijkstra’s method, published in Numerische Mathematik volume 1, pages 269 to 271, in 1959, which settles the nearest unsettled node repeatedly and requires that no edge weight is negative.",
+      "type": "date",
+      "tokens": [
+        "Dijkstra",
+        "Numerische Mathematik",
+        "1959"
+      ],
+      "source": {
+        "title": "Dijkstra, E. W., A note on two problems in connexion with graphs, Numerische Mathematik 1:269-271, 1959",
+        "url": "https://link.springer.com/article/10.1007/BF01386390",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "following a path until it ends finds a route through a graph and gives no reason to think it is the shortest one",
+    "fix": "expand by distance instead of by depth — everything one step away, then everything two steps away — so the first time you reach a vertex you reached it by a shortest route",
+    "cost": "the frontier has to be held in memory, and it can be exponentially wide where the depth-first stack would have been shallow",
+    "interview": "why the first time breadth-first search reaches a vertex is by a shortest path, and why that stops being true with weights"
+  }
+}

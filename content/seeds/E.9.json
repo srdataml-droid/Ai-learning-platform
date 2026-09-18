@@ -1,0 +1,44 @@
+{
+  "taskId": "E.9",
+  "title": "Queues and deques",
+  "researchedAt": "2026-09-19",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The contrasting discipline was described by Turing in 1946 as a list of notes held with the most recent last, and patented by Bauer and Samelson in 1957 as the Kellerprinzip — in both cases the item retrieved is the one most recently stored.",
+      "type": "date",
+      "tokens": [
+        "Turing",
+        "Bauer",
+        "Samelson",
+        "Kellerprinzip",
+        "1946",
+        "1957"
+      ],
+      "source": {
+        "title": "Bauer, F. L. and Samelson, K., Verfahren zur automatischen Verarbeitung von kodierten Daten und Rechenmaschine zur Ausübung des Verfahrens, German patent application DE1094019, filed 30 March 1957",
+        "url": "https://de.wikipedia.org/wiki/Stapelspeicher",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Tarjan describes amortization as averaging over time, a powerful technique in the complexity analysis of data structures, giving a realistic but robust complexity measure.",
+      "type": "quote",
+      "tokens": [
+        "Tarjan"
+      ],
+      "source": {
+        "title": "Tarjan, R. E., Amortized Computational Complexity, SIAM Journal on Algebraic and Discrete Methods 6(2):306-318, April 1985",
+        "url": "https://dl.acm.org/doi/abs/10.1137/0606031",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "processing things in the order they arrived means removing from one end of a store and adding at the other, and doing that in an array means shifting everything on every removal",
+    "fix": "stop moving the data and move the ends instead, wrapping them around a fixed block so both operations touch one element",
+    "cost": "once the ends wrap, the same positions mean both full and empty, so the structure needs one more piece of information than it appears to",
+    "interview": "why a ring buffer cannot distinguish full from empty without help"
+  }
+}

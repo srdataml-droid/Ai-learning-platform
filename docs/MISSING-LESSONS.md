@@ -18,21 +18,8 @@ Study order: the sequence first, then the five habits running underneath.
 
 ## Track E — Data structures and algorithms
 
-20 of 28 still missing.
+8 of 28 still missing.
 
-- [ ] `E.2` Arrays and dynamic arrays
-- [ ] `E.3` Strings and the operations that quietly cost O(n)
-- [ ] `E.5` Sets
-- [ ] `E.8` Stacks
-- [ ] `E.9` Queues and deques
-- [ ] `E.10` Linked lists
-      <br>_note: rare in production, common in interviews, know why both are true_
-- [ ] `E.11` Trees and tree traversal
-- [ ] `E.12` Binary search trees
-- [ ] `E.13` Heaps and priority queues
-- [ ] `E.14` Tries
-- [ ] `E.15` Graphs: adjacency list versus matrix
-- [ ] `E.16` Breadth first search
 - [ ] `E.17` Depth first search
 - [ ] `E.18` Topological sort
 - [ ] `E.20` Recursion, and converting recursion to iteration
@@ -229,7 +216,7 @@ Study order: the sequence first, then the five habits running underneath.
 
 ---
 
-**Total remaining: 141 of 313.**
+**Total remaining: 129 of 313.**
 
 Regenerate: `node tools/missing-lessons.mjs > docs/MISSING-LESSONS.md`
 

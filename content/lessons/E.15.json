@@ -1,0 +1,49 @@
+{
+  "id": "E.15",
+  "trackId": "E",
+  "trackName": "Data structures and algorithms",
+  "title": "Graphs: adjacency list versus matrix",
+  "status": "traced",
+  "seed": "E.15",
+  "story": "A graph is a set of vertices and a set of relationships between them, and that description says nothing about memory. Before you can run anything you have to choose a layout, and the choice is not neutral: each layout makes one question cheap and the other expensive, and every algorithm you write afterwards inherits the consequence.\n\nThe two questions are worth separating precisely because they sound similar. Is there an edge from u to v? And what are the neighbours of u? A matrix — a grid of vertices by vertices — answers the first by indexing, in constant time regardless of the graph, and answers the second by scanning an entire row, which costs the number of vertices whether u has two neighbours or none. An adjacency list — for each vertex, the vertices it points to — answers the second in time proportional to how many neighbours there actually are, and answers the first by searching that list.\n\nSpace is where the decision usually gets made. A matrix costs the square of the vertex count no matter how few edges exist; a list costs the vertices plus the edges. So the two become comparable only when the number of edges approaches the square of the vertices — a dense graph — and most graphs that arise from real things are nowhere near that. Road networks, social graphs, dependency graphs: the number of neighbours a vertex has is bounded by something physical, while the number of vertices is not.\n\nThe historical thread makes the same point from the other side. Moore’s paper on finding the shortest path through a maze was published in 1959, from a symposium held in 1957, and was motivated by a weakness in Shannon’s maze-solving robot of 1950 — which used a memoised depth-first search built from relays, almost certainly the first implementation of depth-first search on a graph. A maze is a graph whose vertices have at most four neighbours however large it gets, which is the sparse case, and the algorithms that came out of it are written in terms of neighbours rather than pairs. That is not a coincidence; it is the representation showing through the algorithm.",
+  "problem": {
+    "name": "Graph representation",
+    "aka": [
+      "adjacency list",
+      "adjacency matrix",
+      "sparse versus dense"
+    ],
+    "shape": "A relationship structure must be laid out in memory, and the layout determines which queries are cheap for everything built on top of it.",
+    "tell": [
+      "the algorithm keeps asking for the neighbours of a vertex, or keeps testing whether two specific vertices are connected",
+      "the vertex count is large and each vertex relates to only a handful of others",
+      "memory is the binding constraint rather than time"
+    ],
+    "move": "Decide which question dominates. Testing a specific pair repeatedly favours a matrix; enumerating neighbours favours a list. Then check density: unless the edge count approaches the square of the vertex count, the list wins on space by a wide margin.",
+    "invariant": "The representation makes one access pattern direct and the other a search. Every algorithm written on top inherits that, which is why the choice is made once and paid for continuously.",
+    "breaks": "It breaks when the graph you get is not the graph you assumed. A matrix sized for the vertex count becomes unusable as that count grows, regardless of how few edges arrive; a list makes a pair test proportional to a degree that may be unbounded in a graph with hubs. And converting between them later costs a full pass, plus rewriting whatever depended on the old costs.",
+    "cost": {
+      "time": "matrix: constant pair test, vertex-count neighbour scan. list: degree-proportional neighbour scan, degree-proportional pair test",
+      "space": "matrix: vertices squared, regardless of edges. list: vertices plus edges",
+      "beats": "each other, in opposite regimes — which is why the question is about your graph rather than about graphs"
+    },
+    "worked": {
+      "problem": "Which representation should you choose, and what does the question actually turn on?",
+      "reasoning": "Two things, and people usually only consider the first.\n\nThe access pattern. Write down the inner loop of the algorithm you are going to run. If it says \"for each neighbour of u\", a list gives you exactly those and a matrix makes you scan every vertex to find them — which turns a traversal proportional to the edges into one proportional to the vertices squared. If it says \"is u adjacent to v\", the matrix indexes and the list searches.\n\nDensity, which usually decides it. A matrix costs the square of the vertex count whatever the edges do. So it is only competitive when the edges approach that square, and graphs from the physical world rarely do: the number of things a thing can be adjacent to is bounded by something real, while the number of things is not.\n\nPut together, they explain why the list is the default in practice and the matrix the special case. And notice the historical evidence — the early graph search work came out of mazes, where a cell has at most four neighbours however large the maze is, so the algorithms are phrased in terms of neighbours and assume a representation that supplies them cheaply.",
+      "code": "                  matrix              list\n\"edge u->v?\"      O(1)   index       O(deg u) search\n\"neighbours of u\" O(V)   scan a row  O(deg u)\nspace             O(V^2) always      O(V + E)\n\n  full traversal:\n     matrix   O(V^2)   even with 3 edges\n     list     O(V + E)\n\n  when is a matrix competitive?\n     only as E approaches V^2  (dense)\n\n  and real graphs are usually not:\n     a maze cell:        <= 4 neighbours, always\n     a road junction:    a handful\n     a person:           bounded by hours in a day\n     -> degree bounded, vertex count not\n\n  which is why the classic algorithms are written\n  as \"for each neighbour\" -- the representation is\n  visible in the shape of the algorithm."
+    },
+    "practice": "Take a graph problem you have solved and write down its inner loop. Identify which of the two questions it asks, then compute the space both representations would need for a graph with a million vertices and four edges each."
+  },
+  "beats": {
+    "broke": "A graph is a set of relationships, and memory is not. Some layout must be chosen before anything can run, and each layout makes one of the two natural questions direct and the other a search.",
+    "fix": "Two representations keyed differently: a grid indexed by pair, answering adjacency in constant time; or a per-vertex list, answering neighbours in time proportional to how many there are.",
+    "cost": "The decision is made once and inherited by every algorithm afterwards, and it depends on the density of a graph you may not have seen yet — converting later costs a pass plus everything built on the old cost model.",
+    "interview": {
+      "q": "Which graph representation should you choose, and what does the decision actually turn on?",
+      "trap": "Answering \"it depends on the use case\" without naming the two axes. The decision has a specific shape and is usually settled by the second axis.",
+      "answer": "Two things: the access pattern and the density, and the second usually decides it.\n\nAccess pattern first. Write the inner loop of the algorithm you intend to run. If it asks for the neighbours of a vertex, a list supplies exactly those while a matrix makes you scan a whole row — which turns a traversal proportional to the edges into one proportional to the vertices squared. If it asks whether two specific vertices are adjacent, the matrix indexes directly and the list searches.\n\nDensity usually settles it, though. A matrix costs the square of the vertex count no matter how few edges exist, so it is only competitive when the edge count approaches that square. Graphs arising from physical things rarely get close: a maze cell has at most four neighbours however large the maze, a junction has a handful, a person has a bounded number of contacts — degree is bounded by something real while the vertex count is not.\n\nWhich is why the list is the default and the matrix the special case, and why the classic search algorithms are phrased as \"for each neighbour\". The representation is visible in the shape of the algorithm — Moore's maze work of 1959 is written that way because a maze is sparse."
+    }
+  },
+  "blueprint": "Two questions, and each layout answers one directly:\n\n                    matrix         list\n   edge u->v?       O(1)           O(deg u)\n   neighbours(u)?   O(V)           O(deg u)\n   space            O(V^2)         O(V + E)\n   full traversal   O(V^2)         O(V + E)\n\n  the matrix is only competitive as E -> V^2.\n\n  and real graphs are sparse because degree is\n  bounded by something physical while the vertex\n  count is not:\n\n     maze cell      <= 4, always\n     road junction  a handful\n     dependency     what a developer wrote\n\n  so: list by default, matrix for dense graphs and\n  for repeated pair tests.\n\n  and note the tell in the classic algorithms:\n  they say \"for each neighbour\", never \"for each\n  pair\". the representation shows through.",
+  "takeaway": "A matrix makes pair tests direct and costs the square of the vertex count regardless of edges; a list makes neighbour enumeration direct and costs vertices plus edges — and since real graphs have bounded degree, the list is the default and the matrix the special case."
+}

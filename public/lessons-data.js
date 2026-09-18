@@ -2890,6 +2890,351 @@
     "blueprint": "// Dijkstra's Core Invariant: Greedy exploration of minimum distance\nfunction dijkstra(graph, start) {\n  const dist = { [start]: 0 };\n  const pq = new PriorityQueue(); // O(log V) extract min\n  pq.push(start, 0);\n  while (!pq.isEmpty()) {\n    const u = pq.pop();\n    for (const [v, weight] of graph.neighbors(u)) {\n      if (dist[u] + weight < (dist[v] ?? Infinity)) {\n        dist[v] = dist[u] + weight;\n        pq.push(v, dist[v]);\n      }\n    }\n  }\n  return dist;\n}",
     "takeaway": "Hardware gives you constant factors; algorithms give you scalability. O(n log n) always beats O(n^2) at scale."
   },
+  "E.10": {
+    "id": "E.10",
+    "trackId": "E",
+    "trackName": "Data structures and algorithms",
+    "title": "Linked lists",
+    "status": "traced",
+    "seed": "E.10",
+    "story": "The curriculum note on this task says linked lists are rare in production and common in interviews, and asks you to know why both are true. They have the same answer, which is that the cost model changed after the structure was designed.\n\nStart with what it was for. Newell, Shaw and Simon built it as the primary data structure of the first list-processing language, around 1956 at RAND and Carnegie, with the familiar diagram of nodes and arrows appearing in the 1957 conference paper. The problem was structures whose size and shape are decided while the program runs — the same problem C.4 describes LISP solving — and the linked list is the minimal answer: put the address of the next element inside the current one, and you can build arbitrarily without knowing in advance how much you will need or relocating what you have. Newell and Simon’s Turing Award citation in 1975 names list processing alongside artificial intelligence.\n\nNow why it is rare. The asymptotics have not changed — insertion is still two assignments where an array shifts everything after the point — but the asymptotics are no longer what decides. Elements of a linked list are wherever the allocator put them, so traversing means following addresses the processor cannot predict, and each hop may wait on memory. An array puts the next element where the hardware was already going to look. The constant factor that favoured pointers when memory was uniform now runs the other way, and it runs the other way by enough that arrays frequently win even where the complexity class says they should not.\n\nAnd why it is common in interviews. A linked list is the smallest structure where correctness depends on maintaining pointer invariants through mutation: reversing one, detecting a cycle in one, or removing from the middle of one cannot be delegated to a library, has no interesting arithmetic to hide behind, and fails immediately if you drop a reference or update in the wrong order. It is a poor default and an excellent test, and those two facts are not in tension.",
+    "problem": {
+      "name": "Structure without contiguity",
+      "aka": [
+        "linked list",
+        "pointer chasing",
+        "list processing"
+      ],
+      "shape": "A collection must grow and be rearranged as the program runs, and contiguous storage fixes both the capacity and the positions.",
+      "tell": [
+        "elements are inserted and removed in the middle, repeatedly",
+        "the final size is unknown and relocation of existing elements is unacceptable",
+        "you are being asked to reverse, splice or detect a cycle, which is usually an interview"
+      ],
+      "move": "Store each element together with the location of the next, so that structural change is a matter of reassigning links rather than moving data, and growth needs no contiguous block.",
+      "invariant": "Every element knows where the next one is, and nothing else knows where any element is. That is what makes insertion local, and it is also exactly what makes traversal sequential and position lookup linear.",
+      "breaks": "It breaks on the hardware, not on the analysis. Nodes are wherever they were allocated, so traversal follows addresses the processor cannot anticipate and may stall on each hop, while an array is already where the prefetcher is looking. That cost did not exist when the structure was designed and now frequently outweighs the asymptotic advantage.",
+      "cost": {
+        "time": "constant to splice once you are there; linear to get there, with poor locality throughout",
+        "space": "a pointer per element, plus allocator overhead per node",
+        "beats": "an array for insertion in the middle on paper, and loses to it on traversal in practice more often than the complexity suggests"
+      },
+      "worked": {
+        "problem": "Why are linked lists rare in production and common in interviews?",
+        "reasoning": "Both follow from the same property: the structure is defined entirely by its pointers.\n\nFor production, that means the data is scattered. Traversal chases addresses the processor cannot predict, so each step risks waiting on memory, while an array’s next element is already being fetched. The asymptotic advantage for middle insertion is real and is frequently smaller than the constant-factor penalty on everything else — and crucially, finding the insertion point is itself a traversal, so the cheap operation is usually preceded by the expensive one.\n\nFor interviews, the same property makes it the smallest structure where the difficulty is maintaining invariants through mutation. Reversing one, detecting a cycle, removing a node given only a reference to it — none of these can be delegated to a library, none have arithmetic to hide behind, and each fails immediately if you update links in the wrong order or drop the only reference to the rest.\n\nSo it is a poor default and a good test, and noticing that these are the same fact is the actual answer.",
+        "code": "what it's good at, on paper:\n\n   insert in the middle   2 assignments\n   array equivalent       shift everything after\n\n  but: finding the middle is itself a traversal.\n  the cheap operation is preceded by the dear one.\n\n  what changed since 1956:\n\n     then   memory uniform; pointers cost what\n            anything else cost\n     now    array:  next element already being\n                    prefetched\n            list:   next address unpredictable,\n                    may stall\n\n     -> constant factors reversed, and by enough\n        to beat the complexity class in practice\n\n  why interviews love it anyway:\n\n     no library to call\n     no arithmetic to hide behind\n     correctness = pointer invariants under mutation\n     one wrong ordering -> lose the rest of the list\n\n  poor default, good test. same property, both times."
+      },
+      "practice": "Write a function that reverses a singly linked list in place, then write one that sums an array of the same length. Time both for a million elements, and note that the list traversal alone is slower than the whole array operation."
+    },
+    "beats": {
+      "broke": "Contiguous storage fixes capacity and position, so inserting in the middle relocates everything after it and the shape of the data must be known when the block is allocated.",
+      "fix": "Put the address of the next element inside the current one. Structural change becomes reassigning links, and growth needs no contiguous space — the answer Newell, Shaw and Simon built the first list-processing language on around 1956.",
+      "cost": "The elements end up scattered, so traversal follows addresses the processor cannot predict. That cost did not exist when memory was uniform and now routinely outweighs the asymptotic advantage.",
+      "interview": {
+        "q": "Why are linked lists rare in production code and common in interview questions?",
+        "trap": "Treating these as two separate facts with two separate explanations. They follow from one property, and saying so is the answer.",
+        "answer": "Both come from the structure being defined entirely by its pointers.\n\nIn production that means the data is scattered, so traversal chases addresses the processor cannot anticipate and may stall on each hop, while an array's next element is already being prefetched. The asymptotic win for middle insertion is real and usually smaller than the constant-factor penalty on everything else — and finding the insertion point is itself a traversal, so the cheap operation is normally preceded by the expensive one.\n\nIn interviews the same property makes it the smallest structure where the difficulty is maintaining invariants through mutation. Reversing one, detecting a cycle, deleting a node given only a reference to it: no library call, no arithmetic to hide behind, and an immediate failure if you reassign links in the wrong order or drop the only reference to the remainder.\n\nSo it is a poor default and an excellent test, and those are the same fact seen from two sides. Worth adding that the attribution is not uniform — some sources credit the linked list to Cliff Shaw individually rather than to the three jointly."
+      }
+    },
+    "blueprint": "One property, two consequences:\n\n   \"the structure is only its pointers\"\n\n   -> production: data scattered\n                  traversal unpredictable\n                  array is already prefetched\n                  and finding the insert point\n                  is itself a traversal\n                  => rare\n\n   -> interviews: no library call\n                  no arithmetic to hide in\n                  correctness = invariants under\n                  mutation\n                  one wrong link order loses the\n                  rest of the list\n                  => common\n\n  what changed since ~1956:\n     not the asymptotics\n     the CONSTANTS, because memory stopped being\n     uniform\n\n  which is the general lesson: a complexity class\n  survives; the cost model underneath it does not.",
+    "takeaway": "The linked list is defined entirely by its pointers, which is why it is rare in production — scattered data defeats prefetching — and common in interviews, where maintaining pointer invariants through mutation is the whole exercise."
+  },
+  "E.11": {
+    "id": "E.11",
+    "trackId": "E",
+    "trackName": "Data structures and algorithms",
+    "title": "Trees and tree traversal",
+    "status": "traced",
+    "seed": "E.11",
+    "story": "A list has one order and a tree does not, which is the whole of the difficulty. Any procedure that must visit every node has to impose an order, and the usual way this is taught — memorise three names and which position the node goes in — makes the choice look arbitrary. It is not arbitrary, and there is a single question that picks the right one every time.\n\nThe question is which direction the information flows. If what you need at a node comes from above — a depth, an accumulated path, a permission inherited from the parent — you must visit the node before its children, which is pre-order. If what you need at a node comes from below — the size of its subtree, the total of its descendants, the value of an expression whose operands are its children — you cannot compute it until the children are done, which is post-order. That is why deleting a tree is post-order and copying one is pre-order: you cannot free a node while you still need its links, and you cannot attach a child to a parent that does not exist yet.\n\nIn-order is the odd one, and it is worth saying why: it is only meaningful when the tree is binary and carries an ordering, in which case visiting left, then node, then right yields the keys in sorted sequence. That is not a third general option, it is a property of ordered binary trees specifically — and it is what makes such a tree a structure you can iterate as a sorted sequence for free. Hibbard’s 1962 paper on the combinatorics of these trees is titled with applications to searching and sorting for that reason, and his deletion rule works by the same property: replace a removed node with the smallest key in its right subtree, which is valid precisely because no key lies between them.\n\nBreadth-first, by level, is a different animal and belongs to E.16 — it needs a queue rather than the call stack, so it is the one traversal that is not naturally recursive, and it answers a different kind of question: nearest first rather than deepest first.",
+    "problem": {
+      "name": "Choosing a traversal order",
+      "aka": [
+        "pre-order",
+        "in-order",
+        "post-order",
+        "tree walk"
+      ],
+      "shape": "Every node must be visited and the structure supplies no single order, so an order has to be chosen and the choice changes what the procedure can compute.",
+      "tell": [
+        "a recursive function over a tree, where the position of the work relative to the recursive calls is being decided",
+        "a result at a node depends on its subtree, or on its ancestry",
+        "someone is picking a traversal because it is the one they remember"
+      ],
+      "move": "Ask which way the information moves. Needed from the parent: visit before recursing. Needed from the children: visit after recursing. Sorted output from an ordered binary tree: visit between the two recursions.",
+      "invariant": "A node is visited only when the information its visit requires is already available. That single condition determines the order, which is why the three named traversals are consequences rather than options.",
+      "breaks": "It breaks when a traversal is reused for a purpose with the opposite information flow, and it breaks quietly — the walk still visits every node, so the output has the right length and the wrong values. In-order also stops meaning anything once the tree is not binary or not ordered, though nothing prevents you from writing it.",
+      "cost": {
+        "time": "linear in the nodes for any of them; the order changes the answer, not the cost",
+        "space": "proportional to the depth for the recursive orders, since they use the call stack",
+        "beats": "flattening the tree first, which imposes an order anyway and loses the structure that made the order meaningful"
+      },
+      "worked": {
+        "problem": "How do you choose a traversal order without memorising which name goes where?",
+        "reasoning": "Ask what a node’s visit needs, and let the dependency decide.\n\nIf the work at a node uses something from its ancestors — a running path, an inherited flag, a depth — then the parent must have been visited first, so the visit precedes the recursion. That is pre-order, and it is why copying a tree is pre-order: the child cannot be attached to a parent that does not exist.\n\nIf the work uses something from its descendants — a subtree size, a sum, the value of an expression — then the children must be finished first, so the visit follows the recursion. That is post-order, and it is why freeing a tree is post-order: you cannot release a node while you still need the pointers it holds.\n\nIn-order is not a third general case. It exists because in an ordered binary tree everything left of a node is smaller and everything right is larger, so left-node-right emits the keys in sorted order. Outside that setting the name has no meaning.\n\nSo there is nothing to memorise: one question, and the dependency picks the order.",
+        "code": "what does this node's work DEPEND on?\n\n   ancestors   -> visit BEFORE recursing   pre-order\n                  copy a tree, push down a\n                  permission, track depth\n\n   descendants -> visit AFTER recursing    post-order\n                  subtree sizes, free a tree,\n                  evaluate an expression\n\n   neither, but the tree is binary AND ordered\n               -> visit BETWEEN             in-order\n                  emits keys sorted\n                  (only meaningful here)\n\n  why the failure is quiet:\n\n     every order visits every node\n     -> right number of results\n     -> wrong values\n     -> nothing raises anything\n\n  and breadth-first is not on this list:\n     it needs a queue, not the call stack, and it\n     answers \"nearest first\" rather than \"deepest\n     first\". that is E.16."
+      },
+      "practice": "Write one traversal that computes the depth of every node and one that computes the size of every subtree. Then try to swap their orders and observe exactly where the information you need has not been computed yet."
+    },
+    "beats": {
+      "broke": "A tree has no inherent order, so visiting everything requires choosing one — and taught as three names and three positions, the choice looks arbitrary and gets made by habit.",
+      "fix": "Let the dependency choose. Visit before the children when the work needs what came from above, after them when it needs what comes from below, and between them for sorted output from an ordered binary tree.",
+      "cost": "The orders are not interchangeable and the wrong one fails silently: every node is still visited, so the result has the right shape and wrong contents. In-order stops being meaningful outside ordered binary trees.",
+      "interview": {
+        "q": "How do you choose a traversal order without memorising which name corresponds to which position?",
+        "trap": "Reciting the definitions. The definitions are the output of the reasoning, so reproducing them does not help when the problem is unfamiliar.",
+        "answer": "Ask what the work at a node depends on, and the dependency settles it.\n\nIf it uses something from the ancestors — an inherited flag, an accumulated path, a depth — the parent must already have been visited, so the visit precedes the recursion. That is pre-order, and it is why copying a tree is pre-order: you cannot attach a child to a parent that does not yet exist.\n\nIf it uses something from the descendants — a subtree size, a total, the value of an expression — the children must be finished first, so the visit follows the recursion. That is post-order, and it is why freeing a tree is post-order: you cannot release a node whose pointers you still need.\n\nIn-order is not a third general case. It exists because in an ordered binary tree everything to the left is smaller and everything right is larger, so left-node-right emits keys in sorted order — which is exactly the property Hibbard's deletion rule uses when it replaces a removed node with the smallest key in its right subtree.\n\nThe failure mode is worth adding: every order visits every node, so choosing wrongly gives the right number of results with the wrong values, and nothing complains."
+      }
+    },
+    "blueprint": "One question decides it:\n\n   what does the work at this node DEPEND on?\n\n     from ancestors    -> visit BEFORE   (pre)\n                          copy, push down, depth\n     from descendants  -> visit AFTER    (post)\n                          sizes, free, evaluate\n     nothing, but tree is binary + ordered\n                       -> visit BETWEEN  (in)\n                          -> keys come out SORTED\n\n  the rule underneath all three:\n\n     visit a node only when what its visit needs\n     already exists.\n\n  so the three names are CONSEQUENCES, not options.\n\n  and the quiet failure:\n     wrong order still visits every node\n     -> right count, wrong values, no error\n\n  breadth-first is separate: a queue, not the stack;\n  \"nearest first\", not \"deepest first\".",
+    "takeaway": "Traversal order is not a choice to memorise but a consequence of which way the information flows — visit before the children when the work needs the ancestors, after when it needs the descendants — and the wrong order fails silently because every order still visits everything."
+  },
+  "E.12": {
+    "id": "E.12",
+    "trackId": "E",
+    "trackName": "Data structures and algorithms",
+    "title": "Binary search trees",
+    "status": "traced",
+    "seed": "E.12",
+    "story": "Two structures each solve half the problem. A sorted array lets you halve the search space per comparison and makes insertion linear, because everything after the insertion point moves. A linked list inverts both. The binary search tree is the attempt to keep the halving without paying for the movement: impose an ordering — everything left is smaller, everything right is larger — and then a search discards half the remaining keys at each step while an insertion changes one link.\n\nThat works exactly as well as the tree is shaped, and the shape comes from the insertion order. Insert sorted keys and every one goes to the right of the last, producing a structure with a single path — a linked list carrying the overhead of a tree. So the unqualified structure has a worst case of linear operations, and the worst case is not exotic input: it is data that arrived in order, which is most data.\n\nHence balancing. Adelson-Velsky and Landis published the first self-balancing version in 1962, holding an invariant that the heights of any node’s two subtrees differ by at most one and rebalancing whenever it breaks. The other familiar family began as Bayer’s symmetric binary B-tree in 1972 and was renamed by Guibas and Sedgewick in 1978, who introduced the colour convention — and even the authors’ accounts of why red differ, one saying it printed best on the laser printer they had and another that red and black were the pens on hand.\n\nThe deletion story is the part worth knowing, because it is a rare case of a subtle error surviving in the literature. Hibbard’s 1962 procedure replaces a node having two children with the smallest key in its right subtree, which is valid because nothing lies between them. But as stated it is asymmetric — always right — and repeatedly deleting this way while inserting at random skews the tree, with Eppinger finding that enough such operations make the expected path length worse than a random tree, while a symmetric version stays better. And for more than a decade it was believed a theorem of Hibbard’s showed that arbitrary sequences of random insertions and deletions leave a tree random. That belief was wrong.",
+    "problem": {
+      "name": "Ordered search with cheap insertion",
+      "aka": [
+        "binary search tree",
+        "self-balancing tree",
+        "AVL",
+        "red-black"
+      ],
+      "shape": "You need to find a key quickly and to insert and remove keys frequently, and the structures that do one well do the other badly.",
+      "tell": [
+        "lookups and modifications are interleaved rather than separated into phases",
+        "you also need the keys in order, or need the neighbours of a key",
+        "a sorted array is being rebuilt after every change"
+      ],
+      "move": "Impose an ordering invariant on a tree so each comparison eliminates one subtree, and maintain a balance invariant so the depth stays logarithmic regardless of the order keys arrive in.",
+      "invariant": "Every key in the left subtree is smaller and every key in the right is larger, and separately, the tree’s depth is bounded by a constant times the logarithm of its size. The first gives correctness, the second gives the running time — and only the first is what people mean by a binary search tree.",
+      "breaks": "It breaks on insertion order. Sorted or nearly sorted input degrades an unbalanced tree to a path, so every operation becomes linear — and sorted input is common rather than adversarial. Deletion is where the subtleties live: the standard procedure is asymmetric, and repeated asymmetric deletion demonstrably skews the tree over time.",
+      "cost": {
+        "time": "logarithmic for search, insert and delete when balanced; linear when not",
+        "space": "pointers per node, and rotations or colour bits to maintain the balance invariant",
+        "beats": "a hash table on ordered queries and range scans, and loses to it on plain membership"
+      },
+      "worked": {
+        "problem": "Why is a binary search tree with no balancing not a logarithmic structure?",
+        "reasoning": "Because the logarithm comes from the shape, and nothing in the ordering invariant constrains the shape.\n\nThe ordering rule says only that smaller keys are to the left and larger to the right. It says nothing about how deep the tree gets, and the depth is what a search actually costs — halving the keys per comparison is a consequence of the tree being bushy, not of it being ordered.\n\nNow insert keys in ascending order. Each new key is larger than everything present, so it goes right at every step and becomes the right child of the previous one. The ordering invariant holds perfectly at every node, and the result is a single path: a linked list with two pointers per node and a worse constant factor.\n\nThe reason this matters more than most worst cases is that sorted input is not adversarial. Records arrive by identifier, by timestamp, by name. The bad case is the ordinary case, which is why the balanced variants were published so early — 1962 for the first self-balancing form — and why an unbalanced tree is a teaching structure rather than a production one.",
+        "code": "insert 1, 2, 3, 4, 5 into an unbalanced BST:\n\n     1\n      \\\n       2\n        \\\n         3\n          \\\n           4\n            \\\n             5\n\n  ordering invariant: satisfied at every node.\n  depth: n. search: O(n).\n\n  -> a linked list with an extra pointer per node\n\n  two different invariants, and only one is in\n  the name:\n\n     ordering  -> correctness   (left < node < right)\n     balance   -> the running time\n                  (e.g. subtree heights differ <= 1)\n\n  and the bad input is the NORMAL input:\n     ids, timestamps, names -- all arrive sorted.\n\n  which is why balancing was published in 1962,\n  the same year as the standard deletion rule."
+      },
+      "practice": "Insert a thousand sorted keys into an unbalanced binary search tree and measure the depth, then do the same with the keys shuffled. Then delete half of them with the standard asymmetric rule and measure the depth again."
+    },
+    "beats": {
+      "broke": "A sorted array halves the search space and moves everything on insertion; a list inserts in constant time and searches linearly. Work that interleaves lookups with modifications needs both properties at once.",
+      "fix": "An ordering invariant on a tree, so a comparison discards a whole subtree and an insertion changes one link — plus a balance invariant, the first of which was published by Adelson-Velsky and Landis in 1962.",
+      "cost": "The running time depends on shape and the shape depends on arrival order, so sorted input degrades an unbalanced tree to a path. Deletion is where the errors hide: the standard rule is asymmetric and repeated use skews the tree.",
+      "interview": {
+        "q": "Why is a binary search tree without balancing not a logarithmic structure?",
+        "trap": "Answering that its worst case is bad. True, but it invites the reply that worst cases are rare — and here the worst case is the common case.",
+        "answer": "Because the logarithm comes from the shape, and the ordering invariant does not constrain the shape.\n\nThe ordering rule says only that smaller keys sit left and larger right. Nothing in it bounds the depth, and depth is what a search costs. Insert keys in ascending order and every one is larger than everything present, so it goes right at each step and becomes the right child of its predecessor. The ordering invariant is satisfied at every node and the result is a single path — a linked list carrying two pointers per node.\n\nWhat makes this more than a theoretical worst case is that sorted input is ordinary. Records arrive by identifier, by timestamp, by name. The degenerate case is the normal one, which is why self-balancing forms appeared as early as 1962.\n\nSo there are two invariants and only one is in the name: ordering gives correctness, balance gives the running time. Worth adding that deletion is where the real subtleties sit — the standard rule from the same year is asymmetric, repeated use of it demonstrably skews the tree, and a theorem about it was misread for over a decade as showing that random insertions and deletions leave a tree random."
+      }
+    },
+    "blueprint": "Two invariants, one of them missing from the name:\n\n   ORDERING   left < node < right\n              -> correctness\n              -> says NOTHING about depth\n\n   BALANCE    e.g. subtree heights differ <= 1\n              -> the running time\n\n  insert 1,2,3,4,5 in order:\n\n     1 \\ 2 \\ 3 \\ 4 \\ 5      ordering: perfect\n                             depth: n\n                             = a list with extra\n                               pointers\n\n  and sorted input is the NORMAL input\n  (ids, timestamps, names) -- not adversarial.\n\n  the history worth knowing:\n\n     1962  first self-balancing form\n     1962  standard deletion rule -- ASYMMETRIC,\n           and repeated use skews the tree\n     1972  symmetric binary B-tree\n     1978  renamed, colour convention added\n           (even the authors disagree on why red)\n\n     and for a decade, a theorem was read as saying\n     random insert/delete leaves a tree random.\n     It doesn't.",
+    "takeaway": "Ordering gives a search tree its correctness and balance gives it its running time — only the first is in the name, and since sorted input is ordinary rather than adversarial, an unbalanced tree degrades to a list on the data you actually have."
+  },
+  "E.13": {
+    "id": "E.13",
+    "trackId": "E",
+    "trackName": "Data structures and algorithms",
+    "title": "Heaps and priority queues",
+    "status": "traced",
+    "seed": "E.13",
+    "story": "The requirement is narrow and common: give me the smallest thing, repeatedly, from a collection that keeps changing. Sorting answers it once and then breaks on the first insertion. Scanning answers it every time at a cost proportional to the size. Both do more work than the question needs, and the heap is the structure that notices what the question actually needs.\n\nIt needs to know where the minimum is. It does not need to know the order of anything else. So the invariant is deliberately weak: every node is no larger than its children. That says nothing about siblings, nothing about cousins, nothing about the order of any two elements that are not on the same root-to-leaf path — and it is exactly sufficient to guarantee that the root is the minimum, because every element sits under something smaller all the way up. Weak invariants are cheap to restore, which is the entire trade: after removing the root you fix one path, not the whole structure.\n\nWilliams published this as Heapsort in June 1964. Floyd’s Algorithm 245 followed that December with the improvement that is now standard: build the heap from an unsorted array in linear time, rather than the n log n you get by inserting the elements one at a time. The counting behind that is the nicest thing in this lesson, and it is in the worked example.\n\nThere is a second property worth stating, because it connects to E.10. A heap is a complete binary tree, and a complete binary tree can be stored in an array with the children of position i at 2i+1 and 2i+2. So the tree has no pointers at all — the structure is arithmetic on indices, and the data is contiguous. That is why heaps are fast in practice and not merely in the analysis: the structure that E.10 says loses to arrays has, here, been replaced by an array. The cost is the one the weak invariant implies: you cannot search a heap, cannot iterate it in order, and cannot ask for the second smallest without doing work.",
+    "problem": {
+      "name": "Repeated minimum under change",
+      "aka": [
+        "heap",
+        "priority queue",
+        "binary heap"
+      ],
+      "shape": "The extreme element is needed over and over from a collection that is being added to and removed from between queries.",
+      "tell": [
+        "a loop takes the best remaining item, processes it, and adds more items",
+        "you are sorting a collection repeatedly, or scanning it for a minimum inside a loop",
+        "the problem says nearest, cheapest, earliest deadline, or top k"
+      ],
+      "move": "Maintain only the parent-child ordering — every node no larger than its children — so the root is the minimum by construction, and repair after a change by moving one element along a single root-to-leaf path.",
+      "invariant": "Each node is no larger than its children, and nothing more is guaranteed. The weakness is the feature: it is enough to locate the extreme and cheap enough that a single path repairs it, which is why both properties come from the same choice.",
+      "breaks": "Everything other than the extreme is unordered, so the structure cannot answer membership, cannot be iterated in sorted order, and cannot give the second smallest without work. People reach for a heap expecting a sorted collection and get a structure that is correct about exactly one element.",
+      "cost": {
+        "time": "constant to read the minimum, logarithmic to insert or remove it, linear to build from an array",
+        "space": "none beyond the elements, since the tree is implicit in array indices",
+        "beats": "sorting, which orders everything when you needed one element; and scanning, which is linear per query"
+      },
+      "worked": {
+        "problem": "Why is building a heap from an array linear, when inserting n items one at a time is not?",
+        "reasoning": "Because the two methods move elements in opposite directions, and the direction interacts with where the elements are.\n\nInserting one at a time puts each new element at the bottom and sifts it up. The distance it may travel is the height of the tree, and every element can travel the full height, so the total is n times the height: n log n.\n\nBuilding bottom-up starts from the leaves and sifts each element down. Now the distance an element may travel is its own height above the leaves — and the tree’s shape makes that overwhelmingly small. Half the nodes are leaves and move nothing. A quarter sit one level up and move at most one. An eighth move at most two.\n\nSo the total is the sum over levels of (nodes at that level) times (distance from that level), which is n/2 times 0, plus n/4 times 1, plus n/8 times 2, and so on. That series converges to a constant multiple of n.\n\nThe general shape is worth keeping: sifting up is expensive because most nodes are far from the root; sifting down is cheap for exactly the same reason.",
+        "code": "n insertions, sift UP        build-heap, sift DOWN\n---------------------        ---------------------\neach element starts at        each element starts\n  a leaf                        where it is\nmay rise the full height      may fall only its own\n                                height above the leaves\n\n  cost = n * log n            cost = sum over levels\n                                 n/2 * 0   (leaves)\n                               + n/4 * 1\n                               + n/8 * 2\n                               + ...\n                               -> converges to O(n)\n\n  same tree. opposite direction. different class.\n\n  because MOST NODES ARE NEAR THE BOTTOM:\n     half are leaves and move nothing.\n\n  and the representation:\n\n     children of i  ->  2i+1, 2i+2\n     no pointers at all. the tree is arithmetic,\n     the data is contiguous.\n     (which is why E.10's problem doesn't apply.)"
+      },
+      "practice": "Build a heap of a million random integers twice — once by repeated insertion, once bottom-up — and time both. Then try to use the result to find the second smallest element without removing the first."
+    },
+    "beats": {
+      "broke": "Getting the smallest item repeatedly from a changing collection is answered badly by sorting, which orders everything and breaks on the next insertion, and by scanning, which costs the size on every query.",
+      "fix": "Keep only the parent-child ordering, which is exactly enough for the root to be the extreme and cheap enough to repair along one path. Published as Heapsort in June 1964, with the linear-time construction following that December.",
+      "cost": "Nothing but the root is ordered, so the structure cannot be searched, iterated in order, or asked for second place — and people reach for it expecting a sorted collection.",
+      "interview": {
+        "q": "Why is building a heap from an array linear, when inserting n elements one at a time is n log n?",
+        "trap": "Answering that bottom-up construction does less work per element. It does, and the reason is about where the elements are, which is the part worth saying.",
+        "answer": "Because the two methods move elements in opposite directions, and the tree's shape makes one direction much cheaper.\n\nInserting one at a time places each element at the bottom and sifts it up. Its possible travel is the full height of the tree, and every element can pay that, giving n log n.\n\nBuilding bottom-up sifts each element down instead, so its possible travel is its own height above the leaves. That is where the shape matters: half the nodes are leaves and move nothing, a quarter sit one level up and move at most one, an eighth move at most two. The total is n/2 times 0, plus n/4 times 1, plus n/8 times 2, and so on — a series that converges to a constant multiple of n.\n\nThe general form is worth carrying: sifting up is expensive because most nodes are far from the root, and sifting down is cheap for exactly the same reason.\n\nFloyd published that improvement in December 1964, months after Williams published the sort itself, and it is the version textbooks now present as standard."
+      }
+    },
+    "blueprint": "A deliberately weak invariant:\n\n   every node <= its children.\n\n   says NOTHING about siblings, cousins, or any\n   two elements not on one root-to-leaf path.\n\n   and that is exactly enough:\n      the root is the minimum\n      repair after a change = ONE path\n\n   weak invariant -> cheap to restore.\n   that is the whole trade.\n\n  build-heap, and why the direction matters:\n\n     sift UP   from leaves, may rise full height\n               -> n * log n\n     sift DOWN may fall only its height above\n               the leaves\n               -> n/2*0 + n/4*1 + n/8*2 + ...\n               -> O(n)\n\n     half the nodes are leaves and move nothing.\n\n  and no pointers at all:\n     children of i at 2i+1, 2i+2\n     -> contiguous. E.10's penalty doesn't apply.\n\n  what you gave up: search, order, second place.",
+    "takeaway": "A heap guarantees only that each node is below its children — weak enough to repair along one path, strong enough to locate the extreme — and building one bottom-up is linear because most nodes are near the leaves and therefore barely move."
+  },
+  "E.14": {
+    "id": "E.14",
+    "trackId": "E",
+    "trackName": "Data structures and algorithms",
+    "title": "Tries",
+    "status": "traced",
+    "seed": "E.14",
+    "story": "A hash table is very good at one question — is this exact key present — and structurally incapable of a related one: which keys begin with this. That is not a missing feature. Hashing works by spreading keys uniformly regardless of their content, so two keys sharing a prefix are deliberately placed as far apart as any other pair. The property that makes lookup fast is the same property that destroys the information a prefix query needs.\n\nThe trie answers the second question by refusing the first trick. Instead of computing a position from the key, it makes the key be the path: one edge per character, so the node you reach by following a prefix is exactly the point below which every key with that prefix lives. Prefix search is therefore not a search at all — you walk to the node and the answer is the subtree. Fredkin published this in September 1960 and coined the name from the middle syllable of retrieval, which is the origin of the long-running argument about how to say it.\n\nHis own summary of the advantages is worth reading because it is broader than the modern one: shorter access time, easier addition and updating, convenience with arguments of diverse lengths, and exploitation of redundancy. That last is the one people forget — shared prefixes are stored once, so a dictionary of related words costs less than the sum of its words. And note the prior art he cites: de la Briandais on searching files with variable length keys in 1959, and his own memorandum from January of that year.\n\nThe cost he names himself: relative inefficiency in using storage space, with the qualification that this is not great when the store is large. A node per character with a branch per possible symbol is a lot of structure for a short key, which is why the practical variants all attack that specific cost — collapsing chains of single-child nodes, or storing children compactly instead of as a full array. The lookup time also depends on the length of the key rather than the number of keys, which is better than it sounds for a large dictionary and worse for a small one.",
+    "problem": {
+      "name": "Prefix-structured lookup",
+      "aka": [
+        "trie",
+        "prefix tree",
+        "retrieval structure"
+      ],
+      "shape": "Queries are about the beginnings of keys rather than whole keys, and structures that hash the key have discarded exactly that information.",
+      "tell": [
+        "the requirement is autocomplete, longest-prefix match, or routing by the front of an address",
+        "you are scanning every key and testing whether it starts with something",
+        "many keys share long leading segments"
+      ],
+      "move": "Make the descent path be the key: one edge per symbol, so that arriving at a node means having consumed a prefix and everything below that node shares it.",
+      "invariant": "A node’s position encodes the prefix that reaches it. That is why a prefix query is a walk followed by a subtree enumeration rather than a search, and why shared prefixes occupy one path rather than many copies.",
+      "breaks": "It breaks on space, which Fredkin identified himself. A node per symbol with a slot per possible symbol is heavy for short keys and sparse alphabets, and lookup cost scales with key length rather than with the number of keys — so it loses to a hash table on plain membership over a small dictionary of long keys.",
+      "cost": {
+        "time": "proportional to the length of the key, independent of how many keys are stored",
+        "space": "a node per symbol of every distinct prefix, which is the stated main disadvantage",
+        "beats": "a hash table on prefix queries, which it cannot answer at all; loses to it on exact membership"
+      },
+      "worked": {
+        "problem": "Why can a hash table not do prefix search, at any price?",
+        "reasoning": "Because it works by destroying the relationship a prefix query depends on, and it does so on purpose.\n\nA hash function must distribute keys uniformly across buckets regardless of their content. That is the requirement that makes lookup independent of the number of keys, and it means two keys sharing every character but the last are placed as far apart as any unrelated pair. There is no locality to exploit, because eliminating locality is the mechanism.\n\nSo a prefix query has nowhere to look. There is no region of the table corresponding to a prefix, and the only way to answer is to examine every key — which is not the hash table helping, it is you ignoring it.\n\nThe trie inverts the relationship. Position is determined by content rather than by a function chosen to hide content, so the prefix is literally a location. That is the trade: you give up the uniformity that made exact lookup independent of size, and you get back the structure that makes prefix queries free.\n\nThe general point is that a data structure answers the questions its placement rule preserves information about.",
+        "code": "hash table                  trie\n----------                  ----\nposition = h(key)           position = the key itself\nh must SPREAD keys          path spells the key\n\"car\" and \"cart\" ->         \"car\" is a NODE\n  unrelated buckets         \"cart\" is below it\n\nprefix query:               prefix query:\n  no region corresponds       walk to the node\n  to a prefix                 -> answer is the subtree\n  -> scan every key\n  (i.e. ignore the table)     -> not a search at all\n\n  and it's not a missing feature: destroying\n  locality is the MECHANISM that makes lookup\n  independent of the number of keys.\n\n  what you trade back:\n     lookup now scales with KEY LENGTH\n     space: a node per symbol   <- Fredkin's own\n            stated main disadvantage (1960)"
+      },
+      "practice": "Build a trie from a dictionary and measure its memory against the same words in a hash set. Then time a prefix query on both — and note that for the hash set you had to write a loop over every key."
+    },
+    "beats": {
+      "broke": "Hashing places a key by a function designed to ignore its content, so keys sharing a prefix land nowhere near each other. Prefix questions have no region to look in and degrade to scanning everything.",
+      "fix": "Let the path through the structure be the key, one edge per symbol, so a prefix is a node and everything sharing it is the subtree below. Published by Fredkin in September 1960, with the name taken from the middle syllable of retrieval.",
+      "cost": "A node per symbol is heavy for short keys, which Fredkin names as the main disadvantage while noting it matters less when the store is large. Lookup also scales with key length rather than with the number of keys.",
+      "interview": {
+        "q": "Why can a hash table not answer prefix queries at any price?",
+        "trap": "Answering that it is not designed for them. True but circular — the interesting part is that the mechanism making it fast is the same one making prefix queries impossible.",
+        "answer": "Because destroying the relationship between similar keys is the mechanism, not an oversight.\n\nA hash function must spread keys uniformly across buckets regardless of content — that is precisely what makes lookup independent of how many keys are stored. The consequence is that two keys differing in one final character are placed as far apart as any unrelated pair. There is no region of the table corresponding to a prefix, so the only way to answer is to inspect every key, which is ignoring the structure rather than using it.\n\nA trie inverts the placement rule: position is determined by content, so the prefix is literally a location. Walking to that node is the query, and the subtree beneath it is the answer — not a search at all.\n\nThe trade is exact and worth stating both ways. You give up placement that is independent of content, so lookup now scales with key length rather than being independent of the collection; and you give up space, which Fredkin identified in 1960 as the main disadvantage, adding that it matters less when the store is large.\n\nThe general rule: a structure can only answer questions its placement rule preserved information about."
+      }
+    },
+    "blueprint": "Placement rule decides what you can ask:\n\n  hash   position = h(key), chosen to IGNORE content\n         -> exact membership: independent of n\n         -> prefix: no region exists. scan everything.\n\n  trie   position = the key itself\n         -> prefix: walk to the node, take the subtree\n         -> exact: cost scales with KEY LENGTH\n\n  so it is not a missing feature. destroying\n  locality IS the mechanism that bought the first.\n\n  Fredkin's own list (1960):\n     shorter access time\n     easier addition and updating\n     convenient for arguments of diverse lengths\n     exploits redundancy   <- shared prefixes stored\n                              once\n     disadvantage: relative inefficiency in storage\n                   \"not great when the store is large\"\n\n  every practical variant attacks that one cost:\n     collapse single-child chains\n     store children compactly, not as a full array",
+    "takeaway": "A hash table cannot answer prefix queries because spreading keys regardless of content is the mechanism that makes it fast — a trie makes position depend on content instead, so a prefix is a node and the answer is the subtree below it."
+  },
+  "E.15": {
+    "id": "E.15",
+    "trackId": "E",
+    "trackName": "Data structures and algorithms",
+    "title": "Graphs: adjacency list versus matrix",
+    "status": "traced",
+    "seed": "E.15",
+    "story": "A graph is a set of vertices and a set of relationships between them, and that description says nothing about memory. Before you can run anything you have to choose a layout, and the choice is not neutral: each layout makes one question cheap and the other expensive, and every algorithm you write afterwards inherits the consequence.\n\nThe two questions are worth separating precisely because they sound similar. Is there an edge from u to v? And what are the neighbours of u? A matrix — a grid of vertices by vertices — answers the first by indexing, in constant time regardless of the graph, and answers the second by scanning an entire row, which costs the number of vertices whether u has two neighbours or none. An adjacency list — for each vertex, the vertices it points to — answers the second in time proportional to how many neighbours there actually are, and answers the first by searching that list.\n\nSpace is where the decision usually gets made. A matrix costs the square of the vertex count no matter how few edges exist; a list costs the vertices plus the edges. So the two become comparable only when the number of edges approaches the square of the vertices — a dense graph — and most graphs that arise from real things are nowhere near that. Road networks, social graphs, dependency graphs: the number of neighbours a vertex has is bounded by something physical, while the number of vertices is not.\n\nThe historical thread makes the same point from the other side. Moore’s paper on finding the shortest path through a maze was published in 1959, from a symposium held in 1957, and was motivated by a weakness in Shannon’s maze-solving robot of 1950 — which used a memoised depth-first search built from relays, almost certainly the first implementation of depth-first search on a graph. A maze is a graph whose vertices have at most four neighbours however large it gets, which is the sparse case, and the algorithms that came out of it are written in terms of neighbours rather than pairs. That is not a coincidence; it is the representation showing through the algorithm.",
+    "problem": {
+      "name": "Graph representation",
+      "aka": [
+        "adjacency list",
+        "adjacency matrix",
+        "sparse versus dense"
+      ],
+      "shape": "A relationship structure must be laid out in memory, and the layout determines which queries are cheap for everything built on top of it.",
+      "tell": [
+        "the algorithm keeps asking for the neighbours of a vertex, or keeps testing whether two specific vertices are connected",
+        "the vertex count is large and each vertex relates to only a handful of others",
+        "memory is the binding constraint rather than time"
+      ],
+      "move": "Decide which question dominates. Testing a specific pair repeatedly favours a matrix; enumerating neighbours favours a list. Then check density: unless the edge count approaches the square of the vertex count, the list wins on space by a wide margin.",
+      "invariant": "The representation makes one access pattern direct and the other a search. Every algorithm written on top inherits that, which is why the choice is made once and paid for continuously.",
+      "breaks": "It breaks when the graph you get is not the graph you assumed. A matrix sized for the vertex count becomes unusable as that count grows, regardless of how few edges arrive; a list makes a pair test proportional to a degree that may be unbounded in a graph with hubs. And converting between them later costs a full pass, plus rewriting whatever depended on the old costs.",
+      "cost": {
+        "time": "matrix: constant pair test, vertex-count neighbour scan. list: degree-proportional neighbour scan, degree-proportional pair test",
+        "space": "matrix: vertices squared, regardless of edges. list: vertices plus edges",
+        "beats": "each other, in opposite regimes — which is why the question is about your graph rather than about graphs"
+      },
+      "worked": {
+        "problem": "Which representation should you choose, and what does the question actually turn on?",
+        "reasoning": "Two things, and people usually only consider the first.\n\nThe access pattern. Write down the inner loop of the algorithm you are going to run. If it says \"for each neighbour of u\", a list gives you exactly those and a matrix makes you scan every vertex to find them — which turns a traversal proportional to the edges into one proportional to the vertices squared. If it says \"is u adjacent to v\", the matrix indexes and the list searches.\n\nDensity, which usually decides it. A matrix costs the square of the vertex count whatever the edges do. So it is only competitive when the edges approach that square, and graphs from the physical world rarely do: the number of things a thing can be adjacent to is bounded by something real, while the number of things is not.\n\nPut together, they explain why the list is the default in practice and the matrix the special case. And notice the historical evidence — the early graph search work came out of mazes, where a cell has at most four neighbours however large the maze is, so the algorithms are phrased in terms of neighbours and assume a representation that supplies them cheaply.",
+        "code": "                  matrix              list\n\"edge u->v?\"      O(1)   index       O(deg u) search\n\"neighbours of u\" O(V)   scan a row  O(deg u)\nspace             O(V^2) always      O(V + E)\n\n  full traversal:\n     matrix   O(V^2)   even with 3 edges\n     list     O(V + E)\n\n  when is a matrix competitive?\n     only as E approaches V^2  (dense)\n\n  and real graphs are usually not:\n     a maze cell:        <= 4 neighbours, always\n     a road junction:    a handful\n     a person:           bounded by hours in a day\n     -> degree bounded, vertex count not\n\n  which is why the classic algorithms are written\n  as \"for each neighbour\" -- the representation is\n  visible in the shape of the algorithm."
+      },
+      "practice": "Take a graph problem you have solved and write down its inner loop. Identify which of the two questions it asks, then compute the space both representations would need for a graph with a million vertices and four edges each."
+    },
+    "beats": {
+      "broke": "A graph is a set of relationships, and memory is not. Some layout must be chosen before anything can run, and each layout makes one of the two natural questions direct and the other a search.",
+      "fix": "Two representations keyed differently: a grid indexed by pair, answering adjacency in constant time; or a per-vertex list, answering neighbours in time proportional to how many there are.",
+      "cost": "The decision is made once and inherited by every algorithm afterwards, and it depends on the density of a graph you may not have seen yet — converting later costs a pass plus everything built on the old cost model.",
+      "interview": {
+        "q": "Which graph representation should you choose, and what does the decision actually turn on?",
+        "trap": "Answering \"it depends on the use case\" without naming the two axes. The decision has a specific shape and is usually settled by the second axis.",
+        "answer": "Two things: the access pattern and the density, and the second usually decides it.\n\nAccess pattern first. Write the inner loop of the algorithm you intend to run. If it asks for the neighbours of a vertex, a list supplies exactly those while a matrix makes you scan a whole row — which turns a traversal proportional to the edges into one proportional to the vertices squared. If it asks whether two specific vertices are adjacent, the matrix indexes directly and the list searches.\n\nDensity usually settles it, though. A matrix costs the square of the vertex count no matter how few edges exist, so it is only competitive when the edge count approaches that square. Graphs arising from physical things rarely get close: a maze cell has at most four neighbours however large the maze, a junction has a handful, a person has a bounded number of contacts — degree is bounded by something real while the vertex count is not.\n\nWhich is why the list is the default and the matrix the special case, and why the classic search algorithms are phrased as \"for each neighbour\". The representation is visible in the shape of the algorithm — Moore's maze work of 1959 is written that way because a maze is sparse."
+      }
+    },
+    "blueprint": "Two questions, and each layout answers one directly:\n\n                    matrix         list\n   edge u->v?       O(1)           O(deg u)\n   neighbours(u)?   O(V)           O(deg u)\n   space            O(V^2)         O(V + E)\n   full traversal   O(V^2)         O(V + E)\n\n  the matrix is only competitive as E -> V^2.\n\n  and real graphs are sparse because degree is\n  bounded by something physical while the vertex\n  count is not:\n\n     maze cell      <= 4, always\n     road junction  a handful\n     dependency     what a developer wrote\n\n  so: list by default, matrix for dense graphs and\n  for repeated pair tests.\n\n  and note the tell in the classic algorithms:\n  they say \"for each neighbour\", never \"for each\n  pair\". the representation shows through.",
+    "takeaway": "A matrix makes pair tests direct and costs the square of the vertex count regardless of edges; a list makes neighbour enumeration direct and costs vertices plus edges — and since real graphs have bounded degree, the list is the default and the matrix the special case."
+  },
+  "E.16": {
+    "id": "E.16",
+    "trackId": "E",
+    "trackName": "Data structures and algorithms",
+    "title": "Breadth first search",
+    "status": "traced",
+    "seed": "E.16",
+    "story": "Shannon built a maze-solving robot in 1950 using relays, and it worked by memoised depth-first search — almost certainly the first depth-first search implemented on a graph. It finds the exit. The weakness that motivated Moore is that it has no reason to find the shortest way there: a depth-first walk commits to a direction and follows it, so the route it returns is the first one it stumbled into rather than the best one.\n\nMoore’s answer, published in 1959 from a symposium held in 1957, is to change what the search is ordered by. Instead of going as deep as possible, expand by distance: visit everything one step from the start, then everything two steps away, and so on. The bookkeeping is a queue rather than a stack — which is the whole implementation difference, and the reason breadth-first is the one traversal in E.11 that is not naturally recursive, since the call stack gives you the wrong discipline.\n\nThe property that makes it correct is worth stating as an invariant rather than as an observation. Vertices leave the queue in non-decreasing order of distance from the start. So when you first reach a vertex, every vertex at a smaller distance has already been processed, which means no shorter route to it exists — if one did, it would have gone through a vertex you already finished with. The first arrival is therefore optimal, and you can record the route as you go and never revise it.\n\nThat argument depends entirely on every edge costing the same, which is where the boundary is. Give edges weights and distance stops being the number of steps, so the queue no longer orders by distance, and the first arrival at a vertex may be along a route with few steps and high cost. The repair is to process by accumulated cost rather than by step count — which requires a priority queue instead of a plain one, and is exactly the structure E.19 describes, with the same invariant and a stronger condition on the weights.",
+    "problem": {
+      "name": "Shortest path by expansion order",
+      "aka": [
+        "breadth-first search",
+        "level-order traversal",
+        "flood fill"
+      ],
+      "shape": "You need the shortest route through a graph, and the obvious traversal returns whichever route it happened to follow.",
+      "tell": [
+        "the question says fewest steps, nearest, or minimum number of moves",
+        "the edges are unweighted, or all weigh the same",
+        "you need the distance to every vertex rather than to one"
+      ],
+      "move": "Order the exploration by distance rather than by depth: keep a frontier in a queue, take vertices in arrival order, and mark each vertex the first time it is seen so it is never revisited.",
+      "invariant": "Vertices are removed from the queue in non-decreasing order of their distance from the start. That is what makes the first arrival at a vertex optimal, and it is the only reason the algorithm can commit to a route without ever reconsidering.",
+      "breaks": "It breaks as soon as edges have different costs, because then the number of steps is no longer the distance, the queue no longer orders by distance, and a vertex can first be reached by a short route that is expensive. It also breaks on memory: the frontier holds an entire level at once, which can be enormous in a wide graph where a depth-first stack would have stayed shallow.",
+      "cost": {
+        "time": "proportional to vertices plus edges, visiting each once",
+        "space": "proportional to the widest level, which is the cost people underestimate",
+        "beats": "depth-first search, which uses far less memory and gives no guarantee about the route it returns"
+      },
+      "worked": {
+        "problem": "Why is the first arrival at a vertex by a shortest path, and why does that stop being true with weights?",
+        "reasoning": "The argument is short and it rests on the queue’s ordering rather than on anything about the graph.\n\nVertices enter the queue when discovered and leave in arrival order, and each vertex enqueues its neighbours at its own distance plus one. So the queue contains vertices at distance d and then distance d+1, never a mixture out of order — removals are in non-decreasing distance.\n\nNow suppose you have just reached vertex v for the first time, at distance d. Could a shorter route exist? It would have to pass through some vertex at distance less than d. But every such vertex has already been removed and has already offered its neighbours — so if that route existed, v would already have been discovered. It was not. Therefore no shorter route exists.\n\nAdd weights and the first sentence fails. The queue still orders by number of steps, and distance is now cost, so the two come apart: a two-step route costing ten is reached before a five-step route costing three. The invariant that licensed the conclusion is gone, and with it the licence to commit.\n\nThe repair keeps the invariant and changes the ordering: take the unvisited vertex of least accumulated cost, which needs a priority queue.",
+        "code": "queue: distance d ... then d+1 ... never mixed\n  -> removals are in non-decreasing distance\n\n  first reach v at distance d.\n  a shorter route would pass a vertex at distance < d.\n  all of those are already done and have already\n  offered their neighbours.\n  -> v would already be known. it wasn't.\n  -> no shorter route exists.\n\n  commit, and never revisit. that is the whole thing.\n\n  now give the edges weights:\n\n     steps   != distance\n     queue orders by STEPS\n     -> 2 steps costing 10 dequeued before\n        5 steps costing 3\n     -> first arrival is no longer optimal\n     -> the invariant is gone\n\n  repair: order by accumulated COST, not steps\n          -> a priority queue, not a queue\n          -> that is E.19, same invariant, stronger\n             condition (no negative edges)"
+      },
+      "practice": "Run breadth-first search on a grid and record the order vertices are dequeued alongside their distances. Confirm the distances never decrease, then add a single expensive edge and find the vertex whose first arrival is now wrong."
+    },
+    "beats": {
+      "broke": "Depth-first search finds a route by committing to a direction and following it, so the path it returns is the one it happened to take. Shannon’s relay maze-solver of 1950 worked exactly this way, and that was the weakness Moore set out to fix.",
+      "fix": "Order the search by distance instead of depth — everything one step out, then two — which needs a queue rather than a stack. Published by Moore in 1959 from a 1957 symposium, though Zuse described the method in unpublished work in 1945.",
+      "cost": "The frontier holds a whole level at once, so memory scales with the width of the graph rather than its depth — which can be far worse than the stack depth-first would have used.",
+      "interview": {
+        "q": "Why is the first time breadth-first search reaches a vertex necessarily by a shortest path, and why does that fail once edges have weights?",
+        "trap": "Answering that it explores level by level, and stopping. That is the mechanism; the question is why the mechanism licenses committing to a route.",
+        "answer": "Because vertices leave the queue in non-decreasing order of distance, and that ordering is what makes the conclusion safe.\n\nEach vertex enqueues its neighbours at its own distance plus one, so the queue holds everything at distance d before anything at d+1 and never mixes them out of order. Now suppose you reach v for the first time at distance d. A shorter route would have to pass through a vertex at distance less than d — but every such vertex has already been removed and has already offered its neighbours, so v would already have been discovered. It was not, so no shorter route exists. That is what licenses recording the route and never reconsidering it.\n\nWith weights the first sentence fails. The queue still orders by step count while distance now means accumulated cost, so a two-step route costing ten is processed before a five-step route costing three, and the first arrival is no longer optimal. The invariant is gone, and with it the right to commit.\n\nThe repair keeps the invariant and changes what is ordered: take the unvisited vertex of least accumulated cost, which requires a priority queue — the same argument Dijkstra's method rests on, with the added condition that no edge is negative."
+      }
+    },
+    "blueprint": "The invariant is the whole algorithm:\n\n   vertices leave the queue in NON-DECREASING\n   distance from the start.\n\n   first reach v at distance d?\n      a shorter route passes something at < d\n      everything at < d is already done and has\n        already offered its neighbours\n      -> v would already be known\n      -> it isn't\n      -> commit. never revisit.\n\n  what breaks it:\n\n     weights.  steps != distance.\n     queue orders by STEPS, you care about COST\n     -> 2 steps @ 10 dequeued before 5 steps @ 3\n     -> first arrival no longer optimal\n\n  the repair: order by accumulated cost\n              -> priority queue (E.19)\n\n  and the cost people forget:\n     the frontier is a whole LEVEL\n     memory ~ width, not depth\n     (depth-first would have stayed shallow)",
+    "takeaway": "Breadth-first search can commit to a route because vertices leave the queue in non-decreasing distance order, so anything shorter would already have been found — and weights break exactly that sentence, which is why the repair is to order by cost instead of steps."
+  },
   "E.19": {
     "id": "E.19",
     "trackId": "E",
@@ -2936,6 +3281,55 @@
     },
     "blueprint": "The settling argument, which is the whole algorithm:\n\n  settled: A=0  B=1          unsettled: C=3  D=inf\n                                        ^\n  C is the nearest unsettled. Could anything improve it?\n  Any improving route must pass through an unsettled node.\n  Every unsettled node is >= 3 away.\n  Every edge is >= 0, so passing through one cannot reduce a total.\n  Therefore nothing can beat 3.  -> settle C.\n\nNow make one edge -5. The final line is false. The whole\nproof collapses -- not the implementation, the PROOF.",
     "takeaway": "It settles the nearest unsettled node because nothing further away can improve it — an argument that is true only while every edge is non-negative."
+  },
+  "E.2": {
+    "id": "E.2",
+    "trackId": "E",
+    "trackName": "Data structures and algorithms",
+    "title": "Arrays and dynamic arrays",
+    "status": "traced",
+    "seed": "E.2",
+    "story": "An array is a contiguous run of memory, which is what makes indexing a single multiplication and an offset, and which is also what makes it fixed. The address arithmetic works precisely because the elements are adjacent, and adjacency is a promise you can only keep by owning the ground next to you — ground that someone else may already own. So growing is not a matter of asking for more; it means finding a new block and copying.\n\nThe dynamic array does exactly that and hides it, and the interesting part is the accounting. If you grow by a constant amount, you copy every time the margin runs out, and the total copying over n appends is proportional to n squared. If you multiply the capacity instead, the copies get rarer at exactly the rate they get more expensive, and the total work over n appends is proportional to n — so the cost per append, averaged over the sequence, is constant.\n\nThat averaging is the technique Tarjan’s 1985 paper set out as a framework: amortisation, averaging over time, described there as a realistic but robust complexity measure for which tight bounds can be obtained. It is worth noticing what it is not. It is not a probabilistic claim about a typical case, and it does not depend on the input. It is an arithmetic statement about a worst-case sequence: any n appends cost O(n) in total, whatever they are.\n\nAnd it is not a claim about any single append, which is the part that matters in practice. One of them will copy the entire array, so a system with a latency budget sees a spike proportional to the size, and the geometric growth that makes the average good makes the spikes rarer and larger. The second cost is subtler: the copy moves the elements, so any pointer, reference or iterator into the old block now refers to memory the array no longer owns. Languages differ in whether that is a compile error, a runtime error, or silence.",
+    "problem": {
+      "name": "Amortised growth",
+      "aka": [
+        "dynamic array",
+        "vector",
+        "geometric resizing"
+      ],
+      "shape": "A structure needs contiguous storage for a count that is not known in advance, and contiguity cannot be extended in place.",
+      "tell": [
+        "the collection is appended to repeatedly and its final size is not known",
+        "you are choosing an initial capacity and guessing",
+        "something holds a reference into the storage across an append"
+      ],
+      "move": "Over-allocate, and when capacity is exhausted allocate a new block whose size is a constant multiple of the old one, copy, and release the old. The multiplier is what makes the accounting work.",
+      "invariant": "Capacity grows by a constant factor rather than a constant amount. That is the entire reason the total copying over n appends is linear, and an additive growth policy silently makes it quadratic while looking almost identical in the code.",
+      "breaks": "It breaks as a latency guarantee. The amortised bound says nothing about the individual append that copies the whole array, so a system with a tail-latency budget sees a spike proportional to the current size — and geometric growth makes those spikes rarer and bigger. It also invalidates every reference into the old storage, which is a correctness problem rather than a performance one.",
+      "cost": {
+        "time": "constant per append amortised; proportional to the array on the appends that resize",
+        "space": "up to a constant factor more memory than the elements need, by design",
+        "beats": "a linked structure, which never copies and gives up the contiguity that makes indexing and cache behaviour good"
+      },
+      "worked": {
+        "problem": "Why does the growth factor have to be multiplicative?",
+        "reasoning": "Because the two policies differ in the total, not in the individual step, and the total is what you are buying.\n\nGrow by a fixed amount k. Then you resize after k appends, after 2k, after 3k, and each resize copies everything present. The copies are k, 2k, 3k and so on, and their sum over n appends is proportional to n squared. Each individual resize looks cheap, which is exactly why the policy survives review.\n\nGrow by a factor. Now you resize at 1, 2, 4, 8 and so on, and the copies are 1, 2, 4, 8 — a geometric series whose sum is less than twice the final size. Total work proportional to n, so constant per append on average.\n\nThe structure of the argument is the thing to keep: the resizes get more expensive and rarer at compensating rates, and only multiplication makes them compensate. That is also why the specific factor barely matters — two, or one and a half, changes the constant and not the shape.",
+        "code": "additive growth (+k)        multiplicative (x2)\n--------------------        -------------------\nresize at k, 2k, 3k...      resize at 1, 2, 4, 8...\ncopy      k + 2k + 3k...    copy     1 + 2 + 4 + 8...\n        = O(n^2) total            < 2n  total\n        -> O(n) per append        -> O(1) per append\n                                     amortised\n\n  each individual resize looks cheap in BOTH.\n  the difference is only visible in the sum.\n\n  and what the amortised bound does NOT say:\n\n     \"every append is fast\"        <- false\n     \"any n appends cost O(n)\"     <- true\n\n     one append copies everything.\n     geometric growth makes that RARER and BIGGER.\n\n  plus the correctness cost:\n     the copy moves the elements\n     -> every pointer into the old block is stale"
+      },
+      "practice": "Append a million items to your language’s dynamic array and record the time of each append individually, not the total. Plot them and find the resizes — then check what your language does if you hold a reference to an element across one."
+    },
+    "beats": {
+      "broke": "Indexing is fast because elements are adjacent, and adjacency is exactly what stops you extending the block — the memory next to yours may belong to someone else, so growth means allocating elsewhere and copying.",
+      "fix": "Over-allocate and multiply the capacity when it runs out. The copies become rarer at the same rate they become more expensive, so the total over n appends is linear and the per-append average is constant.",
+      "cost": "The average says nothing about the individual append that copies everything, so tail latency spikes with the size. And the copy invalidates every reference into the old storage, which is a correctness failure rather than a slow one.",
+      "interview": {
+        "q": "Why does a dynamic array have to grow by a multiplicative factor rather than a fixed amount?",
+        "trap": "Answering that multiplying resizes less often. It does, and by itself that is not enough — what matters is how the cost of each resize grows relative to how often they happen.",
+        "answer": "Because the two policies differ in the total work, and each individual resize looks equally cheap either way.\n\nGrowing by a fixed amount k means resizing after k appends, after 2k, after 3k, copying everything present each time. The copies are k, 2k, 3k and so on, summing to something proportional to n squared over n appends — so the per-append cost is linear, not constant.\n\nGrowing by a factor means resizing at 1, 2, 4, 8, with copies of 1, 2, 4, 8 — a geometric series summing to less than twice the final size. Total work linear, so constant per append amortised. The resizes become more expensive and rarer at compensating rates, and only multiplication makes them compensate.\n\nTwo things the bound does not say, both of which bite. It does not promise any individual append is fast — one of them copies the whole array, and geometric growth makes those spikes rarer and larger, which is worse for tail latency. And it is not a probabilistic claim: it holds for any sequence of n appends, because it is arithmetic rather than an average over inputs."
+      }
+    },
+    "blueprint": "Why the multiplier is the whole thing:\n\n   +k    resize at k, 2k, 3k ...\n         copies  k + 2k + 3k ...  = O(n^2)\n         -> O(n) per append\n\n   x2    resize at 1, 2, 4, 8 ...\n         copies  1 + 2 + 4 + 8 ... < 2n\n         -> O(1) per append, amortised\n\n   cost per resize:  rises\n   frequency:        falls\n   only multiplication makes them cancel.\n\n  what \"amortised O(1)\" means and doesn't:\n\n     means: ANY n appends cost O(n) in total\n            (arithmetic, not an average over inputs)\n     not:   every append is fast\n            -> one copies everything\n            -> geometric growth: rarer AND bigger\n               = worse tail latency\n\n  and the non-performance cost:\n     the copy relocates the data\n     -> references into the old block are stale",
+    "takeaway": "Multiplicative growth makes resizes rarer at the same rate it makes them costlier, so n appends cost O(n) in total — a worst-case arithmetic claim about the sequence, not a promise about any single append or about your pointers surviving it."
   },
   "E.22": {
     "id": "E.22",
@@ -3080,6 +3474,54 @@
     "blueprint": "What actually runs when you call sort():\n\n  Python   <= 3.10  Timsort        stable (guaranteed)\n           >= 3.11  Powersort      stable (guaranteed)\n  Java     objects  Timsort        stable\n           primitives  dual-pivot quicksort   NOT stable\n  C++      std::sort     introsort-family     NOT stable\n           std::stable_sort                   stable\n  Rust     sort()        stable\n           sort_unstable()  pattern-defeating quicksort\n  Go       sort.Sort     pattern-defeating quicksort (1.19+)\n\nJava's split is the tell: equal OBJECTS are distinguishable,\nso their order is observable and must be preserved.\nEqual PRIMITIVES are not, so it cannot matter -- which frees\nthe implementation to be faster.",
     "takeaway": "No algorithm wins everywhere, so real sorts detect and switch. What you must actually know is whether yours is stable, and Java's answer differs by type."
   },
+  "E.3": {
+    "id": "E.3",
+    "trackId": "E",
+    "trackName": "Data structures and algorithms",
+    "title": "Strings and the operations that quietly cost O(n)",
+    "status": "traced",
+    "seed": "E.3",
+    "story": "A string presents itself as an array of characters and is usually an array of bytes with a decoding rule. That gap is where the hidden costs live, and it is worth understanding structurally rather than as a list of gotchas.\n\nThe dominant encoding is variable length, and its history explains the property that matters. The paper describing it states the problem with what came before: without reading from the start of a string it was impossible to find character boundaries. Thompson’s design, outlined on 2 September 1992 and implemented across the system within days, made the encoding self-synchronising — a reader can start anywhere and immediately tell where characters begin — at the cost of being somewhat less bit-efficient. Seven-bit characters stand for themselves and multi-byte sequences use only bytes with the high bit set, which is why so much older code kept working.\n\nSelf-synchronising means you can find boundaries locally. It does not mean you can count characters without walking. So the nth character is at a position determined by the lengths of the n preceding characters, which makes indexing by character a scan rather than an offset — and languages resolve that differently: some index by byte, some by fixed-size code unit, some by character with a linear cost, and some present a character view that is not a sequence at all. The label \"length\" hides all four.\n\nThen the operation that turns a loop quadratic. Strings are immutable in many languages, so concatenation allocates a new string and copies both operands. Do that once and it is linear in the result. Do it inside a loop that appends n times and each step copies everything built so far, giving a total proportional to n squared — a program that is correct, obvious, and gets slower faster than the input grows. The remedy is the same shape as E.2’s: accumulate in a growable buffer and materialise once, so the copying is amortised rather than repeated.",
+    "problem": {
+      "name": "Text is not an array of characters",
+      "aka": [
+        "variable-length encoding",
+        "string concatenation cost"
+      ],
+      "shape": "A string is presented as a sequence and stored as bytes under a decoding rule, so the cost of an operation does not match its syntax.",
+      "tell": [
+        "a loop builds a string by adding to it each iteration",
+        "code indexes into a string by a number computed from a character count",
+        "a slice or a length behaves differently for text with accents or scripts outside the basic set"
+      ],
+      "move": "Establish which unit your language indexes and measures by. Treat per-character positions as the result of a scan rather than arithmetic, and accumulate into a growable buffer instead of repeatedly concatenating.",
+      "invariant": "Byte position and character position coincide only where every character occupies one byte. Every surprising behaviour here follows from assuming that identity holds generally, because it holds for the test data people write.",
+      "breaks": "It breaks quietly, because the simple case is also the tested case. Text restricted to the basic set behaves exactly like an array, so indexing, slicing and length all appear correct until real input arrives — at which point a slice can cut a character in half and a length can disagree with what a user counts.",
+      "cost": {
+        "time": "linear for length and indexing by character; quadratic for concatenation in a loop",
+        "space": "variable per character, which is the trade that bought compatibility",
+        "beats": "a fixed-width encoding, which makes indexing arithmetic and costs space on every string in the system"
+      },
+      "worked": {
+        "problem": "Why is taking the length of a string not always constant time?",
+        "reasoning": "Because length can mean at least three different quantities, and only one of them is stored.\n\nBytes: stored, so constant. Code units in a fixed-width representation: also usually stored, so constant. Characters as a person would count them: not stored, because the encoding is variable length, so finding the count means walking the string and decoding as you go.\n\nThe self-synchronising property does not rescue this. It guarantees you can find a boundary from any position without starting at the beginning, which makes scanning and slicing safe — it does not let you skip ahead by a known number of bytes to reach the nth character, because the number of bytes depends on which characters precede it.\n\nSo the honest question is never \"what is the length\" but \"the length of what\", and the answer varies by language. And the failure is nasty because it is invisible in the ordinary case: for text in the basic set all three answers coincide, which is exactly the text you used while writing the code.",
+        "code": "\"length\" is at least three questions:\n\n   bytes           stored        -> O(1)\n   fixed-width     usually\n     code units    stored        -> O(1)\n   characters      NOT stored    -> O(n), must decode\n\n  self-synchronising buys you:\n     start anywhere, find a boundary    YES\n     skip to the nth character by\n        arithmetic                      NO\n     (bytes consumed depend on WHICH\n      characters came first)\n\n  and the quadratic loop:\n\n     s = \"\"\n     for x in items:          each += copies\n         s += x               everything so far\n                              -> O(n^2)\n\n     buffer.append(x) ... join once\n                              -> O(n), same shape\n                                 as E.2's fix"
+      },
+      "practice": "Take a string containing an accented character and an emoji, and print its length in your language. Then print the length of the same string after a round trip through whatever your framework uses for storage, and see whether they agree."
+    },
+    "beats": {
+      "broke": "A string looks like an array of characters and is stored as bytes with a decoding rule. Operations that read like indexing are scans, and the difference is invisible for the simple text people test with.",
+      "fix": "Know which unit your language indexes and measures by. The encoding is self-synchronising — a reader can start anywhere and find character boundaries — which makes slicing safe without making indexing arithmetic.",
+      "cost": "Counting characters is linear, and repeated concatenation is quadratic because each step copies everything accumulated so far. Both operations look constant in the source.",
+      "interview": {
+        "q": "Why is taking the length of a string not always a constant-time operation?",
+        "trap": "Answering that some languages are slow at it. The variation is not about implementation quality — the quantities being measured are genuinely different.",
+        "answer": "Because \"length\" names at least three quantities and only some of them are stored.\n\nThe byte count is stored, so it is constant. A fixed-width code-unit count is usually stored too. The count of characters as a person would count them is not stored, because the encoding is variable length — so obtaining it means walking the string and decoding as you go.\n\nSelf-synchronisation does not rescue this. It guarantees you can find a character boundary starting from any position rather than from the beginning, which is what makes scanning and slicing safe. It does not let you jump to the nth character by arithmetic, because how many bytes that takes depends on which characters precede it.\n\nSo the question is never the length but the length of what, and the answer differs by language. The failure mode is the dangerous part: for text in the basic set all three answers coincide, and that is exactly the text you had while writing the code — so it is correct in development and wrong in production."
+      }
+    },
+    "blueprint": "Three \"lengths\", one stored:\n\n   bytes         stored       O(1)\n   code units    usually      O(1)\n   characters    derived      O(n)  <- must decode\n\n  what self-synchronising gives you:\n\n     land anywhere -> find a boundary      YES\n     jump to char n by arithmetic          NO\n\n  because bytes-per-character varies with WHICH\n  characters came before.\n\n  the quadratic that reads as linear:\n\n     s += x  in a loop\n        each step copies everything so far\n        -> O(n^2)\n     buffer + join once\n        -> O(n)           (same fix as E.2)\n\n  and why it survives review:\n     in the basic set all three lengths agree,\n     slices never cut a character in half,\n     and that is the data you tested with.",
+    "takeaway": "A string is bytes plus a decoding rule, so character indexing is a scan rather than arithmetic and repeated concatenation is quadratic — and both look correct because plain test data makes byte position and character position coincide."
+  },
   "E.4": {
     "id": "E.4",
     "trackId": "E",
@@ -3099,6 +3541,55 @@
     },
     "blueprint": "# Conceptual hash table lookup:\ndef get(table, key):\n    bucket = hash(key) % len(table.buckets)\n    for k, v in table.buckets[bucket]: # O(1) if buckets are sparse\n        if k == key:\n            return v\n    return None",
     "takeaway": "A hash map buys O(1) speed by trading away memory and risking O(n) collapse if the hash function is compromised."
+  },
+  "E.5": {
+    "id": "E.5",
+    "trackId": "E",
+    "trackName": "Data structures and algorithms",
+    "title": "Sets",
+    "status": "traced",
+    "seed": "E.5",
+    "story": "The set is the least interesting-looking structure and the one that most often changes the complexity of a program, because the question it answers — have I seen this before — turns up inside loops. Asked of a list, that question is a scan, so a single loop containing it is quadratic without anybody writing a nested loop. Asked of a set, it does not depend on the number of elements, and the same code becomes linear.\n\nThere is no set data structure as such, which is the thing worth knowing. A set is an interface, and what you get is whatever is underneath: typically a hash table with the values discarded, or a balanced search tree with the values discarded. That choice is not a detail, because it decides the cost model and the ordering. The tree variety descends from the first self-balancing search tree, published by Adelson-Velsky and Landis in 1962, whose invariant is that the two child subtrees of any node differ in height by at most one — which is what bounds the depth and therefore the lookup.\n\nSo \"set\" names a contract and not a cost. Membership in a hash-backed set does not depend on size and has no order; membership in a tree-backed set is logarithmic and iteration comes out sorted. Programs that iterate a hash-backed set and depend on the order are relying on an accident, and it is an accident that changes when the table resizes.\n\nThe failure specific to sets is about identity rather than speed. Membership is decided by an equality and a hash that must agree with each other and must not change. Insert an object, mutate the field its hash is computed from, and it is now in a bucket that does not correspond to its value: it will not be found by a lookup, will not be removed by a delete, and will still be there when you iterate. The structure is not corrupt and every operation behaves as specified — the element simply became unreachable by the only route the structure has.",
+    "problem": {
+      "name": "Membership without scanning",
+      "aka": [
+        "set",
+        "hash set",
+        "ordered set"
+      ],
+      "shape": "An algorithm repeatedly asks whether it has already seen a value, and answering by looking is proportional to how much it has seen.",
+      "tell": [
+        "a loop contains a search over a list of things already processed",
+        "duplicates are removed by comparing every element with every other",
+        "the code is linear in appearance and quadratic in behaviour"
+      ],
+      "move": "Put the seen values in a structure that answers membership without consulting the others — a hash table for unordered membership, a balanced search tree where you also want order — and keep the elements it holds immutable in the fields that determine identity.",
+      "invariant": "An element’s hash and equality agree with each other and do not change while it is a member. The structure locates an element by computing from its value, so an element whose value changes is no longer where the structure will look.",
+      "breaks": "It breaks on mutation, silently and without corrupting anything: the element is present, unreachable by lookup, and still visible in iteration. It also breaks when order is assumed — a hash-backed set has none, and code that appears to work is depending on an arrangement that changes when the table grows.",
+      "cost": {
+        "time": "membership independent of size for the hash variety, logarithmic for the tree variety",
+        "space": "more than the elements, since a hash table keeps spare capacity",
+        "beats": "scanning a list, which needs no extra structure and makes the containing loop quadratic"
+      },
+      "worked": {
+        "problem": "What happens to an element whose hash changes after it has been inserted?",
+        "reasoning": "It stays in the structure and stops being findable, and nothing reports an error, because nothing has gone wrong by the structure’s own rules.\n\nInsertion computes a position from the value and stores the element there. Lookup computes a position from the value you are asking about and looks only there — that locality is the entire reason the operation does not depend on the size.\n\nMutate a field the hash depends on, and those two computations no longer agree. The element sits at the position implied by its old value; a lookup goes to the position implied by its new one and correctly finds nothing. Removal fails for the same reason. Iteration walks storage directly rather than computing anything, so the element appears there — which is the tell: present when you list, absent when you ask.\n\nThe rule that follows is short. Whatever determines identity must be immutable while the element is a member — and if you must mutate it, remove it first and reinsert it afterwards.",
+        "code": "insert(x)    position <- hash(x)     store at that slot\nlookup(y)    position <- hash(y)     look ONLY there\n                                     ^ why it's O(1)\n\n  now mutate a field that hash() reads:\n\n     element sits at   hash(old value)\n     lookup goes to    hash(new value)\n     -> not found. remove fails too.\n     -> iteration walks storage, so it IS listed.\n\n  present when you iterate, absent when you ask.\n  nothing is corrupt. every operation obeyed its\n  contract.\n\n  rule: identity fields immutable while a member.\n        must change them? remove, mutate, reinsert."
+      },
+      "practice": "Put a mutable object in a hash set, change the field its hash uses, then test membership, attempt removal, and iterate. Three results, and only one of them is what you expected."
+    },
+    "beats": {
+      "broke": "Asking whether a value has been seen before, answered by looking through what you have, costs time proportional to how much you have — so an ordinary loop containing that question is quadratic with no nested loop in sight.",
+      "fix": "A structure that locates an element by computing from its value rather than by comparison: a hash table with the values discarded, or a balanced search tree where order is also wanted — the latter descending from the 1962 height-balanced tree.",
+      "cost": "The cost model and the ordering belong to the structure underneath rather than to the set abstraction, and correctness depends on identity being stable, which nothing enforces.",
+      "interview": {
+        "q": "What happens to an element whose hash changes after it has been added to a hash set?",
+        "trap": "Answering that the set becomes corrupt or that behaviour is undefined. Every operation continues to satisfy its contract, which is precisely why nothing reports the problem.",
+        "answer": "It remains in the set and becomes unreachable, with no error anywhere.\n\nInsertion computes a position from the value and stores the element there; lookup computes a position from the value being asked about and inspects only that location. That locality is the whole reason membership does not depend on the size of the set.\n\nMutating a field the hash reads breaks the agreement between those two computations. The element sits where its old value said; a lookup goes where its new value says and correctly reports absence. Removal fails identically. Iteration walks the storage rather than computing anything, so the element is listed — giving the signature symptom: present when you enumerate, absent when you ask.\n\nNothing is corrupt and every operation honoured its contract, which is why no exception is raised. The rule that follows is that fields determining identity must be immutable while the element is a member — and if they must change, remove the element first and reinsert it after."
+      }
+    },
+    "blueprint": "A set is an interface, not a cost:\n\n   hash-backed    membership independent of size\n                  NO order (and the order you see\n                  changes when the table resizes)\n   tree-backed    membership logarithmic\n                  iteration comes out sorted\n                  (height-balanced, 1962: subtree\n                   heights differ by <= 1)\n\n  what it changes about your program:\n\n     \"seen it?\" over a list   -> loop becomes O(n^2)\n     \"seen it?\" over a set    -> loop stays O(n)\n     with no nested loop written either way.\n\n  and the failure that isn't about speed:\n\n     insert -> stored at hash(value)\n     mutate -> lookup goes to hash(new value)\n     result:  listed by iteration\n              not found by lookup\n              not removable\n     nothing corrupt. nothing reported.",
+    "takeaway": "A set is an interface whose cost and ordering come from the structure beneath it, and its distinctive failure is identity rather than speed — mutate what the hash reads and the element stays present, stops being findable, and nothing complains."
   },
   "E.6": {
     "id": "E.6",
@@ -3193,6 +3684,105 @@
     },
     "blueprint": "  a b c a b c b b\n  [-----]           abc, all distinct, best = 3\n    [-----]         'a' repeated -> left jumps past old 'a'\n      [-----]\n\n  left never moves BACKWARDS. that is the linearity.\n\nWhy it is sound, and where it dies:\n  non-negative sums:  grow -> sum rises, shrink -> sum falls\n                      so \"too big\" PROVES you should shrink\n  with a negative:    grow can LOWER the sum\n                      \"too small\" no longer proves you\n                      should grow -- and the window quietly\n                      skips valid answers while still\n                      returning something plausible",
     "takeaway": "Consecutive stretches overlap, so maintain the answer instead of recomputing it — sound only while growing and shrinking move the quantity in opposite directions."
+  },
+  "E.8": {
+    "id": "E.8",
+    "trackId": "E",
+    "trackName": "Data structures and algorithms",
+    "title": "Stacks",
+    "status": "traced",
+    "seed": "E.8",
+    "story": "Two people arrived at this independently, eleven years apart, from opposite ends of the problem, and that is the best argument that the structure is forced rather than invented.\n\nTuring, in the 1946 report proposing an automatic computing engine, is dealing with subroutines: an operation is interrupted by a subsidiary one, and when the subsidiary finishes you have to get back. His mechanism is to note where the major operation left off and, on completion, consult a list of such notes held with the most recent last. That last clause is the whole structure, described before it had a name.\n\nBauer and Samelson arrive from translation rather than execution. Their German patent application of 30 March 1957 introduces the Kellerprinzip — the cellar principle — for evaluating arbitrarily parenthesised arithmetic terms. Charles Hamblin developed the same idea independently at around the same time. The recognition was slow: Bauer received a pioneer award in 1988, by which point Samelson had died.\n\nWhat both are responding to is a property of nesting rather than a preference. If a thing can contain another thing of the same kind, then at any moment you have a set of suspended items, and the one you must resume first is necessarily the one suspended last, because it is the innermost. That is not a design decision; it is what nested means. So the store that supports it must return items in the reverse of the order they arrived, and any structure with that access rule is a stack.\n\nThe cost is the one that shows up as a crash. The store is finite and the depth required is a function of the input, so how deeply you can nest is a property of the data rather than of the program. A recursive function correct for every input it was tested on will fail on one that is deeper, and it will fail by exhausting a resource nobody declared — which is why the remedy in E.20 is converting recursion to iteration with an explicit stack, where at least the limit is one you chose.",
+    "problem": {
+      "name": "Last-in-first-out resumption",
+      "aka": [
+        "the stack",
+        "the call stack",
+        "the cellar principle"
+      ],
+      "shape": "Work is interrupted by more work of the same kind, and each interruption must be resumed before the one that preceded it.",
+      "tell": [
+        "the structure being processed can contain another instance of itself — parentheses, tags, calls, directories",
+        "you are tracking where to return to after finishing something",
+        "the problem says \"matching\", \"balanced\", \"innermost\" or \"most recent\""
+      ],
+      "move": "Keep the suspended state in a store where the only accessible item is the one added most recently. Push on suspension, pop on resumption, and let the store’s order do the bookkeeping the nesting requires.",
+      "invariant": "The item resumed next is always the one suspended most recently. This is not a choice about the store; it is what nesting means, which is why any correct solution to a nesting problem has a stack in it whether or not one is written down.",
+      "breaks": "It breaks on depth, and the depth is set by the input. The store is finite and nothing in the source states how much of it a given input will need, so a program that is correct on every case tested can exhaust the resource on a deeper one — failing in a way that is about the data rather than about the logic.",
+      "cost": {
+        "time": "constant to push and to pop",
+        "space": "proportional to the maximum nesting depth of the input, not to its size",
+        "beats": "tracking the pending items by hand, which is the same structure written out and easier to get wrong"
+      },
+      "worked": {
+        "problem": "Why does nesting force last-in-first-out rather than some other order?",
+        "reasoning": "Because of what nesting is, not because of what is convenient.\n\nTake three open parentheses. When a close arrives, which open does it match? The most recent one, necessarily — the others enclose it, so they cannot close before their contents do. The same holds for calls: a function that called another cannot return until the one it called has returned, because its own continuation is waiting on that result.\n\nSo the order of resumption is the reverse of the order of suspension, and that is fixed by the structure rather than selected by a designer. A store with any other access rule would hand you an item you cannot yet use.\n\nWhich explains the independent arrivals. Turing was solving return addresses and Bauer and Samelson were solving expression evaluation, and both produced the same structure because both were facing the same property. When two people working on unrelated problems converge, the usual reason is that neither was designing.",
+        "code": "  ( ( ( ) ) )        f -> g -> h\n   1 2 3                  h must finish before g\n       ^ closes first     g before f\n\n  order suspended : 1 2 3\n  order resumed   : 3 2 1     <- forced, not chosen\n\n  any other access order hands you an item whose\n  contents are not finished yet.\n\n  which is why two unrelated problems produced the\n  same structure:\n\n     1946  return addresses   \"a list of such notes,\n           (Turing, ACE)       the most recent last\"\n     1957  parenthesised       Kellerprinzip\n           expressions         (Bauer & Samelson;\n                                Hamblin, independently)\n\n  and the cost that shows up as a crash:\n\n     depth = f(input), store = finite\n     -> correct on every tested input\n     -> fails on a deeper one\n     -> a data-dependent failure, not a logic one"
+      },
+      "practice": "Take a recursive function you have written and work out what input would make it deepest. Then find your runtime’s stack limit and calculate the input size at which it fails — and check whether anything in your system prevents that input arriving."
+    },
+    "beats": {
+      "broke": "Nested work suspends work of the same kind, and each suspension has to be resumed before the one before it. Somewhere has to hold the suspended state, and it has to hand it back in the right order.",
+      "fix": "A store whose only accessible item is the most recent. Turing describes it in 1946 as a list of notes held with the most recent last, and Bauer and Samelson patent it in 1957 for parenthesised expressions, with Hamblin arriving independently.",
+      "cost": "The store is finite and the depth needed is a function of the input, so nesting depth is a property of the data. A program correct on everything tested can exhaust the resource on a deeper input, failing for reasons the source does not mention.",
+      "interview": {
+        "q": "Why does nesting force last-in-first-out ordering rather than some other discipline?",
+        "trap": "Answering that it is the natural or conventional choice. It is not a choice at all, which is the point and the reason the structure was discovered repeatedly.",
+        "answer": "Because it is what nesting means. With three open brackets, a close necessarily matches the most recent — the others enclose it and cannot close before their contents do. With calls, a function cannot return before the function it called, because its own continuation depends on that result.\n\nSo the order of resumption is the reverse of the order of suspension, fixed by the structure rather than selected by a designer. A store with any other access rule would hand back an item whose contents are not yet finished.\n\nThe historical evidence is the good part of this answer. Turing arrived at it in 1946 solving return addresses — his phrasing is a list of notes held with the most recent last — and Bauer and Samelson arrived at it in 1957 solving parenthesised expression evaluation, with Hamblin independently at about the same time. Unrelated problems, same structure, which is what you expect when nobody is designing and everybody is meeting the same constraint.\n\nThe cost worth stating is that depth is a function of the input, so exhausting the store is a data-dependent failure rather than a logical one."
+      }
+    },
+    "blueprint": "The order is forced:\n\n   ( ( ( ) ) )          f calls g calls h\n    1 2 3               h returns first\n        ^ closes first  then g, then f\n\n   suspended: 1 2 3\n   resumed:   3 2 1\n\n  any other rule returns an unfinished item.\n\n  which is why it was found twice, independently:\n\n     Turing 1946   return addresses\n                   \"a list of such notes, with the\n                    most recent last\"\n     Bauer &       parenthesised arithmetic\n     Samelson 1957 \"Kellerprinzip\"\n     Hamblin       same period, independently\n\n  convergence from unrelated problems = nobody\n  was designing.\n\n  and the failure mode:\n     depth = f(input)\n     store = finite, and undeclared\n     -> correct in test, crashes on deeper data",
+    "takeaway": "Nesting forces last-in-first-out because the innermost suspension is always the one that must resume first — which is why the structure was arrived at independently for return addresses and for expression evaluation, and why its limit is a property of your input rather than your code."
+  },
+  "E.9": {
+    "id": "E.9",
+    "trackId": "E",
+    "trackName": "Data structures and algorithms",
+    "title": "Queues and deques",
+    "status": "traced",
+    "seed": "E.9",
+    "story": "A queue is the other discipline. Where a stack returns what arrived most recently — Turing’s list of notes with the most recent last, Bauer and Samelson’s cellar — a queue returns what arrived first, and the two are not variations on a theme. They answer different questions: a stack is for work that was interrupted, a queue is for work that is waiting.\n\nThe naive implementation shows why the structure needs thought. Put the items in an array, append at the end, and remove from the front — and every removal shifts every remaining element down by one, so each is proportional to the length and a sequence of them is quadratic. The instinct is to make removal cheaper. The better move is to stop moving anything at all.\n\nThat is the ring buffer: keep the block fixed, keep two indices, and advance them. Adding writes at the tail index and advances it; removing reads at the head index and advances it; both wrap around when they pass the end. Now each operation touches exactly one element regardless of how many are stored, and the elements never move. A deque generalises this by letting both indices move in both directions, which is why a deque supports the stack discipline and the queue discipline at once — it is not a third structure so much as the removal of an arbitrary restriction.\n\nThe wrap introduces one genuine subtlety, and it is the thing worth remembering. When the head and tail indices are equal, the buffer is either completely empty or completely full, and the indices alone cannot tell you which, because both states produce the same pair of numbers. The fixes are all about adding the missing bit of information: keep a count, keep a flag, or deliberately never fill the last slot so that full and empty are distinguishable by construction. And if you want a queue that grows, the growth is E.2’s problem again — amortised by multiplying capacity, with Tarjan’s averaging over time supplying the accounting.",
+    "problem": {
+      "name": "First-in-first-out without shifting",
+      "aka": [
+        "queue",
+        "ring buffer",
+        "circular buffer",
+        "deque"
+      ],
+      "shape": "Items must be processed in arrival order, so additions and removals happen at opposite ends of a store.",
+      "tell": [
+        "work is pending rather than interrupted — a backlog, a pipeline, a level of a tree",
+        "removal from the front of an array is inside a loop",
+        "a fixed amount of memory must absorb a variable arrival rate"
+      ],
+      "move": "Keep the storage still and move the boundaries. Two indices, one for each end, each advancing and wrapping at the limit, so no element is ever relocated by an ordinary operation.",
+      "invariant": "The elements do not move; only the indices do. That is what makes both ends constant-time, and it is also what forces the full-versus-empty ambiguity, since the state is now encoded entirely in two numbers that have fewer distinct configurations than the buffer has states.",
+      "breaks": "The indices alone cannot distinguish an empty buffer from a full one, so the structure needs a count, a flag, or a deliberately wasted slot. And a fixed ring must decide what to do when it is full: reject, block, or overwrite the oldest — which is a policy decision about correctness, not a detail.",
+      "cost": {
+        "time": "constant at both ends, with no shifting",
+        "space": "a fixed block, plus the extra bit of state that resolves full from empty",
+        "beats": "shifting an array, which is proportional to the contents on every removal and quadratic over a sequence"
+      },
+      "worked": {
+        "problem": "Why can a ring buffer not tell full from empty without extra information?",
+        "reasoning": "Count the states and count the representations, and the shortfall is exact.\n\nA buffer of capacity n can hold between zero and n items, which is n+1 distinct occupancies. The head and tail indices each range over n positions, and what determines occupancy is their difference — which has only n distinct values modulo n. So the representation has n configurations and the structure has n+1 states, and by counting alone at least two states must collide.\n\nThe colliding pair is empty and full, both of which put head and tail at the same position: empty because nothing was ever added, full because the tail has advanced all the way round to the head.\n\nThat is why every fix works by supplying the missing bit rather than by cleverness with the indices. Keep a count, which represents all n+1 states directly. Keep a boolean that distinguishes the collision. Or refuse to use the last slot, so the maximum is n-1 and the structure has n states again.\n\nThe lesson generalises: when a representation has fewer configurations than the thing it represents, no amount of care removes the ambiguity.",
+        "code": "capacity n\n  occupancies possible : 0 .. n      -> n+1 states\n  (tail - head) mod n  :              -> n values\n  -> at least two states must collide.\n\n  and the pair that collides:\n\n     head == tail  and empty   (nothing added)\n     head == tail  and full    (tail wrapped round)\n\n  fixes = supply the missing information:\n\n     keep a count       -> represents all n+1\n     keep a flag        -> distinguishes the collision\n     waste one slot     -> max is n-1, so n states\n\n  no index trick removes it: the representation is\n  simply smaller than the state space.\n\n  and a growable queue is E.2 again:\n     multiply capacity, amortise the copy."
+      },
+      "practice": "Implement a ring buffer with only two indices and no extra state, then add elements until it wraps and removes until it is empty, printing the indices. Find the two moments where they are identical and the buffer means opposite things."
+    },
+    "beats": {
+      "broke": "Arrival-order processing means adding at one end and removing at the other. In an array, removing from the front shifts everything remaining, so each removal costs the length and a sequence of them is quadratic.",
+      "fix": "Hold the storage still and advance two indices that wrap at the end. Both operations touch one element, nothing is relocated, and letting both indices move both ways gives a deque that supports the queue and the stack disciplines together.",
+      "cost": "Two indices cannot represent all the occupancy states, so full and empty become indistinguishable and the structure needs a count, a flag or a sacrificed slot. A fixed ring must also decide whether a full buffer rejects, blocks or overwrites.",
+      "interview": {
+        "q": "Why can a ring buffer not distinguish full from empty using its two indices alone?",
+        "trap": "Answering that it is a quirk of the implementation, or proposing a cleverer comparison. The shortfall is arithmetic, so no comparison resolves it.",
+        "answer": "Because the representation has fewer configurations than the structure has states.\n\nA buffer of capacity n can hold anywhere from zero to n items — that is n+1 distinct occupancies. Occupancy is determined by the difference between the two indices, and that difference takes only n distinct values modulo n. Counting alone forces at least two states to share a representation.\n\nThe pair that collides is empty and full: empty because nothing was ever added and head equals tail; full because the tail has advanced all the way around and met the head again. Identical indices, opposite meanings.\n\nSo every fix works by supplying the missing bit rather than by comparing more carefully. Keep a count, which represents all n+1 states outright; keep a flag that disambiguates the collision; or refuse to use the last slot so the capacity is n-1 and the state space shrinks to fit.\n\nThe general lesson travels beyond ring buffers: when your representation has fewer configurations than the thing represented, the ambiguity cannot be reasoned away."
+      }
+    },
+    "blueprint": "Two disciplines, different jobs:\n\n   stack   most recent first   work that was INTERRUPTED\n   queue   earliest first      work that is WAITING\n   deque   both ends, both     the restriction removed\n           directions\n\n  why not just shift the array:\n\n     remove from front -> move everything down\n     -> O(n) each, O(n^2) over a sequence\n\n  ring buffer: move the ENDS, not the data.\n\n     both operations touch one element\n     nothing is ever relocated\n\n  and the one real subtlety, by counting:\n\n     occupancies      0..n   -> n+1 states\n     (tail-head) mod n       -> n values\n     -> collision is forced\n\n     empty: head == tail\n     full:  head == tail\n     fix by adding information:\n        a count / a flag / waste one slot",
+    "takeaway": "A ring buffer keeps both ends constant-time by moving indices instead of data, and the full-versus-empty ambiguity is forced arithmetic — two indices have fewer configurations than the buffer has states, so the missing bit has to be supplied."
   },
   "F.1": {
     "id": "F.1",
@@ -7205,6 +7795,164 @@
       "kind": "primary"
     }
   ],
+  "E.10": [
+    {
+      "claim": "The linked list was developed by Allen Newell, Cliff Shaw and Herbert Simon as the primary data structure of the Information Processing Language, created at the RAND Corporation and the Carnegie Institute of Technology around 1956. The now-classic diagram of nodes with arrows to successive nodes appears in Newell and Shaw’s paper at the Western Joint Computer Conference in February 1957.",
+      "title": "Newell, A. and Shaw, J. C., Programming the Logic Theory Machine, Proceedings of the Western Joint Computer Conference, February 1957 — the origin of list processing and the linked list in the Information Processing Language",
+      "url": "https://en.wikipedia.org/wiki/Information_Processing_Language",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The language is described as the first list-processing language and also the first to support recursion. Newell and Simon received the 1975 Turing Award for basic contributions to artificial intelligence, the psychology of human cognition, and list processing.",
+      "title": "Newell, A. and Shaw, J. C., Programming the Logic Theory Machine, Proceedings of the Western Joint Computer Conference, February 1957 — the origin of list processing and the linked list in the Information Processing Language",
+      "url": "https://en.wikipedia.org/wiki/Information_Processing_Language",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Attribution is not uniform across sources: some credit the linked list to Cliff Shaw individually, while others treat it as a joint product of the three, and accounts of the language’s origin date range from about 1954 to 1956.",
+      "title": "Newell, A. and Shaw, J. C., Programming the Logic Theory Machine, Proceedings of the Western Joint Computer Conference, February 1957 — the origin of list processing and the linked list in the Information Processing Language",
+      "url": "https://en.wikipedia.org/wiki/Information_Processing_Language",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The same problem — building structures whose size and shape are decided while the program runs — is what LISP was designed around, described in McCarthy’s paper of April 1960, which reduces everything to atoms and pairs.",
+      "title": "McCarthy, J., Recursive Functions of Symbolic Expressions and Their Computation by Machine, Part I, Communications of the ACM 3(4), April 1960",
+      "url": "https://www.cs.tufts.edu/~nr/cs257/archive/john-mccarthy/recursive.pdf",
+      "kind": "primary"
+    }
+  ],
+  "E.11": [
+    {
+      "claim": "Hibbard’s 1962 paper on combinatorial properties of certain trees is titled with applications to searching and sorting, and is the reference for the standard deletion procedure in an ordered binary tree: a node with two children is removed by replacing it with the node holding the smallest key in its right subtree.",
+      "title": "Hibbard, T. N., Some combinatorial properties of certain trees with applications to searching and sorting, Journal of the ACM 9(1):13-28, January 1962",
+      "url": "https://dl.acm.org/doi/10.1145/321105.321108",
+      "kind": "primary"
+    },
+    {
+      "claim": "That replacement preserves the ordering because there are no keys between the removed node’s key and its successor’s key.",
+      "title": "Hibbard, T. N., Some combinatorial properties of certain trees with applications to searching and sorting, Journal of the ACM 9(1):13-28, January 1962",
+      "url": "https://dl.acm.org/doi/10.1145/321105.321108",
+      "kind": "primary"
+    }
+  ],
+  "E.12": [
+    {
+      "claim": "The first self-balancing binary search tree was published by Adelson-Velsky and Landis in 1962, in a paper titled An algorithm for the organization of information. Its invariant is that the heights of the two child subtrees of any node differ by not more than one, with rebalancing performed whenever that ceases to hold.",
+      "title": "Adelson-Velsky, G. and Landis, E., An algorithm for the organization of information, Soviet Mathematics Doklady 3:1259-1263, 1962",
+      "url": "https://en.wikipedia.org/wiki/AVL_tree",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Hibbard’s deletion procedure, published in 1962, removes a node with two children by replacing it with its successor — the node holding the smallest key in its right subtree — which preserves the ordering because no key lies between them.",
+      "title": "Hibbard, T. N., Some combinatorial properties of certain trees with applications to searching and sorting, Journal of the ACM 9(1):13-28, January 1962",
+      "url": "https://dl.acm.org/doi/10.1145/321105.321108",
+      "kind": "primary"
+    },
+    {
+      "claim": "The procedure as originally stated is asymmetric, showing a bias towards the right, and a reflected version biased to the left is equally easy to formulate. Repeatedly deleting by this method and inserting at random causes the tree to become skewed, and Eppinger’s study found that performing a large number of such operations increases the expected internal path length, making it worse than a random tree for sufficiently large trees — whereas a symmetric deletion algorithm keeps it better than random.",
+      "title": "Deletions in random binary search trees: a story of errors — on the asymmetry of Hibbard deletion and Eppinger’s empirical findings",
+      "url": "https://www.sciencedirect.com/science/article/abs/pii/S037837581000039X",
+      "kind": "secondary"
+    },
+    {
+      "claim": "For more than a decade it was believed that a theorem of Hibbard’s established that trees obtained through arbitrary sequences of random insertions and deletions are automatically random. That intuition turned out to be wrong.",
+      "title": "Deletions in random binary search trees: a story of errors — on the decades-long misreading of Hibbard’s theorem",
+      "url": "https://www.sciencedirect.com/science/article/abs/pii/S037837581000039X",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The structure now called a red-black tree was invented in 1972 by Rudolf Bayer under the name symmetric binary B-tree, and acquired its modern name in a 1978 paper by Guibas and Sedgewick titled A Dichromatic Framework for Balanced Trees, which introduced the colour convention. Accounts of why red was chosen differ even between the authors: one explanation is that it was the best-looking colour produced by the colour laser printer available at the time, another that red and black were the pens they had for drawing trees.",
+      "title": "Guibas, L. J. and Sedgewick, R., A Dichromatic Framework for Balanced Trees, 19th Annual Symposium on Foundations of Computer Science, Ann Arbor, October 1978, pp. 8-21",
+      "url": "https://en.wikipedia.org/wiki/Red%E2%80%93black_tree",
+      "kind": "secondary"
+    }
+  ],
+  "E.13": [
+    {
+      "claim": "Williams published Algorithm 232, Heapsort, in Communications of the ACM volume 7 number 6 in June 1964, sorting an array of n records in place in time proportional to n log n.",
+      "title": "Williams, J. W. J., Algorithm 232: Heapsort, Communications of the ACM 7(6):347-348, June 1964",
+      "url": "https://dl.acm.org/doi/10.1145/512274.512284",
+      "kind": "primary"
+    },
+    {
+      "claim": "Floyd published Algorithm 245, Treesort 3, in Communications of the ACM volume 7 number 12 in December 1964, with the algorithm received in June and August of that year.",
+      "title": "Floyd, R. W., Algorithm 245: Treesort 3, Communications of the ACM 7(12):701, December 1964",
+      "url": "https://dl.acm.org/doi/10.1145/355588.365103",
+      "kind": "primary"
+    },
+    {
+      "claim": "Floyd’s contribution was an improvement to the construction phase, showing that a heap can be built from an unsorted array in linear time rather than the n log n that results from inserting the elements one at a time. This is the version most modern textbooks present as standard, and Floyd gave a complete, efficient implementation close to what is used today.",
+      "title": "Floyd, R. W., Algorithm 245: Treesort 3, Communications of the ACM 7(12):701, December 1964",
+      "url": "https://dl.acm.org/doi/10.1145/355588.365103",
+      "kind": "primary"
+    }
+  ],
+  "E.14": [
+    {
+      "claim": "Fredkin published Trie Memory in Communications of the ACM volume 3 number 9, pages 490 to 499, in September 1960. The name was coined from the middle syllable of retrieval.",
+      "title": "Fredkin, E., Trie Memory, Communications of the ACM 3(9):490-499, September 1960",
+      "url": "https://dl.acm.org/doi/10.1145/367390.367400",
+      "kind": "primary"
+    },
+    {
+      "claim": "Fredkin describes the structure as a way of storing and retrieving information applicable to argument-value pairs, claiming advantages of shorter access time, easier addition and updating, convenience with arguments of diverse lengths, and exploitation of redundancy.",
+      "title": "Fredkin, E., Trie Memory, Communications of the ACM 3(9):490-499, September 1960",
+      "url": "https://dl.acm.org/doi/10.1145/367390.367400",
+      "kind": "primary"
+    },
+    {
+      "claim": "He states the main disadvantage as relative inefficiency in using storage space, adding that this is not great when the store is large.",
+      "title": "Fredkin, E., Trie Memory, Communications of the ACM 3(9):490-499, September 1960",
+      "url": "https://dl.acm.org/doi/10.1145/367390.367400",
+      "kind": "primary"
+    },
+    {
+      "claim": "The paper cites prior art: de la Briandais, File searching using variable length keys, Proceedings of the Western Joint Computer Conference, 1959, pages 295 to 298, and Fredkin’s own earlier informal memorandum at Bolt Beranek and Newman of 23 January 1959.",
+      "title": "Fredkin, E., Trie Memory, Communications of the ACM 3(9):490-499, September 1960",
+      "url": "https://dl.acm.org/doi/10.1145/367390.367400",
+      "kind": "primary"
+    }
+  ],
+  "E.15": [
+    {
+      "claim": "Moore’s paper The shortest path through a maze was published in the proceedings of an international symposium on the theory of switching, part two, by Harvard University Press in 1959, pages 285 to 292. The symposium itself was held in April 1957, so both years appear in the literature; 1959 is the publication year.",
+      "title": "Moore, E. F., The shortest path through a maze, Proceedings of an International Symposium on the Theory of Switching, Part II, Harvard University Press, 1959, pp. 285-292",
+      "url": "https://bibbase.org/network/publication/moore-theshortestpaththroughamaze-1959",
+      "kind": "primary"
+    },
+    {
+      "claim": "Moore was motivated by a weakness in Claude Shannon’s maze-solving robot Theseus of 1950, which used a memoised depth-first search implemented with electromechanical relays — almost certainly the first implementation of depth-first search on graphs.",
+      "title": "Moore, E. F., The shortest path through a maze, Proceedings of an International Symposium on the Theory of Switching, Part II, Harvard University Press, 1959, pp. 285-292",
+      "url": "https://bibbase.org/network/publication/moore-theshortestpaththroughamaze-1959",
+      "kind": "primary"
+    }
+  ],
+  "E.16": [
+    {
+      "claim": "Moore’s paper The shortest path through a maze appeared in the proceedings of an international symposium on the theory of switching, part two, Harvard University Press, 1959, pages 285 to 292. The symposium was held in April 1957, which is why both years are cited in the literature.",
+      "title": "Moore, E. F., The shortest path through a maze, Proceedings of an International Symposium on the Theory of Switching, Part II, Harvard University Press, 1959, pp. 285-292",
+      "url": "https://bibbase.org/network/publication/moore-theshortestpaththroughamaze-1959",
+      "kind": "primary"
+    },
+    {
+      "claim": "Moore was motivated by a weakness in Claude Shannon’s maze-solving robot Theseus of 1950, which used a memoised depth-first search implemented with electromechanical relays — almost certainly the first implementation of depth-first search on graphs.",
+      "title": "Moore, E. F., The shortest path through a maze, Proceedings of an International Symposium on the Theory of Switching, Part II, Harvard University Press, 1959, pp. 285-292",
+      "url": "https://bibbase.org/network/publication/moore-theshortestpaththroughamaze-1959",
+      "kind": "primary"
+    },
+    {
+      "claim": "Priority for the method is contested: in 1945, more than a decade before Moore considered mazes, Konrad Zuse described an implementation of breadth-first search as a method to count and label the components of a disconnected graph, in work that was not published at the time.",
+      "title": "Moore, E. F., The shortest path through a maze, Proceedings of an International Symposium on the Theory of Switching, Part II, Harvard University Press, 1959, pp. 285-292",
+      "url": "https://bibbase.org/network/publication/moore-theshortestpaththroughamaze-1959",
+      "kind": "primary"
+    },
+    {
+      "claim": "The weighted repair is Dijkstra’s method, published in Numerische Mathematik volume 1, pages 269 to 271, in 1959, which settles the nearest unsettled node repeatedly and requires that no edge weight is negative.",
+      "title": "Dijkstra, E. W., A note on two problems in connexion with graphs, Numerische Mathematik 1:269-271, 1959",
+      "url": "https://link.springer.com/article/10.1007/BF01386390",
+      "kind": "primary"
+    }
+  ],
   "E.19": [
     {
       "claim": "Dijkstra published 'A note on two problems in connexion with graphs' in Numerische Mathematik volume 1, pages 269 to 271, in 1959.",
@@ -7240,6 +7988,26 @@
       "claim": "If a negative cycle is reachable from the source, the distance to some vertices is effectively negative infinity, and finding shortest simple paths in that setting is NP-hard. Implementations therefore report that a negative cycle exists rather than attempting to route around it.",
       "title": "Cherkassky, B. V. and Goldberg, A. V., Negative-cycle detection algorithms, Mathematical Programming 85(2):277-311, 1999",
       "url": "https://link.springer.com/article/10.1007/s101070050058",
+      "kind": "primary"
+    }
+  ],
+  "E.2": [
+    {
+      "claim": "Tarjan’s 1985 paper opens by noting that amortization — averaging over time — is a powerful technique in the complexity analysis of data structures, and describes amortized running time as a realistic but robust complexity measure for which surprisingly tight upper and lower bounds can be obtained.",
+      "title": "Tarjan, R. E., Amortized Computational Complexity, SIAM Journal on Algebraic and Discrete Methods 6(2):306-318, April 1985",
+      "url": "https://dl.acm.org/doi/abs/10.1137/0606031",
+      "kind": "primary"
+    },
+    {
+      "claim": "The paper argues that by designing algorithms whose amortized complexity is low, one obtains self-adjusting data structures that are simple, flexible and efficient, and surveys work by several researchers on amortized complexity.",
+      "title": "Tarjan, R. E., Amortized Computational Complexity, SIAM Journal on Algebraic and Discrete Methods 6(2):306-318, April 1985",
+      "url": "https://dl.acm.org/doi/abs/10.1137/0606031",
+      "kind": "primary"
+    },
+    {
+      "claim": "Amortized analysis emerged from aggregate analysis, which it subsumes, and was introduced in this paper as a more useful form of analysis than the probabilistic methods then in common use.",
+      "title": "Tarjan, R. E., Amortized Computational Complexity, SIAM Journal on Algebraic and Discrete Methods 6(2):306-318, April 1985",
+      "url": "https://dl.acm.org/doi/abs/10.1137/0606031",
       "kind": "primary"
     }
   ],
@@ -7279,6 +8047,74 @@
       "title": "Introsort, successors: pattern-defeating quicksort adoption in Rust and Go",
       "url": "https://en.wikipedia.org/wiki/Introsort",
       "kind": "secondary"
+    }
+  ],
+  "E.3": [
+    {
+      "claim": "The encoding now standard was designed by Ken Thompson of the Plan 9 group at Bell Labs and outlined on 2 September 1992; Pike and Thompson implemented it within days and converted the system to use it throughout. It was first presented publicly at the USENIX conference in January 1993.",
+      "title": "Pike, R. and Thompson, K., Hello World or Καλημέρα κόσμε, Proceedings of the Winter 1993 USENIX Conference",
+      "url": "https://www.cl.cam.ac.uk/~mgk25/ucs/UTF-8-Plan9-paper.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "The problem the design addressed is stated in the paper: without reading from the start of a string it was impossible to find character boundaries. Thompson’s modification made the encoding self-synchronising, so a reader can start anywhere and immediately detect character boundaries, at the cost of being somewhat less bit-efficient than the proposal it replaced.",
+      "title": "Pike, R. and Thompson, K., Hello World or Καλημέρα κόσμε, Proceedings of the Winter 1993 USENIX Conference",
+      "url": "https://www.cl.cam.ac.uk/~mgk25/ucs/UTF-8-Plan9-paper.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "The encoding is variable length, and the earlier scheme it replaced lacked both self-synchronisation and fully compatible handling of characters such as the slash; seven-bit characters represent only themselves, with multi-byte sequences using only bytes that have the high bit set.",
+      "title": "Pike, R. and Thompson, K., Hello World or Καλημέρα κόσμε, Proceedings of the Winter 1993 USENIX Conference",
+      "url": "https://www.cl.cam.ac.uk/~mgk25/ucs/UTF-8-Plan9-paper.pdf",
+      "kind": "primary"
+    }
+  ],
+  "E.5": [
+    {
+      "claim": "The first self-balancing binary search tree was published by Adelson-Velsky and Landis in 1962, in a paper titled An algorithm for the organization of information. Its invariant is that the heights of the two child subtrees of any node differ by at most one, with rebalancing whenever that is violated.",
+      "title": "Adelson-Velsky, G. and Landis, E., An algorithm for the organization of information, Soviet Mathematics Doklady 3:1259-1263, 1962",
+      "url": "https://en.wikipedia.org/wiki/AVL_tree",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Ordered set implementations are commonly built on such a balanced search tree, while unordered set implementations are commonly a hash table storing keys with no associated values — so the cost of set operations is inherited from the structure underneath rather than being a property of the set abstraction.",
+      "title": "Adelson-Velsky, G. and Landis, E., An algorithm for the organization of information, Soviet Mathematics Doklady 3:1259-1263, 1962",
+      "url": "https://en.wikipedia.org/wiki/AVL_tree",
+      "kind": "secondary"
+    }
+  ],
+  "E.8": [
+    {
+      "claim": "Turing discussed subroutines in his 1946 report proposing an automatic computing engine, describing a mechanism that notes where the major operation left off and, on completion, consults a list of such notes held with the most recent last. In modern terms the subsidiary operations are subroutines and the list of notes is a stack of return addresses.",
+      "title": "Turing, A. M., Proposals for the development in the Mathematics Division of an Automatic Computing Engine (ACE), Report E882, Executive Committee, National Physical Laboratory, February 1946",
+      "url": "https://people.computing.clemson.edu/~mark/subroutines.html",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The use of a stack for translating programming languages was patented by Friedrich Bauer and Klaus Samelson under the name Kellerprinzip, in a German application filed on 30 March 1957 and laid open on 1 December 1960. The patent covered the principle for arbitrarily parenthesised arithmetic terms.",
+      "title": "Bauer, F. L. and Samelson, K., Verfahren zur automatischen Verarbeitung von kodierten Daten und Rechenmaschine zur Ausübung des Verfahrens, German patent application DE1094019, filed 30 March 1957",
+      "url": "https://de.wikipedia.org/wiki/Stapelspeicher",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The same idea was developed at about the same time and independently by the Australian philosopher Charles Hamblin. Recognition came late: Bauer received the IEEE Computer Pioneer Award in 1988 for computer stacks, by which time Samelson had died.",
+      "title": "Bauer, F. L. and Samelson, K., Verfahren zur automatischen Verarbeitung von kodierten Daten und Rechenmaschine zur Ausübung des Verfahrens, German patent application DE1094019, filed 30 March 1957",
+      "url": "https://de.wikipedia.org/wiki/Stapelspeicher",
+      "kind": "secondary"
+    }
+  ],
+  "E.9": [
+    {
+      "claim": "The contrasting discipline was described by Turing in 1946 as a list of notes held with the most recent last, and patented by Bauer and Samelson in 1957 as the Kellerprinzip — in both cases the item retrieved is the one most recently stored.",
+      "title": "Bauer, F. L. and Samelson, K., Verfahren zur automatischen Verarbeitung von kodierten Daten und Rechenmaschine zur Ausübung des Verfahrens, German patent application DE1094019, filed 30 March 1957",
+      "url": "https://de.wikipedia.org/wiki/Stapelspeicher",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Tarjan describes amortization as averaging over time, a powerful technique in the complexity analysis of data structures, giving a realistic but robust complexity measure.",
+      "title": "Tarjan, R. E., Amortized Computational Complexity, SIAM Journal on Algebraic and Discrete Methods 6(2):306-318, April 1985",
+      "url": "https://dl.acm.org/doi/abs/10.1137/0606031",
+      "kind": "primary"
     }
   ],
   "F.10": [

@@ -1,0 +1,50 @@
+{
+  "id": "E.12",
+  "trackId": "E",
+  "trackName": "Data structures and algorithms",
+  "title": "Binary search trees",
+  "status": "traced",
+  "seed": "E.12",
+  "story": "Two structures each solve half the problem. A sorted array lets you halve the search space per comparison and makes insertion linear, because everything after the insertion point moves. A linked list inverts both. The binary search tree is the attempt to keep the halving without paying for the movement: impose an ordering — everything left is smaller, everything right is larger — and then a search discards half the remaining keys at each step while an insertion changes one link.\n\nThat works exactly as well as the tree is shaped, and the shape comes from the insertion order. Insert sorted keys and every one goes to the right of the last, producing a structure with a single path — a linked list carrying the overhead of a tree. So the unqualified structure has a worst case of linear operations, and the worst case is not exotic input: it is data that arrived in order, which is most data.\n\nHence balancing. Adelson-Velsky and Landis published the first self-balancing version in 1962, holding an invariant that the heights of any node’s two subtrees differ by at most one and rebalancing whenever it breaks. The other familiar family began as Bayer’s symmetric binary B-tree in 1972 and was renamed by Guibas and Sedgewick in 1978, who introduced the colour convention — and even the authors’ accounts of why red differ, one saying it printed best on the laser printer they had and another that red and black were the pens on hand.\n\nThe deletion story is the part worth knowing, because it is a rare case of a subtle error surviving in the literature. Hibbard’s 1962 procedure replaces a node having two children with the smallest key in its right subtree, which is valid because nothing lies between them. But as stated it is asymmetric — always right — and repeatedly deleting this way while inserting at random skews the tree, with Eppinger finding that enough such operations make the expected path length worse than a random tree, while a symmetric version stays better. And for more than a decade it was believed a theorem of Hibbard’s showed that arbitrary sequences of random insertions and deletions leave a tree random. That belief was wrong.",
+  "problem": {
+    "name": "Ordered search with cheap insertion",
+    "aka": [
+      "binary search tree",
+      "self-balancing tree",
+      "AVL",
+      "red-black"
+    ],
+    "shape": "You need to find a key quickly and to insert and remove keys frequently, and the structures that do one well do the other badly.",
+    "tell": [
+      "lookups and modifications are interleaved rather than separated into phases",
+      "you also need the keys in order, or need the neighbours of a key",
+      "a sorted array is being rebuilt after every change"
+    ],
+    "move": "Impose an ordering invariant on a tree so each comparison eliminates one subtree, and maintain a balance invariant so the depth stays logarithmic regardless of the order keys arrive in.",
+    "invariant": "Every key in the left subtree is smaller and every key in the right is larger, and separately, the tree’s depth is bounded by a constant times the logarithm of its size. The first gives correctness, the second gives the running time — and only the first is what people mean by a binary search tree.",
+    "breaks": "It breaks on insertion order. Sorted or nearly sorted input degrades an unbalanced tree to a path, so every operation becomes linear — and sorted input is common rather than adversarial. Deletion is where the subtleties live: the standard procedure is asymmetric, and repeated asymmetric deletion demonstrably skews the tree over time.",
+    "cost": {
+      "time": "logarithmic for search, insert and delete when balanced; linear when not",
+      "space": "pointers per node, and rotations or colour bits to maintain the balance invariant",
+      "beats": "a hash table on ordered queries and range scans, and loses to it on plain membership"
+    },
+    "worked": {
+      "problem": "Why is a binary search tree with no balancing not a logarithmic structure?",
+      "reasoning": "Because the logarithm comes from the shape, and nothing in the ordering invariant constrains the shape.\n\nThe ordering rule says only that smaller keys are to the left and larger to the right. It says nothing about how deep the tree gets, and the depth is what a search actually costs — halving the keys per comparison is a consequence of the tree being bushy, not of it being ordered.\n\nNow insert keys in ascending order. Each new key is larger than everything present, so it goes right at every step and becomes the right child of the previous one. The ordering invariant holds perfectly at every node, and the result is a single path: a linked list with two pointers per node and a worse constant factor.\n\nThe reason this matters more than most worst cases is that sorted input is not adversarial. Records arrive by identifier, by timestamp, by name. The bad case is the ordinary case, which is why the balanced variants were published so early — 1962 for the first self-balancing form — and why an unbalanced tree is a teaching structure rather than a production one.",
+      "code": "insert 1, 2, 3, 4, 5 into an unbalanced BST:\n\n     1\n      \\\n       2\n        \\\n         3\n          \\\n           4\n            \\\n             5\n\n  ordering invariant: satisfied at every node.\n  depth: n. search: O(n).\n\n  -> a linked list with an extra pointer per node\n\n  two different invariants, and only one is in\n  the name:\n\n     ordering  -> correctness   (left < node < right)\n     balance   -> the running time\n                  (e.g. subtree heights differ <= 1)\n\n  and the bad input is the NORMAL input:\n     ids, timestamps, names -- all arrive sorted.\n\n  which is why balancing was published in 1962,\n  the same year as the standard deletion rule."
+    },
+    "practice": "Insert a thousand sorted keys into an unbalanced binary search tree and measure the depth, then do the same with the keys shuffled. Then delete half of them with the standard asymmetric rule and measure the depth again."
+  },
+  "beats": {
+    "broke": "A sorted array halves the search space and moves everything on insertion; a list inserts in constant time and searches linearly. Work that interleaves lookups with modifications needs both properties at once.",
+    "fix": "An ordering invariant on a tree, so a comparison discards a whole subtree and an insertion changes one link — plus a balance invariant, the first of which was published by Adelson-Velsky and Landis in 1962.",
+    "cost": "The running time depends on shape and the shape depends on arrival order, so sorted input degrades an unbalanced tree to a path. Deletion is where the errors hide: the standard rule is asymmetric and repeated use skews the tree.",
+    "interview": {
+      "q": "Why is a binary search tree without balancing not a logarithmic structure?",
+      "trap": "Answering that its worst case is bad. True, but it invites the reply that worst cases are rare — and here the worst case is the common case.",
+      "answer": "Because the logarithm comes from the shape, and the ordering invariant does not constrain the shape.\n\nThe ordering rule says only that smaller keys sit left and larger right. Nothing in it bounds the depth, and depth is what a search costs. Insert keys in ascending order and every one is larger than everything present, so it goes right at each step and becomes the right child of its predecessor. The ordering invariant is satisfied at every node and the result is a single path — a linked list carrying two pointers per node.\n\nWhat makes this more than a theoretical worst case is that sorted input is ordinary. Records arrive by identifier, by timestamp, by name. The degenerate case is the normal one, which is why self-balancing forms appeared as early as 1962.\n\nSo there are two invariants and only one is in the name: ordering gives correctness, balance gives the running time. Worth adding that deletion is where the real subtleties sit — the standard rule from the same year is asymmetric, repeated use of it demonstrably skews the tree, and a theorem about it was misread for over a decade as showing that random insertions and deletions leave a tree random."
+    }
+  },
+  "blueprint": "Two invariants, one of them missing from the name:\n\n   ORDERING   left < node < right\n              -> correctness\n              -> says NOTHING about depth\n\n   BALANCE    e.g. subtree heights differ <= 1\n              -> the running time\n\n  insert 1,2,3,4,5 in order:\n\n     1 \\ 2 \\ 3 \\ 4 \\ 5      ordering: perfect\n                             depth: n\n                             = a list with extra\n                               pointers\n\n  and sorted input is the NORMAL input\n  (ids, timestamps, names) -- not adversarial.\n\n  the history worth knowing:\n\n     1962  first self-balancing form\n     1962  standard deletion rule -- ASYMMETRIC,\n           and repeated use skews the tree\n     1972  symmetric binary B-tree\n     1978  renamed, colour convention added\n           (even the authors disagree on why red)\n\n     and for a decade, a theorem was read as saying\n     random insert/delete leaves a tree random.\n     It doesn't.",
+  "takeaway": "Ordering gives a search tree its correctness and balance gives it its running time — only the first is in the name, and since sorted input is ordinary rather than adversarial, an unbalanced tree degrades to a list on the data you actually have."
+}

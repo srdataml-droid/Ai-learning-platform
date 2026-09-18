@@ -1,0 +1,49 @@
+{
+  "id": "E.8",
+  "trackId": "E",
+  "trackName": "Data structures and algorithms",
+  "title": "Stacks",
+  "status": "traced",
+  "seed": "E.8",
+  "story": "Two people arrived at this independently, eleven years apart, from opposite ends of the problem, and that is the best argument that the structure is forced rather than invented.\n\nTuring, in the 1946 report proposing an automatic computing engine, is dealing with subroutines: an operation is interrupted by a subsidiary one, and when the subsidiary finishes you have to get back. His mechanism is to note where the major operation left off and, on completion, consult a list of such notes held with the most recent last. That last clause is the whole structure, described before it had a name.\n\nBauer and Samelson arrive from translation rather than execution. Their German patent application of 30 March 1957 introduces the Kellerprinzip — the cellar principle — for evaluating arbitrarily parenthesised arithmetic terms. Charles Hamblin developed the same idea independently at around the same time. The recognition was slow: Bauer received a pioneer award in 1988, by which point Samelson had died.\n\nWhat both are responding to is a property of nesting rather than a preference. If a thing can contain another thing of the same kind, then at any moment you have a set of suspended items, and the one you must resume first is necessarily the one suspended last, because it is the innermost. That is not a design decision; it is what nested means. So the store that supports it must return items in the reverse of the order they arrived, and any structure with that access rule is a stack.\n\nThe cost is the one that shows up as a crash. The store is finite and the depth required is a function of the input, so how deeply you can nest is a property of the data rather than of the program. A recursive function correct for every input it was tested on will fail on one that is deeper, and it will fail by exhausting a resource nobody declared — which is why the remedy in E.20 is converting recursion to iteration with an explicit stack, where at least the limit is one you chose.",
+  "problem": {
+    "name": "Last-in-first-out resumption",
+    "aka": [
+      "the stack",
+      "the call stack",
+      "the cellar principle"
+    ],
+    "shape": "Work is interrupted by more work of the same kind, and each interruption must be resumed before the one that preceded it.",
+    "tell": [
+      "the structure being processed can contain another instance of itself — parentheses, tags, calls, directories",
+      "you are tracking where to return to after finishing something",
+      "the problem says \"matching\", \"balanced\", \"innermost\" or \"most recent\""
+    ],
+    "move": "Keep the suspended state in a store where the only accessible item is the one added most recently. Push on suspension, pop on resumption, and let the store’s order do the bookkeeping the nesting requires.",
+    "invariant": "The item resumed next is always the one suspended most recently. This is not a choice about the store; it is what nesting means, which is why any correct solution to a nesting problem has a stack in it whether or not one is written down.",
+    "breaks": "It breaks on depth, and the depth is set by the input. The store is finite and nothing in the source states how much of it a given input will need, so a program that is correct on every case tested can exhaust the resource on a deeper one — failing in a way that is about the data rather than about the logic.",
+    "cost": {
+      "time": "constant to push and to pop",
+      "space": "proportional to the maximum nesting depth of the input, not to its size",
+      "beats": "tracking the pending items by hand, which is the same structure written out and easier to get wrong"
+    },
+    "worked": {
+      "problem": "Why does nesting force last-in-first-out rather than some other order?",
+      "reasoning": "Because of what nesting is, not because of what is convenient.\n\nTake three open parentheses. When a close arrives, which open does it match? The most recent one, necessarily — the others enclose it, so they cannot close before their contents do. The same holds for calls: a function that called another cannot return until the one it called has returned, because its own continuation is waiting on that result.\n\nSo the order of resumption is the reverse of the order of suspension, and that is fixed by the structure rather than selected by a designer. A store with any other access rule would hand you an item you cannot yet use.\n\nWhich explains the independent arrivals. Turing was solving return addresses and Bauer and Samelson were solving expression evaluation, and both produced the same structure because both were facing the same property. When two people working on unrelated problems converge, the usual reason is that neither was designing.",
+      "code": "  ( ( ( ) ) )        f -> g -> h\n   1 2 3                  h must finish before g\n       ^ closes first     g before f\n\n  order suspended : 1 2 3\n  order resumed   : 3 2 1     <- forced, not chosen\n\n  any other access order hands you an item whose\n  contents are not finished yet.\n\n  which is why two unrelated problems produced the\n  same structure:\n\n     1946  return addresses   \"a list of such notes,\n           (Turing, ACE)       the most recent last\"\n     1957  parenthesised       Kellerprinzip\n           expressions         (Bauer & Samelson;\n                                Hamblin, independently)\n\n  and the cost that shows up as a crash:\n\n     depth = f(input), store = finite\n     -> correct on every tested input\n     -> fails on a deeper one\n     -> a data-dependent failure, not a logic one"
+    },
+    "practice": "Take a recursive function you have written and work out what input would make it deepest. Then find your runtime’s stack limit and calculate the input size at which it fails — and check whether anything in your system prevents that input arriving."
+  },
+  "beats": {
+    "broke": "Nested work suspends work of the same kind, and each suspension has to be resumed before the one before it. Somewhere has to hold the suspended state, and it has to hand it back in the right order.",
+    "fix": "A store whose only accessible item is the most recent. Turing describes it in 1946 as a list of notes held with the most recent last, and Bauer and Samelson patent it in 1957 for parenthesised expressions, with Hamblin arriving independently.",
+    "cost": "The store is finite and the depth needed is a function of the input, so nesting depth is a property of the data. A program correct on everything tested can exhaust the resource on a deeper input, failing for reasons the source does not mention.",
+    "interview": {
+      "q": "Why does nesting force last-in-first-out ordering rather than some other discipline?",
+      "trap": "Answering that it is the natural or conventional choice. It is not a choice at all, which is the point and the reason the structure was discovered repeatedly.",
+      "answer": "Because it is what nesting means. With three open brackets, a close necessarily matches the most recent — the others enclose it and cannot close before their contents do. With calls, a function cannot return before the function it called, because its own continuation depends on that result.\n\nSo the order of resumption is the reverse of the order of suspension, fixed by the structure rather than selected by a designer. A store with any other access rule would hand back an item whose contents are not yet finished.\n\nThe historical evidence is the good part of this answer. Turing arrived at it in 1946 solving return addresses — his phrasing is a list of notes held with the most recent last — and Bauer and Samelson arrived at it in 1957 solving parenthesised expression evaluation, with Hamblin independently at about the same time. Unrelated problems, same structure, which is what you expect when nobody is designing and everybody is meeting the same constraint.\n\nThe cost worth stating is that depth is a function of the input, so exhausting the store is a data-dependent failure rather than a logical one."
+    }
+  },
+  "blueprint": "The order is forced:\n\n   ( ( ( ) ) )          f calls g calls h\n    1 2 3               h returns first\n        ^ closes first  then g, then f\n\n   suspended: 1 2 3\n   resumed:   3 2 1\n\n  any other rule returns an unfinished item.\n\n  which is why it was found twice, independently:\n\n     Turing 1946   return addresses\n                   \"a list of such notes, with the\n                    most recent last\"\n     Bauer &       parenthesised arithmetic\n     Samelson 1957 \"Kellerprinzip\"\n     Hamblin       same period, independently\n\n  convergence from unrelated problems = nobody\n  was designing.\n\n  and the failure mode:\n     depth = f(input)\n     store = finite, and undeclared\n     -> correct in test, crashes on deeper data",
+  "takeaway": "Nesting forces last-in-first-out because the innermost suspension is always the one that must resume first — which is why the structure was arrived at independently for return addresses and for expression evaluation, and why its limit is a property of your input rather than your code."
+}

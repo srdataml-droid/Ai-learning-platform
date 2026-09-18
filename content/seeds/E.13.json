@@ -1,0 +1,60 @@
+{
+  "taskId": "E.13",
+  "title": "Heaps and priority queues",
+  "researchedAt": "2026-09-19",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Williams published Algorithm 232, Heapsort, in Communications of the ACM volume 7 number 6 in June 1964, sorting an array of n records in place in time proportional to n log n.",
+      "type": "date",
+      "tokens": [
+        "Williams",
+        "Communications",
+        "ACM",
+        "1964"
+      ],
+      "source": {
+        "title": "Williams, J. W. J., Algorithm 232: Heapsort, Communications of the ACM 7(6):347-348, June 1964",
+        "url": "https://dl.acm.org/doi/10.1145/512274.512284",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Floyd published Algorithm 245, Treesort 3, in Communications of the ACM volume 7 number 12 in December 1964, with the algorithm received in June and August of that year.",
+      "type": "date",
+      "tokens": [
+        "Floyd",
+        "Treesort",
+        "Communications",
+        "ACM",
+        "1964"
+      ],
+      "source": {
+        "title": "Floyd, R. W., Algorithm 245: Treesort 3, Communications of the ACM 7(12):701, December 1964",
+        "url": "https://dl.acm.org/doi/10.1145/355588.365103",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Floyd’s contribution was an improvement to the construction phase, showing that a heap can be built from an unsorted array in linear time rather than the n log n that results from inserting the elements one at a time. This is the version most modern textbooks present as standard, and Floyd gave a complete, efficient implementation close to what is used today.",
+      "type": "event",
+      "tokens": [
+        "Floyd",
+        "Williams"
+      ],
+      "source": {
+        "title": "Floyd, R. W., Algorithm 245: Treesort 3, Communications of the ACM 7(12):701, December 1964",
+        "url": "https://dl.acm.org/doi/10.1145/355588.365103",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "you need the smallest item repeatedly from a collection that keeps changing, and a full ordering is more than you need and too expensive to maintain",
+    "fix": "maintain only that each node is no larger than its children, which is exactly enough to know where the smallest is and cheap enough to restore after a change",
+    "cost": "the partial order tells you nothing about anything except the root, so the structure cannot be searched, iterated in order, or queried for second place",
+    "interview": "why building a heap from an array is linear when inserting n items one at a time is not"
+  }
+}

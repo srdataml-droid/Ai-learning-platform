@@ -1,0 +1,50 @@
+{
+  "id": "E.11",
+  "trackId": "E",
+  "trackName": "Data structures and algorithms",
+  "title": "Trees and tree traversal",
+  "status": "traced",
+  "seed": "E.11",
+  "story": "A list has one order and a tree does not, which is the whole of the difficulty. Any procedure that must visit every node has to impose an order, and the usual way this is taught — memorise three names and which position the node goes in — makes the choice look arbitrary. It is not arbitrary, and there is a single question that picks the right one every time.\n\nThe question is which direction the information flows. If what you need at a node comes from above — a depth, an accumulated path, a permission inherited from the parent — you must visit the node before its children, which is pre-order. If what you need at a node comes from below — the size of its subtree, the total of its descendants, the value of an expression whose operands are its children — you cannot compute it until the children are done, which is post-order. That is why deleting a tree is post-order and copying one is pre-order: you cannot free a node while you still need its links, and you cannot attach a child to a parent that does not exist yet.\n\nIn-order is the odd one, and it is worth saying why: it is only meaningful when the tree is binary and carries an ordering, in which case visiting left, then node, then right yields the keys in sorted sequence. That is not a third general option, it is a property of ordered binary trees specifically — and it is what makes such a tree a structure you can iterate as a sorted sequence for free. Hibbard’s 1962 paper on the combinatorics of these trees is titled with applications to searching and sorting for that reason, and his deletion rule works by the same property: replace a removed node with the smallest key in its right subtree, which is valid precisely because no key lies between them.\n\nBreadth-first, by level, is a different animal and belongs to E.16 — it needs a queue rather than the call stack, so it is the one traversal that is not naturally recursive, and it answers a different kind of question: nearest first rather than deepest first.",
+  "problem": {
+    "name": "Choosing a traversal order",
+    "aka": [
+      "pre-order",
+      "in-order",
+      "post-order",
+      "tree walk"
+    ],
+    "shape": "Every node must be visited and the structure supplies no single order, so an order has to be chosen and the choice changes what the procedure can compute.",
+    "tell": [
+      "a recursive function over a tree, where the position of the work relative to the recursive calls is being decided",
+      "a result at a node depends on its subtree, or on its ancestry",
+      "someone is picking a traversal because it is the one they remember"
+    ],
+    "move": "Ask which way the information moves. Needed from the parent: visit before recursing. Needed from the children: visit after recursing. Sorted output from an ordered binary tree: visit between the two recursions.",
+    "invariant": "A node is visited only when the information its visit requires is already available. That single condition determines the order, which is why the three named traversals are consequences rather than options.",
+    "breaks": "It breaks when a traversal is reused for a purpose with the opposite information flow, and it breaks quietly — the walk still visits every node, so the output has the right length and the wrong values. In-order also stops meaning anything once the tree is not binary or not ordered, though nothing prevents you from writing it.",
+    "cost": {
+      "time": "linear in the nodes for any of them; the order changes the answer, not the cost",
+      "space": "proportional to the depth for the recursive orders, since they use the call stack",
+      "beats": "flattening the tree first, which imposes an order anyway and loses the structure that made the order meaningful"
+    },
+    "worked": {
+      "problem": "How do you choose a traversal order without memorising which name goes where?",
+      "reasoning": "Ask what a node’s visit needs, and let the dependency decide.\n\nIf the work at a node uses something from its ancestors — a running path, an inherited flag, a depth — then the parent must have been visited first, so the visit precedes the recursion. That is pre-order, and it is why copying a tree is pre-order: the child cannot be attached to a parent that does not exist.\n\nIf the work uses something from its descendants — a subtree size, a sum, the value of an expression — then the children must be finished first, so the visit follows the recursion. That is post-order, and it is why freeing a tree is post-order: you cannot release a node while you still need the pointers it holds.\n\nIn-order is not a third general case. It exists because in an ordered binary tree everything left of a node is smaller and everything right is larger, so left-node-right emits the keys in sorted order. Outside that setting the name has no meaning.\n\nSo there is nothing to memorise: one question, and the dependency picks the order.",
+      "code": "what does this node's work DEPEND on?\n\n   ancestors   -> visit BEFORE recursing   pre-order\n                  copy a tree, push down a\n                  permission, track depth\n\n   descendants -> visit AFTER recursing    post-order\n                  subtree sizes, free a tree,\n                  evaluate an expression\n\n   neither, but the tree is binary AND ordered\n               -> visit BETWEEN             in-order\n                  emits keys sorted\n                  (only meaningful here)\n\n  why the failure is quiet:\n\n     every order visits every node\n     -> right number of results\n     -> wrong values\n     -> nothing raises anything\n\n  and breadth-first is not on this list:\n     it needs a queue, not the call stack, and it\n     answers \"nearest first\" rather than \"deepest\n     first\". that is E.16."
+    },
+    "practice": "Write one traversal that computes the depth of every node and one that computes the size of every subtree. Then try to swap their orders and observe exactly where the information you need has not been computed yet."
+  },
+  "beats": {
+    "broke": "A tree has no inherent order, so visiting everything requires choosing one — and taught as three names and three positions, the choice looks arbitrary and gets made by habit.",
+    "fix": "Let the dependency choose. Visit before the children when the work needs what came from above, after them when it needs what comes from below, and between them for sorted output from an ordered binary tree.",
+    "cost": "The orders are not interchangeable and the wrong one fails silently: every node is still visited, so the result has the right shape and wrong contents. In-order stops being meaningful outside ordered binary trees.",
+    "interview": {
+      "q": "How do you choose a traversal order without memorising which name corresponds to which position?",
+      "trap": "Reciting the definitions. The definitions are the output of the reasoning, so reproducing them does not help when the problem is unfamiliar.",
+      "answer": "Ask what the work at a node depends on, and the dependency settles it.\n\nIf it uses something from the ancestors — an inherited flag, an accumulated path, a depth — the parent must already have been visited, so the visit precedes the recursion. That is pre-order, and it is why copying a tree is pre-order: you cannot attach a child to a parent that does not yet exist.\n\nIf it uses something from the descendants — a subtree size, a total, the value of an expression — the children must be finished first, so the visit follows the recursion. That is post-order, and it is why freeing a tree is post-order: you cannot release a node whose pointers you still need.\n\nIn-order is not a third general case. It exists because in an ordered binary tree everything to the left is smaller and everything right is larger, so left-node-right emits keys in sorted order — which is exactly the property Hibbard's deletion rule uses when it replaces a removed node with the smallest key in its right subtree.\n\nThe failure mode is worth adding: every order visits every node, so choosing wrongly gives the right number of results with the wrong values, and nothing complains."
+    }
+  },
+  "blueprint": "One question decides it:\n\n   what does the work at this node DEPEND on?\n\n     from ancestors    -> visit BEFORE   (pre)\n                          copy, push down, depth\n     from descendants  -> visit AFTER    (post)\n                          sizes, free, evaluate\n     nothing, but tree is binary + ordered\n                       -> visit BETWEEN  (in)\n                          -> keys come out SORTED\n\n  the rule underneath all three:\n\n     visit a node only when what its visit needs\n     already exists.\n\n  so the three names are CONSEQUENCES, not options.\n\n  and the quiet failure:\n     wrong order still visits every node\n     -> right count, wrong values, no error\n\n  breadth-first is separate: a queue, not the stack;\n  \"nearest first\", not \"deepest first\".",
+  "takeaway": "Traversal order is not a choice to memorise but a consequence of which way the information flows — visit before the children when the work needs the ancestors, after when it needs the descendants — and the wrong order fails silently because every order still visits everything."
+}

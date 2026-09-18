@@ -1,0 +1,50 @@
+{
+  "id": "E.9",
+  "trackId": "E",
+  "trackName": "Data structures and algorithms",
+  "title": "Queues and deques",
+  "status": "traced",
+  "seed": "E.9",
+  "story": "A queue is the other discipline. Where a stack returns what arrived most recently — Turing’s list of notes with the most recent last, Bauer and Samelson’s cellar — a queue returns what arrived first, and the two are not variations on a theme. They answer different questions: a stack is for work that was interrupted, a queue is for work that is waiting.\n\nThe naive implementation shows why the structure needs thought. Put the items in an array, append at the end, and remove from the front — and every removal shifts every remaining element down by one, so each is proportional to the length and a sequence of them is quadratic. The instinct is to make removal cheaper. The better move is to stop moving anything at all.\n\nThat is the ring buffer: keep the block fixed, keep two indices, and advance them. Adding writes at the tail index and advances it; removing reads at the head index and advances it; both wrap around when they pass the end. Now each operation touches exactly one element regardless of how many are stored, and the elements never move. A deque generalises this by letting both indices move in both directions, which is why a deque supports the stack discipline and the queue discipline at once — it is not a third structure so much as the removal of an arbitrary restriction.\n\nThe wrap introduces one genuine subtlety, and it is the thing worth remembering. When the head and tail indices are equal, the buffer is either completely empty or completely full, and the indices alone cannot tell you which, because both states produce the same pair of numbers. The fixes are all about adding the missing bit of information: keep a count, keep a flag, or deliberately never fill the last slot so that full and empty are distinguishable by construction. And if you want a queue that grows, the growth is E.2’s problem again — amortised by multiplying capacity, with Tarjan’s averaging over time supplying the accounting.",
+  "problem": {
+    "name": "First-in-first-out without shifting",
+    "aka": [
+      "queue",
+      "ring buffer",
+      "circular buffer",
+      "deque"
+    ],
+    "shape": "Items must be processed in arrival order, so additions and removals happen at opposite ends of a store.",
+    "tell": [
+      "work is pending rather than interrupted — a backlog, a pipeline, a level of a tree",
+      "removal from the front of an array is inside a loop",
+      "a fixed amount of memory must absorb a variable arrival rate"
+    ],
+    "move": "Keep the storage still and move the boundaries. Two indices, one for each end, each advancing and wrapping at the limit, so no element is ever relocated by an ordinary operation.",
+    "invariant": "The elements do not move; only the indices do. That is what makes both ends constant-time, and it is also what forces the full-versus-empty ambiguity, since the state is now encoded entirely in two numbers that have fewer distinct configurations than the buffer has states.",
+    "breaks": "The indices alone cannot distinguish an empty buffer from a full one, so the structure needs a count, a flag, or a deliberately wasted slot. And a fixed ring must decide what to do when it is full: reject, block, or overwrite the oldest — which is a policy decision about correctness, not a detail.",
+    "cost": {
+      "time": "constant at both ends, with no shifting",
+      "space": "a fixed block, plus the extra bit of state that resolves full from empty",
+      "beats": "shifting an array, which is proportional to the contents on every removal and quadratic over a sequence"
+    },
+    "worked": {
+      "problem": "Why can a ring buffer not tell full from empty without extra information?",
+      "reasoning": "Count the states and count the representations, and the shortfall is exact.\n\nA buffer of capacity n can hold between zero and n items, which is n+1 distinct occupancies. The head and tail indices each range over n positions, and what determines occupancy is their difference — which has only n distinct values modulo n. So the representation has n configurations and the structure has n+1 states, and by counting alone at least two states must collide.\n\nThe colliding pair is empty and full, both of which put head and tail at the same position: empty because nothing was ever added, full because the tail has advanced all the way round to the head.\n\nThat is why every fix works by supplying the missing bit rather than by cleverness with the indices. Keep a count, which represents all n+1 states directly. Keep a boolean that distinguishes the collision. Or refuse to use the last slot, so the maximum is n-1 and the structure has n states again.\n\nThe lesson generalises: when a representation has fewer configurations than the thing it represents, no amount of care removes the ambiguity.",
+      "code": "capacity n\n  occupancies possible : 0 .. n      -> n+1 states\n  (tail - head) mod n  :              -> n values\n  -> at least two states must collide.\n\n  and the pair that collides:\n\n     head == tail  and empty   (nothing added)\n     head == tail  and full    (tail wrapped round)\n\n  fixes = supply the missing information:\n\n     keep a count       -> represents all n+1\n     keep a flag        -> distinguishes the collision\n     waste one slot     -> max is n-1, so n states\n\n  no index trick removes it: the representation is\n  simply smaller than the state space.\n\n  and a growable queue is E.2 again:\n     multiply capacity, amortise the copy."
+    },
+    "practice": "Implement a ring buffer with only two indices and no extra state, then add elements until it wraps and removes until it is empty, printing the indices. Find the two moments where they are identical and the buffer means opposite things."
+  },
+  "beats": {
+    "broke": "Arrival-order processing means adding at one end and removing at the other. In an array, removing from the front shifts everything remaining, so each removal costs the length and a sequence of them is quadratic.",
+    "fix": "Hold the storage still and advance two indices that wrap at the end. Both operations touch one element, nothing is relocated, and letting both indices move both ways gives a deque that supports the queue and the stack disciplines together.",
+    "cost": "Two indices cannot represent all the occupancy states, so full and empty become indistinguishable and the structure needs a count, a flag or a sacrificed slot. A fixed ring must also decide whether a full buffer rejects, blocks or overwrites.",
+    "interview": {
+      "q": "Why can a ring buffer not distinguish full from empty using its two indices alone?",
+      "trap": "Answering that it is a quirk of the implementation, or proposing a cleverer comparison. The shortfall is arithmetic, so no comparison resolves it.",
+      "answer": "Because the representation has fewer configurations than the structure has states.\n\nA buffer of capacity n can hold anywhere from zero to n items — that is n+1 distinct occupancies. Occupancy is determined by the difference between the two indices, and that difference takes only n distinct values modulo n. Counting alone forces at least two states to share a representation.\n\nThe pair that collides is empty and full: empty because nothing was ever added and head equals tail; full because the tail has advanced all the way around and met the head again. Identical indices, opposite meanings.\n\nSo every fix works by supplying the missing bit rather than by comparing more carefully. Keep a count, which represents all n+1 states outright; keep a flag that disambiguates the collision; or refuse to use the last slot so the capacity is n-1 and the state space shrinks to fit.\n\nThe general lesson travels beyond ring buffers: when your representation has fewer configurations than the thing represented, the ambiguity cannot be reasoned away."
+    }
+  },
+  "blueprint": "Two disciplines, different jobs:\n\n   stack   most recent first   work that was INTERRUPTED\n   queue   earliest first      work that is WAITING\n   deque   both ends, both     the restriction removed\n           directions\n\n  why not just shift the array:\n\n     remove from front -> move everything down\n     -> O(n) each, O(n^2) over a sequence\n\n  ring buffer: move the ENDS, not the data.\n\n     both operations touch one element\n     nothing is ever relocated\n\n  and the one real subtlety, by counting:\n\n     occupancies      0..n   -> n+1 states\n     (tail-head) mod n       -> n values\n     -> collision is forced\n\n     empty: head == tail\n     full:  head == tail\n     fix by adding information:\n        a count / a flag / waste one slot",
+  "takeaway": "A ring buffer keeps both ends constant-time by moving indices instead of data, and the full-versus-empty ambiguity is forced arithmetic — two indices have fewer configurations than the buffer has states, so the missing bit has to be supplied."
+}

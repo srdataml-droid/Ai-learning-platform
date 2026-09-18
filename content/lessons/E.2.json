@@ -1,0 +1,49 @@
+{
+  "id": "E.2",
+  "trackId": "E",
+  "trackName": "Data structures and algorithms",
+  "title": "Arrays and dynamic arrays",
+  "status": "traced",
+  "seed": "E.2",
+  "story": "An array is a contiguous run of memory, which is what makes indexing a single multiplication and an offset, and which is also what makes it fixed. The address arithmetic works precisely because the elements are adjacent, and adjacency is a promise you can only keep by owning the ground next to you — ground that someone else may already own. So growing is not a matter of asking for more; it means finding a new block and copying.\n\nThe dynamic array does exactly that and hides it, and the interesting part is the accounting. If you grow by a constant amount, you copy every time the margin runs out, and the total copying over n appends is proportional to n squared. If you multiply the capacity instead, the copies get rarer at exactly the rate they get more expensive, and the total work over n appends is proportional to n — so the cost per append, averaged over the sequence, is constant.\n\nThat averaging is the technique Tarjan’s 1985 paper set out as a framework: amortisation, averaging over time, described there as a realistic but robust complexity measure for which tight bounds can be obtained. It is worth noticing what it is not. It is not a probabilistic claim about a typical case, and it does not depend on the input. It is an arithmetic statement about a worst-case sequence: any n appends cost O(n) in total, whatever they are.\n\nAnd it is not a claim about any single append, which is the part that matters in practice. One of them will copy the entire array, so a system with a latency budget sees a spike proportional to the size, and the geometric growth that makes the average good makes the spikes rarer and larger. The second cost is subtler: the copy moves the elements, so any pointer, reference or iterator into the old block now refers to memory the array no longer owns. Languages differ in whether that is a compile error, a runtime error, or silence.",
+  "problem": {
+    "name": "Amortised growth",
+    "aka": [
+      "dynamic array",
+      "vector",
+      "geometric resizing"
+    ],
+    "shape": "A structure needs contiguous storage for a count that is not known in advance, and contiguity cannot be extended in place.",
+    "tell": [
+      "the collection is appended to repeatedly and its final size is not known",
+      "you are choosing an initial capacity and guessing",
+      "something holds a reference into the storage across an append"
+    ],
+    "move": "Over-allocate, and when capacity is exhausted allocate a new block whose size is a constant multiple of the old one, copy, and release the old. The multiplier is what makes the accounting work.",
+    "invariant": "Capacity grows by a constant factor rather than a constant amount. That is the entire reason the total copying over n appends is linear, and an additive growth policy silently makes it quadratic while looking almost identical in the code.",
+    "breaks": "It breaks as a latency guarantee. The amortised bound says nothing about the individual append that copies the whole array, so a system with a tail-latency budget sees a spike proportional to the current size — and geometric growth makes those spikes rarer and bigger. It also invalidates every reference into the old storage, which is a correctness problem rather than a performance one.",
+    "cost": {
+      "time": "constant per append amortised; proportional to the array on the appends that resize",
+      "space": "up to a constant factor more memory than the elements need, by design",
+      "beats": "a linked structure, which never copies and gives up the contiguity that makes indexing and cache behaviour good"
+    },
+    "worked": {
+      "problem": "Why does the growth factor have to be multiplicative?",
+      "reasoning": "Because the two policies differ in the total, not in the individual step, and the total is what you are buying.\n\nGrow by a fixed amount k. Then you resize after k appends, after 2k, after 3k, and each resize copies everything present. The copies are k, 2k, 3k and so on, and their sum over n appends is proportional to n squared. Each individual resize looks cheap, which is exactly why the policy survives review.\n\nGrow by a factor. Now you resize at 1, 2, 4, 8 and so on, and the copies are 1, 2, 4, 8 — a geometric series whose sum is less than twice the final size. Total work proportional to n, so constant per append on average.\n\nThe structure of the argument is the thing to keep: the resizes get more expensive and rarer at compensating rates, and only multiplication makes them compensate. That is also why the specific factor barely matters — two, or one and a half, changes the constant and not the shape.",
+      "code": "additive growth (+k)        multiplicative (x2)\n--------------------        -------------------\nresize at k, 2k, 3k...      resize at 1, 2, 4, 8...\ncopy      k + 2k + 3k...    copy     1 + 2 + 4 + 8...\n        = O(n^2) total            < 2n  total\n        -> O(n) per append        -> O(1) per append\n                                     amortised\n\n  each individual resize looks cheap in BOTH.\n  the difference is only visible in the sum.\n\n  and what the amortised bound does NOT say:\n\n     \"every append is fast\"        <- false\n     \"any n appends cost O(n)\"     <- true\n\n     one append copies everything.\n     geometric growth makes that RARER and BIGGER.\n\n  plus the correctness cost:\n     the copy moves the elements\n     -> every pointer into the old block is stale"
+    },
+    "practice": "Append a million items to your language’s dynamic array and record the time of each append individually, not the total. Plot them and find the resizes — then check what your language does if you hold a reference to an element across one."
+  },
+  "beats": {
+    "broke": "Indexing is fast because elements are adjacent, and adjacency is exactly what stops you extending the block — the memory next to yours may belong to someone else, so growth means allocating elsewhere and copying.",
+    "fix": "Over-allocate and multiply the capacity when it runs out. The copies become rarer at the same rate they become more expensive, so the total over n appends is linear and the per-append average is constant.",
+    "cost": "The average says nothing about the individual append that copies everything, so tail latency spikes with the size. And the copy invalidates every reference into the old storage, which is a correctness failure rather than a slow one.",
+    "interview": {
+      "q": "Why does a dynamic array have to grow by a multiplicative factor rather than a fixed amount?",
+      "trap": "Answering that multiplying resizes less often. It does, and by itself that is not enough — what matters is how the cost of each resize grows relative to how often they happen.",
+      "answer": "Because the two policies differ in the total work, and each individual resize looks equally cheap either way.\n\nGrowing by a fixed amount k means resizing after k appends, after 2k, after 3k, copying everything present each time. The copies are k, 2k, 3k and so on, summing to something proportional to n squared over n appends — so the per-append cost is linear, not constant.\n\nGrowing by a factor means resizing at 1, 2, 4, 8, with copies of 1, 2, 4, 8 — a geometric series summing to less than twice the final size. Total work linear, so constant per append amortised. The resizes become more expensive and rarer at compensating rates, and only multiplication makes them compensate.\n\nTwo things the bound does not say, both of which bite. It does not promise any individual append is fast — one of them copies the whole array, and geometric growth makes those spikes rarer and larger, which is worse for tail latency. And it is not a probabilistic claim: it holds for any sequence of n appends, because it is arithmetic rather than an average over inputs."
+    }
+  },
+  "blueprint": "Why the multiplier is the whole thing:\n\n   +k    resize at k, 2k, 3k ...\n         copies  k + 2k + 3k ...  = O(n^2)\n         -> O(n) per append\n\n   x2    resize at 1, 2, 4, 8 ...\n         copies  1 + 2 + 4 + 8 ... < 2n\n         -> O(1) per append, amortised\n\n   cost per resize:  rises\n   frequency:        falls\n   only multiplication makes them cancel.\n\n  what \"amortised O(1)\" means and doesn't:\n\n     means: ANY n appends cost O(n) in total\n            (arithmetic, not an average over inputs)\n     not:   every append is fast\n            -> one copies everything\n            -> geometric growth: rarer AND bigger\n               = worse tail latency\n\n  and the non-performance cost:\n     the copy relocates the data\n     -> references into the old block are stale",
+  "takeaway": "Multiplicative growth makes resizes rarer at the same rate it makes them costlier, so n appends cost O(n) in total — a worst-case arithmetic claim about the sequence, not a promise about any single append or about your pointers surviving it."
+}

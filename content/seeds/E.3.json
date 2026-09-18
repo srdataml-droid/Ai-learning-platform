@@ -1,0 +1,60 @@
+{
+  "taskId": "E.3",
+  "title": "Strings and the operations that quietly cost O(n)",
+  "researchedAt": "2026-09-19",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The encoding now standard was designed by Ken Thompson of the Plan 9 group at Bell Labs and outlined on 2 September 1992; Pike and Thompson implemented it within days and converted the system to use it throughout. It was first presented publicly at the USENIX conference in January 1993.",
+      "type": "date",
+      "tokens": [
+        "Ken Thompson",
+        "Thompson",
+        "Rob Pike",
+        "Pike",
+        "Plan",
+        "Bell Labs",
+        "USENIX",
+        "1992",
+        "1993"
+      ],
+      "source": {
+        "title": "Pike, R. and Thompson, K., Hello World or Καλημέρα κόσμε, Proceedings of the Winter 1993 USENIX Conference",
+        "url": "https://www.cl.cam.ac.uk/~mgk25/ucs/UTF-8-Plan9-paper.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The problem the design addressed is stated in the paper: without reading from the start of a string it was impossible to find character boundaries. Thompson’s modification made the encoding self-synchronising, so a reader can start anywhere and immediately detect character boundaries, at the cost of being somewhat less bit-efficient than the proposal it replaced.",
+      "type": "quote",
+      "tokens": [
+        "Thompson"
+      ],
+      "source": {
+        "title": "Pike, R. and Thompson, K., Hello World or Καλημέρα κόσμε, Proceedings of the Winter 1993 USENIX Conference",
+        "url": "https://www.cl.cam.ac.uk/~mgk25/ucs/UTF-8-Plan9-paper.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The encoding is variable length, and the earlier scheme it replaced lacked both self-synchronisation and fully compatible handling of characters such as the slash; seven-bit characters represent only themselves, with multi-byte sequences using only bytes that have the high bit set.",
+      "type": "event",
+      "tokens": [
+        "ASCII"
+      ],
+      "source": {
+        "title": "Pike, R. and Thompson, K., Hello World or Καλημέρα κόσμε, Proceedings of the Winter 1993 USENIX Conference",
+        "url": "https://www.cl.cam.ac.uk/~mgk25/ucs/UTF-8-Plan9-paper.pdf",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a string looks like an array of characters and is not one, so operations that appear to be indexing are searches",
+    "fix": "know which unit your language indexes by — byte, code unit, or character — and know that they coincide only for text that happens to be simple",
+    "cost": "the cheap-looking operations are linear, and building a string by repeated concatenation turns a loop into a quadratic one",
+    "interview": "why taking the length of a string is not always a constant-time operation"
+  }
+}

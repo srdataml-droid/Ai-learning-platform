@@ -1,0 +1,90 @@
+{
+  "taskId": "E.12",
+  "title": "Binary search trees",
+  "researchedAt": "2026-09-19",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The first self-balancing binary search tree was published by Adelson-Velsky and Landis in 1962, in a paper titled An algorithm for the organization of information. Its invariant is that the heights of the two child subtrees of any node differ by not more than one, with rebalancing performed whenever that ceases to hold.",
+      "type": "date",
+      "tokens": [
+        "Adelson-Velsky",
+        "Landis",
+        "1962",
+        "Velsky",
+        "Adelson"
+      ],
+      "source": {
+        "title": "Adelson-Velsky, G. and Landis, E., An algorithm for the organization of information, Soviet Mathematics Doklady 3:1259-1263, 1962",
+        "url": "https://en.wikipedia.org/wiki/AVL_tree",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Hibbard’s deletion procedure, published in 1962, removes a node with two children by replacing it with its successor — the node holding the smallest key in its right subtree — which preserves the ordering because no key lies between them.",
+      "type": "date",
+      "tokens": [
+        "Hibbard",
+        "1962"
+      ],
+      "source": {
+        "title": "Hibbard, T. N., Some combinatorial properties of certain trees with applications to searching and sorting, Journal of the ACM 9(1):13-28, January 1962",
+        "url": "https://dl.acm.org/doi/10.1145/321105.321108",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The procedure as originally stated is asymmetric, showing a bias towards the right, and a reflected version biased to the left is equally easy to formulate. Repeatedly deleting by this method and inserting at random causes the tree to become skewed, and Eppinger’s study found that performing a large number of such operations increases the expected internal path length, making it worse than a random tree for sufficiently large trees — whereas a symmetric deletion algorithm keeps it better than random.",
+      "type": "event",
+      "tokens": [
+        "Hibbard",
+        "Eppinger"
+      ],
+      "source": {
+        "title": "Deletions in random binary search trees: a story of errors — on the asymmetry of Hibbard deletion and Eppinger’s empirical findings",
+        "url": "https://www.sciencedirect.com/science/article/abs/pii/S037837581000039X",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "For more than a decade it was believed that a theorem of Hibbard’s established that trees obtained through arbitrary sequences of random insertions and deletions are automatically random. That intuition turned out to be wrong.",
+      "type": "event",
+      "tokens": [
+        "Hibbard"
+      ],
+      "source": {
+        "title": "Deletions in random binary search trees: a story of errors — on the decades-long misreading of Hibbard’s theorem",
+        "url": "https://www.sciencedirect.com/science/article/abs/pii/S037837581000039X",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "The structure now called a red-black tree was invented in 1972 by Rudolf Bayer under the name symmetric binary B-tree, and acquired its modern name in a 1978 paper by Guibas and Sedgewick titled A Dichromatic Framework for Balanced Trees, which introduced the colour convention. Accounts of why red was chosen differ even between the authors: one explanation is that it was the best-looking colour produced by the colour laser printer available at the time, another that red and black were the pens they had for drawing trees.",
+      "type": "date",
+      "tokens": [
+        "Rudolf Bayer",
+        "Bayer",
+        "Guibas",
+        "Sedgewick",
+        "Dichromatic Framework",
+        "1972",
+        "1978"
+      ],
+      "source": {
+        "title": "Guibas, L. J. and Sedgewick, R., A Dichromatic Framework for Balanced Trees, 19th Annual Symposium on Foundations of Computer Science, Ann Arbor, October 1978, pp. 8-21",
+        "url": "https://en.wikipedia.org/wiki/Red%E2%80%93black_tree",
+        "kind": "secondary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a sorted array searches quickly and inserts slowly, a list inserts quickly and searches slowly, and you frequently need both",
+    "fix": "an ordering invariant on a tree, so that each comparison discards half the remaining keys and insertion touches only one path",
+    "cost": "the halving depends on the shape, and the shape depends on the insertion order — sorted input produces a list with extra steps",
+    "interview": "why a binary search tree with no balancing is not a logarithmic structure"
+  }
+}

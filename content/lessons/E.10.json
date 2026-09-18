@@ -1,0 +1,49 @@
+{
+  "id": "E.10",
+  "trackId": "E",
+  "trackName": "Data structures and algorithms",
+  "title": "Linked lists",
+  "status": "traced",
+  "seed": "E.10",
+  "story": "The curriculum note on this task says linked lists are rare in production and common in interviews, and asks you to know why both are true. They have the same answer, which is that the cost model changed after the structure was designed.\n\nStart with what it was for. Newell, Shaw and Simon built it as the primary data structure of the first list-processing language, around 1956 at RAND and Carnegie, with the familiar diagram of nodes and arrows appearing in the 1957 conference paper. The problem was structures whose size and shape are decided while the program runs — the same problem C.4 describes LISP solving — and the linked list is the minimal answer: put the address of the next element inside the current one, and you can build arbitrarily without knowing in advance how much you will need or relocating what you have. Newell and Simon’s Turing Award citation in 1975 names list processing alongside artificial intelligence.\n\nNow why it is rare. The asymptotics have not changed — insertion is still two assignments where an array shifts everything after the point — but the asymptotics are no longer what decides. Elements of a linked list are wherever the allocator put them, so traversing means following addresses the processor cannot predict, and each hop may wait on memory. An array puts the next element where the hardware was already going to look. The constant factor that favoured pointers when memory was uniform now runs the other way, and it runs the other way by enough that arrays frequently win even where the complexity class says they should not.\n\nAnd why it is common in interviews. A linked list is the smallest structure where correctness depends on maintaining pointer invariants through mutation: reversing one, detecting a cycle in one, or removing from the middle of one cannot be delegated to a library, has no interesting arithmetic to hide behind, and fails immediately if you drop a reference or update in the wrong order. It is a poor default and an excellent test, and those two facts are not in tension.",
+  "problem": {
+    "name": "Structure without contiguity",
+    "aka": [
+      "linked list",
+      "pointer chasing",
+      "list processing"
+    ],
+    "shape": "A collection must grow and be rearranged as the program runs, and contiguous storage fixes both the capacity and the positions.",
+    "tell": [
+      "elements are inserted and removed in the middle, repeatedly",
+      "the final size is unknown and relocation of existing elements is unacceptable",
+      "you are being asked to reverse, splice or detect a cycle, which is usually an interview"
+    ],
+    "move": "Store each element together with the location of the next, so that structural change is a matter of reassigning links rather than moving data, and growth needs no contiguous block.",
+    "invariant": "Every element knows where the next one is, and nothing else knows where any element is. That is what makes insertion local, and it is also exactly what makes traversal sequential and position lookup linear.",
+    "breaks": "It breaks on the hardware, not on the analysis. Nodes are wherever they were allocated, so traversal follows addresses the processor cannot anticipate and may stall on each hop, while an array is already where the prefetcher is looking. That cost did not exist when the structure was designed and now frequently outweighs the asymptotic advantage.",
+    "cost": {
+      "time": "constant to splice once you are there; linear to get there, with poor locality throughout",
+      "space": "a pointer per element, plus allocator overhead per node",
+      "beats": "an array for insertion in the middle on paper, and loses to it on traversal in practice more often than the complexity suggests"
+    },
+    "worked": {
+      "problem": "Why are linked lists rare in production and common in interviews?",
+      "reasoning": "Both follow from the same property: the structure is defined entirely by its pointers.\n\nFor production, that means the data is scattered. Traversal chases addresses the processor cannot predict, so each step risks waiting on memory, while an array’s next element is already being fetched. The asymptotic advantage for middle insertion is real and is frequently smaller than the constant-factor penalty on everything else — and crucially, finding the insertion point is itself a traversal, so the cheap operation is usually preceded by the expensive one.\n\nFor interviews, the same property makes it the smallest structure where the difficulty is maintaining invariants through mutation. Reversing one, detecting a cycle, removing a node given only a reference to it — none of these can be delegated to a library, none have arithmetic to hide behind, and each fails immediately if you update links in the wrong order or drop the only reference to the rest.\n\nSo it is a poor default and a good test, and noticing that these are the same fact is the actual answer.",
+      "code": "what it's good at, on paper:\n\n   insert in the middle   2 assignments\n   array equivalent       shift everything after\n\n  but: finding the middle is itself a traversal.\n  the cheap operation is preceded by the dear one.\n\n  what changed since 1956:\n\n     then   memory uniform; pointers cost what\n            anything else cost\n     now    array:  next element already being\n                    prefetched\n            list:   next address unpredictable,\n                    may stall\n\n     -> constant factors reversed, and by enough\n        to beat the complexity class in practice\n\n  why interviews love it anyway:\n\n     no library to call\n     no arithmetic to hide behind\n     correctness = pointer invariants under mutation\n     one wrong ordering -> lose the rest of the list\n\n  poor default, good test. same property, both times."
+    },
+    "practice": "Write a function that reverses a singly linked list in place, then write one that sums an array of the same length. Time both for a million elements, and note that the list traversal alone is slower than the whole array operation."
+  },
+  "beats": {
+    "broke": "Contiguous storage fixes capacity and position, so inserting in the middle relocates everything after it and the shape of the data must be known when the block is allocated.",
+    "fix": "Put the address of the next element inside the current one. Structural change becomes reassigning links, and growth needs no contiguous space — the answer Newell, Shaw and Simon built the first list-processing language on around 1956.",
+    "cost": "The elements end up scattered, so traversal follows addresses the processor cannot predict. That cost did not exist when memory was uniform and now routinely outweighs the asymptotic advantage.",
+    "interview": {
+      "q": "Why are linked lists rare in production code and common in interview questions?",
+      "trap": "Treating these as two separate facts with two separate explanations. They follow from one property, and saying so is the answer.",
+      "answer": "Both come from the structure being defined entirely by its pointers.\n\nIn production that means the data is scattered, so traversal chases addresses the processor cannot anticipate and may stall on each hop, while an array's next element is already being prefetched. The asymptotic win for middle insertion is real and usually smaller than the constant-factor penalty on everything else — and finding the insertion point is itself a traversal, so the cheap operation is normally preceded by the expensive one.\n\nIn interviews the same property makes it the smallest structure where the difficulty is maintaining invariants through mutation. Reversing one, detecting a cycle, deleting a node given only a reference to it: no library call, no arithmetic to hide behind, and an immediate failure if you reassign links in the wrong order or drop the only reference to the remainder.\n\nSo it is a poor default and an excellent test, and those are the same fact seen from two sides. Worth adding that the attribution is not uniform — some sources credit the linked list to Cliff Shaw individually rather than to the three jointly."
+    }
+  },
+  "blueprint": "One property, two consequences:\n\n   \"the structure is only its pointers\"\n\n   -> production: data scattered\n                  traversal unpredictable\n                  array is already prefetched\n                  and finding the insert point\n                  is itself a traversal\n                  => rare\n\n   -> interviews: no library call\n                  no arithmetic to hide in\n                  correctness = invariants under\n                  mutation\n                  one wrong link order loses the\n                  rest of the list\n                  => common\n\n  what changed since ~1956:\n     not the asymptotics\n     the CONSTANTS, because memory stopped being\n     uniform\n\n  which is the general lesson: a complexity class\n  survives; the cost model underneath it does not.",
+  "takeaway": "The linked list is defined entirely by its pointers, which is why it is rare in production — scattered data defeats prefetching — and common in interviews, where maintaining pointer invariants through mutation is the whole exercise."
+}

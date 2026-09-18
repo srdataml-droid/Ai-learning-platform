@@ -1,0 +1,73 @@
+{
+  "taskId": "E.14",
+  "title": "Tries",
+  "researchedAt": "2026-09-19",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Fredkin published Trie Memory in Communications of the ACM volume 3 number 9, pages 490 to 499, in September 1960. The name was coined from the middle syllable of retrieval.",
+      "type": "date",
+      "tokens": [
+        "Fredkin",
+        "Communications",
+        "ACM",
+        "1960"
+      ],
+      "source": {
+        "title": "Fredkin, E., Trie Memory, Communications of the ACM 3(9):490-499, September 1960",
+        "url": "https://dl.acm.org/doi/10.1145/367390.367400",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Fredkin describes the structure as a way of storing and retrieving information applicable to argument-value pairs, claiming advantages of shorter access time, easier addition and updating, convenience with arguments of diverse lengths, and exploitation of redundancy.",
+      "type": "quote",
+      "tokens": [
+        "Fredkin"
+      ],
+      "source": {
+        "title": "Fredkin, E., Trie Memory, Communications of the ACM 3(9):490-499, September 1960",
+        "url": "https://dl.acm.org/doi/10.1145/367390.367400",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "He states the main disadvantage as relative inefficiency in using storage space, adding that this is not great when the store is large.",
+      "type": "quote",
+      "tokens": [
+        "Fredkin"
+      ],
+      "source": {
+        "title": "Fredkin, E., Trie Memory, Communications of the ACM 3(9):490-499, September 1960",
+        "url": "https://dl.acm.org/doi/10.1145/367390.367400",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "The paper cites prior art: de la Briandais, File searching using variable length keys, Proceedings of the Western Joint Computer Conference, 1959, pages 295 to 298, and Fredkin’s own earlier informal memorandum at Bolt Beranek and Newman of 23 January 1959.",
+      "type": "date",
+      "tokens": [
+        "Briandais",
+        "Western Joint Computer Conference",
+        "Bolt Beranek",
+        "Newman",
+        "Fredkin",
+        "1959"
+      ],
+      "source": {
+        "title": "Fredkin, E., Trie Memory, Communications of the ACM 3(9):490-499, September 1960",
+        "url": "https://dl.acm.org/doi/10.1145/367390.367400",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a hash table finds an exact key and cannot answer which keys begin with this, because hashing destroys the structure of the key deliberately",
+    "fix": "make the path through the structure be the key itself, so every prefix is a position and everything below it is the answer",
+    "cost": "a node per character rather than per key, which its author identified in 1960 as the structure’s main disadvantage",
+    "interview": "why a hash table cannot do prefix search at any price"
+  }
+}

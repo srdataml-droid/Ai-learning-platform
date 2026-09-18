@@ -1,0 +1,48 @@
+{
+  "id": "E.3",
+  "trackId": "E",
+  "trackName": "Data structures and algorithms",
+  "title": "Strings and the operations that quietly cost O(n)",
+  "status": "traced",
+  "seed": "E.3",
+  "story": "A string presents itself as an array of characters and is usually an array of bytes with a decoding rule. That gap is where the hidden costs live, and it is worth understanding structurally rather than as a list of gotchas.\n\nThe dominant encoding is variable length, and its history explains the property that matters. The paper describing it states the problem with what came before: without reading from the start of a string it was impossible to find character boundaries. Thompson’s design, outlined on 2 September 1992 and implemented across the system within days, made the encoding self-synchronising — a reader can start anywhere and immediately tell where characters begin — at the cost of being somewhat less bit-efficient. Seven-bit characters stand for themselves and multi-byte sequences use only bytes with the high bit set, which is why so much older code kept working.\n\nSelf-synchronising means you can find boundaries locally. It does not mean you can count characters without walking. So the nth character is at a position determined by the lengths of the n preceding characters, which makes indexing by character a scan rather than an offset — and languages resolve that differently: some index by byte, some by fixed-size code unit, some by character with a linear cost, and some present a character view that is not a sequence at all. The label \"length\" hides all four.\n\nThen the operation that turns a loop quadratic. Strings are immutable in many languages, so concatenation allocates a new string and copies both operands. Do that once and it is linear in the result. Do it inside a loop that appends n times and each step copies everything built so far, giving a total proportional to n squared — a program that is correct, obvious, and gets slower faster than the input grows. The remedy is the same shape as E.2’s: accumulate in a growable buffer and materialise once, so the copying is amortised rather than repeated.",
+  "problem": {
+    "name": "Text is not an array of characters",
+    "aka": [
+      "variable-length encoding",
+      "string concatenation cost"
+    ],
+    "shape": "A string is presented as a sequence and stored as bytes under a decoding rule, so the cost of an operation does not match its syntax.",
+    "tell": [
+      "a loop builds a string by adding to it each iteration",
+      "code indexes into a string by a number computed from a character count",
+      "a slice or a length behaves differently for text with accents or scripts outside the basic set"
+    ],
+    "move": "Establish which unit your language indexes and measures by. Treat per-character positions as the result of a scan rather than arithmetic, and accumulate into a growable buffer instead of repeatedly concatenating.",
+    "invariant": "Byte position and character position coincide only where every character occupies one byte. Every surprising behaviour here follows from assuming that identity holds generally, because it holds for the test data people write.",
+    "breaks": "It breaks quietly, because the simple case is also the tested case. Text restricted to the basic set behaves exactly like an array, so indexing, slicing and length all appear correct until real input arrives — at which point a slice can cut a character in half and a length can disagree with what a user counts.",
+    "cost": {
+      "time": "linear for length and indexing by character; quadratic for concatenation in a loop",
+      "space": "variable per character, which is the trade that bought compatibility",
+      "beats": "a fixed-width encoding, which makes indexing arithmetic and costs space on every string in the system"
+    },
+    "worked": {
+      "problem": "Why is taking the length of a string not always constant time?",
+      "reasoning": "Because length can mean at least three different quantities, and only one of them is stored.\n\nBytes: stored, so constant. Code units in a fixed-width representation: also usually stored, so constant. Characters as a person would count them: not stored, because the encoding is variable length, so finding the count means walking the string and decoding as you go.\n\nThe self-synchronising property does not rescue this. It guarantees you can find a boundary from any position without starting at the beginning, which makes scanning and slicing safe — it does not let you skip ahead by a known number of bytes to reach the nth character, because the number of bytes depends on which characters precede it.\n\nSo the honest question is never \"what is the length\" but \"the length of what\", and the answer varies by language. And the failure is nasty because it is invisible in the ordinary case: for text in the basic set all three answers coincide, which is exactly the text you used while writing the code.",
+      "code": "\"length\" is at least three questions:\n\n   bytes           stored        -> O(1)\n   fixed-width     usually\n     code units    stored        -> O(1)\n   characters      NOT stored    -> O(n), must decode\n\n  self-synchronising buys you:\n     start anywhere, find a boundary    YES\n     skip to the nth character by\n        arithmetic                      NO\n     (bytes consumed depend on WHICH\n      characters came first)\n\n  and the quadratic loop:\n\n     s = \"\"\n     for x in items:          each += copies\n         s += x               everything so far\n                              -> O(n^2)\n\n     buffer.append(x) ... join once\n                              -> O(n), same shape\n                                 as E.2's fix"
+    },
+    "practice": "Take a string containing an accented character and an emoji, and print its length in your language. Then print the length of the same string after a round trip through whatever your framework uses for storage, and see whether they agree."
+  },
+  "beats": {
+    "broke": "A string looks like an array of characters and is stored as bytes with a decoding rule. Operations that read like indexing are scans, and the difference is invisible for the simple text people test with.",
+    "fix": "Know which unit your language indexes and measures by. The encoding is self-synchronising — a reader can start anywhere and find character boundaries — which makes slicing safe without making indexing arithmetic.",
+    "cost": "Counting characters is linear, and repeated concatenation is quadratic because each step copies everything accumulated so far. Both operations look constant in the source.",
+    "interview": {
+      "q": "Why is taking the length of a string not always a constant-time operation?",
+      "trap": "Answering that some languages are slow at it. The variation is not about implementation quality — the quantities being measured are genuinely different.",
+      "answer": "Because \"length\" names at least three quantities and only some of them are stored.\n\nThe byte count is stored, so it is constant. A fixed-width code-unit count is usually stored too. The count of characters as a person would count them is not stored, because the encoding is variable length — so obtaining it means walking the string and decoding as you go.\n\nSelf-synchronisation does not rescue this. It guarantees you can find a character boundary starting from any position rather than from the beginning, which is what makes scanning and slicing safe. It does not let you jump to the nth character by arithmetic, because how many bytes that takes depends on which characters precede it.\n\nSo the question is never the length but the length of what, and the answer differs by language. The failure mode is the dangerous part: for text in the basic set all three answers coincide, and that is exactly the text you had while writing the code — so it is correct in development and wrong in production."
+    }
+  },
+  "blueprint": "Three \"lengths\", one stored:\n\n   bytes         stored       O(1)\n   code units    usually      O(1)\n   characters    derived      O(n)  <- must decode\n\n  what self-synchronising gives you:\n\n     land anywhere -> find a boundary      YES\n     jump to char n by arithmetic          NO\n\n  because bytes-per-character varies with WHICH\n  characters came before.\n\n  the quadratic that reads as linear:\n\n     s += x  in a loop\n        each step copies everything so far\n        -> O(n^2)\n     buffer + join once\n        -> O(n)           (same fix as E.2)\n\n  and why it survives review:\n     in the basic set all three lengths agree,\n     slices never cut a character in half,\n     and that is the data you tested with.",
+  "takeaway": "A string is bytes plus a decoding rule, so character indexing is a scan rather than arithmetic and repeated concatenation is quadratic — and both look correct because plain test data makes byte position and character position coincide."
+}

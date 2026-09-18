@@ -1,0 +1,49 @@
+{
+  "id": "E.5",
+  "trackId": "E",
+  "trackName": "Data structures and algorithms",
+  "title": "Sets",
+  "status": "traced",
+  "seed": "E.5",
+  "story": "The set is the least interesting-looking structure and the one that most often changes the complexity of a program, because the question it answers — have I seen this before — turns up inside loops. Asked of a list, that question is a scan, so a single loop containing it is quadratic without anybody writing a nested loop. Asked of a set, it does not depend on the number of elements, and the same code becomes linear.\n\nThere is no set data structure as such, which is the thing worth knowing. A set is an interface, and what you get is whatever is underneath: typically a hash table with the values discarded, or a balanced search tree with the values discarded. That choice is not a detail, because it decides the cost model and the ordering. The tree variety descends from the first self-balancing search tree, published by Adelson-Velsky and Landis in 1962, whose invariant is that the two child subtrees of any node differ in height by at most one — which is what bounds the depth and therefore the lookup.\n\nSo \"set\" names a contract and not a cost. Membership in a hash-backed set does not depend on size and has no order; membership in a tree-backed set is logarithmic and iteration comes out sorted. Programs that iterate a hash-backed set and depend on the order are relying on an accident, and it is an accident that changes when the table resizes.\n\nThe failure specific to sets is about identity rather than speed. Membership is decided by an equality and a hash that must agree with each other and must not change. Insert an object, mutate the field its hash is computed from, and it is now in a bucket that does not correspond to its value: it will not be found by a lookup, will not be removed by a delete, and will still be there when you iterate. The structure is not corrupt and every operation behaves as specified — the element simply became unreachable by the only route the structure has.",
+  "problem": {
+    "name": "Membership without scanning",
+    "aka": [
+      "set",
+      "hash set",
+      "ordered set"
+    ],
+    "shape": "An algorithm repeatedly asks whether it has already seen a value, and answering by looking is proportional to how much it has seen.",
+    "tell": [
+      "a loop contains a search over a list of things already processed",
+      "duplicates are removed by comparing every element with every other",
+      "the code is linear in appearance and quadratic in behaviour"
+    ],
+    "move": "Put the seen values in a structure that answers membership without consulting the others — a hash table for unordered membership, a balanced search tree where you also want order — and keep the elements it holds immutable in the fields that determine identity.",
+    "invariant": "An element’s hash and equality agree with each other and do not change while it is a member. The structure locates an element by computing from its value, so an element whose value changes is no longer where the structure will look.",
+    "breaks": "It breaks on mutation, silently and without corrupting anything: the element is present, unreachable by lookup, and still visible in iteration. It also breaks when order is assumed — a hash-backed set has none, and code that appears to work is depending on an arrangement that changes when the table grows.",
+    "cost": {
+      "time": "membership independent of size for the hash variety, logarithmic for the tree variety",
+      "space": "more than the elements, since a hash table keeps spare capacity",
+      "beats": "scanning a list, which needs no extra structure and makes the containing loop quadratic"
+    },
+    "worked": {
+      "problem": "What happens to an element whose hash changes after it has been inserted?",
+      "reasoning": "It stays in the structure and stops being findable, and nothing reports an error, because nothing has gone wrong by the structure’s own rules.\n\nInsertion computes a position from the value and stores the element there. Lookup computes a position from the value you are asking about and looks only there — that locality is the entire reason the operation does not depend on the size.\n\nMutate a field the hash depends on, and those two computations no longer agree. The element sits at the position implied by its old value; a lookup goes to the position implied by its new one and correctly finds nothing. Removal fails for the same reason. Iteration walks storage directly rather than computing anything, so the element appears there — which is the tell: present when you list, absent when you ask.\n\nThe rule that follows is short. Whatever determines identity must be immutable while the element is a member — and if you must mutate it, remove it first and reinsert it afterwards.",
+      "code": "insert(x)    position <- hash(x)     store at that slot\nlookup(y)    position <- hash(y)     look ONLY there\n                                     ^ why it's O(1)\n\n  now mutate a field that hash() reads:\n\n     element sits at   hash(old value)\n     lookup goes to    hash(new value)\n     -> not found. remove fails too.\n     -> iteration walks storage, so it IS listed.\n\n  present when you iterate, absent when you ask.\n  nothing is corrupt. every operation obeyed its\n  contract.\n\n  rule: identity fields immutable while a member.\n        must change them? remove, mutate, reinsert."
+    },
+    "practice": "Put a mutable object in a hash set, change the field its hash uses, then test membership, attempt removal, and iterate. Three results, and only one of them is what you expected."
+  },
+  "beats": {
+    "broke": "Asking whether a value has been seen before, answered by looking through what you have, costs time proportional to how much you have — so an ordinary loop containing that question is quadratic with no nested loop in sight.",
+    "fix": "A structure that locates an element by computing from its value rather than by comparison: a hash table with the values discarded, or a balanced search tree where order is also wanted — the latter descending from the 1962 height-balanced tree.",
+    "cost": "The cost model and the ordering belong to the structure underneath rather than to the set abstraction, and correctness depends on identity being stable, which nothing enforces.",
+    "interview": {
+      "q": "What happens to an element whose hash changes after it has been added to a hash set?",
+      "trap": "Answering that the set becomes corrupt or that behaviour is undefined. Every operation continues to satisfy its contract, which is precisely why nothing reports the problem.",
+      "answer": "It remains in the set and becomes unreachable, with no error anywhere.\n\nInsertion computes a position from the value and stores the element there; lookup computes a position from the value being asked about and inspects only that location. That locality is the whole reason membership does not depend on the size of the set.\n\nMutating a field the hash reads breaks the agreement between those two computations. The element sits where its old value said; a lookup goes where its new value says and correctly reports absence. Removal fails identically. Iteration walks the storage rather than computing anything, so the element is listed — giving the signature symptom: present when you enumerate, absent when you ask.\n\nNothing is corrupt and every operation honoured its contract, which is why no exception is raised. The rule that follows is that fields determining identity must be immutable while the element is a member — and if they must change, remove the element first and reinsert it after."
+    }
+  },
+  "blueprint": "A set is an interface, not a cost:\n\n   hash-backed    membership independent of size\n                  NO order (and the order you see\n                  changes when the table resizes)\n   tree-backed    membership logarithmic\n                  iteration comes out sorted\n                  (height-balanced, 1962: subtree\n                   heights differ by <= 1)\n\n  what it changes about your program:\n\n     \"seen it?\" over a list   -> loop becomes O(n^2)\n     \"seen it?\" over a set    -> loop stays O(n)\n     with no nested loop written either way.\n\n  and the failure that isn't about speed:\n\n     insert -> stored at hash(value)\n     mutate -> lookup goes to hash(new value)\n     result:  listed by iteration\n              not found by lookup\n              not removable\n     nothing corrupt. nothing reported.",
+  "takeaway": "A set is an interface whose cost and ordering come from the structure beneath it, and its distinctive failure is identity rather than speed — mutate what the hash reads and the element stays present, stops being findable, and nothing complains."
+}

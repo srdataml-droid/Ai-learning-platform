@@ -1,0 +1,49 @@
+{
+  "id": "E.16",
+  "trackId": "E",
+  "trackName": "Data structures and algorithms",
+  "title": "Breadth first search",
+  "status": "traced",
+  "seed": "E.16",
+  "story": "Shannon built a maze-solving robot in 1950 using relays, and it worked by memoised depth-first search — almost certainly the first depth-first search implemented on a graph. It finds the exit. The weakness that motivated Moore is that it has no reason to find the shortest way there: a depth-first walk commits to a direction and follows it, so the route it returns is the first one it stumbled into rather than the best one.\n\nMoore’s answer, published in 1959 from a symposium held in 1957, is to change what the search is ordered by. Instead of going as deep as possible, expand by distance: visit everything one step from the start, then everything two steps away, and so on. The bookkeeping is a queue rather than a stack — which is the whole implementation difference, and the reason breadth-first is the one traversal in E.11 that is not naturally recursive, since the call stack gives you the wrong discipline.\n\nThe property that makes it correct is worth stating as an invariant rather than as an observation. Vertices leave the queue in non-decreasing order of distance from the start. So when you first reach a vertex, every vertex at a smaller distance has already been processed, which means no shorter route to it exists — if one did, it would have gone through a vertex you already finished with. The first arrival is therefore optimal, and you can record the route as you go and never revise it.\n\nThat argument depends entirely on every edge costing the same, which is where the boundary is. Give edges weights and distance stops being the number of steps, so the queue no longer orders by distance, and the first arrival at a vertex may be along a route with few steps and high cost. The repair is to process by accumulated cost rather than by step count — which requires a priority queue instead of a plain one, and is exactly the structure E.19 describes, with the same invariant and a stronger condition on the weights.",
+  "problem": {
+    "name": "Shortest path by expansion order",
+    "aka": [
+      "breadth-first search",
+      "level-order traversal",
+      "flood fill"
+    ],
+    "shape": "You need the shortest route through a graph, and the obvious traversal returns whichever route it happened to follow.",
+    "tell": [
+      "the question says fewest steps, nearest, or minimum number of moves",
+      "the edges are unweighted, or all weigh the same",
+      "you need the distance to every vertex rather than to one"
+    ],
+    "move": "Order the exploration by distance rather than by depth: keep a frontier in a queue, take vertices in arrival order, and mark each vertex the first time it is seen so it is never revisited.",
+    "invariant": "Vertices are removed from the queue in non-decreasing order of their distance from the start. That is what makes the first arrival at a vertex optimal, and it is the only reason the algorithm can commit to a route without ever reconsidering.",
+    "breaks": "It breaks as soon as edges have different costs, because then the number of steps is no longer the distance, the queue no longer orders by distance, and a vertex can first be reached by a short route that is expensive. It also breaks on memory: the frontier holds an entire level at once, which can be enormous in a wide graph where a depth-first stack would have stayed shallow.",
+    "cost": {
+      "time": "proportional to vertices plus edges, visiting each once",
+      "space": "proportional to the widest level, which is the cost people underestimate",
+      "beats": "depth-first search, which uses far less memory and gives no guarantee about the route it returns"
+    },
+    "worked": {
+      "problem": "Why is the first arrival at a vertex by a shortest path, and why does that stop being true with weights?",
+      "reasoning": "The argument is short and it rests on the queue’s ordering rather than on anything about the graph.\n\nVertices enter the queue when discovered and leave in arrival order, and each vertex enqueues its neighbours at its own distance plus one. So the queue contains vertices at distance d and then distance d+1, never a mixture out of order — removals are in non-decreasing distance.\n\nNow suppose you have just reached vertex v for the first time, at distance d. Could a shorter route exist? It would have to pass through some vertex at distance less than d. But every such vertex has already been removed and has already offered its neighbours — so if that route existed, v would already have been discovered. It was not. Therefore no shorter route exists.\n\nAdd weights and the first sentence fails. The queue still orders by number of steps, and distance is now cost, so the two come apart: a two-step route costing ten is reached before a five-step route costing three. The invariant that licensed the conclusion is gone, and with it the licence to commit.\n\nThe repair keeps the invariant and changes the ordering: take the unvisited vertex of least accumulated cost, which needs a priority queue.",
+      "code": "queue: distance d ... then d+1 ... never mixed\n  -> removals are in non-decreasing distance\n\n  first reach v at distance d.\n  a shorter route would pass a vertex at distance < d.\n  all of those are already done and have already\n  offered their neighbours.\n  -> v would already be known. it wasn't.\n  -> no shorter route exists.\n\n  commit, and never revisit. that is the whole thing.\n\n  now give the edges weights:\n\n     steps   != distance\n     queue orders by STEPS\n     -> 2 steps costing 10 dequeued before\n        5 steps costing 3\n     -> first arrival is no longer optimal\n     -> the invariant is gone\n\n  repair: order by accumulated COST, not steps\n          -> a priority queue, not a queue\n          -> that is E.19, same invariant, stronger\n             condition (no negative edges)"
+    },
+    "practice": "Run breadth-first search on a grid and record the order vertices are dequeued alongside their distances. Confirm the distances never decrease, then add a single expensive edge and find the vertex whose first arrival is now wrong."
+  },
+  "beats": {
+    "broke": "Depth-first search finds a route by committing to a direction and following it, so the path it returns is the one it happened to take. Shannon’s relay maze-solver of 1950 worked exactly this way, and that was the weakness Moore set out to fix.",
+    "fix": "Order the search by distance instead of depth — everything one step out, then two — which needs a queue rather than a stack. Published by Moore in 1959 from a 1957 symposium, though Zuse described the method in unpublished work in 1945.",
+    "cost": "The frontier holds a whole level at once, so memory scales with the width of the graph rather than its depth — which can be far worse than the stack depth-first would have used.",
+    "interview": {
+      "q": "Why is the first time breadth-first search reaches a vertex necessarily by a shortest path, and why does that fail once edges have weights?",
+      "trap": "Answering that it explores level by level, and stopping. That is the mechanism; the question is why the mechanism licenses committing to a route.",
+      "answer": "Because vertices leave the queue in non-decreasing order of distance, and that ordering is what makes the conclusion safe.\n\nEach vertex enqueues its neighbours at its own distance plus one, so the queue holds everything at distance d before anything at d+1 and never mixes them out of order. Now suppose you reach v for the first time at distance d. A shorter route would have to pass through a vertex at distance less than d — but every such vertex has already been removed and has already offered its neighbours, so v would already have been discovered. It was not, so no shorter route exists. That is what licenses recording the route and never reconsidering it.\n\nWith weights the first sentence fails. The queue still orders by step count while distance now means accumulated cost, so a two-step route costing ten is processed before a five-step route costing three, and the first arrival is no longer optimal. The invariant is gone, and with it the right to commit.\n\nThe repair keeps the invariant and changes what is ordered: take the unvisited vertex of least accumulated cost, which requires a priority queue — the same argument Dijkstra's method rests on, with the added condition that no edge is negative."
+    }
+  },
+  "blueprint": "The invariant is the whole algorithm:\n\n   vertices leave the queue in NON-DECREASING\n   distance from the start.\n\n   first reach v at distance d?\n      a shorter route passes something at < d\n      everything at < d is already done and has\n        already offered its neighbours\n      -> v would already be known\n      -> it isn't\n      -> commit. never revisit.\n\n  what breaks it:\n\n     weights.  steps != distance.\n     queue orders by STEPS, you care about COST\n     -> 2 steps @ 10 dequeued before 5 steps @ 3\n     -> first arrival no longer optimal\n\n  the repair: order by accumulated cost\n              -> priority queue (E.19)\n\n  and the cost people forget:\n     the frontier is a whole LEVEL\n     memory ~ width, not depth\n     (depth-first would have stayed shallow)",
+  "takeaway": "Breadth-first search can commit to a route because vertices leave the queue in non-decreasing distance order, so anything shorter would already have been found — and weights break exactly that sentence, which is why the repair is to order by cost instead of steps."
+}

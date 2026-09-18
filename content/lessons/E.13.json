@@ -1,0 +1,49 @@
+{
+  "id": "E.13",
+  "trackId": "E",
+  "trackName": "Data structures and algorithms",
+  "title": "Heaps and priority queues",
+  "status": "traced",
+  "seed": "E.13",
+  "story": "The requirement is narrow and common: give me the smallest thing, repeatedly, from a collection that keeps changing. Sorting answers it once and then breaks on the first insertion. Scanning answers it every time at a cost proportional to the size. Both do more work than the question needs, and the heap is the structure that notices what the question actually needs.\n\nIt needs to know where the minimum is. It does not need to know the order of anything else. So the invariant is deliberately weak: every node is no larger than its children. That says nothing about siblings, nothing about cousins, nothing about the order of any two elements that are not on the same root-to-leaf path — and it is exactly sufficient to guarantee that the root is the minimum, because every element sits under something smaller all the way up. Weak invariants are cheap to restore, which is the entire trade: after removing the root you fix one path, not the whole structure.\n\nWilliams published this as Heapsort in June 1964. Floyd’s Algorithm 245 followed that December with the improvement that is now standard: build the heap from an unsorted array in linear time, rather than the n log n you get by inserting the elements one at a time. The counting behind that is the nicest thing in this lesson, and it is in the worked example.\n\nThere is a second property worth stating, because it connects to E.10. A heap is a complete binary tree, and a complete binary tree can be stored in an array with the children of position i at 2i+1 and 2i+2. So the tree has no pointers at all — the structure is arithmetic on indices, and the data is contiguous. That is why heaps are fast in practice and not merely in the analysis: the structure that E.10 says loses to arrays has, here, been replaced by an array. The cost is the one the weak invariant implies: you cannot search a heap, cannot iterate it in order, and cannot ask for the second smallest without doing work.",
+  "problem": {
+    "name": "Repeated minimum under change",
+    "aka": [
+      "heap",
+      "priority queue",
+      "binary heap"
+    ],
+    "shape": "The extreme element is needed over and over from a collection that is being added to and removed from between queries.",
+    "tell": [
+      "a loop takes the best remaining item, processes it, and adds more items",
+      "you are sorting a collection repeatedly, or scanning it for a minimum inside a loop",
+      "the problem says nearest, cheapest, earliest deadline, or top k"
+    ],
+    "move": "Maintain only the parent-child ordering — every node no larger than its children — so the root is the minimum by construction, and repair after a change by moving one element along a single root-to-leaf path.",
+    "invariant": "Each node is no larger than its children, and nothing more is guaranteed. The weakness is the feature: it is enough to locate the extreme and cheap enough that a single path repairs it, which is why both properties come from the same choice.",
+    "breaks": "Everything other than the extreme is unordered, so the structure cannot answer membership, cannot be iterated in sorted order, and cannot give the second smallest without work. People reach for a heap expecting a sorted collection and get a structure that is correct about exactly one element.",
+    "cost": {
+      "time": "constant to read the minimum, logarithmic to insert or remove it, linear to build from an array",
+      "space": "none beyond the elements, since the tree is implicit in array indices",
+      "beats": "sorting, which orders everything when you needed one element; and scanning, which is linear per query"
+    },
+    "worked": {
+      "problem": "Why is building a heap from an array linear, when inserting n items one at a time is not?",
+      "reasoning": "Because the two methods move elements in opposite directions, and the direction interacts with where the elements are.\n\nInserting one at a time puts each new element at the bottom and sifts it up. The distance it may travel is the height of the tree, and every element can travel the full height, so the total is n times the height: n log n.\n\nBuilding bottom-up starts from the leaves and sifts each element down. Now the distance an element may travel is its own height above the leaves — and the tree’s shape makes that overwhelmingly small. Half the nodes are leaves and move nothing. A quarter sit one level up and move at most one. An eighth move at most two.\n\nSo the total is the sum over levels of (nodes at that level) times (distance from that level), which is n/2 times 0, plus n/4 times 1, plus n/8 times 2, and so on. That series converges to a constant multiple of n.\n\nThe general shape is worth keeping: sifting up is expensive because most nodes are far from the root; sifting down is cheap for exactly the same reason.",
+      "code": "n insertions, sift UP        build-heap, sift DOWN\n---------------------        ---------------------\neach element starts at        each element starts\n  a leaf                        where it is\nmay rise the full height      may fall only its own\n                                height above the leaves\n\n  cost = n * log n            cost = sum over levels\n                                 n/2 * 0   (leaves)\n                               + n/4 * 1\n                               + n/8 * 2\n                               + ...\n                               -> converges to O(n)\n\n  same tree. opposite direction. different class.\n\n  because MOST NODES ARE NEAR THE BOTTOM:\n     half are leaves and move nothing.\n\n  and the representation:\n\n     children of i  ->  2i+1, 2i+2\n     no pointers at all. the tree is arithmetic,\n     the data is contiguous.\n     (which is why E.10's problem doesn't apply.)"
+    },
+    "practice": "Build a heap of a million random integers twice — once by repeated insertion, once bottom-up — and time both. Then try to use the result to find the second smallest element without removing the first."
+  },
+  "beats": {
+    "broke": "Getting the smallest item repeatedly from a changing collection is answered badly by sorting, which orders everything and breaks on the next insertion, and by scanning, which costs the size on every query.",
+    "fix": "Keep only the parent-child ordering, which is exactly enough for the root to be the extreme and cheap enough to repair along one path. Published as Heapsort in June 1964, with the linear-time construction following that December.",
+    "cost": "Nothing but the root is ordered, so the structure cannot be searched, iterated in order, or asked for second place — and people reach for it expecting a sorted collection.",
+    "interview": {
+      "q": "Why is building a heap from an array linear, when inserting n elements one at a time is n log n?",
+      "trap": "Answering that bottom-up construction does less work per element. It does, and the reason is about where the elements are, which is the part worth saying.",
+      "answer": "Because the two methods move elements in opposite directions, and the tree's shape makes one direction much cheaper.\n\nInserting one at a time places each element at the bottom and sifts it up. Its possible travel is the full height of the tree, and every element can pay that, giving n log n.\n\nBuilding bottom-up sifts each element down instead, so its possible travel is its own height above the leaves. That is where the shape matters: half the nodes are leaves and move nothing, a quarter sit one level up and move at most one, an eighth move at most two. The total is n/2 times 0, plus n/4 times 1, plus n/8 times 2, and so on — a series that converges to a constant multiple of n.\n\nThe general form is worth carrying: sifting up is expensive because most nodes are far from the root, and sifting down is cheap for exactly the same reason.\n\nFloyd published that improvement in December 1964, months after Williams published the sort itself, and it is the version textbooks now present as standard."
+    }
+  },
+  "blueprint": "A deliberately weak invariant:\n\n   every node <= its children.\n\n   says NOTHING about siblings, cousins, or any\n   two elements not on one root-to-leaf path.\n\n   and that is exactly enough:\n      the root is the minimum\n      repair after a change = ONE path\n\n   weak invariant -> cheap to restore.\n   that is the whole trade.\n\n  build-heap, and why the direction matters:\n\n     sift UP   from leaves, may rise full height\n               -> n * log n\n     sift DOWN may fall only its height above\n               the leaves\n               -> n/2*0 + n/4*1 + n/8*2 + ...\n               -> O(n)\n\n     half the nodes are leaves and move nothing.\n\n  and no pointers at all:\n     children of i at 2i+1, 2i+2\n     -> contiguous. E.10's penalty doesn't apply.\n\n  what you gave up: search, order, second place.",
+  "takeaway": "A heap guarantees only that each node is below its children — weak enough to repair along one path, strong enough to locate the extreme — and building one bottom-up is linear because most nodes are near the leaves and therefore barely move."
+}

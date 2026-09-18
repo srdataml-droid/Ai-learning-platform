@@ -1,0 +1,46 @@
+{
+  "taskId": "E.5",
+  "title": "Sets",
+  "researchedAt": "2026-09-19",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The first self-balancing binary search tree was published by Adelson-Velsky and Landis in 1962, in a paper titled An algorithm for the organization of information. Its invariant is that the heights of the two child subtrees of any node differ by at most one, with rebalancing whenever that is violated.",
+      "type": "date",
+      "tokens": [
+        "Adelson-Velsky",
+        "Landis",
+        "1962",
+        "Velsky",
+        "Adelson"
+      ],
+      "source": {
+        "title": "Adelson-Velsky, G. and Landis, E., An algorithm for the organization of information, Soviet Mathematics Doklady 3:1259-1263, 1962",
+        "url": "https://en.wikipedia.org/wiki/AVL_tree",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Ordered set implementations are commonly built on such a balanced search tree, while unordered set implementations are commonly a hash table storing keys with no associated values — so the cost of set operations is inherited from the structure underneath rather than being a property of the set abstraction.",
+      "type": "event",
+      "tokens": [
+        "Adelson-Velsky",
+        "Landis",
+        "Velsky",
+        "Adelson"
+      ],
+      "source": {
+        "title": "Adelson-Velsky, G. and Landis, E., An algorithm for the organization of information, Soviet Mathematics Doklady 3:1259-1263, 1962",
+        "url": "https://en.wikipedia.org/wiki/AVL_tree",
+        "kind": "secondary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "membership testing over a list is a scan, so any algorithm that asks have I seen this before becomes quadratic without anyone writing a nested loop",
+    "fix": "a structure that answers membership without looking at the other elements, which is a hash table or a balanced search tree with the values discarded",
+    "cost": "the answer depends on an equality and a hash that agree and never change, so a mutable element can become unfindable while still being present",
+    "interview": "what happens to an element whose hash changes after it is inserted"
+  }
+}

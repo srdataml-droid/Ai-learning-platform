@@ -1,0 +1,66 @@
+{
+  "taskId": "E.8",
+  "title": "Stacks",
+  "researchedAt": "2026-09-19",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Turing discussed subroutines in his 1946 report proposing an automatic computing engine, describing a mechanism that notes where the major operation left off and, on completion, consults a list of such notes held with the most recent last. In modern terms the subsidiary operations are subroutines and the list of notes is a stack of return addresses.",
+      "type": "date",
+      "tokens": [
+        "Turing",
+        "ACE",
+        "1946"
+      ],
+      "source": {
+        "title": "Turing, A. M., Proposals for the development in the Mathematics Division of an Automatic Computing Engine (ACE), Report E882, Executive Committee, National Physical Laboratory, February 1946",
+        "url": "https://people.computing.clemson.edu/~mark/subroutines.html",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The use of a stack for translating programming languages was patented by Friedrich Bauer and Klaus Samelson under the name Kellerprinzip, in a German application filed on 30 March 1957 and laid open on 1 December 1960. The patent covered the principle for arbitrarily parenthesised arithmetic terms.",
+      "type": "date",
+      "tokens": [
+        "Friedrich Bauer",
+        "Bauer",
+        "Klaus Samelson",
+        "Samelson",
+        "Kellerprinzip",
+        "1957",
+        "1960"
+      ],
+      "source": {
+        "title": "Bauer, F. L. and Samelson, K., Verfahren zur automatischen Verarbeitung von kodierten Daten und Rechenmaschine zur Ausübung des Verfahrens, German patent application DE1094019, filed 30 March 1957",
+        "url": "https://de.wikipedia.org/wiki/Stapelspeicher",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The same idea was developed at about the same time and independently by the Australian philosopher Charles Hamblin. Recognition came late: Bauer received the IEEE Computer Pioneer Award in 1988 for computer stacks, by which time Samelson had died.",
+      "type": "event",
+      "tokens": [
+        "Charles Hamblin",
+        "Hamblin",
+        "Bauer",
+        "Samelson",
+        "IEEE",
+        "Computer Pioneer Award",
+        "1988"
+      ],
+      "source": {
+        "title": "Bauer, F. L. and Samelson, K., Verfahren zur automatischen Verarbeitung von kodierten Daten und Rechenmaschine zur Ausübung des Verfahrens, German patent application DE1094019, filed 30 March 1957",
+        "url": "https://de.wikipedia.org/wiki/Stapelspeicher",
+        "kind": "secondary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "anything nested — a parenthesised expression, a call that makes another call — has to be resumed in the reverse of the order it was suspended, and the suspended state has to live somewhere",
+    "fix": "a discipline where the only thing you can take is the thing you put down most recently, which is exactly the order resumption requires",
+    "cost": "the store is finite and the depth is a function of the input, so how deep you can nest is a property of the data rather than of the program",
+    "interview": "why nesting forces last-in-first-out and not some other order"
+  }
+}

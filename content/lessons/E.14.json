@@ -1,0 +1,49 @@
+{
+  "id": "E.14",
+  "trackId": "E",
+  "trackName": "Data structures and algorithms",
+  "title": "Tries",
+  "status": "traced",
+  "seed": "E.14",
+  "story": "A hash table is very good at one question — is this exact key present — and structurally incapable of a related one: which keys begin with this. That is not a missing feature. Hashing works by spreading keys uniformly regardless of their content, so two keys sharing a prefix are deliberately placed as far apart as any other pair. The property that makes lookup fast is the same property that destroys the information a prefix query needs.\n\nThe trie answers the second question by refusing the first trick. Instead of computing a position from the key, it makes the key be the path: one edge per character, so the node you reach by following a prefix is exactly the point below which every key with that prefix lives. Prefix search is therefore not a search at all — you walk to the node and the answer is the subtree. Fredkin published this in September 1960 and coined the name from the middle syllable of retrieval, which is the origin of the long-running argument about how to say it.\n\nHis own summary of the advantages is worth reading because it is broader than the modern one: shorter access time, easier addition and updating, convenience with arguments of diverse lengths, and exploitation of redundancy. That last is the one people forget — shared prefixes are stored once, so a dictionary of related words costs less than the sum of its words. And note the prior art he cites: de la Briandais on searching files with variable length keys in 1959, and his own memorandum from January of that year.\n\nThe cost he names himself: relative inefficiency in using storage space, with the qualification that this is not great when the store is large. A node per character with a branch per possible symbol is a lot of structure for a short key, which is why the practical variants all attack that specific cost — collapsing chains of single-child nodes, or storing children compactly instead of as a full array. The lookup time also depends on the length of the key rather than the number of keys, which is better than it sounds for a large dictionary and worse for a small one.",
+  "problem": {
+    "name": "Prefix-structured lookup",
+    "aka": [
+      "trie",
+      "prefix tree",
+      "retrieval structure"
+    ],
+    "shape": "Queries are about the beginnings of keys rather than whole keys, and structures that hash the key have discarded exactly that information.",
+    "tell": [
+      "the requirement is autocomplete, longest-prefix match, or routing by the front of an address",
+      "you are scanning every key and testing whether it starts with something",
+      "many keys share long leading segments"
+    ],
+    "move": "Make the descent path be the key: one edge per symbol, so that arriving at a node means having consumed a prefix and everything below that node shares it.",
+    "invariant": "A node’s position encodes the prefix that reaches it. That is why a prefix query is a walk followed by a subtree enumeration rather than a search, and why shared prefixes occupy one path rather than many copies.",
+    "breaks": "It breaks on space, which Fredkin identified himself. A node per symbol with a slot per possible symbol is heavy for short keys and sparse alphabets, and lookup cost scales with key length rather than with the number of keys — so it loses to a hash table on plain membership over a small dictionary of long keys.",
+    "cost": {
+      "time": "proportional to the length of the key, independent of how many keys are stored",
+      "space": "a node per symbol of every distinct prefix, which is the stated main disadvantage",
+      "beats": "a hash table on prefix queries, which it cannot answer at all; loses to it on exact membership"
+    },
+    "worked": {
+      "problem": "Why can a hash table not do prefix search, at any price?",
+      "reasoning": "Because it works by destroying the relationship a prefix query depends on, and it does so on purpose.\n\nA hash function must distribute keys uniformly across buckets regardless of their content. That is the requirement that makes lookup independent of the number of keys, and it means two keys sharing every character but the last are placed as far apart as any unrelated pair. There is no locality to exploit, because eliminating locality is the mechanism.\n\nSo a prefix query has nowhere to look. There is no region of the table corresponding to a prefix, and the only way to answer is to examine every key — which is not the hash table helping, it is you ignoring it.\n\nThe trie inverts the relationship. Position is determined by content rather than by a function chosen to hide content, so the prefix is literally a location. That is the trade: you give up the uniformity that made exact lookup independent of size, and you get back the structure that makes prefix queries free.\n\nThe general point is that a data structure answers the questions its placement rule preserves information about.",
+      "code": "hash table                  trie\n----------                  ----\nposition = h(key)           position = the key itself\nh must SPREAD keys          path spells the key\n\"car\" and \"cart\" ->         \"car\" is a NODE\n  unrelated buckets         \"cart\" is below it\n\nprefix query:               prefix query:\n  no region corresponds       walk to the node\n  to a prefix                 -> answer is the subtree\n  -> scan every key\n  (i.e. ignore the table)     -> not a search at all\n\n  and it's not a missing feature: destroying\n  locality is the MECHANISM that makes lookup\n  independent of the number of keys.\n\n  what you trade back:\n     lookup now scales with KEY LENGTH\n     space: a node per symbol   <- Fredkin's own\n            stated main disadvantage (1960)"
+    },
+    "practice": "Build a trie from a dictionary and measure its memory against the same words in a hash set. Then time a prefix query on both — and note that for the hash set you had to write a loop over every key."
+  },
+  "beats": {
+    "broke": "Hashing places a key by a function designed to ignore its content, so keys sharing a prefix land nowhere near each other. Prefix questions have no region to look in and degrade to scanning everything.",
+    "fix": "Let the path through the structure be the key, one edge per symbol, so a prefix is a node and everything sharing it is the subtree below. Published by Fredkin in September 1960, with the name taken from the middle syllable of retrieval.",
+    "cost": "A node per symbol is heavy for short keys, which Fredkin names as the main disadvantage while noting it matters less when the store is large. Lookup also scales with key length rather than with the number of keys.",
+    "interview": {
+      "q": "Why can a hash table not answer prefix queries at any price?",
+      "trap": "Answering that it is not designed for them. True but circular — the interesting part is that the mechanism making it fast is the same one making prefix queries impossible.",
+      "answer": "Because destroying the relationship between similar keys is the mechanism, not an oversight.\n\nA hash function must spread keys uniformly across buckets regardless of content — that is precisely what makes lookup independent of how many keys are stored. The consequence is that two keys differing in one final character are placed as far apart as any unrelated pair. There is no region of the table corresponding to a prefix, so the only way to answer is to inspect every key, which is ignoring the structure rather than using it.\n\nA trie inverts the placement rule: position is determined by content, so the prefix is literally a location. Walking to that node is the query, and the subtree beneath it is the answer — not a search at all.\n\nThe trade is exact and worth stating both ways. You give up placement that is independent of content, so lookup now scales with key length rather than being independent of the collection; and you give up space, which Fredkin identified in 1960 as the main disadvantage, adding that it matters less when the store is large.\n\nThe general rule: a structure can only answer questions its placement rule preserved information about."
+    }
+  },
+  "blueprint": "Placement rule decides what you can ask:\n\n  hash   position = h(key), chosen to IGNORE content\n         -> exact membership: independent of n\n         -> prefix: no region exists. scan everything.\n\n  trie   position = the key itself\n         -> prefix: walk to the node, take the subtree\n         -> exact: cost scales with KEY LENGTH\n\n  so it is not a missing feature. destroying\n  locality IS the mechanism that bought the first.\n\n  Fredkin's own list (1960):\n     shorter access time\n     easier addition and updating\n     convenient for arguments of diverse lengths\n     exploits redundancy   <- shared prefixes stored\n                              once\n     disadvantage: relative inefficiency in storage\n                   \"not great when the store is large\"\n\n  every practical variant attacks that one cost:\n     collapse single-child chains\n     store children compactly, not as a full array",
+  "takeaway": "A hash table cannot answer prefix queries because spreading keys regardless of content is the mechanism that makes it fast — a trie makes position depend on content instead, so a prefix is a node and the answer is the subtree below it."
+}

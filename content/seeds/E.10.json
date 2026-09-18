@@ -1,0 +1,81 @@
+{
+  "taskId": "E.10",
+  "title": "Linked lists",
+  "researchedAt": "2026-09-19",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The linked list was developed by Allen Newell, Cliff Shaw and Herbert Simon as the primary data structure of the Information Processing Language, created at the RAND Corporation and the Carnegie Institute of Technology around 1956. The now-classic diagram of nodes with arrows to successive nodes appears in Newell and Shaw’s paper at the Western Joint Computer Conference in February 1957.",
+      "type": "date",
+      "tokens": [
+        "Allen Newell",
+        "Newell",
+        "Cliff Shaw",
+        "Shaw",
+        "Herbert Simon",
+        "Simon",
+        "RAND",
+        "Carnegie",
+        "Western Joint Computer Conference",
+        "1956",
+        "1957"
+      ],
+      "source": {
+        "title": "Newell, A. and Shaw, J. C., Programming the Logic Theory Machine, Proceedings of the Western Joint Computer Conference, February 1957 — the origin of list processing and the linked list in the Information Processing Language",
+        "url": "https://en.wikipedia.org/wiki/Information_Processing_Language",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The language is described as the first list-processing language and also the first to support recursion. Newell and Simon received the 1975 Turing Award for basic contributions to artificial intelligence, the psychology of human cognition, and list processing.",
+      "type": "date",
+      "tokens": [
+        "Newell",
+        "Simon",
+        "Turing Award",
+        "1975"
+      ],
+      "source": {
+        "title": "Newell, A. and Shaw, J. C., Programming the Logic Theory Machine, Proceedings of the Western Joint Computer Conference, February 1957 — the origin of list processing and the linked list in the Information Processing Language",
+        "url": "https://en.wikipedia.org/wiki/Information_Processing_Language",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Attribution is not uniform across sources: some credit the linked list to Cliff Shaw individually, while others treat it as a joint product of the three, and accounts of the language’s origin date range from about 1954 to 1956.",
+      "type": "event",
+      "tokens": [
+        "Cliff Shaw",
+        "Shaw"
+      ],
+      "source": {
+        "title": "Newell, A. and Shaw, J. C., Programming the Logic Theory Machine, Proceedings of the Western Joint Computer Conference, February 1957 — the origin of list processing and the linked list in the Information Processing Language",
+        "url": "https://en.wikipedia.org/wiki/Information_Processing_Language",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "The same problem — building structures whose size and shape are decided while the program runs — is what LISP was designed around, described in McCarthy’s paper of April 1960, which reduces everything to atoms and pairs.",
+      "type": "event",
+      "tokens": [
+        "LISP",
+        "McCarthy",
+        "1960"
+      ],
+      "source": {
+        "title": "McCarthy, J., Recursive Functions of Symbolic Expressions and Their Computation by Machine, Part I, Communications of the ACM 3(4), April 1960",
+        "url": "https://www.cs.tufts.edu/~nr/cs257/archive/john-mccarthy/recursive.pdf",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a contiguous block fixes both the size and the positions, so inserting in the middle means moving everything after it, and the shape of the data had to be known when it was allocated",
+    "fix": "store each element with the address of the next, so insertion is two assignments and the structure grows without relocating anything",
+    "cost": "the elements are scattered, so traversal follows pointers the hardware cannot predict — a cost that did not exist when the structure was invented and now dominates",
+    "interview": "why linked lists are rare in production and common in interviews"
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "taskId": "E.11",
+  "title": "Trees and tree traversal",
+  "researchedAt": "2026-09-19",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Hibbard’s 1962 paper on combinatorial properties of certain trees is titled with applications to searching and sorting, and is the reference for the standard deletion procedure in an ordered binary tree: a node with two children is removed by replacing it with the node holding the smallest key in its right subtree.",
+      "type": "date",
+      "tokens": [
+        "Hibbard",
+        "Journal",
+        "ACM",
+        "1962"
+      ],
+      "source": {
+        "title": "Hibbard, T. N., Some combinatorial properties of certain trees with applications to searching and sorting, Journal of the ACM 9(1):13-28, January 1962",
+        "url": "https://dl.acm.org/doi/10.1145/321105.321108",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "That replacement preserves the ordering because there are no keys between the removed node’s key and its successor’s key.",
+      "type": "event",
+      "tokens": [
+        "Hibbard"
+      ],
+      "source": {
+        "title": "Hibbard, T. N., Some combinatorial properties of certain trees with applications to searching and sorting, Journal of the ACM 9(1):13-28, January 1962",
+        "url": "https://dl.acm.org/doi/10.1145/321105.321108",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "hierarchical data has no single order in which to visit it, so any procedure that must touch everything has to choose one, and the choice is usually made by accident",
+    "fix": "three depth-first orders distinguished only by when the node is visited relative to its children, plus a breadth-first order by level",
+    "cost": "the orders are not interchangeable, and a traversal written for one purpose produces confidently wrong results when reused for another",
+    "interview": "how to choose a traversal order without memorising which is which"
+  }
+}

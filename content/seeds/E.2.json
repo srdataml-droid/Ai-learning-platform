@@ -1,0 +1,55 @@
+{
+  "taskId": "E.2",
+  "title": "Arrays and dynamic arrays",
+  "researchedAt": "2026-09-19",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Tarjan’s 1985 paper opens by noting that amortization — averaging over time — is a powerful technique in the complexity analysis of data structures, and describes amortized running time as a realistic but robust complexity measure for which surprisingly tight upper and lower bounds can be obtained.",
+      "type": "quote",
+      "tokens": [
+        "Tarjan",
+        "SIAM",
+        "1985"
+      ],
+      "source": {
+        "title": "Tarjan, R. E., Amortized Computational Complexity, SIAM Journal on Algebraic and Discrete Methods 6(2):306-318, April 1985",
+        "url": "https://dl.acm.org/doi/abs/10.1137/0606031",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The paper argues that by designing algorithms whose amortized complexity is low, one obtains self-adjusting data structures that are simple, flexible and efficient, and surveys work by several researchers on amortized complexity.",
+      "type": "quote",
+      "tokens": [
+        "Tarjan"
+      ],
+      "source": {
+        "title": "Tarjan, R. E., Amortized Computational Complexity, SIAM Journal on Algebraic and Discrete Methods 6(2):306-318, April 1985",
+        "url": "https://dl.acm.org/doi/abs/10.1137/0606031",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Amortized analysis emerged from aggregate analysis, which it subsumes, and was introduced in this paper as a more useful form of analysis than the probabilistic methods then in common use.",
+      "type": "event",
+      "tokens": [
+        "Tarjan",
+        "1985"
+      ],
+      "source": {
+        "title": "Tarjan, R. E., Amortized Computational Complexity, SIAM Journal on Algebraic and Discrete Methods 6(2):306-318, April 1985",
+        "url": "https://dl.acm.org/doi/abs/10.1137/0606031",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a contiguous block of memory has one size, chosen when it was allocated, and the number of things you will put in it is not known then",
+    "fix": "allocate more than you need and multiply the capacity when it runs out, so the copying cost is spread across the appends that caused it",
+    "cost": "the cost is spread, not removed — individual appends still take time proportional to the whole array, and every one of them invalidates anything pointing into it",
+    "interview": "why the growth factor has to be multiplicative"
+  }
+}

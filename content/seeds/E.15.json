@@ -1,0 +1,46 @@
+{
+  "taskId": "E.15",
+  "title": "Graphs: adjacency list versus matrix",
+  "researchedAt": "2026-09-19",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Moore’s paper The shortest path through a maze was published in the proceedings of an international symposium on the theory of switching, part two, by Harvard University Press in 1959, pages 285 to 292. The symposium itself was held in April 1957, so both years appear in the literature; 1959 is the publication year.",
+      "type": "date",
+      "tokens": [
+        "Moore",
+        "Harvard",
+        "1957",
+        "1959"
+      ],
+      "source": {
+        "title": "Moore, E. F., The shortest path through a maze, Proceedings of an International Symposium on the Theory of Switching, Part II, Harvard University Press, 1959, pp. 285-292",
+        "url": "https://bibbase.org/network/publication/moore-theshortestpaththroughamaze-1959",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Moore was motivated by a weakness in Claude Shannon’s maze-solving robot Theseus of 1950, which used a memoised depth-first search implemented with electromechanical relays — almost certainly the first implementation of depth-first search on graphs.",
+      "type": "date",
+      "tokens": [
+        "Moore",
+        "Claude Shannon",
+        "Shannon",
+        "Theseus",
+        "1950"
+      ],
+      "source": {
+        "title": "Moore, E. F., The shortest path through a maze, Proceedings of an International Symposium on the Theory of Switching, Part II, Harvard University Press, 1959, pp. 285-292",
+        "url": "https://bibbase.org/network/publication/moore-theshortestpaththroughamaze-1959",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a graph is a set of relationships and a machine needs it laid out in memory, and the layout decides which questions are cheap",
+    "fix": "two representations that answer opposite questions quickly — one keyed by pair, one keyed by vertex",
+    "cost": "the choice is made once and constrains every algorithm afterwards, and the right choice depends on the density of a graph you may not have seen yet",
+    "interview": "which representation to choose, and what the question actually turns on"
+  }
+}
