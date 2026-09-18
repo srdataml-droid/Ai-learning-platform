@@ -1,0 +1,49 @@
+{
+  "id": "E.20",
+  "trackId": "E",
+  "trackName": "Data structures and algorithms",
+  "title": "Recursion, and converting recursion to iteration",
+  "status": "traced",
+  "seed": "E.20",
+  "story": "A recursive function is a program plus a data structure you did not write. The structure is the call stack — Turing’s list of notes held with the most recent last — and the reason to be able to remove it is that it is the only part of your program whose capacity you did not choose and whose exhaustion you cannot handle.\n\nThat is the honest motivation, and it is worth separating from the folklore. Converting recursion to iteration is not about speed; a function call is cheap and the explicit version usually is not faster. It is about who owns the limit. Recursion depth is a function of the input — the length of the longest path in E.17, the height of a tree, the size of a chain — so a function that is correct for every case you tested fails on data that is merely deeper, and it fails by exhausting a resource nothing in the source mentions.\n\nThe transformation is mechanical, and the mechanical part is easy to state wrongly. You are not pushing the argument. You are pushing everything the recursive call would have found still alive when it returned: the remaining arguments, the loop position you were at, the partial results accumulated so far, and which of several recursive calls you were in the middle of. That last one is the piece people miss — a function with two recursive calls needs to record which one it was in, because on resumption there is no program counter to tell it.\n\nWhich gives the useful reframing. The three depth-first orders of E.11 and the backtracking of E.21 are the same shape, and Tarjan’s paper treats depth-first search and backtracking as one technique. Whether the stack is the language’s or yours changes the limit and the error message, and changes nothing about the algorithm — so the question is never whether to have a stack, only whose it is.",
+  "problem": {
+    "name": "Making the implicit stack explicit",
+    "aka": [
+      "recursion to iteration",
+      "manual stack",
+      "stack safety"
+    ],
+    "shape": "A routine calls itself to a depth determined by the input, using a store whose size it did not choose and cannot check.",
+    "tell": [
+      "the input can be arbitrarily deep — a chain, a long path, a nested document from outside",
+      "the program crashes on large or adversarial input rather than returning an error",
+      "you need to pause, resume, or bound the traversal"
+    ],
+    "move": "Replace the call with a stack you allocate. Push a record holding everything that must survive the call, loop while the stack is non-empty, and on each iteration pop, do the step, and push the continuations.",
+    "invariant": "The explicit stack holds exactly what the call stack would have held: every value live across the recursive call, plus which call site you were at. If any of that is missing, the resumed computation is not the one you suspended.",
+    "breaks": "It breaks on the values people forget. The argument is obvious; the loop index, the accumulated partial result, and the identity of which recursive call you were in are not — and omitting the last gives a version that works for single-recursion functions and quietly mis-resumes for anything with two.",
+    "cost": {
+      "time": "about the same; this is not a performance transformation",
+      "space": "the same amount of state, now in a structure you allocated and can bound",
+      "beats": "recursion, only on control — you choose the limit, you get an error instead of a crash, and you can pause"
+    },
+    "worked": {
+      "problem": "What exactly has to go into the explicit stack?",
+      "reasoning": "Everything that would still be live when the recursive call returned, which is more than the arguments.\n\nWork out what a resumed frame needs. The remaining arguments, obviously. The position in any loop the call was made from, or you will restart the loop. The partial result accumulated so far, or you will lose it. And — the one people omit — which recursive call you were in, because a function containing two of them resumes at two different places and there is no program counter to tell you which.\n\nThe test is to ask what the compiler was storing. That is the frame, and the frame is the answer; your record has to hold the same information or the resumption is of a different computation.\n\nThis is also why the transformation is easy for a single tail call and fiddly for tree recursion. With one call and nothing after it, nothing is live across the call and the stack is unnecessary — that is what makes it a loop. With two calls and work between them, the state between them is precisely what you must serialise.\n\nThe shortcut: if you cannot name what is live across the call, you cannot do the conversion yet.",
+      "code": "what the compiler's frame holds:\n\n   remaining arguments\n   position in the enclosing loop\n   partial results accumulated so far\n   WHICH recursive call site this is   <- omitted most\n\n  your record must hold the same, or you resume a\n  different computation.\n\n  why difficulty varies:\n\n     one call, nothing after it (tail)\n        -> nothing is live across it\n        -> no stack needed. it IS a loop.\n\n     two calls, work between them (tree recursion)\n        -> the state between them is exactly what\n           must be serialised\n\n  and the real reason to bother:\n\n     depth = f(input), limit = not yours,\n     failure = a crash in an undeclared resource\n\n     explicit stack -> you choose the bound,\n                       you can return an error,\n                       you can pause and resume"
+    },
+    "practice": "Take a recursive tree traversal with work after both recursive calls and convert it to an explicit stack. Then find the input on which your first attempt resumes at the wrong call site."
+  },
+  "beats": {
+    "broke": "Recursion consumes a store the program never declares, to a depth set by the input. A routine correct on everything tested crashes on data that is merely deeper, in a resource whose exhaustion cannot be caught.",
+    "fix": "Allocate the stack yourself. Push a record of everything live across the call, loop while it is non-empty, and pop-step-push — the same structure Turing described in 1946 as notes held with the most recent last.",
+    "cost": "It is not faster, and the mechanical part is only mechanical once you have identified every live value — including which of several recursive call sites you were at, which has no equivalent in the source.",
+    "interview": {
+      "q": "What exactly has to go into the explicit stack when converting a recursion?",
+      "trap": "Answering \"the arguments\". That is the visible part and the least likely to be forgotten; the omissions are elsewhere.",
+      "answer": "Everything that would still be live when the recursive call returned. The remaining arguments, yes — but also the position in any enclosing loop, or you restart it; the partial result accumulated so far, or you lose it; and which recursive call site you were at, because a function with two of them resumes in two different places and there is no program counter to consult.\n\nThat last one is the usual omission, and it produces a version that works on single-recursion functions and silently resumes wrongly on tree recursion.\n\nThe reliable test is to ask what the compiler's stack frame was storing, because your record has to hold the same information or you are resuming a different computation.\n\nIt also explains why the difficulty varies so much. With a single call and nothing after it, nothing is live across the call, no stack is needed, and it simply is a loop. With two calls and work between them, the state between them is exactly what must be serialised.\n\nAnd the motivation is worth being clear about: this is not a speed transformation. It is about owning the limit — you choose the bound, you can return an error rather than crash, and you can pause."
+    }
+  },
+  "blueprint": "A recursion is a program plus a stack you didn't write.\n\n  what the frame holds (= what you must push):\n\n     remaining arguments\n     position in the enclosing loop\n     partial results so far\n     WHICH call site  <-- the one people omit\n\n  difficulty tracks how much is live:\n\n     tail call      nothing live across it\n                    -> no stack. it's a loop.\n     tree recursion state between the two calls\n                    -> that's exactly the record\n\n  and the reason to bother is NOT speed:\n\n     recursive   depth = f(input)\n                 limit = the runtime's\n                 failure = crash, uncatchable\n     explicit    limit = yours\n                 failure = an error you return\n                 bonus = you can pause and resume",
+  "takeaway": "Converting recursion to iteration is not a speed change but a transfer of ownership over the limit — and the record you push must hold everything live across the call, including which call site you were at, which has no representation in the source."
+}

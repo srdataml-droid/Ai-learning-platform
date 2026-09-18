@@ -1,0 +1,48 @@
+{
+  "id": "E.18",
+  "trackId": "E",
+  "trackName": "Data structures and algorithms",
+  "title": "Topological sort",
+  "status": "traced",
+  "seed": "E.18",
+  "story": "Dependencies form a graph and execution needs a line, so something has to flatten one into the other without violating any of the constraints. That is the whole problem, and it turns up whenever anything must happen before anything else: build targets, database migrations, course prerequisites, the task network Kahn was writing about in 1962.\n\nHis method is almost embarrassingly direct. Repeatedly take any vertex with no incoming edges — nothing is waiting on it — add it to the order, and remove it along with its outgoing edges, which may leave other vertices with nothing incoming. Repeat until nothing is left. There is no cleverness to it, and the paper is candid about its origin: developed as a byproduct of a procedure needed at Westinghouse, and never programmed. The performance claim is a nice period detail — a network of 30,000 activities ordered in under an hour of machine time.\n\nThe property that makes it more than a procedure is what happens when it fails. The loop can only continue while something has no incoming edges, so if it stops with vertices remaining, every remaining vertex has something pointing at it — and in a finite set where everyone has a predecessor, following predecessors backwards must eventually repeat a vertex. That is a cycle. So the algorithm does not merely fail on cyclic input; it terminates, and what it leaves behind is exactly the part of the graph that is cyclic.\n\nThat is worth stating as a design property rather than a convenience: a topological order exists if and only if the graph is acyclic, so any correct algorithm for producing one is necessarily also a decision procedure for acyclicity. You cannot write a topological sort that skips the cycle check, because completing the sort is the check. Which is why build systems and migration tools report dependency cycles with the participating nodes — they are not running a separate analysis, they are printing what was left over.",
+  "problem": {
+    "name": "Linearising a partial order",
+    "aka": [
+      "topological sort",
+      "dependency resolution"
+    ],
+    "shape": "Constraints say some things must precede others, and you need one sequence that satisfies all of them.",
+    "tell": [
+      "the work is described as depends on, requires, must run after, or blocks",
+      "you have a graph and need a list",
+      "a cycle in the dependencies would be a bug you want reported rather than a hang"
+    ],
+    "move": "Repeatedly emit any vertex with no remaining incoming edges and remove it together with its outgoing edges, until nothing remains or nothing qualifies.",
+    "invariant": "Every vertex emitted has had all its predecessors emitted already. That is what makes the output a valid order, and it is why the procedure can only proceed while some vertex has no unmet dependency.",
+    "breaks": "It stops early exactly when the graph has a cycle, which is not a failure to handle but the algorithm’s second output. It also says nothing about which valid order you get — there are usually many, so anything depending on the specific sequence beyond the stated constraints is depending on an implementation detail.",
+    "cost": {
+      "time": "proportional to vertices plus edges, visiting each once",
+      "space": "an in-degree count per vertex and a set of currently ready ones",
+      "beats": "sorting by a hand-assigned priority number, which encodes the constraints redundantly and silently permits contradictions"
+    },
+    "worked": {
+      "problem": "What does it mean when a topological sort stops with vertices left over?",
+      "reasoning": "It means those vertices contain a cycle, and the argument is short enough to reconstruct rather than memorise.\n\nThe loop continues while some remaining vertex has no incoming edges. If it has stopped and vertices remain, then every remaining vertex has at least one incoming edge from another remaining vertex.\n\nNow start anywhere in that set and walk backwards along incoming edges. You can always take another step, because every vertex has a predecessor. The set is finite, so you must eventually arrive at a vertex you have already visited — and the walk between the two visits is a cycle.\n\nSo the leftovers are not debris, they are the answer to a different question. And that is why you cannot write a topological sort that omits a cycle check: a valid order exists precisely when the graph is acyclic, so producing the order and deciding acyclicity are the same computation.\n\nWhich is exactly what build tools do when they print a dependency cycle with its members — they are showing you what did not come out.",
+      "code": "while some vertex has in-degree 0:\n    emit it, remove its outgoing edges\n\n  stopped, with vertices left?\n     -> every remaining vertex has a predecessor\n     -> walk backwards: always another step\n     -> finite set: must revisit a vertex\n     -> that walk IS a cycle\n\n  so:\n     order emitted   = a valid schedule\n     vertices left   = the cyclic part\n\n  and therefore:\n     a topological order EXISTS\n       iff the graph is ACYCLIC\n     -> producing one and deciding acyclicity\n        are the SAME computation\n     -> no separate check to skip, ever\n\n  (which is what your build tool prints when it\n   reports a dependency cycle with its members.)"
+    },
+    "practice": "Take a build or migration system you use and deliberately introduce a circular dependency. Read the error and identify whether it names the cycle’s members — and if it does, you are looking at the leftovers."
+  },
+  "beats": {
+    "broke": "Dependencies are a graph and execution is a line. Something must flatten one into the other without breaking any constraint, and hand-assigned priority numbers encode the constraints twice and permit contradictions.",
+    "fix": "Repeatedly emit anything with nothing left waiting on it and remove its outgoing edges, exposing the next batch. Published by Kahn in November 1962, developed at Westinghouse as a byproduct and never programmed.",
+    "cost": "The procedure stops early precisely when the graph is cyclic, so the sort and the cycle check are one computation. And many valid orders usually exist, so depending on the particular one you get is depending on an implementation detail.",
+    "interview": {
+      "q": "What does it mean when a topological sort terminates with vertices left over?",
+      "trap": "Calling it a failure case to be handled. It is the algorithm’s second output, and treating it as an error misses that it identifies the cycle rather than merely detecting one.",
+      "answer": "It means the remaining vertices contain a cycle, and the argument is short enough to rebuild on the spot.\n\nThe loop runs while some remaining vertex has no incoming edges. If it has stopped with vertices left, every one of them has at least one incoming edge from another survivor. Start anywhere in that set and walk backwards along incoming edges: you can always take another step because everyone has a predecessor, and the set is finite, so you must eventually revisit a vertex — and the walk between the two visits is a cycle.\n\nSo the leftovers are not debris, they are exactly the cyclic part of the graph.\n\nThe consequence worth carrying is that a topological order exists if and only if the graph is acyclic, which means producing the order and deciding acyclicity are the same computation. You cannot write a version that skips the cycle check to go faster, because completing the sort is the check — and that is precisely what a build tool is showing you when it reports a dependency cycle along with its members."
+    }
+  },
+  "blueprint": "The whole algorithm:\n\n   while some vertex has in-degree 0:\n       emit it; remove its outgoing edges\n\n  and the second output, free:\n\n   stopped with vertices remaining?\n      every survivor has a predecessor\n      walk backwards -> always another step\n      finite -> must repeat a vertex\n      -> CYCLE, and you are holding its members\n\n  so:\n\n     topological order exists  <=>  graph is acyclic\n\n     -> the sort IS the acyclicity test\n     -> there is no check to skip for speed\n     -> \"dependency cycle: a -> b -> c -> a\" is\n        literally the leftovers being printed\n\n  and note what it does NOT promise:\n     WHICH valid order you get. usually many exist.\n     depending on one is depending on an accident.",
+  "takeaway": "A topological order exists exactly when the graph is acyclic, so producing the order and detecting cycles are one computation — and the vertices left over when the procedure stalls are not an error case but the cycle itself."
+}

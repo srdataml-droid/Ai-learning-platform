@@ -18,16 +18,7 @@ Study order: the sequence first, then the five habits running underneath.
 
 ## Track E — Data structures and algorithms
 
-8 of 28 still missing.
-
-- [ ] `E.17` Depth first search
-- [ ] `E.18` Topological sort
-- [ ] `E.20` Recursion, and converting recursion to iteration
-- [ ] `E.21` Backtracking
-- [ ] `E.23` Dynamic programming: memoisation then tabulation
-- [ ] `E.26` Bit manipulation basics
-- [ ] `E.27` The cadence: a small near daily block, medium difficulty, timed after month one
-- [ ] `E.28` A log of every pattern you miss, revisited a week later
+**Complete.** All 28 written.
 
 ## Track F — Logic
 
@@ -216,7 +207,7 @@ Study order: the sequence first, then the five habits running underneath.
 
 ---
 
-**Total remaining: 129 of 313.**
+**Total remaining: 121 of 313.**
 
 Regenerate: `node tools/missing-lessons.mjs > docs/MISSING-LESSONS.md`
 

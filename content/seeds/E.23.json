@@ -1,0 +1,62 @@
+{
+  "taskId": "E.23",
+  "title": "Dynamic programming: memoisation then tabulation",
+  "researchedAt": "2026-09-19",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Bellman recounts in his 1984 autobiography that he spent the autumn quarter of 1950 at RAND, where his first task was to find a name for multistage decision processes, and that the period was not a good one for mathematical research.",
+      "type": "date",
+      "tokens": [
+        "Bellman",
+        "RAND",
+        "1950",
+        "1984"
+      ],
+      "source": {
+        "title": "Bellman, R., Eye of the Hurricane: An Autobiography, 1984, p.159 — on the naming of dynamic programming",
+        "url": "https://en.wikipedia.org/wiki/Richard_E._Bellman",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "He describes a gentleman in Washington named Wilson, the Secretary of Defense, as having a pathological fear and hatred of the word research, and notes that the organisation was employed by the Air Force, which answered to him. He chose programming to echo planning and scheduling, and dynamic to convey the multistage and time-varying character — arriving at a phrase he argued was impossible to use pejoratively.",
+      "type": "quote",
+      "tokens": [
+        "Bellman",
+        "Washington",
+        "Wilson",
+        "Secretary",
+        "Defense",
+        "Air Force"
+      ],
+      "source": {
+        "title": "Bellman, R., Eye of the Hurricane: An Autobiography, 1984, p.159 — on the naming of dynamic programming",
+        "url": "https://en.wikipedia.org/wiki/Richard_E._Bellman",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The story is widely repeated and has been questioned by historians, because Wilson only became Secretary of Defense in 1953, after Bellman had already begun using the term.",
+      "type": "date",
+      "tokens": [
+        "Wilson",
+        "Bellman",
+        "1953"
+      ],
+      "source": {
+        "title": "Bellman, R., Eye of the Hurricane: An Autobiography, 1984, p.159 — on the naming of dynamic programming",
+        "url": "https://en.wikipedia.org/wiki/Richard_E._Bellman",
+        "kind": "secondary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a recursive solution to an optimisation problem recomputes the same subproblem an exponential number of times, so the definition is correct and the program is unusable",
+    "fix": "solve each subproblem once and keep the answer — lazily from the top, or eagerly from the bottom, which are the same recurrence approached from opposite ends",
+    "cost": "it is only valid when an optimal solution is built from optimal solutions to subproblems, and where that fails you get a fast confident wrong answer",
+    "interview": "what has to be true of a problem before dynamic programming is correct, not merely fast"
+  }
+}

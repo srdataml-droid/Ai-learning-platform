@@ -1,0 +1,59 @@
+{
+  "taskId": "E.26",
+  "title": "Bit manipulation basics",
+  "researchedAt": "2026-09-19",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Boole argued in An Investigation of the Laws of Thought, 1854, that three operations — conjunction, disjunction and negation — suffice to perform all logical functions.",
+      "type": "date",
+      "tokens": [
+        "Boole",
+        "Laws of Thought",
+        "1854"
+      ],
+      "source": {
+        "title": "Boole, G., An Investigation of the Laws of Thought, Walton and Maberly, London, 1854",
+        "url": "https://www.gutenberg.org/ebooks/15114",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Shannon’s master’s thesis of 1937 applied that algebra to circuits built from electromechanical relays, treating two-valued logical functions as switching gates and introducing switching algebra, which allows systematic design and optimisation of logical circuits. It was published in the Transactions of the American Institute of Electrical Engineers in 1938.",
+      "type": "date",
+      "tokens": [
+        "Shannon",
+        "American Institute",
+        "Electrical Engineers",
+        "1937",
+        "1938"
+      ],
+      "source": {
+        "title": "Shannon, C. E., A Symbolic Analysis of Relay and Switching Circuits, MIT master’s thesis 1937; Transactions of the American Institute of Electrical Engineers 57:713-723, 1938",
+        "url": "https://dspace.mit.edu/handle/1721.1/11173",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The algebra describes values and says nothing about how many of them there are or how they are interpreted; Shannon cast his switching algebra as the two-element Boolean algebra, and the laws hold for that domain without reference to word size or sign.",
+      "type": "event",
+      "tokens": [
+        "Shannon",
+        "Boolean"
+      ],
+      "source": {
+        "title": "Shannon, C. E., A Symbolic Analysis of Relay and Switching Circuits, MIT master’s thesis 1937; Transactions of the American Institute of Electrical Engineers 57:713-723, 1938",
+        "url": "https://dspace.mit.edu/handle/1721.1/11173",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a machine word is a fixed number of bits and the algebra that describes bits knows nothing about how many there are or what they are taken to mean",
+    "fix": "read every bitwise operation as the Boolean algebra applied to each position independently, so that all the laws you already have carry over unchanged",
+    "cost": "everything the algebra does not mention — the width, the sign interpretation, what happens at the edges — is exactly where the failures are",
+    "interview": "why shifting right is division by two only sometimes"
+  }
+}

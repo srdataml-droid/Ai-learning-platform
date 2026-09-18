@@ -1,0 +1,57 @@
+{
+  "taskId": "E.28",
+  "title": "A log of every pattern you miss, revisited a week later",
+  "researchedAt": "2026-09-19",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "In Roediger and Karpicke’s experiments the advantage of prior testing over restudying appeared at the delayed tests — two days and one week — while at five minutes repeated studying produced better recall.",
+      "type": "event",
+      "tokens": [
+        "Roediger",
+        "Karpicke",
+        "Psychological Science",
+        "2006"
+      ],
+      "source": {
+        "title": "Roediger, H. L. and Karpicke, J. D., Test-Enhanced Learning: Taking Memory Tests Improves Long-Term Retention, Psychological Science 17(3):249-255, 2006",
+        "url": "https://journals.sagepub.com/doi/10.1111/j.1467-9280.2006.01693.x",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Repeated studying increased students’ confidence in their ability to remember the material while producing worse retention at those intervals, so the subjective signal available at the time pointed away from the more effective method.",
+      "type": "event",
+      "tokens": [
+        "Roediger",
+        "Karpicke"
+      ],
+      "source": {
+        "title": "Roediger, H. L. and Karpicke, J. D., Test-Enhanced Learning: Taking Memory Tests Improves Long-Term Retention, Psychological Science 17(3):249-255, 2006",
+        "url": "https://journals.sagepub.com/doi/10.1111/j.1467-9280.2006.01693.x",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The effect is not explained by additional exposure: the restudy group saw all of the material again while the tested group saw again only what it had recalled, and testing still produced greater retention at one week.",
+      "type": "event",
+      "tokens": [
+        "Roediger",
+        "Karpicke"
+      ],
+      "source": {
+        "title": "Roediger, H. L. and Karpicke, J. D., Test-Enhanced Learning: Taking Memory Tests Improves Long-Term Retention, Psychological Science 17(3):249-255, 2006",
+        "url": "https://journals.sagepub.com/doi/10.1111/j.1467-9280.2006.01693.x",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "the thing you most need to practise is the thing you failed at, and failing at it is exactly what makes you least likely to remember that it happened",
+    "fix": "write it down at the moment of the miss and schedule the return, so the selection is made by the record rather than by recollection",
+    "cost": "a log of problems produces recall of specific answers, which is not what transfers — the entry has to name the pattern",
+    "interview": "why the interval is a week rather than the next day or the next session"
+  }
+}

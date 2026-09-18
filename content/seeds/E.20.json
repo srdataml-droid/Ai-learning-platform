@@ -1,0 +1,41 @@
+{
+  "taskId": "E.20",
+  "title": "Recursion, and converting recursion to iteration",
+  "researchedAt": "2026-09-19",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Turing’s 1946 report describes the mechanism for subsidiary operations as noting where the major operation left off and, on completion, consulting a list of such notes held with the most recent last — which in modern terms is a stack of return addresses.",
+      "type": "date",
+      "tokens": [
+        "Turing",
+        "1946"
+      ],
+      "source": {
+        "title": "Turing, A. M., Proposals for the development in the Mathematics Division of an Automatic Computing Engine (ACE), Report E882, National Physical Laboratory, February 1946",
+        "url": "https://people.computing.clemson.edu/~mark/subroutines.html",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Tarjan’s 1972 paper treats depth-first search and backtracking as the same technique, and its listed key words include both backtracking and depth-first.",
+      "type": "event",
+      "tokens": [
+        "Tarjan",
+        "1972"
+      ],
+      "source": {
+        "title": "Tarjan, R., Depth-First Search and Linear Graph Algorithms, SIAM Journal on Computing 1(2):146-160, June 1972",
+        "url": "https://sites.cs.ucsb.edu/~gilbert/cs240a/old/cs240aSpr2011/slides/TarjanDFS.pdf",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "recursion spends a resource the program never mentions, in an amount set by the input, so a correct function fails on data that is merely deep",
+    "fix": "make the hidden stack explicit — push the state the recursion would have kept in local variables, and loop while it is non-empty",
+    "cost": "the transformation is mechanical only once you have identified every value that survived across the recursive call, and that set is larger than it looks",
+    "interview": "what exactly has to go into the explicit stack"
+  }
+}

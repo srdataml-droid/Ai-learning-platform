@@ -3235,6 +3235,103 @@
     "blueprint": "The invariant is the whole algorithm:\n\n   vertices leave the queue in NON-DECREASING\n   distance from the start.\n\n   first reach v at distance d?\n      a shorter route passes something at < d\n      everything at < d is already done and has\n        already offered its neighbours\n      -> v would already be known\n      -> it isn't\n      -> commit. never revisit.\n\n  what breaks it:\n\n     weights.  steps != distance.\n     queue orders by STEPS, you care about COST\n     -> 2 steps @ 10 dequeued before 5 steps @ 3\n     -> first arrival no longer optimal\n\n  the repair: order by accumulated cost\n              -> priority queue (E.19)\n\n  and the cost people forget:\n     the frontier is a whole LEVEL\n     memory ~ width, not depth\n     (depth-first would have stayed shallow)",
     "takeaway": "Breadth-first search can commit to a route because vertices leave the queue in non-decreasing distance order, so anything shorter would already have been found — and weights break exactly that sentence, which is why the repair is to order by cost instead of steps."
   },
+  "E.17": {
+    "id": "E.17",
+    "trackId": "E",
+    "trackName": "Data structures and algorithms",
+    "title": "Depth first search",
+    "status": "traced",
+    "seed": "E.17",
+    "story": "Both searches visit every vertex once and both cost the vertices plus the edges, so if visiting were the point they would be interchangeable. They are not, and the difference is not about speed. It is about what each one leaves behind.\n\nDepth-first search goes as far as it can before turning back, which means that at any moment the vertices currently being explored form a path from the start to where you are. That path is on the call stack, and it is exactly the ancestry of the current vertex. So when you encounter an edge pointing to a vertex you have already seen, you can classify it: if that vertex is still open, the edge points to an ancestor and you have found a cycle. Breadth-first search cannot tell you that, because its frontier is a set of unrelated vertices at equal distance rather than a chain.\n\nThat is why the interesting graph algorithms are depth-first. Tarjan’s 1972 paper puts it directly: the value of depth-first search, or backtracking, is illustrated by two examples — an improved algorithm for the strongly connected components of a directed graph, and one for the biconnected components of an undirected graph, developed jointly with Hopcroft — with both bounded by a linear expression in vertices and edges. Cycle detection, topological ordering, articulation points, strong components: all of them are reading the structure the recursion already built.\n\nThe cost is the one E.8 warned about. The recursion depth is the length of the longest path explored, so a graph that is deep rather than wide will exhaust the stack — and unlike breadth-first search, whose cost is the width of the frontier and shows up as memory you allocated, this shows up as a crash in a resource nobody declared. A long chain of a million vertices is a trivial graph and a fatal one, which is the usual reason to rewrite a depth-first search with an explicit stack.",
+    "problem": {
+      "name": "Structure from traversal order",
+      "aka": [
+        "depth-first search",
+        "backtracking",
+        "the DFS tree"
+      ],
+      "shape": "A question about a graph’s structure — cycles, connectivity, ordering, cut vertices — cannot be answered by looking at vertices one at a time.",
+      "tell": [
+        "the question is about cycles, ordering, reachability between groups, or what would disconnect the graph",
+        "you need to know whether one vertex is an ancestor of another in the exploration",
+        "the problem says \"detect a cycle\", \"topological\", \"strongly connected\" or \"articulation point\""
+      ],
+      "move": "Explore as deep as possible before backtracking, and record when each vertex is entered and left. The open vertices form the current path, so an edge into an open vertex is an edge to an ancestor — which is what identifies a cycle.",
+      "invariant": "The vertices currently open form a path from the root to the vertex being explored. That is what makes ancestry queryable, and it is the property breadth-first search does not have, since its frontier is a set rather than a chain.",
+      "breaks": "It breaks on depth. The recursion is as deep as the longest path explored, so a long thin graph exhausts the stack — a resource that was never declared and whose exhaustion is a crash rather than an allocation failure. That is separate from the graph being large: a million-vertex chain is small and fatal.",
+      "cost": {
+        "time": "proportional to vertices plus edges, the same as breadth-first",
+        "space": "proportional to the longest path, against breadth-first’s widest level",
+        "beats": "breadth-first search on every structural question, and loses to it on shortest paths and on deep graphs"
+      },
+      "worked": {
+        "problem": "What does depth-first search give you that breadth-first does not?",
+        "reasoning": "Ancestry, and everything that follows from it.\n\nDuring a depth-first search the set of vertices currently open is exactly the path from the start to where you are — each one called the next, and none has returned. So \"is v an ancestor of the current vertex\" has a cheap answer: v is open. An edge to an open vertex is therefore an edge back up your own path, which is precisely a cycle.\n\nBreadth-first search has no such relation. Its frontier is every vertex at the current distance, and those vertices are siblings in no particular relation to one another. Seeing an already-visited vertex tells you it was reached earlier and nothing about how it relates to where you are now.\n\nSo the two are not interchangeable traversals with different orders. One of them builds a spanning tree in which the open set means something, and the structural algorithms — strong components, biconnected components, topological order — are all reading that meaning.\n\nWhich also tells you when to prefer breadth-first: when you want distance rather than structure, and when the graph is deeper than your stack.",
+        "code": "DFS: the open vertices ARE the current path\n\n     a -> b -> c        open: {a, b, c}\n                  \\     edge c -> a ?\n                   `-> a          a is OPEN\n                                -> ancestor\n                                -> CYCLE\n\nBFS: the frontier is a set of siblings\n\n     level 2: {d, e, f}   unrelated to each other\n     edge f -> d ?        d visited. and?\n                          -> no ancestry information\n\n  so the structural algorithms are all DFS:\n     cycle detection\n     topological order\n     strongly connected components\n     biconnected components / articulation points\n\n  and the cost:\n     DFS depth = longest path   -> stack, undeclared\n     BFS width = widest level   -> memory, allocated\n\n     a 1,000,000-vertex CHAIN is a tiny graph\n     and it will kill a recursive DFS."
+      },
+      "practice": "Write a depth-first search that prints each vertex when it is entered and again when it is left. Then find an edge into a vertex that is entered but not yet left, and confirm it closes a cycle."
+    },
+    "beats": {
+      "broke": "Visiting every vertex is easy and answers none of the interesting questions. Whether a graph has a cycle, which parts hold together, which single vertex would break it — none of these are visible one vertex at a time.",
+      "fix": "Go as deep as possible before turning back, so the open vertices form the current path and ancestry becomes queryable. Tarjan’s 1972 paper builds strongly connected and biconnected components on exactly this, in time linear in vertices and edges.",
+      "cost": "The recursion is as deep as the longest path, so a deep thin graph exhausts the stack — a crash in an undeclared resource, unlike breadth-first search whose cost is memory you allocated.",
+      "interview": {
+        "q": "What does depth-first search give you that breadth-first search does not?",
+        "trap": "Answering that it uses less memory, or that it is better for some problems. Both can be true and neither identifies the property the structural algorithms actually use.",
+        "answer": "Ancestry. During a depth-first search the vertices currently open are exactly the path from the start to where you are — each called the next and none has returned — so asking whether some vertex is an ancestor of the current one is just asking whether it is still open. An edge into an open vertex is therefore an edge back up your own path, which is a cycle.\n\nBreadth-first search has no equivalent. Its frontier is every vertex at the current distance, and those are siblings with no relation to each other, so encountering a visited vertex tells you it was seen earlier and nothing about how it relates to your position.\n\nThat is why the structural algorithms are all depth-first: cycle detection, topological ordering, strongly connected components, biconnected components. Tarjan's 1972 paper presents the last two as the demonstration of what the technique is for, both linear in vertices and edges.\n\nAnd it tells you when to use the other one: breadth-first when you want distance rather than structure, or when the graph is deeper than your stack — a million-vertex chain is a tiny graph that will kill a recursive traversal."
+      }
+    },
+    "blueprint": "Same cost, different residue:\n\n  DFS   open vertices = the current PATH\n        -> \"is v an ancestor?\" = \"is v open?\"\n        -> edge to an open vertex = CYCLE\n        -> spanning tree + back edges\n\n  BFS   frontier = a SET of siblings at one distance\n        -> visited tells you nothing about relation\n        -> distances, not structure\n\n  which is why these are all DFS:\n     cycle detection\n     topological order\n     strongly connected components   (Tarjan 1972)\n     biconnected / articulation      (with Hopcroft)\n\n  and the cost that differs in KIND:\n\n     DFS  depth = longest path -> the STACK,\n                                  undeclared, crashes\n     BFS  width = widest level -> MEMORY, allocated\n\n     a long chain is a small graph and a fatal one.",
+    "takeaway": "Depth-first search leaves behind ancestry — the open vertices are the current path, so an edge into one is a cycle — which is why every structural graph algorithm is depth-first, and why its limit is the longest path rather than the size of the graph."
+  },
+  "E.18": {
+    "id": "E.18",
+    "trackId": "E",
+    "trackName": "Data structures and algorithms",
+    "title": "Topological sort",
+    "status": "traced",
+    "seed": "E.18",
+    "story": "Dependencies form a graph and execution needs a line, so something has to flatten one into the other without violating any of the constraints. That is the whole problem, and it turns up whenever anything must happen before anything else: build targets, database migrations, course prerequisites, the task network Kahn was writing about in 1962.\n\nHis method is almost embarrassingly direct. Repeatedly take any vertex with no incoming edges — nothing is waiting on it — add it to the order, and remove it along with its outgoing edges, which may leave other vertices with nothing incoming. Repeat until nothing is left. There is no cleverness to it, and the paper is candid about its origin: developed as a byproduct of a procedure needed at Westinghouse, and never programmed. The performance claim is a nice period detail — a network of 30,000 activities ordered in under an hour of machine time.\n\nThe property that makes it more than a procedure is what happens when it fails. The loop can only continue while something has no incoming edges, so if it stops with vertices remaining, every remaining vertex has something pointing at it — and in a finite set where everyone has a predecessor, following predecessors backwards must eventually repeat a vertex. That is a cycle. So the algorithm does not merely fail on cyclic input; it terminates, and what it leaves behind is exactly the part of the graph that is cyclic.\n\nThat is worth stating as a design property rather than a convenience: a topological order exists if and only if the graph is acyclic, so any correct algorithm for producing one is necessarily also a decision procedure for acyclicity. You cannot write a topological sort that skips the cycle check, because completing the sort is the check. Which is why build systems and migration tools report dependency cycles with the participating nodes — they are not running a separate analysis, they are printing what was left over.",
+    "problem": {
+      "name": "Linearising a partial order",
+      "aka": [
+        "topological sort",
+        "dependency resolution"
+      ],
+      "shape": "Constraints say some things must precede others, and you need one sequence that satisfies all of them.",
+      "tell": [
+        "the work is described as depends on, requires, must run after, or blocks",
+        "you have a graph and need a list",
+        "a cycle in the dependencies would be a bug you want reported rather than a hang"
+      ],
+      "move": "Repeatedly emit any vertex with no remaining incoming edges and remove it together with its outgoing edges, until nothing remains or nothing qualifies.",
+      "invariant": "Every vertex emitted has had all its predecessors emitted already. That is what makes the output a valid order, and it is why the procedure can only proceed while some vertex has no unmet dependency.",
+      "breaks": "It stops early exactly when the graph has a cycle, which is not a failure to handle but the algorithm’s second output. It also says nothing about which valid order you get — there are usually many, so anything depending on the specific sequence beyond the stated constraints is depending on an implementation detail.",
+      "cost": {
+        "time": "proportional to vertices plus edges, visiting each once",
+        "space": "an in-degree count per vertex and a set of currently ready ones",
+        "beats": "sorting by a hand-assigned priority number, which encodes the constraints redundantly and silently permits contradictions"
+      },
+      "worked": {
+        "problem": "What does it mean when a topological sort stops with vertices left over?",
+        "reasoning": "It means those vertices contain a cycle, and the argument is short enough to reconstruct rather than memorise.\n\nThe loop continues while some remaining vertex has no incoming edges. If it has stopped and vertices remain, then every remaining vertex has at least one incoming edge from another remaining vertex.\n\nNow start anywhere in that set and walk backwards along incoming edges. You can always take another step, because every vertex has a predecessor. The set is finite, so you must eventually arrive at a vertex you have already visited — and the walk between the two visits is a cycle.\n\nSo the leftovers are not debris, they are the answer to a different question. And that is why you cannot write a topological sort that omits a cycle check: a valid order exists precisely when the graph is acyclic, so producing the order and deciding acyclicity are the same computation.\n\nWhich is exactly what build tools do when they print a dependency cycle with its members — they are showing you what did not come out.",
+        "code": "while some vertex has in-degree 0:\n    emit it, remove its outgoing edges\n\n  stopped, with vertices left?\n     -> every remaining vertex has a predecessor\n     -> walk backwards: always another step\n     -> finite set: must revisit a vertex\n     -> that walk IS a cycle\n\n  so:\n     order emitted   = a valid schedule\n     vertices left   = the cyclic part\n\n  and therefore:\n     a topological order EXISTS\n       iff the graph is ACYCLIC\n     -> producing one and deciding acyclicity\n        are the SAME computation\n     -> no separate check to skip, ever\n\n  (which is what your build tool prints when it\n   reports a dependency cycle with its members.)"
+      },
+      "practice": "Take a build or migration system you use and deliberately introduce a circular dependency. Read the error and identify whether it names the cycle’s members — and if it does, you are looking at the leftovers."
+    },
+    "beats": {
+      "broke": "Dependencies are a graph and execution is a line. Something must flatten one into the other without breaking any constraint, and hand-assigned priority numbers encode the constraints twice and permit contradictions.",
+      "fix": "Repeatedly emit anything with nothing left waiting on it and remove its outgoing edges, exposing the next batch. Published by Kahn in November 1962, developed at Westinghouse as a byproduct and never programmed.",
+      "cost": "The procedure stops early precisely when the graph is cyclic, so the sort and the cycle check are one computation. And many valid orders usually exist, so depending on the particular one you get is depending on an implementation detail.",
+      "interview": {
+        "q": "What does it mean when a topological sort terminates with vertices left over?",
+        "trap": "Calling it a failure case to be handled. It is the algorithm’s second output, and treating it as an error misses that it identifies the cycle rather than merely detecting one.",
+        "answer": "It means the remaining vertices contain a cycle, and the argument is short enough to rebuild on the spot.\n\nThe loop runs while some remaining vertex has no incoming edges. If it has stopped with vertices left, every one of them has at least one incoming edge from another survivor. Start anywhere in that set and walk backwards along incoming edges: you can always take another step because everyone has a predecessor, and the set is finite, so you must eventually revisit a vertex — and the walk between the two visits is a cycle.\n\nSo the leftovers are not debris, they are exactly the cyclic part of the graph.\n\nThe consequence worth carrying is that a topological order exists if and only if the graph is acyclic, which means producing the order and deciding acyclicity are the same computation. You cannot write a version that skips the cycle check to go faster, because completing the sort is the check — and that is precisely what a build tool is showing you when it reports a dependency cycle along with its members."
+      }
+    },
+    "blueprint": "The whole algorithm:\n\n   while some vertex has in-degree 0:\n       emit it; remove its outgoing edges\n\n  and the second output, free:\n\n   stopped with vertices remaining?\n      every survivor has a predecessor\n      walk backwards -> always another step\n      finite -> must repeat a vertex\n      -> CYCLE, and you are holding its members\n\n  so:\n\n     topological order exists  <=>  graph is acyclic\n\n     -> the sort IS the acyclicity test\n     -> there is no check to skip for speed\n     -> \"dependency cycle: a -> b -> c -> a\" is\n        literally the leftovers being printed\n\n  and note what it does NOT promise:\n     WHICH valid order you get. usually many exist.\n     depending on one is depending on an accident.",
+    "takeaway": "A topological order exists exactly when the graph is acyclic, so producing the order and detecting cycles are one computation — and the vertices left over when the procedure stalls are not an error case but the cycle itself."
+  },
   "E.19": {
     "id": "E.19",
     "trackId": "E",
@@ -3331,6 +3428,104 @@
     "blueprint": "Why the multiplier is the whole thing:\n\n   +k    resize at k, 2k, 3k ...\n         copies  k + 2k + 3k ...  = O(n^2)\n         -> O(n) per append\n\n   x2    resize at 1, 2, 4, 8 ...\n         copies  1 + 2 + 4 + 8 ... < 2n\n         -> O(1) per append, amortised\n\n   cost per resize:  rises\n   frequency:        falls\n   only multiplication makes them cancel.\n\n  what \"amortised O(1)\" means and doesn't:\n\n     means: ANY n appends cost O(n) in total\n            (arithmetic, not an average over inputs)\n     not:   every append is fast\n            -> one copies everything\n            -> geometric growth: rarer AND bigger\n               = worse tail latency\n\n  and the non-performance cost:\n     the copy relocates the data\n     -> references into the old block are stale",
     "takeaway": "Multiplicative growth makes resizes rarer at the same rate it makes them costlier, so n appends cost O(n) in total — a worst-case arithmetic claim about the sequence, not a promise about any single append or about your pointers surviving it."
   },
+  "E.20": {
+    "id": "E.20",
+    "trackId": "E",
+    "trackName": "Data structures and algorithms",
+    "title": "Recursion, and converting recursion to iteration",
+    "status": "traced",
+    "seed": "E.20",
+    "story": "A recursive function is a program plus a data structure you did not write. The structure is the call stack — Turing’s list of notes held with the most recent last — and the reason to be able to remove it is that it is the only part of your program whose capacity you did not choose and whose exhaustion you cannot handle.\n\nThat is the honest motivation, and it is worth separating from the folklore. Converting recursion to iteration is not about speed; a function call is cheap and the explicit version usually is not faster. It is about who owns the limit. Recursion depth is a function of the input — the length of the longest path in E.17, the height of a tree, the size of a chain — so a function that is correct for every case you tested fails on data that is merely deeper, and it fails by exhausting a resource nothing in the source mentions.\n\nThe transformation is mechanical, and the mechanical part is easy to state wrongly. You are not pushing the argument. You are pushing everything the recursive call would have found still alive when it returned: the remaining arguments, the loop position you were at, the partial results accumulated so far, and which of several recursive calls you were in the middle of. That last one is the piece people miss — a function with two recursive calls needs to record which one it was in, because on resumption there is no program counter to tell it.\n\nWhich gives the useful reframing. The three depth-first orders of E.11 and the backtracking of E.21 are the same shape, and Tarjan’s paper treats depth-first search and backtracking as one technique. Whether the stack is the language’s or yours changes the limit and the error message, and changes nothing about the algorithm — so the question is never whether to have a stack, only whose it is.",
+    "problem": {
+      "name": "Making the implicit stack explicit",
+      "aka": [
+        "recursion to iteration",
+        "manual stack",
+        "stack safety"
+      ],
+      "shape": "A routine calls itself to a depth determined by the input, using a store whose size it did not choose and cannot check.",
+      "tell": [
+        "the input can be arbitrarily deep — a chain, a long path, a nested document from outside",
+        "the program crashes on large or adversarial input rather than returning an error",
+        "you need to pause, resume, or bound the traversal"
+      ],
+      "move": "Replace the call with a stack you allocate. Push a record holding everything that must survive the call, loop while the stack is non-empty, and on each iteration pop, do the step, and push the continuations.",
+      "invariant": "The explicit stack holds exactly what the call stack would have held: every value live across the recursive call, plus which call site you were at. If any of that is missing, the resumed computation is not the one you suspended.",
+      "breaks": "It breaks on the values people forget. The argument is obvious; the loop index, the accumulated partial result, and the identity of which recursive call you were in are not — and omitting the last gives a version that works for single-recursion functions and quietly mis-resumes for anything with two.",
+      "cost": {
+        "time": "about the same; this is not a performance transformation",
+        "space": "the same amount of state, now in a structure you allocated and can bound",
+        "beats": "recursion, only on control — you choose the limit, you get an error instead of a crash, and you can pause"
+      },
+      "worked": {
+        "problem": "What exactly has to go into the explicit stack?",
+        "reasoning": "Everything that would still be live when the recursive call returned, which is more than the arguments.\n\nWork out what a resumed frame needs. The remaining arguments, obviously. The position in any loop the call was made from, or you will restart the loop. The partial result accumulated so far, or you will lose it. And — the one people omit — which recursive call you were in, because a function containing two of them resumes at two different places and there is no program counter to tell you which.\n\nThe test is to ask what the compiler was storing. That is the frame, and the frame is the answer; your record has to hold the same information or the resumption is of a different computation.\n\nThis is also why the transformation is easy for a single tail call and fiddly for tree recursion. With one call and nothing after it, nothing is live across the call and the stack is unnecessary — that is what makes it a loop. With two calls and work between them, the state between them is precisely what you must serialise.\n\nThe shortcut: if you cannot name what is live across the call, you cannot do the conversion yet.",
+        "code": "what the compiler's frame holds:\n\n   remaining arguments\n   position in the enclosing loop\n   partial results accumulated so far\n   WHICH recursive call site this is   <- omitted most\n\n  your record must hold the same, or you resume a\n  different computation.\n\n  why difficulty varies:\n\n     one call, nothing after it (tail)\n        -> nothing is live across it\n        -> no stack needed. it IS a loop.\n\n     two calls, work between them (tree recursion)\n        -> the state between them is exactly what\n           must be serialised\n\n  and the real reason to bother:\n\n     depth = f(input), limit = not yours,\n     failure = a crash in an undeclared resource\n\n     explicit stack -> you choose the bound,\n                       you can return an error,\n                       you can pause and resume"
+      },
+      "practice": "Take a recursive tree traversal with work after both recursive calls and convert it to an explicit stack. Then find the input on which your first attempt resumes at the wrong call site."
+    },
+    "beats": {
+      "broke": "Recursion consumes a store the program never declares, to a depth set by the input. A routine correct on everything tested crashes on data that is merely deeper, in a resource whose exhaustion cannot be caught.",
+      "fix": "Allocate the stack yourself. Push a record of everything live across the call, loop while it is non-empty, and pop-step-push — the same structure Turing described in 1946 as notes held with the most recent last.",
+      "cost": "It is not faster, and the mechanical part is only mechanical once you have identified every live value — including which of several recursive call sites you were at, which has no equivalent in the source.",
+      "interview": {
+        "q": "What exactly has to go into the explicit stack when converting a recursion?",
+        "trap": "Answering \"the arguments\". That is the visible part and the least likely to be forgotten; the omissions are elsewhere.",
+        "answer": "Everything that would still be live when the recursive call returned. The remaining arguments, yes — but also the position in any enclosing loop, or you restart it; the partial result accumulated so far, or you lose it; and which recursive call site you were at, because a function with two of them resumes in two different places and there is no program counter to consult.\n\nThat last one is the usual omission, and it produces a version that works on single-recursion functions and silently resumes wrongly on tree recursion.\n\nThe reliable test is to ask what the compiler's stack frame was storing, because your record has to hold the same information or you are resuming a different computation.\n\nIt also explains why the difficulty varies so much. With a single call and nothing after it, nothing is live across the call, no stack is needed, and it simply is a loop. With two calls and work between them, the state between them is exactly what must be serialised.\n\nAnd the motivation is worth being clear about: this is not a speed transformation. It is about owning the limit — you choose the bound, you can return an error rather than crash, and you can pause."
+      }
+    },
+    "blueprint": "A recursion is a program plus a stack you didn't write.\n\n  what the frame holds (= what you must push):\n\n     remaining arguments\n     position in the enclosing loop\n     partial results so far\n     WHICH call site  <-- the one people omit\n\n  difficulty tracks how much is live:\n\n     tail call      nothing live across it\n                    -> no stack. it's a loop.\n     tree recursion state between the two calls\n                    -> that's exactly the record\n\n  and the reason to bother is NOT speed:\n\n     recursive   depth = f(input)\n                 limit = the runtime's\n                 failure = crash, uncatchable\n     explicit    limit = yours\n                 failure = an error you return\n                 bonus = you can pause and resume",
+    "takeaway": "Converting recursion to iteration is not a speed change but a transfer of ownership over the limit — and the record you push must hold everything live across the call, including which call site you were at, which has no representation in the source."
+  },
+  "E.21": {
+    "id": "E.21",
+    "trackId": "E",
+    "trackName": "Data structures and algorithms",
+    "title": "Backtracking",
+    "status": "traced",
+    "seed": "E.21",
+    "story": "Combinatorial problems have candidate spaces that are exponential in the input, which rules out two obvious approaches at once. You cannot enumerate them, and you cannot store them — so the search tree has to be something you walk without ever holding, generated one decision at a time and discarded behind you. That is backtracking, and Tarjan’s paper is right to treat it and depth-first search as one technique: the difference is only that the graph here does not exist.\n\nThe name has a longer history than the paper. Bitner and Reingold credit Lehmer with first using the term backtrack in the 1950s, note that the technique has been discovered and rediscovered many times, and record Walker in 1960 as the first to call a depth-first procedure backtracking. Golomb and Baumert gave the general formulation in 1965, setting out its scope and methods in full generality.\n\nThe mechanism is easy and the leverage is not in the mechanism. Choose a value for one variable, check whether the partial assignment is still capable of being completed, and if it is not, undo and try the next — that is the whole loop. But the running time is determined entirely by how much of the tree you never build, so the test is the algorithm and the traversal is bookkeeping. A backtracking search whose feasibility test always says maybe is exhaustive enumeration with extra function calls.\n\nWhich is why the oldest heuristic in the paper is still the central one in constraint solving. Golomb and Baumert advocate choosing the next variable from the set with fewest elements, and say it can be shown information-theoretically to be more efficient on average. The reasoning is that a variable with two possible values branches two ways and a variable with twenty branches twenty ways, so taking the constrained one first makes the tree narrow at the top where the subtrees are largest — and if the constrained variable has no valid value at all, you discover the contradiction immediately instead of after building everything above it.",
+    "problem": {
+      "name": "Search by constructive elimination",
+      "aka": [
+        "backtracking",
+        "constraint search",
+        "pruning"
+      ],
+      "shape": "The set of candidate solutions is exponential, so it can neither be enumerated nor held, and most of it is invalid for reasons visible early.",
+      "tell": [
+        "a solution is an assignment of values to positions, subject to constraints",
+        "the problem is placement, packing, colouring, scheduling, or solving a puzzle",
+        "a partial assignment can already be seen to be hopeless"
+      ],
+      "move": "Extend one variable at a time depth-first. After each extension test whether the partial assignment can still be completed, and on failure undo the last choice and take the next value. Choose the next variable from the set with fewest remaining options.",
+      "invariant": "A subtree is abandoned only when no completion of it can be valid. That is what makes pruning sound, and it is the condition to check when the search returns the wrong answer — an over-eager test discards solutions silently.",
+      "breaks": "It degrades to exhaustive enumeration when the feasibility test is weak, and the degradation is invisible: the code is identical and only the running time changes, from seconds to never. It also depends on the order of choices, which is not part of the problem statement and can change the time by orders of magnitude.",
+      "cost": {
+        "time": "exponential in the worst case, and routinely tractable when the pruning is good",
+        "space": "proportional to the depth, because only the current path is held",
+        "beats": "generate-and-test, which builds candidates before checking them and is infeasible at any interesting size"
+      },
+      "worked": {
+        "problem": "Why does the order in which you make the choices change the running time by orders of magnitude?",
+        "reasoning": "Because the branching factor at a level multiplies everything below it, so where you put the narrow choices decides the size of the tree.\n\nTake two variables, one with two possible values and one with twenty. Deciding the twenty-way variable first gives twenty subtrees, each containing the two-way decision. Deciding the two-way variable first gives two subtrees, each containing the twenty-way decision. The leaf count is the same and the number of internal nodes is not — and the internal nodes are the work.\n\nThe effect is much larger than that arithmetic suggests, because of when contradictions are discovered. If the constrained variable has no valid value at all, taking it first tells you immediately; taking it last means building every combination above it before finding out, repeatedly.\n\nSo Golomb and Baumert’s fewest elements rule is not a micro-optimisation. It puts the narrow decisions where they cut the most and surfaces contradictions at the shallowest point they can be seen.\n\nThat is also why the rule is stated as all other things being equal: it is a heuristic about the shape of the search, not a claim about any particular problem.",
+        "code": "two variables: A has 2 values, B has 20\n\n   B first:            A first:\n     20 branches         2 branches\n     each containing     each containing\n     A's 2                B's 20\n\n   same leaves. very different internal nodes.\n   internal nodes = the work.\n\n  and the bigger effect -- when you FIND OUT:\n\n     if A has no valid value at all:\n        A first -> discovered immediately\n        A last  -> discovered after building every\n                   combination above it, again and\n                   again\n\n  hence: choose from the set with FEWEST elements\n         (Golomb & Baumert, 1965)\n\n  and the warning that matters more:\n\n     weak feasibility test -> nothing is pruned\n     -> identical code, exponential behaviour\n     -> the traversal is bookkeeping; the TEST is\n        the algorithm"
+      },
+      "practice": "Write a solver for a placement puzzle twice — once choosing positions in a fixed order, once always choosing the position with fewest legal options. Count the nodes visited by each rather than the time."
+    },
+    "beats": {
+      "broke": "The candidate space is exponential, so it can be neither enumerated nor stored. Any method that constructs the set before filtering it is finished before it begins.",
+      "fix": "Walk the space depth-first without holding it, extending one variable at a time and abandoning a partial assignment as soon as it cannot be completed. Named by Lehmer in the 1950s, called backtracking by Walker in 1960, and formulated generally by Golomb and Baumert in 1965.",
+      "cost": "All the saving is in what you decline to build, so a weak feasibility test turns the method back into exhaustive enumeration — with identical code and no signal other than the running time.",
+      "interview": {
+        "q": "Why does the order in which a backtracking search makes its choices change the running time by orders of magnitude?",
+        "trap": "Answering that some orders happen to find a solution sooner. That is luck; the effect is structural and holds even when no solution exists.",
+        "answer": "Because the branching factor at each level multiplies everything beneath it, so where the narrow choices sit determines the size of the tree.\n\nWith one variable having two options and another twenty, deciding the twenty-way one first gives twenty subtrees each containing the two-way decision; deciding the two-way one first gives two subtrees each containing the twenty-way decision. Same number of leaves, very different number of internal nodes — and the internal nodes are the work.\n\nThe larger effect is about when contradictions surface. If the constrained variable has no legal value at all, choosing it first reveals that immediately; choosing it last means constructing every combination above it before finding out, and doing so repeatedly.\n\nThat is why Golomb and Baumert's fewest-elements rule from 1965 is still the core heuristic in constraint solving — they state it as more efficient on average from an information-theoretic point of view, and phrase it as all other things being equal, because it is a claim about the shape of the search rather than about any particular problem.\n\nThe bigger lever, though, is the feasibility test: a weak one prunes nothing and the method silently becomes exhaustive enumeration."
+      }
+    },
+    "blueprint": "A tree you walk but never hold:\n\n   extend one variable -> test -> undo on failure\n\n   space: the current PATH only\n   time:  determined by what you never generate\n\n  so the test is the algorithm and the walk is\n  bookkeeping:\n\n     strong test -> tractable\n     weak test   -> exhaustive enumeration\n     identical code. only the clock differs.\n\n  and the ordering effect:\n\n     A: 2 options   B: 20 options\n     B first -> 20 subtrees, each with A\n     A first ->  2 subtrees, each with B\n     same leaves, different internal nodes\n\n     and if A has NO legal value:\n        A first -> found at once\n        A last  -> found after building everything\n                   above it, repeatedly\n\n  -> fewest elements first (Golomb & Baumert, 1965)",
+    "takeaway": "Backtracking walks a search tree it never stores, so the running time is decided entirely by what you refuse to generate — which makes the feasibility test the algorithm and the choice ordering worth orders of magnitude."
+  },
   "E.22": {
     "id": "E.22",
     "trackId": "E",
@@ -3377,6 +3572,55 @@
     },
     "blueprint": "coins 1, 5, 10, 25 -> greedy is OPTIMAL (exchange holds)\ncoins 1, 3, 4      -> greedy is WRONG, silently\n\n  target 6\n  greedy:  4 + 1 + 1   = 3 coins   <- valid. plausible. worse.\n  optimal: 3 + 3       = 2 coins\n  nothing reported an error. it simply returned the wrong one.\n\nThe proof obligation (exchange argument):\n  take any optimal solution WITHOUT your greedy choice\n  swap your choice in\n  show the result is still valid and no worse\n  -> if you can, greedy is optimal\n  -> if you cannot, you have proved nothing. use DP.\n\nTests can only fail to find a counterexample.",
     "takeaway": "Greedy fails by returning a plausible worse answer, so tests cannot validate it. Either you have the exchange argument or you have dynamic programming."
+  },
+  "E.23": {
+    "id": "E.23",
+    "trackId": "E",
+    "trackName": "Data structures and algorithms",
+    "title": "Dynamic programming: memoisation then tabulation",
+    "status": "traced",
+    "seed": "E.23",
+    "story": "The name is famously a piece of misdirection, and it is worth telling with the correction attached. Bellman writes that at RAND in the autumn of 1950 his first task was to name multistage decision processes, in a period he says was not good for mathematical research — describing a Secretary of Defense with a pathological fear and hatred of the word research, whose department the work ultimately answered to. He chose programming for its echo of planning and scheduling and dynamic for the multistage character, arriving at something impossible to use pejoratively. Historians have questioned the story on a simple ground: Wilson only became Secretary of Defense in 1953, after Bellman had begun using the term.\n\nThe technique underneath is two ideas and people usually only teach one. The first is mechanical: a recursive definition that recomputes the same subproblem repeatedly can be made to solve each one once, either by remembering answers as they are produced or by computing them in an order that guarantees the dependencies are already done. Those are memoisation and tabulation, and they are not two techniques — they are the same recurrence approached from opposite ends, top-down and lazily, or bottom-up and eagerly.\n\nThe second idea is the one that decides whether any of it is correct. The method assumes that an optimal solution to the whole is assembled from optimal solutions to its parts. That is a claim about the problem, not about your program, and when it is false the memoisation is still perfectly efficient and the answer is wrong — you have cached the optimum of a subproblem whose optimum was not what the larger problem needed. E.22 makes the same point about greedy choices from the other direction.\n\nSo the order to think in is the reverse of the order it is taught. First establish that the problem decomposes and that the decomposition preserves optimality; that is the hard part and it is mathematics. Then notice that subproblems repeat, which is what makes caching worth anything. Then choose top-down or bottom-up, which is an engineering preference about stack depth, sparsity and which subproblems you actually need.",
+    "problem": {
+      "name": "Overlapping subproblems with optimal substructure",
+      "aka": [
+        "dynamic programming",
+        "memoisation",
+        "tabulation"
+      ],
+      "shape": "A problem decomposes into smaller versions of itself, the same smaller versions recur across different branches, and you need the best answer rather than any answer.",
+      "tell": [
+        "the recursive solution is obviously correct and obviously too slow",
+        "the same arguments appear again and again in the recursion tree",
+        "the question asks for a minimum, maximum, count or best of something built in stages"
+      ],
+      "move": "Establish first that an optimal whole is composed of optimal parts. Then write the recurrence, then remove the recomputation — top-down by caching results as they are produced, or bottom-up by evaluating in an order where dependencies precede dependents.",
+      "invariant": "An optimal solution to the problem contains optimal solutions to its subproblems. Everything else is bookkeeping; this is the condition that makes caching a subproblem’s best answer safe, and it is a property of the problem rather than of the code.",
+      "breaks": "It breaks silently when optimal substructure does not hold: the program is fast, the cache is consistent, and the answer is wrong, because the best solution to a part was not the part the best whole needed. It also breaks on state — if the recurrence depends on something you left out of the cache key, you will return a stored answer computed under different conditions.",
+      "cost": {
+        "time": "the number of distinct subproblems times the work per subproblem, replacing an exponential tree",
+        "space": "a table or cache of all distinct subproblems, which is often the binding constraint",
+        "beats": "plain recursion, which is exponential; and greedy, which is faster and correct on fewer problems"
+      },
+      "worked": {
+        "problem": "What has to be true of a problem before dynamic programming is correct, rather than merely fast?",
+        "reasoning": "Two conditions, and only the second is about speed.\n\nOptimal substructure: the best solution to the whole must be constructible from best solutions to subproblems. This is what licenses caching a subproblem’s answer at all — you are asserting that once you know the best way to do the smaller thing, you never need any other way of doing it.\n\nOverlapping subproblems: the same subproblems recur. This is what makes caching worthwhile; without it every cache entry is written once and read never, and you have added memory to an exponential algorithm.\n\nNotice the asymmetry. Missing overlap makes the technique pointless. Missing optimal substructure makes it wrong, and wrong in the worst way — the program runs quickly, the cache is internally consistent, and it returns a confident answer that is not the optimum. Nothing in the implementation can detect this, because the implementation is correct with respect to a recurrence that does not describe the problem.\n\nWhich is why the honest order is to prove the decomposition first and optimise second. Most dynamic programming bugs are not caching bugs; they are recurrences that were never valid, plus a cache key that omits part of the state.",
+        "code": "two conditions, doing different jobs:\n\n  optimal substructure\n     best(whole) is built from best(parts)\n     -> makes caching CORRECT\n     -> missing: fast, consistent, WRONG\n\n  overlapping subproblems\n     the same parts recur\n     -> makes caching WORTH IT\n     -> missing: pointless, not wrong\n\n  top-down vs bottom-up: the SAME recurrence\n\n     memoise    lazy, from the top\n                only touches what's needed\n                uses the call stack (see E.20)\n     tabulate   eager, from the bottom\n                no recursion, easy to bound\n                computes everything, needed or not\n\n  and the commonest real bug:\n     the cache key omits part of the state\n     -> a stored answer computed under different\n        conditions is returned as if it applied"
+      },
+      "practice": "Take a memoised solution you have written and list everything the recurrence depends on. Check that all of it is in the cache key — and if something is missing, construct the input where the wrong stored answer is returned."
+    },
+    "beats": {
+      "broke": "A correct recursive definition of an optimisation problem can recompute the same subproblem exponentially many times, so the definition is right and the program is unusable.",
+      "fix": "Solve each distinct subproblem once — lazily from the top by caching, or eagerly from the bottom in dependency order. They are one recurrence seen from two ends, not two techniques.",
+      "cost": "It is correct only where an optimal whole is built from optimal parts. Where that fails the program is fast, the cache is consistent, and the answer is wrong, with nothing in the implementation able to notice.",
+      "interview": {
+        "q": "What has to be true of a problem before dynamic programming is correct rather than merely fast?",
+        "trap": "Naming overlapping subproblems first, or only. Overlap is about whether the technique is worth using; the correctness condition is the other one.",
+        "answer": "Two conditions doing different jobs.\n\nOptimal substructure: the best solution to the whole must be constructible from best solutions to subproblems. This is what makes caching correct at all — you are asserting that once you know the best way to do a smaller thing, no other way of doing it will ever be needed.\n\nOverlapping subproblems: the same subproblems must recur. This is what makes caching worthwhile; without it, every entry is written once and never read, and you have added memory to an exponential algorithm.\n\nThe asymmetry is the point. Missing overlap makes the technique pointless. Missing optimal substructure makes it wrong, and wrong in the worst way — fast, internally consistent, and confidently returning something that is not the optimum, with nothing in the implementation able to detect it, because the code is faithful to a recurrence that does not describe the problem.\n\nSo the honest order is to establish the decomposition first and optimise second. In practice most bugs here are not caching bugs at all: they are invalid recurrences, or a cache key that omits part of the state the recurrence actually depends on."
+      }
+    },
+    "blueprint": "Two conditions, and they are not interchangeable:\n\n  optimal substructure   best(whole) from best(parts)\n                         -> caching is CORRECT\n                         missing -> fast, consistent,\n                                    WRONG, undetectable\n\n  overlapping subproblems  the same parts recur\n                         -> caching is WORTH IT\n                         missing -> pointless, not wrong\n\n  memoise and tabulate are ONE recurrence:\n\n     top-down, lazy     only what's needed\n                        uses the call stack\n     bottom-up, eager   everything, in order\n                        no recursion to blow\n\n  so the order to think in is the reverse of the\n  order it is taught:\n\n     1. does the decomposition preserve optimality?\n     2. do subproblems repeat?\n     3. top-down or bottom-up?   <- the only part\n                                    that is taste",
+    "takeaway": "Dynamic programming rests on optimal substructure, which is a claim about the problem rather than the code — overlap only decides whether caching is worth doing, while substructure decides whether the fast answer it gives you is the right one."
   },
   "E.24": {
     "id": "E.24",
@@ -3473,6 +3717,152 @@
     },
     "blueprint": "What actually runs when you call sort():\n\n  Python   <= 3.10  Timsort        stable (guaranteed)\n           >= 3.11  Powersort      stable (guaranteed)\n  Java     objects  Timsort        stable\n           primitives  dual-pivot quicksort   NOT stable\n  C++      std::sort     introsort-family     NOT stable\n           std::stable_sort                   stable\n  Rust     sort()        stable\n           sort_unstable()  pattern-defeating quicksort\n  Go       sort.Sort     pattern-defeating quicksort (1.19+)\n\nJava's split is the tell: equal OBJECTS are distinguishable,\nso their order is observable and must be preserved.\nEqual PRIMITIVES are not, so it cannot matter -- which frees\nthe implementation to be faster.",
     "takeaway": "No algorithm wins everywhere, so real sorts detect and switch. What you must actually know is whether yours is stable, and Java's answer differs by type."
+  },
+  "E.26": {
+    "id": "E.26",
+    "trackId": "E",
+    "trackName": "Data structures and algorithms",
+    "title": "Bit manipulation basics",
+    "status": "traced",
+    "seed": "E.26",
+    "story": "There is almost nothing new here, which is the most useful thing to know about it. Bitwise operations are the algebra of F.6 applied to each position of a word independently — Boole’s three operations, one bit at a time. Every law therefore carries over without modification: negation distributes by flipping the connective, the same expression can be simplified the same way, and a mask is set membership written in the notation of switching circuits. If you understand the algebra you already understand the operations.\n\nWhat you do not already understand is everything the algebra does not mention, and that is where every bug lives. The algebra describes values. It says nothing about how many bits there are, nothing about which of them is taken to mean a sign, and nothing about what happens to a bit shifted off the end — because in Shannon’s relay networks those questions did not arise. A machine word raises all three.\n\nTake the operation people get wrong. Shifting left one place doubles a number, and continues to do so exactly until a significant bit reaches the top and leaves, at which point it silently does something else. Shifting right one place halves a number, and does so for non-negative values — but a right shift that preserves the sign replicates the sign bit rather than introducing a zero, so for negative values the result rounds towards negative infinity rather than towards zero, which disagrees with what division does in most languages. And shifting by at least the width of the word is not defined by the algebra at all, so languages resolve it however their hardware does, which is one of the few genuinely unpredictable things in ordinary code.\n\nSo the discipline is small and specific. Treat the operations as Boolean algebra, which they are, and treat width and sign as a separate layer that the algebra does not cover. The two idioms worth memorising both follow from thinking about borrows: subtracting one from a value flips its lowest set bit and everything below it, so a value combined with itself-minus-one clears that lowest bit, and combined with its own negation isolates it.",
+    "problem": {
+      "name": "Boolean algebra on fixed-width words",
+      "aka": [
+        "bit manipulation",
+        "masks",
+        "shifts"
+      ],
+      "shape": "You need to treat a machine word as a collection of independent flags or as a number, and the operations available treat it as both without saying which.",
+      "tell": [
+        "a value packs several booleans, or a small set, into one integer",
+        "you are using shifts to multiply or divide",
+        "a flag test is being written with arithmetic rather than a mask"
+      ],
+      "move": "Read every bitwise operator as the Boolean operation applied per position, and reason about it with the algebra. Then, separately, check the two things the algebra does not cover: how wide the word is and whether it is signed.",
+      "invariant": "The operations are the Boolean laws applied elementwise, so every algebraic identity holds per bit. Width and signedness are outside that guarantee, which is why they are the only place a bitwise expression can surprise you.",
+      "breaks": "It breaks at the edges the algebra never described. Bits shifted beyond the width vanish, so a left shift stops being multiplication without any signal; a sign-preserving right shift replicates the sign bit, so it rounds toward negative infinity and disagrees with division; and a shift by at least the word width is left to the hardware, so the result differs between machines and languages.",
+      "cost": {
+        "time": "a single instruction for each operation, which is why the idioms persist",
+        "space": "a word instead of a structure, which is the point when packing flags",
+        "beats": "arithmetic and boolean fields, which are clearer and larger — so this is a trade for density and speed, not for readability"
+      },
+      "worked": {
+        "problem": "Why is shifting right equivalent to dividing by two only sometimes?",
+        "reasoning": "Because two different operations share the notation, and only one of them is what division does.\n\nFor a non-negative value, moving every bit one place toward the least significant position halves it, discarding the remainder. That matches integer division by two exactly.\n\nFor a negative value in the usual representation, the top bit means the sign, so the shift has to decide what to bring in at the top. A logical shift brings in a zero, which changes the sign and gives an enormous positive number. An arithmetic shift replicates the sign bit, which preserves the sign — and the result it gives is the value rounded towards negative infinity, while division in most languages rounds towards zero. For minus three, one rounds to minus two and the other to minus one.\n\nSo the identity holds for non-negative values and fails by one in the negative case, for a reason the algebra cannot express: Boolean algebra has no concept of a sign bit, because a relay network has no sign.\n\nWhich is the general shape here. The operations are exactly the algebra; the surprises are exactly the parts that are not.",
+        "code": "bitwise = Boolean algebra, per position.\n  all of F.4 and F.6's laws hold. nothing new.\n\nwhat the algebra never mentions:\n  how many bits there are\n  which one means \"negative\"\n  what happens to a bit pushed off the end\n\n  shift LEFT   x2 ... until a significant bit\n               leaves the top. then silently not.\n\n  shift RIGHT  /2 for non-negative\n               negative + sign-preserving shift:\n                  replicates the sign bit\n                  rounds toward -infinity\n                  division rounds toward zero\n                  -3: shift -> -2, divide -> -1\n\n  shift by >= width\n               not defined by the algebra\n               -> whatever the hardware does\n\ntwo idioms, both from thinking about the borrow:\n\n  x - 1        flips the lowest set bit and all\n               zeros below it\n  x & (x-1)    clears the lowest set bit\n  x & -x       isolates the lowest set bit"
+      },
+      "practice": "Evaluate a right shift and an integer division by two on minus three in your language, and confirm they differ. Then shift a value by exactly the word width and see whether you get zero, the original value, or something else."
+    },
+    "beats": {
+      "broke": "A word is simultaneously a number and a row of independent flags, and the operators available act on it as both without indicating which reading is intended.",
+      "fix": "Treat bitwise operations as Boole’s three operations applied to each position independently — the algebra of 1854 that Shannon showed in 1937 also describes switching circuits — so every law you already know carries across unchanged.",
+      "cost": "The algebra says nothing about width or sign, and those are precisely where bitwise code fails: shifted-out bits vanish, sign-preserving shifts round the wrong way, and shifting by the word width is left to the hardware.",
+      "interview": {
+        "q": "Why is a right shift equivalent to dividing by two only sometimes?",
+        "trap": "Answering that it fails for negative numbers, and stopping. The reason it fails is the interesting part, and it also tells you why nothing in the algebra warned you.",
+        "answer": "Because two operations share one notation, and only one of them matches division.\n\nFor a non-negative value, moving every bit one place toward the least significant position halves it and discards the remainder, which is exactly integer division by two.\n\nFor a negative value the top bit carries the sign, so the shift must decide what to introduce at the top. A logical shift brings in a zero and produces a large positive number. A sign-preserving shift replicates the sign bit and keeps the value negative — but the result is rounded towards negative infinity, whereas division in most languages rounds towards zero. For minus three, the shift gives minus two and the division gives minus one.\n\nThe reason nothing warned you is the general lesson. Bitwise operations are Boolean algebra applied per position, so every algebraic law holds — but the algebra has no notion of a sign bit or a word width, because a relay network has neither. So the operations are exactly the algebra and the surprises are exactly the parts that are not: bits shifted off the end, the sign interpretation, and shifting by at least the width, which the hardware resolves however it likes."
+      }
+    },
+    "blueprint": "Two layers, and only one of them you already know:\n\n   LAYER 1   Boolean algebra, applied per position\n             (Boole 1854, three operations suffice;\n              Shannon 1937, the same algebra is a\n              switching circuit)\n             -> every law from F.4/F.6 holds\n             -> masks are set membership\n             -> nothing new to learn\n\n   LAYER 2   the parts the algebra never described:\n             how WIDE the word is\n             which bit means NEGATIVE\n             what happens at the EDGE\n\n             << x2 until a significant bit leaves\n             >> /2 only for non-negative\n                sign-preserving shift rounds toward\n                -infinity; division rounds toward 0\n                -3 >> 1 = -2,  -3 / 2 = -1\n             shift by >= width: hardware's choice\n\n  every bitwise bug is in layer 2.\n\n  two idioms, both about the borrow:\n     x & (x-1)  clears the lowest set bit\n     x & -x     isolates it",
+    "takeaway": "Bitwise operations are Boolean algebra applied one position at a time, so every law carries over unchanged — and every surprise comes from width and sign, which the algebra never described because a relay network has neither."
+  },
+  "E.27": {
+    "id": "E.27",
+    "trackId": "E",
+    "trackName": "Data structures and algorithms",
+    "title": "The cadence: a small near daily block, medium difficulty, timed after month one",
+    "status": "traced",
+    "seed": "E.27",
+    "story": "Every parameter in this task title is doing a job, and the reasons are worth having because without them the regime is just somebody’s routine.\n\nSmall and near daily rather than long and occasional. The benefit being sought is retrieval, and retrieval is an event rather than a duration — it happens each time you produce something without looking. A three-hour session contains fewer retrieval attempts than six half-hour sessions spread across a week, and the attempts in the long session are increasingly against material still fresh from the last one, which is the condition under which testing looks unnecessary. C.27.1 has the measurement: at five minutes restudying wins, at two days and one week testing wins substantially.\n\nMedium difficulty rather than hard. This is the parameter people override and it is the one with a mechanism. A problem you can eventually retrieve the approach for is a retrieval attempt. A problem you cannot is a problem you look up — and looking up converts the session into studying, which is the condition the same experiments show produces confidence without retention. Too easy fails in the other direction: recognising a pattern you have seen twice this week is not producing it. The target is the band where you struggle and arrive, because that is the only band in which the thing being trained actually runs.\n\nTimed only after the first month. Timing trains retrieval under constraint, which is a real and separate skill, and it is worthless before there is anything to retrieve. Applied early it measures how quickly you fail to recall things you never learned, and — given the confidence finding — it also supplies exactly the discouraging signal most likely to end the regime.\n\nAnd the honest caveat, which belongs in the lesson rather than a footnote: the underlying study used free recall of prose passages in a laboratory. It supports the method and it does not establish anything about this exercise. The parameters above are inference, and should be held as such.",
+    "problem": {
+      "name": "Designing a practice regime",
+      "aka": [
+        "spaced retrieval",
+        "deliberate practice cadence"
+      ],
+      "shape": "Skill has to be built over months, and the obvious way to organise the effort optimises for how the effort feels rather than for what it leaves behind.",
+      "tell": [
+        "practice happens in long sessions when motivated and not at all otherwise",
+        "the difficulty is chosen to prove something rather than to be retrievable",
+        "progress is judged by how the session felt"
+      ],
+      "move": "Fix the frequency high and the duration low. Choose problems in the band where you struggle and arrive rather than struggle and look up. Add a time constraint only once a vocabulary of patterns exists to be retrieved.",
+      "invariant": "Every session contains genuine retrieval attempts — producing an approach without looking. That is the operative ingredient, and any parameter that reduces the number of such attempts is working against the regime whatever else it improves.",
+      "breaks": "It breaks under its own feedback. Retrieval feels worse and scores worse immediately, so any short-horizon self-assessment recommends abandoning it — and the measured confidence effect means the abandoned alternative will feel like progress. It also breaks when difficulty drifts up, because looking up an answer silently converts practice back into studying.",
+      "cost": {
+        "time": "more days, fewer hours, and a worse experience per session",
+        "space": "a record of what to revisit, which is E.28",
+        "beats": "long infrequent sessions, which are more satisfying, feel more productive, and leave less behind at the intervals that matter"
+      },
+      "worked": {
+        "problem": "Why does the difficulty have to be medium rather than hard?",
+        "reasoning": "Because difficulty controls which activity you are actually performing, and only one of the two is the one that works.\n\nAt medium difficulty you struggle and arrive. The struggle is a retrieval attempt — you are producing an approach from memory — and that is the operation the evidence supports.\n\nPast some threshold you struggle and do not arrive, so you look at the solution. That is no longer retrieval; it is studying. And studying is exactly the condition the experiments compare against, the one that produced better performance at five minutes, higher confidence, and worse retention at a week. So hard problems do not give you more of the good thing; they replace it with the thing being outperformed.\n\nToo easy fails the same test from the other side. Recognising a pattern you met twice this week is recognition rather than recall, which produces fluency without the retrieval effort.\n\nSo the rule is not about ambition. Medium is defined operationally: the hardest level at which you still end up producing the answer yourself. That level rises, which is what makes it a cadence rather than a setting.",
+        "code": "difficulty decides WHICH activity you are doing:\n\n  too easy   recognise something seen twice\n             -> recognition, not recall\n             -> fluency, no retrieval effort\n\n  medium     struggle, and ARRIVE\n             -> a genuine retrieval attempt\n             -> the operative ingredient\n\n  too hard   struggle, then LOOK IT UP\n             -> that is studying\n             -> the condition that measured:\n                  better at 5 minutes\n                  MORE confident\n                  worse at one week\n\n  so hard problems don't give you more of the good\n  thing. they substitute the thing being beaten.\n\n  operational definition:\n     the hardest level at which you still produce\n     the answer yourself.\n     (it rises -- which is why it's a cadence.)"
+      },
+      "practice": "For the next two weeks, record for each session whether you produced the approach yourself or looked it up. If more than a third were looked up, the difficulty is above the band and you have been studying."
+    },
+    "beats": {
+      "broke": "Practice gets organised by feel — long sessions when motivated, hard problems to prove a point, nothing when busy — and each of those instincts optimises something other than what is left behind a week later.",
+      "fix": "High frequency, short duration, difficulty set where retrieval succeeds, and timing added only once there is a vocabulary to retrieve. Retrieval is an event rather than a duration, so frequency is the parameter that counts.",
+      "cost": "It feels worse and measures worse immediately, so the regime argues against itself on every short horizon — and the evidence behind it is laboratory recall of prose, which supports the method without establishing anything about this exercise.",
+      "interview": {
+        "q": "Why should practice difficulty be medium rather than hard?",
+        "trap": "Answering that hard problems are discouraging. Motivation is real and secondary — the mechanism is that difficulty determines which activity you are actually performing.",
+        "answer": "Because the difficulty decides whether you are retrieving or studying, and only one of those is the thing that works.\n\nAt medium difficulty you struggle and arrive: you produce the approach from memory, which is a genuine retrieval attempt. Past some threshold you struggle and do not arrive, so you look at the solution — and that is studying, which is precisely the comparison condition in the experiments. Studying produced better performance at five minutes, higher confidence, and worse retention at a week. So harder problems do not give you more of the beneficial activity; they substitute the activity it outperforms.\n\nToo easy fails from the other side: recognising a pattern you saw twice this week is recognition rather than recall, which yields fluency without retrieval effort.\n\nThat gives an operational definition rather than a vague one — medium is the hardest level at which you still produce the answer yourself, and it rises over time, which is what makes it a cadence rather than a fixed setting.\n\nThe honest caveat is that the underlying study used free recall of prose passages in a lab, so these parameters are inference from it rather than results about this activity."
+      }
+    },
+    "blueprint": "Every parameter has a reason:\n\n  SMALL, NEAR-DAILY   retrieval is an EVENT, not a\n                      duration. frequency = number\n                      of attempts.\n                      (5 min: study wins.\n                       2 days / 1 week: testing wins.)\n\n  MEDIUM DIFFICULTY   decides which activity you do:\n                        easy -> recognition\n                        medium -> RETRIEVAL\n                        hard -> you look it up\n                                = studying\n                                = the losing condition\n                      operational: the hardest level\n                      at which you still produce the\n                      answer yourself.\n\n  TIMED AFTER MONTH 1 timing trains retrieval under\n                      constraint -- needs something\n                      to retrieve first. earlier, it\n                      measures failing fast, and\n                      supplies the discouragement.\n\n  caveat, stated not buried:\n     the evidence is lab recall of prose passages.\n     it supports the METHOD, not this regime.",
+    "takeaway": "Frequency matters because retrieval is an event rather than a duration, and difficulty matters because it decides whether you are retrieving or looking things up — which is the same distinction as the studying condition the evidence outperforms."
+  },
+  "E.28": {
+    "id": "E.28",
+    "trackId": "E",
+    "trackName": "Data structures and algorithms",
+    "title": "A log of every pattern you miss, revisited a week later",
+    "status": "traced",
+    "seed": "E.28",
+    "story": "There is a selection problem underneath this task and it is worth naming before the mechanics. The material you most need to return to is the material you failed at, and failing at something is precisely the condition under which you are least likely to choose it later — partly because it was unpleasant and mostly because you do not remember it well enough to select it. Unaided, your practice will drift toward what you can already do, and it will do so without any decision being taken.\n\nThe log removes the selection from memory and puts it in a record. Write the entry at the moment of the miss, because that is the only moment when you reliably know it happened. Then the return is scheduled rather than chosen, which is the entire function — it is not a study aid, it is a mechanism for deciding what to practise that does not consult the faculty that just failed.\n\nThe interval is where the evidence bites. Roediger and Karpicke found the advantage of prior testing over restudying at two days and one week, while at five minutes repeated studying was better. Returning the same day is testing yourself on something still fresh, which is the five-minute regime and the one that measured worse at the intervals that matter. A week is the interval the effect was demonstrated at, which is a reasonable place to stand — and their other finding warns you off tuning it by feel, since restudying raised confidence while lowering retention, so the sensation of a shorter interval working is exactly the signal that misleads.\n\nThe failure mode is what you record. A log of problems produces recall of specific answers, which does not transfer — you will remember that particular puzzle and be no better on its neighbours. The entry has to name the pattern and the tell: what kind of problem this was, and what in the statement should have pointed at it. Then the revisit is a retrieval of something general, and there is a second reason for that shape — the tested group in those experiments saw again only what it had recalled, less material than the restudy group, and still retained more. What you re-expose yourself to matters less than that you produced it.",
+    "problem": {
+      "name": "Scheduling your own weaknesses",
+      "aka": [
+        "error log",
+        "spaced revisit",
+        "deliberate selection"
+      ],
+      "shape": "Improvement requires returning to what you failed at, and the failure itself degrades your ability to remember that it needs returning to.",
+      "tell": [
+        "your practice keeps covering things you are already good at",
+        "you recognise a pattern in a solution and cannot say when you last missed it",
+        "a review session consists of whatever comes to mind"
+      ],
+      "move": "Record the miss at the moment it happens, naming the pattern and the tell rather than the problem. Schedule the revisit about a week out, and let the record rather than your recollection choose what you practise.",
+      "invariant": "What you revisit is chosen by the record and not by memory. That is the whole mechanism, because the material with the strongest claim on your attention is the material you are least equipped to nominate.",
+      "breaks": "It breaks when the entries are problems rather than patterns, producing recall of specific answers that does not transfer. It breaks when entries are written later, because by then the selection has already been made by memory. And it breaks when the interval is tuned by how it feels, since the subjective signal is known to point the wrong way.",
+      "cost": {
+        "time": "a minute at the moment of the miss, and a session a week later spent on things you are bad at",
+        "space": "a list that only grows useful if it is actually revisited",
+        "beats": "reviewing what comes to mind, which is free and systematically selects for what you already know"
+      },
+      "worked": {
+        "problem": "Why revisit after a week rather than the next day or the same session?",
+        "reasoning": "Because the interval decides whether you are retrieving or merely re-reading something still present, and the evidence separates those exactly.\n\nIn the experiments, a final test five minutes after study favoured repeated studying — at that distance the material has not left, so there is nothing to retrieve and the extra exposure wins. At two days and at one week the result reverses, with prior testing producing substantially greater retention.\n\nA same-session revisit is the five-minute condition. A next-day revisit is closer but still short of the interval where the effect was demonstrated. A week is where it was actually measured, which is the honest reason to choose it — not because a week is optimal, but because it is the interval with evidence behind it.\n\nAnd there is a reason not to shorten it by feel. The same experiments found that restudying raised confidence while lowering retention, so a shorter interval feeling more effective is precisely the signal shown to be misleading.\n\nThe asymmetry to remember: the tested group re-encountered less material than the restudy group and retained more. The benefit is in producing, not in seeing again.",
+        "code": "the selection problem:\n\n   what you need most = what you failed at\n   what you're least able to nominate = the same thing\n   -> unaided, practice drifts to what you can do\n      and no decision is ever taken\n\n  so the record makes the choice, not memory.\n\n  the interval, from the measurements:\n\n     5 minutes  restudy wins     <- same-session\n                                    revisit is this\n     2 days     testing wins\n     1 week     testing wins     <- and this is\n                                    where it was\n                                    demonstrated\n\n  and do NOT tune it by feel:\n     restudy raised CONFIDENCE and lowered retention\n     -> \"the shorter interval feels better\" is the\n        known-misleading signal\n\n  what to write down:\n\n     NOT  \"problem 47, the one with the boats\"\n          -> recall of one answer, no transfer\n     BUT  the PATTERN + the TELL\n          \"two pointers; the array was sorted and\n           the question asked for a pair\""
+      },
+      "practice": "Look at your last ten practice sessions and write down what you covered. If you cannot point to an entry that put a topic there because you failed it, the selection was made by memory rather than by record."
+    },
+    "beats": {
+      "broke": "The material with the strongest claim on your practice is the material you failed at, and failing at it is exactly what stops you nominating it later — so unaided practice drifts toward what you can already do, with no decision ever being made.",
+      "fix": "Record the miss when it happens and schedule the return, so selection comes from the record rather than from the faculty that just failed. The interval of about a week is where the retrieval advantage was actually measured.",
+      "cost": "A log of problems gives recall of specific answers rather than transferable patterns, entries written later have already lost the selection, and tuning the interval by feel uses the one signal shown to point the wrong way.",
+      "interview": {
+        "q": "Why revisit a missed pattern after a week rather than the next day or later the same session?",
+        "trap": "Answering that spacing is good for memory in general. The specific interval matters here, and there is a measured reason for it.",
+        "answer": "Because the interval determines whether you are retrieving something or re-reading something still present.\n\nIn the experiments, a test five minutes after study favoured repeated studying — at that distance nothing has been lost, so there is nothing to retrieve and extra exposure simply wins. At two days and one week the result reverses, with prior testing producing substantially greater retention. A same-session revisit is effectively the five-minute condition; the next day is closer but still short of where the effect was shown. A week is where it was demonstrated, which is the honest reason to choose it — not that a week is optimal, but that it is the interval with evidence behind it.\n\nThere is also a reason not to shorten it by feel: the same experiments found restudying raised confidence while lowering retention, so a shorter interval seeming more effective is the signal already known to mislead.\n\nAnd the related design point about what to record: the tested group re-encountered less material than the restudy group and still retained more, so the benefit is in producing rather than in seeing again — which is why entries should name the pattern and its tell rather than the problem."
+      }
+    },
+    "blueprint": "The selection problem, stated plainly:\n\n   most needed   = what you failed at\n   least likely\n   to be chosen  = what you failed at\n   -> practice drifts to your strengths, and nobody\n      ever decided that\n\n  fix: let the RECORD choose, not memory.\n       written AT the miss (the only reliable moment)\n\n  interval, from the measurements:\n\n     5 min    restudy wins    <- same-session revisit\n     2 days   testing wins\n     1 week   testing wins    <- demonstrated here\n\n     and don't tune by feel: restudy raised\n     CONFIDENCE while lowering retention.\n\n  what goes in the entry:\n\n     NOT the problem   -> recall of one answer\n     BUT the PATTERN + the TELL\n         \"sliding window; asked for the longest\n          substring with a constraint\"\n\n  because the tested group saw LESS material and\n  retained MORE: the benefit is producing, not\n  re-reading.",
+    "takeaway": "The log exists because the material you most need to revisit is the material you are least able to nominate — so the record makes the selection, the interval is a week because that is where the effect was measured, and the entry must name the pattern rather than the problem."
   },
   "E.3": {
     "id": "E.3",
@@ -7953,6 +8343,64 @@
       "kind": "primary"
     }
   ],
+  "E.17": [
+    {
+      "claim": "Tarjan published Depth-First Search and Linear Graph Algorithms in the SIAM Journal on Computing, volume 1 number 2, pages 146 to 160, in June 1972. The paper states that the value of depth-first search, or backtracking, as a technique for solving problems is illustrated by two examples.",
+      "title": "Tarjan, R., Depth-First Search and Linear Graph Algorithms, SIAM Journal on Computing 1(2):146-160, June 1972",
+      "url": "https://sites.cs.ucsb.edu/~gilbert/cs240a/old/cs240aSpr2011/slides/TarjanDFS.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "The two examples are an improved algorithm for finding the strongly connected components of a directed graph and an algorithm for finding the biconnected components of an undirected graph. The biconnected components algorithm was developed jointly with John Hopcroft.",
+      "title": "Tarjan, R., Depth-First Search and Linear Graph Algorithms, SIAM Journal on Computing 1(2):146-160, June 1972",
+      "url": "https://sites.cs.ucsb.edu/~gilbert/cs240a/old/cs240aSpr2011/slides/TarjanDFS.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "The paper states that the space and time requirements of both algorithms are bounded by a linear expression in the number of vertices and the number of edges of the graph being examined.",
+      "title": "Tarjan, R., Depth-First Search and Linear Graph Algorithms, SIAM Journal on Computing 1(2):146-160, June 1972",
+      "url": "https://sites.cs.ucsb.edu/~gilbert/cs240a/old/cs240aSpr2011/slides/TarjanDFS.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "Its listed key words are algorithm, backtracking, biconnectivity, connectivity, depth-first, graph, search, spanning tree and strong-connectivity.",
+      "title": "Tarjan, R., Depth-First Search and Linear Graph Algorithms, SIAM Journal on Computing 1(2):146-160, June 1972",
+      "url": "https://sites.cs.ucsb.edu/~gilbert/cs240a/old/cs240aSpr2011/slides/TarjanDFS.pdf",
+      "kind": "primary"
+    }
+  ],
+  "E.18": [
+    {
+      "claim": "Kahn published Topological sorting of large networks in Communications of the ACM, volume 5 number 11, pages 558 to 562, in November 1962. The paper states that topological sorting is a procedure required for many problems involving analysis of networks, giving the project scheduling technique of the period as an example.",
+      "title": "Kahn, A. B., Topological sorting of large networks, Communications of the ACM 5(11):558-562, November 1962",
+      "url": "https://dl.acm.org/doi/10.1145/368996.369025",
+      "kind": "primary"
+    },
+    {
+      "claim": "The paper presents a general method permitting treatment of larger networks than existing procedures and with greater efficiency, discussed in terms of a contemporary machine, and reports that a network of 30,000 activities can be ordered in less than one hour of machine time.",
+      "title": "Kahn, A. B., Topological sorting of large networks, Communications of the ACM 5(11):558-562, November 1962",
+      "url": "https://dl.acm.org/doi/10.1145/368996.369025",
+      "kind": "primary"
+    },
+    {
+      "claim": "The method was developed as a byproduct of a procedure needed at Westinghouse, where Kahn worked, and was never programmed.",
+      "title": "Kahn, A. B., Topological sorting of large networks, Communications of the ACM 5(11):558-562, November 1962",
+      "url": "https://dl.acm.org/doi/10.1145/368996.369025",
+      "kind": "primary"
+    },
+    {
+      "claim": "The algorithm now bearing Kahn’s name repeatedly removes vertices having no incoming edges, adding them to the order in the sequence removed; removing a vertex also removes its outgoing edges, which exposes a new set of vertices with no incoming edges, and the procedure repeats until no vertices remain.",
+      "title": "Kahn, A. B., Topological sorting of large networks, Communications of the ACM 5(11):558-562, November 1962",
+      "url": "https://dl.acm.org/doi/10.1145/368996.369025",
+      "kind": "primary"
+    },
+    {
+      "claim": "A caveat on the record: the journal’s current landing page for this article displays a mismatched abstract about pattern classification, apparently a metadata error, while the digital library entry carries the correct one.",
+      "title": "Kahn, A. B., Topological sorting of large networks, Communications of the ACM 5(11):558-562, November 1962",
+      "url": "https://dl.acm.org/doi/10.1145/368996.369025",
+      "kind": "primary"
+    }
+  ],
   "E.19": [
     {
       "claim": "Dijkstra published 'A note on two problems in connexion with graphs' in Numerische Mathematik volume 1, pages 269 to 271, in 1959.",
@@ -8011,6 +8459,66 @@
       "kind": "primary"
     }
   ],
+  "E.20": [
+    {
+      "claim": "Turing’s 1946 report describes the mechanism for subsidiary operations as noting where the major operation left off and, on completion, consulting a list of such notes held with the most recent last — which in modern terms is a stack of return addresses.",
+      "title": "Turing, A. M., Proposals for the development in the Mathematics Division of an Automatic Computing Engine (ACE), Report E882, National Physical Laboratory, February 1946",
+      "url": "https://people.computing.clemson.edu/~mark/subroutines.html",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Tarjan’s 1972 paper treats depth-first search and backtracking as the same technique, and its listed key words include both backtracking and depth-first.",
+      "title": "Tarjan, R., Depth-First Search and Linear Graph Algorithms, SIAM Journal on Computing 1(2):146-160, June 1972",
+      "url": "https://sites.cs.ucsb.edu/~gilbert/cs240a/old/cs240aSpr2011/slides/TarjanDFS.pdf",
+      "kind": "primary"
+    }
+  ],
+  "E.21": [
+    {
+      "claim": "Golomb and Baumert published Backtrack Programming in the Journal of the ACM, volume 12 number 4, pages 516 to 524, in October 1965. Golomb was at the University of Southern California and the Jet Propulsion Laboratory, and Baumert at the laboratory. The paper examines a widely used method of efficient search and formulates its scope and methods in their full generality.",
+      "title": "Golomb, S. W. and Baumert, L. D., Backtrack Programming, Journal of the ACM 12(4):516-524, October 1965",
+      "url": "https://dl.acm.org/doi/pdf/10.1145/321296.321300",
+      "kind": "primary"
+    },
+    {
+      "claim": "The paper advocates what it calls the fewest elements rule: all other things being equal, it is more efficient to make the next choice from the set with fewest elements, and from an information-theoretic point of view this can be shown to be more efficient on average.",
+      "title": "Golomb, S. W. and Baumert, L. D., Backtrack Programming, Journal of the ACM 12(4):516-524, October 1965",
+      "url": "https://dl.acm.org/doi/pdf/10.1145/321296.321300",
+      "kind": "primary"
+    },
+    {
+      "claim": "Bitner and Reingold credit Derrick Lehmer with first using the term backtrack in the 1950s, noting that the technique has been discovered and rediscovered many times, and record that Robert Walker was the first to call a well-known depth-first procedure backtracking, in 1960.",
+      "title": "Bitner, J. R. and Reingold, E. M., Backtrack programming techniques, Communications of the ACM — on the history of the term and its attribution to Lehmer and Walker",
+      "url": "https://dl.acm.org/doi/abs/10.1145/361219.361224",
+      "kind": "primary"
+    },
+    {
+      "claim": "Tarjan’s 1972 paper treats the two as one technique, opening with the statement that the value of depth-first search, or backtracking, is illustrated by two examples, and listing both backtracking and depth-first among its key words.",
+      "title": "Tarjan, R., Depth-First Search and Linear Graph Algorithms, SIAM Journal on Computing 1(2):146-160, June 1972",
+      "url": "https://sites.cs.ucsb.edu/~gilbert/cs240a/old/cs240aSpr2011/slides/TarjanDFS.pdf",
+      "kind": "primary"
+    }
+  ],
+  "E.23": [
+    {
+      "claim": "Bellman recounts in his 1984 autobiography that he spent the autumn quarter of 1950 at RAND, where his first task was to find a name for multistage decision processes, and that the period was not a good one for mathematical research.",
+      "title": "Bellman, R., Eye of the Hurricane: An Autobiography, 1984, p.159 — on the naming of dynamic programming",
+      "url": "https://en.wikipedia.org/wiki/Richard_E._Bellman",
+      "kind": "secondary"
+    },
+    {
+      "claim": "He describes a gentleman in Washington named Wilson, the Secretary of Defense, as having a pathological fear and hatred of the word research, and notes that the organisation was employed by the Air Force, which answered to him. He chose programming to echo planning and scheduling, and dynamic to convey the multistage and time-varying character — arriving at a phrase he argued was impossible to use pejoratively.",
+      "title": "Bellman, R., Eye of the Hurricane: An Autobiography, 1984, p.159 — on the naming of dynamic programming",
+      "url": "https://en.wikipedia.org/wiki/Richard_E._Bellman",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The story is widely repeated and has been questioned by historians, because Wilson only became Secretary of Defense in 1953, after Bellman had already begun using the term.",
+      "title": "Bellman, R., Eye of the Hurricane: An Autobiography, 1984, p.159 — on the naming of dynamic programming",
+      "url": "https://en.wikipedia.org/wiki/Richard_E._Bellman",
+      "kind": "secondary"
+    }
+  ],
   "E.25": [
     {
       "claim": "Timsort is a hybrid of merge sort and insertion sort, implemented by Tim Peters in 2002 for Python, and drawing on Peter McIlroy's 1993 paper 'Optimistic Sorting and Information Theoretic Complexity'. It was Python's default sort from version 2.3.",
@@ -8047,6 +8555,72 @@
       "title": "Introsort, successors: pattern-defeating quicksort adoption in Rust and Go",
       "url": "https://en.wikipedia.org/wiki/Introsort",
       "kind": "secondary"
+    }
+  ],
+  "E.26": [
+    {
+      "claim": "Boole argued in An Investigation of the Laws of Thought, 1854, that three operations — conjunction, disjunction and negation — suffice to perform all logical functions.",
+      "title": "Boole, G., An Investigation of the Laws of Thought, Walton and Maberly, London, 1854",
+      "url": "https://www.gutenberg.org/ebooks/15114",
+      "kind": "primary"
+    },
+    {
+      "claim": "Shannon’s master’s thesis of 1937 applied that algebra to circuits built from electromechanical relays, treating two-valued logical functions as switching gates and introducing switching algebra, which allows systematic design and optimisation of logical circuits. It was published in the Transactions of the American Institute of Electrical Engineers in 1938.",
+      "title": "Shannon, C. E., A Symbolic Analysis of Relay and Switching Circuits, MIT master’s thesis 1937; Transactions of the American Institute of Electrical Engineers 57:713-723, 1938",
+      "url": "https://dspace.mit.edu/handle/1721.1/11173",
+      "kind": "primary"
+    },
+    {
+      "claim": "The algebra describes values and says nothing about how many of them there are or how they are interpreted; Shannon cast his switching algebra as the two-element Boolean algebra, and the laws hold for that domain without reference to word size or sign.",
+      "title": "Shannon, C. E., A Symbolic Analysis of Relay and Switching Circuits, MIT master’s thesis 1937; Transactions of the American Institute of Electrical Engineers 57:713-723, 1938",
+      "url": "https://dspace.mit.edu/handle/1721.1/11173",
+      "kind": "primary"
+    }
+  ],
+  "E.27": [
+    {
+      "claim": "Roediger and Karpicke report that when a final test came five minutes after study, repeated studying produced better recall than repeated testing, while on delayed tests at two days and one week prior testing produced substantially greater retention than studying did.",
+      "title": "Roediger, H. L. and Karpicke, J. D., Test-Enhanced Learning: Taking Memory Tests Improves Long-Term Retention, Psychological Science 17(3):249-255, 2006",
+      "url": "https://journals.sagepub.com/doi/10.1111/j.1467-9280.2006.01693.x",
+      "kind": "primary"
+    },
+    {
+      "claim": "The same experiments found that repeated studying increased students’ confidence in their ability to remember the material, while producing worse retention at the intervals that mattered.",
+      "title": "Roediger, H. L. and Karpicke, J. D., Test-Enhanced Learning: Taking Memory Tests Improves Long-Term Retention, Psychological Science 17(3):249-255, 2006",
+      "url": "https://journals.sagepub.com/doi/10.1111/j.1467-9280.2006.01693.x",
+      "kind": "primary"
+    },
+    {
+      "claim": "The result is not explained by extra exposure: the restudy group was re-exposed to the entire set of material while the tested group saw again only what it could recall, and testing still produced greater retention at one week.",
+      "title": "Roediger, H. L. and Karpicke, J. D., Test-Enhanced Learning: Taking Memory Tests Improves Long-Term Retention, Psychological Science 17(3):249-255, 2006",
+      "url": "https://journals.sagepub.com/doi/10.1111/j.1467-9280.2006.01693.x",
+      "kind": "primary"
+    },
+    {
+      "claim": "The design used free recall of prose passages of roughly 250 words with undergraduates in a laboratory, so it supports recall-based retrieval practice as a method rather than establishing anything about any particular exercise regime.",
+      "title": "Roediger, H. L. and Karpicke, J. D., Test-Enhanced Learning: Taking Memory Tests Improves Long-Term Retention, Psychological Science 17(3):249-255, 2006",
+      "url": "https://journals.sagepub.com/doi/10.1111/j.1467-9280.2006.01693.x",
+      "kind": "primary"
+    }
+  ],
+  "E.28": [
+    {
+      "claim": "In Roediger and Karpicke’s experiments the advantage of prior testing over restudying appeared at the delayed tests — two days and one week — while at five minutes repeated studying produced better recall.",
+      "title": "Roediger, H. L. and Karpicke, J. D., Test-Enhanced Learning: Taking Memory Tests Improves Long-Term Retention, Psychological Science 17(3):249-255, 2006",
+      "url": "https://journals.sagepub.com/doi/10.1111/j.1467-9280.2006.01693.x",
+      "kind": "primary"
+    },
+    {
+      "claim": "Repeated studying increased students’ confidence in their ability to remember the material while producing worse retention at those intervals, so the subjective signal available at the time pointed away from the more effective method.",
+      "title": "Roediger, H. L. and Karpicke, J. D., Test-Enhanced Learning: Taking Memory Tests Improves Long-Term Retention, Psychological Science 17(3):249-255, 2006",
+      "url": "https://journals.sagepub.com/doi/10.1111/j.1467-9280.2006.01693.x",
+      "kind": "primary"
+    },
+    {
+      "claim": "The effect is not explained by additional exposure: the restudy group saw all of the material again while the tested group saw again only what it had recalled, and testing still produced greater retention at one week.",
+      "title": "Roediger, H. L. and Karpicke, J. D., Test-Enhanced Learning: Taking Memory Tests Improves Long-Term Retention, Psychological Science 17(3):249-255, 2006",
+      "url": "https://journals.sagepub.com/doi/10.1111/j.1467-9280.2006.01693.x",
+      "kind": "primary"
     }
   ],
   "E.3": [

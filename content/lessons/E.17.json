@@ -1,0 +1,49 @@
+{
+  "id": "E.17",
+  "trackId": "E",
+  "trackName": "Data structures and algorithms",
+  "title": "Depth first search",
+  "status": "traced",
+  "seed": "E.17",
+  "story": "Both searches visit every vertex once and both cost the vertices plus the edges, so if visiting were the point they would be interchangeable. They are not, and the difference is not about speed. It is about what each one leaves behind.\n\nDepth-first search goes as far as it can before turning back, which means that at any moment the vertices currently being explored form a path from the start to where you are. That path is on the call stack, and it is exactly the ancestry of the current vertex. So when you encounter an edge pointing to a vertex you have already seen, you can classify it: if that vertex is still open, the edge points to an ancestor and you have found a cycle. Breadth-first search cannot tell you that, because its frontier is a set of unrelated vertices at equal distance rather than a chain.\n\nThat is why the interesting graph algorithms are depth-first. Tarjan’s 1972 paper puts it directly: the value of depth-first search, or backtracking, is illustrated by two examples — an improved algorithm for the strongly connected components of a directed graph, and one for the biconnected components of an undirected graph, developed jointly with Hopcroft — with both bounded by a linear expression in vertices and edges. Cycle detection, topological ordering, articulation points, strong components: all of them are reading the structure the recursion already built.\n\nThe cost is the one E.8 warned about. The recursion depth is the length of the longest path explored, so a graph that is deep rather than wide will exhaust the stack — and unlike breadth-first search, whose cost is the width of the frontier and shows up as memory you allocated, this shows up as a crash in a resource nobody declared. A long chain of a million vertices is a trivial graph and a fatal one, which is the usual reason to rewrite a depth-first search with an explicit stack.",
+  "problem": {
+    "name": "Structure from traversal order",
+    "aka": [
+      "depth-first search",
+      "backtracking",
+      "the DFS tree"
+    ],
+    "shape": "A question about a graph’s structure — cycles, connectivity, ordering, cut vertices — cannot be answered by looking at vertices one at a time.",
+    "tell": [
+      "the question is about cycles, ordering, reachability between groups, or what would disconnect the graph",
+      "you need to know whether one vertex is an ancestor of another in the exploration",
+      "the problem says \"detect a cycle\", \"topological\", \"strongly connected\" or \"articulation point\""
+    ],
+    "move": "Explore as deep as possible before backtracking, and record when each vertex is entered and left. The open vertices form the current path, so an edge into an open vertex is an edge to an ancestor — which is what identifies a cycle.",
+    "invariant": "The vertices currently open form a path from the root to the vertex being explored. That is what makes ancestry queryable, and it is the property breadth-first search does not have, since its frontier is a set rather than a chain.",
+    "breaks": "It breaks on depth. The recursion is as deep as the longest path explored, so a long thin graph exhausts the stack — a resource that was never declared and whose exhaustion is a crash rather than an allocation failure. That is separate from the graph being large: a million-vertex chain is small and fatal.",
+    "cost": {
+      "time": "proportional to vertices plus edges, the same as breadth-first",
+      "space": "proportional to the longest path, against breadth-first’s widest level",
+      "beats": "breadth-first search on every structural question, and loses to it on shortest paths and on deep graphs"
+    },
+    "worked": {
+      "problem": "What does depth-first search give you that breadth-first does not?",
+      "reasoning": "Ancestry, and everything that follows from it.\n\nDuring a depth-first search the set of vertices currently open is exactly the path from the start to where you are — each one called the next, and none has returned. So \"is v an ancestor of the current vertex\" has a cheap answer: v is open. An edge to an open vertex is therefore an edge back up your own path, which is precisely a cycle.\n\nBreadth-first search has no such relation. Its frontier is every vertex at the current distance, and those vertices are siblings in no particular relation to one another. Seeing an already-visited vertex tells you it was reached earlier and nothing about how it relates to where you are now.\n\nSo the two are not interchangeable traversals with different orders. One of them builds a spanning tree in which the open set means something, and the structural algorithms — strong components, biconnected components, topological order — are all reading that meaning.\n\nWhich also tells you when to prefer breadth-first: when you want distance rather than structure, and when the graph is deeper than your stack.",
+      "code": "DFS: the open vertices ARE the current path\n\n     a -> b -> c        open: {a, b, c}\n                  \\     edge c -> a ?\n                   `-> a          a is OPEN\n                                -> ancestor\n                                -> CYCLE\n\nBFS: the frontier is a set of siblings\n\n     level 2: {d, e, f}   unrelated to each other\n     edge f -> d ?        d visited. and?\n                          -> no ancestry information\n\n  so the structural algorithms are all DFS:\n     cycle detection\n     topological order\n     strongly connected components\n     biconnected components / articulation points\n\n  and the cost:\n     DFS depth = longest path   -> stack, undeclared\n     BFS width = widest level   -> memory, allocated\n\n     a 1,000,000-vertex CHAIN is a tiny graph\n     and it will kill a recursive DFS."
+    },
+    "practice": "Write a depth-first search that prints each vertex when it is entered and again when it is left. Then find an edge into a vertex that is entered but not yet left, and confirm it closes a cycle."
+  },
+  "beats": {
+    "broke": "Visiting every vertex is easy and answers none of the interesting questions. Whether a graph has a cycle, which parts hold together, which single vertex would break it — none of these are visible one vertex at a time.",
+    "fix": "Go as deep as possible before turning back, so the open vertices form the current path and ancestry becomes queryable. Tarjan’s 1972 paper builds strongly connected and biconnected components on exactly this, in time linear in vertices and edges.",
+    "cost": "The recursion is as deep as the longest path, so a deep thin graph exhausts the stack — a crash in an undeclared resource, unlike breadth-first search whose cost is memory you allocated.",
+    "interview": {
+      "q": "What does depth-first search give you that breadth-first search does not?",
+      "trap": "Answering that it uses less memory, or that it is better for some problems. Both can be true and neither identifies the property the structural algorithms actually use.",
+      "answer": "Ancestry. During a depth-first search the vertices currently open are exactly the path from the start to where you are — each called the next and none has returned — so asking whether some vertex is an ancestor of the current one is just asking whether it is still open. An edge into an open vertex is therefore an edge back up your own path, which is a cycle.\n\nBreadth-first search has no equivalent. Its frontier is every vertex at the current distance, and those are siblings with no relation to each other, so encountering a visited vertex tells you it was seen earlier and nothing about how it relates to your position.\n\nThat is why the structural algorithms are all depth-first: cycle detection, topological ordering, strongly connected components, biconnected components. Tarjan's 1972 paper presents the last two as the demonstration of what the technique is for, both linear in vertices and edges.\n\nAnd it tells you when to use the other one: breadth-first when you want distance rather than structure, or when the graph is deeper than your stack — a million-vertex chain is a tiny graph that will kill a recursive traversal."
+    }
+  },
+  "blueprint": "Same cost, different residue:\n\n  DFS   open vertices = the current PATH\n        -> \"is v an ancestor?\" = \"is v open?\"\n        -> edge to an open vertex = CYCLE\n        -> spanning tree + back edges\n\n  BFS   frontier = a SET of siblings at one distance\n        -> visited tells you nothing about relation\n        -> distances, not structure\n\n  which is why these are all DFS:\n     cycle detection\n     topological order\n     strongly connected components   (Tarjan 1972)\n     biconnected / articulation      (with Hopcroft)\n\n  and the cost that differs in KIND:\n\n     DFS  depth = longest path -> the STACK,\n                                  undeclared, crashes\n     BFS  width = widest level -> MEMORY, allocated\n\n     a long chain is a small graph and a fatal one.",
+  "takeaway": "Depth-first search leaves behind ancestry — the open vertices are the current path, so an edge into one is a cycle — which is why every structural graph algorithm is depth-first, and why its limit is the longest path rather than the size of the graph."
+}

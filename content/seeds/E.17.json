@@ -1,0 +1,70 @@
+{
+  "taskId": "E.17",
+  "title": "Depth first search",
+  "researchedAt": "2026-09-19",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Tarjan published Depth-First Search and Linear Graph Algorithms in the SIAM Journal on Computing, volume 1 number 2, pages 146 to 160, in June 1972. The paper states that the value of depth-first search, or backtracking, as a technique for solving problems is illustrated by two examples.",
+      "type": "date",
+      "tokens": [
+        "Tarjan",
+        "SIAM",
+        "Journal",
+        "1972"
+      ],
+      "source": {
+        "title": "Tarjan, R., Depth-First Search and Linear Graph Algorithms, SIAM Journal on Computing 1(2):146-160, June 1972",
+        "url": "https://sites.cs.ucsb.edu/~gilbert/cs240a/old/cs240aSpr2011/slides/TarjanDFS.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The two examples are an improved algorithm for finding the strongly connected components of a directed graph and an algorithm for finding the biconnected components of an undirected graph. The biconnected components algorithm was developed jointly with John Hopcroft.",
+      "type": "event",
+      "tokens": [
+        "Tarjan",
+        "John Hopcroft",
+        "Hopcroft"
+      ],
+      "source": {
+        "title": "Tarjan, R., Depth-First Search and Linear Graph Algorithms, SIAM Journal on Computing 1(2):146-160, June 1972",
+        "url": "https://sites.cs.ucsb.edu/~gilbert/cs240a/old/cs240aSpr2011/slides/TarjanDFS.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The paper states that the space and time requirements of both algorithms are bounded by a linear expression in the number of vertices and the number of edges of the graph being examined.",
+      "type": "quote",
+      "tokens": [
+        "Tarjan"
+      ],
+      "source": {
+        "title": "Tarjan, R., Depth-First Search and Linear Graph Algorithms, SIAM Journal on Computing 1(2):146-160, June 1972",
+        "url": "https://sites.cs.ucsb.edu/~gilbert/cs240a/old/cs240aSpr2011/slides/TarjanDFS.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "Its listed key words are algorithm, backtracking, biconnectivity, connectivity, depth-first, graph, search, spanning tree and strong-connectivity.",
+      "type": "quote",
+      "tokens": [
+        "Tarjan"
+      ],
+      "source": {
+        "title": "Tarjan, R., Depth-First Search and Linear Graph Algorithms, SIAM Journal on Computing 1(2):146-160, June 1972",
+        "url": "https://sites.cs.ucsb.edu/~gilbert/cs240a/old/cs240aSpr2011/slides/TarjanDFS.pdf",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "visiting every vertex is easy and tells you almost nothing about the structure — whether there is a cycle, which parts hold together, which single vertex would disconnect the graph",
+    "fix": "go as deep as possible before turning back, because the order of entering and leaving vertices records ancestry, and ancestry is what those questions are about",
+    "cost": "the recursion depth is the length of the longest path, so a graph that is deep rather than wide exhausts the stack where breadth-first would only have used memory",
+    "interview": "what depth-first search gives you that breadth-first does not"
+  }
+}

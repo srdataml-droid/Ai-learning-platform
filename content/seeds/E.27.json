@@ -1,0 +1,71 @@
+{
+  "taskId": "E.27",
+  "title": "The cadence: a small near daily block, medium difficulty, timed after month one",
+  "researchedAt": "2026-09-19",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Roediger and Karpicke report that when a final test came five minutes after study, repeated studying produced better recall than repeated testing, while on delayed tests at two days and one week prior testing produced substantially greater retention than studying did.",
+      "type": "event",
+      "tokens": [
+        "Roediger",
+        "Karpicke",
+        "Psychological Science",
+        "2006"
+      ],
+      "source": {
+        "title": "Roediger, H. L. and Karpicke, J. D., Test-Enhanced Learning: Taking Memory Tests Improves Long-Term Retention, Psychological Science 17(3):249-255, 2006",
+        "url": "https://journals.sagepub.com/doi/10.1111/j.1467-9280.2006.01693.x",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The same experiments found that repeated studying increased students’ confidence in their ability to remember the material, while producing worse retention at the intervals that mattered.",
+      "type": "event",
+      "tokens": [
+        "Roediger",
+        "Karpicke"
+      ],
+      "source": {
+        "title": "Roediger, H. L. and Karpicke, J. D., Test-Enhanced Learning: Taking Memory Tests Improves Long-Term Retention, Psychological Science 17(3):249-255, 2006",
+        "url": "https://journals.sagepub.com/doi/10.1111/j.1467-9280.2006.01693.x",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The result is not explained by extra exposure: the restudy group was re-exposed to the entire set of material while the tested group saw again only what it could recall, and testing still produced greater retention at one week.",
+      "type": "event",
+      "tokens": [
+        "Roediger",
+        "Karpicke"
+      ],
+      "source": {
+        "title": "Roediger, H. L. and Karpicke, J. D., Test-Enhanced Learning: Taking Memory Tests Improves Long-Term Retention, Psychological Science 17(3):249-255, 2006",
+        "url": "https://journals.sagepub.com/doi/10.1111/j.1467-9280.2006.01693.x",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "The design used free recall of prose passages of roughly 250 words with undergraduates in a laboratory, so it supports recall-based retrieval practice as a method rather than establishing anything about any particular exercise regime.",
+      "type": "event",
+      "tokens": [
+        "Roediger",
+        "Karpicke"
+      ],
+      "source": {
+        "title": "Roediger, H. L. and Karpicke, J. D., Test-Enhanced Learning: Taking Memory Tests Improves Long-Term Retention, Psychological Science 17(3):249-255, 2006",
+        "url": "https://journals.sagepub.com/doi/10.1111/j.1467-9280.2006.01693.x",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "practice is usually organised by how it feels — long sessions when motivated, hard problems to prove something, none when busy — and every one of those instincts optimises the wrong quantity",
+    "fix": "a small block almost every day, at a difficulty where you can retrieve rather than look up, with timing added only once there is something to retrieve",
+    "cost": "the regime is an inference from laboratory retrieval studies rather than a demonstrated result about this activity, and it is worth saying so",
+    "interview": "why the difficulty has to be medium rather than hard"
+  }
+}

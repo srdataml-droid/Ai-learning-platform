@@ -1,0 +1,49 @@
+{
+  "id": "E.21",
+  "trackId": "E",
+  "trackName": "Data structures and algorithms",
+  "title": "Backtracking",
+  "status": "traced",
+  "seed": "E.21",
+  "story": "Combinatorial problems have candidate spaces that are exponential in the input, which rules out two obvious approaches at once. You cannot enumerate them, and you cannot store them — so the search tree has to be something you walk without ever holding, generated one decision at a time and discarded behind you. That is backtracking, and Tarjan’s paper is right to treat it and depth-first search as one technique: the difference is only that the graph here does not exist.\n\nThe name has a longer history than the paper. Bitner and Reingold credit Lehmer with first using the term backtrack in the 1950s, note that the technique has been discovered and rediscovered many times, and record Walker in 1960 as the first to call a depth-first procedure backtracking. Golomb and Baumert gave the general formulation in 1965, setting out its scope and methods in full generality.\n\nThe mechanism is easy and the leverage is not in the mechanism. Choose a value for one variable, check whether the partial assignment is still capable of being completed, and if it is not, undo and try the next — that is the whole loop. But the running time is determined entirely by how much of the tree you never build, so the test is the algorithm and the traversal is bookkeeping. A backtracking search whose feasibility test always says maybe is exhaustive enumeration with extra function calls.\n\nWhich is why the oldest heuristic in the paper is still the central one in constraint solving. Golomb and Baumert advocate choosing the next variable from the set with fewest elements, and say it can be shown information-theoretically to be more efficient on average. The reasoning is that a variable with two possible values branches two ways and a variable with twenty branches twenty ways, so taking the constrained one first makes the tree narrow at the top where the subtrees are largest — and if the constrained variable has no valid value at all, you discover the contradiction immediately instead of after building everything above it.",
+  "problem": {
+    "name": "Search by constructive elimination",
+    "aka": [
+      "backtracking",
+      "constraint search",
+      "pruning"
+    ],
+    "shape": "The set of candidate solutions is exponential, so it can neither be enumerated nor held, and most of it is invalid for reasons visible early.",
+    "tell": [
+      "a solution is an assignment of values to positions, subject to constraints",
+      "the problem is placement, packing, colouring, scheduling, or solving a puzzle",
+      "a partial assignment can already be seen to be hopeless"
+    ],
+    "move": "Extend one variable at a time depth-first. After each extension test whether the partial assignment can still be completed, and on failure undo the last choice and take the next value. Choose the next variable from the set with fewest remaining options.",
+    "invariant": "A subtree is abandoned only when no completion of it can be valid. That is what makes pruning sound, and it is the condition to check when the search returns the wrong answer — an over-eager test discards solutions silently.",
+    "breaks": "It degrades to exhaustive enumeration when the feasibility test is weak, and the degradation is invisible: the code is identical and only the running time changes, from seconds to never. It also depends on the order of choices, which is not part of the problem statement and can change the time by orders of magnitude.",
+    "cost": {
+      "time": "exponential in the worst case, and routinely tractable when the pruning is good",
+      "space": "proportional to the depth, because only the current path is held",
+      "beats": "generate-and-test, which builds candidates before checking them and is infeasible at any interesting size"
+    },
+    "worked": {
+      "problem": "Why does the order in which you make the choices change the running time by orders of magnitude?",
+      "reasoning": "Because the branching factor at a level multiplies everything below it, so where you put the narrow choices decides the size of the tree.\n\nTake two variables, one with two possible values and one with twenty. Deciding the twenty-way variable first gives twenty subtrees, each containing the two-way decision. Deciding the two-way variable first gives two subtrees, each containing the twenty-way decision. The leaf count is the same and the number of internal nodes is not — and the internal nodes are the work.\n\nThe effect is much larger than that arithmetic suggests, because of when contradictions are discovered. If the constrained variable has no valid value at all, taking it first tells you immediately; taking it last means building every combination above it before finding out, repeatedly.\n\nSo Golomb and Baumert’s fewest elements rule is not a micro-optimisation. It puts the narrow decisions where they cut the most and surfaces contradictions at the shallowest point they can be seen.\n\nThat is also why the rule is stated as all other things being equal: it is a heuristic about the shape of the search, not a claim about any particular problem.",
+      "code": "two variables: A has 2 values, B has 20\n\n   B first:            A first:\n     20 branches         2 branches\n     each containing     each containing\n     A's 2                B's 20\n\n   same leaves. very different internal nodes.\n   internal nodes = the work.\n\n  and the bigger effect -- when you FIND OUT:\n\n     if A has no valid value at all:\n        A first -> discovered immediately\n        A last  -> discovered after building every\n                   combination above it, again and\n                   again\n\n  hence: choose from the set with FEWEST elements\n         (Golomb & Baumert, 1965)\n\n  and the warning that matters more:\n\n     weak feasibility test -> nothing is pruned\n     -> identical code, exponential behaviour\n     -> the traversal is bookkeeping; the TEST is\n        the algorithm"
+    },
+    "practice": "Write a solver for a placement puzzle twice — once choosing positions in a fixed order, once always choosing the position with fewest legal options. Count the nodes visited by each rather than the time."
+  },
+  "beats": {
+    "broke": "The candidate space is exponential, so it can be neither enumerated nor stored. Any method that constructs the set before filtering it is finished before it begins.",
+    "fix": "Walk the space depth-first without holding it, extending one variable at a time and abandoning a partial assignment as soon as it cannot be completed. Named by Lehmer in the 1950s, called backtracking by Walker in 1960, and formulated generally by Golomb and Baumert in 1965.",
+    "cost": "All the saving is in what you decline to build, so a weak feasibility test turns the method back into exhaustive enumeration — with identical code and no signal other than the running time.",
+    "interview": {
+      "q": "Why does the order in which a backtracking search makes its choices change the running time by orders of magnitude?",
+      "trap": "Answering that some orders happen to find a solution sooner. That is luck; the effect is structural and holds even when no solution exists.",
+      "answer": "Because the branching factor at each level multiplies everything beneath it, so where the narrow choices sit determines the size of the tree.\n\nWith one variable having two options and another twenty, deciding the twenty-way one first gives twenty subtrees each containing the two-way decision; deciding the two-way one first gives two subtrees each containing the twenty-way decision. Same number of leaves, very different number of internal nodes — and the internal nodes are the work.\n\nThe larger effect is about when contradictions surface. If the constrained variable has no legal value at all, choosing it first reveals that immediately; choosing it last means constructing every combination above it before finding out, and doing so repeatedly.\n\nThat is why Golomb and Baumert's fewest-elements rule from 1965 is still the core heuristic in constraint solving — they state it as more efficient on average from an information-theoretic point of view, and phrase it as all other things being equal, because it is a claim about the shape of the search rather than about any particular problem.\n\nThe bigger lever, though, is the feasibility test: a weak one prunes nothing and the method silently becomes exhaustive enumeration."
+    }
+  },
+  "blueprint": "A tree you walk but never hold:\n\n   extend one variable -> test -> undo on failure\n\n   space: the current PATH only\n   time:  determined by what you never generate\n\n  so the test is the algorithm and the walk is\n  bookkeeping:\n\n     strong test -> tractable\n     weak test   -> exhaustive enumeration\n     identical code. only the clock differs.\n\n  and the ordering effect:\n\n     A: 2 options   B: 20 options\n     B first -> 20 subtrees, each with A\n     A first ->  2 subtrees, each with B\n     same leaves, different internal nodes\n\n     and if A has NO legal value:\n        A first -> found at once\n        A last  -> found after building everything\n                   above it, repeatedly\n\n  -> fewest elements first (Golomb & Baumert, 1965)",
+  "takeaway": "Backtracking walks a search tree it never stores, so the running time is decided entirely by what you refuse to generate — which makes the feasibility test the algorithm and the choice ordering worth orders of magnitude."
+}

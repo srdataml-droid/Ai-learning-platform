@@ -1,0 +1,82 @@
+{
+  "taskId": "E.18",
+  "title": "Topological sort",
+  "researchedAt": "2026-09-19",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Kahn published Topological sorting of large networks in Communications of the ACM, volume 5 number 11, pages 558 to 562, in November 1962. The paper states that topological sorting is a procedure required for many problems involving analysis of networks, giving the project scheduling technique of the period as an example.",
+      "type": "date",
+      "tokens": [
+        "Kahn",
+        "Communications",
+        "ACM",
+        "1962"
+      ],
+      "source": {
+        "title": "Kahn, A. B., Topological sorting of large networks, Communications of the ACM 5(11):558-562, November 1962",
+        "url": "https://dl.acm.org/doi/10.1145/368996.369025",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The paper presents a general method permitting treatment of larger networks than existing procedures and with greater efficiency, discussed in terms of a contemporary machine, and reports that a network of 30,000 activities can be ordered in less than one hour of machine time.",
+      "type": "quote",
+      "tokens": [
+        "Kahn"
+      ],
+      "source": {
+        "title": "Kahn, A. B., Topological sorting of large networks, Communications of the ACM 5(11):558-562, November 1962",
+        "url": "https://dl.acm.org/doi/10.1145/368996.369025",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The method was developed as a byproduct of a procedure needed at Westinghouse, where Kahn worked, and was never programmed.",
+      "type": "event",
+      "tokens": [
+        "Kahn",
+        "Westinghouse"
+      ],
+      "source": {
+        "title": "Kahn, A. B., Topological sorting of large networks, Communications of the ACM 5(11):558-562, November 1962",
+        "url": "https://dl.acm.org/doi/10.1145/368996.369025",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "The algorithm now bearing Kahn’s name repeatedly removes vertices having no incoming edges, adding them to the order in the sequence removed; removing a vertex also removes its outgoing edges, which exposes a new set of vertices with no incoming edges, and the procedure repeats until no vertices remain.",
+      "type": "event",
+      "tokens": [
+        "Kahn"
+      ],
+      "source": {
+        "title": "Kahn, A. B., Topological sorting of large networks, Communications of the ACM 5(11):558-562, November 1962",
+        "url": "https://dl.acm.org/doi/10.1145/368996.369025",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "A caveat on the record: the journal’s current landing page for this article displays a mismatched abstract about pattern classification, apparently a metadata error, while the digital library entry carries the correct one.",
+      "type": "event",
+      "tokens": [
+        "Kahn"
+      ],
+      "source": {
+        "title": "Kahn, A. B., Topological sorting of large networks, Communications of the ACM 5(11):558-562, November 1962",
+        "url": "https://dl.acm.org/doi/10.1145/368996.369025",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "things depend on other things, and you need a single order to do them in — but the dependencies are a graph and an order is a line",
+    "fix": "repeatedly take anything with nothing left to wait for, which is possible exactly as long as something is waiting for nothing",
+    "cost": "the procedure only terminates with everything ordered if the graph has no cycles, so the algorithm is also the cycle test and there is no separate check to skip",
+    "interview": "what it means when a topological sort stops with vertices left over"
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "taskId": "E.21",
+  "title": "Backtracking",
+  "researchedAt": "2026-09-19",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Golomb and Baumert published Backtrack Programming in the Journal of the ACM, volume 12 number 4, pages 516 to 524, in October 1965. Golomb was at the University of Southern California and the Jet Propulsion Laboratory, and Baumert at the laboratory. The paper examines a widely used method of efficient search and formulates its scope and methods in their full generality.",
+      "type": "date",
+      "tokens": [
+        "Golomb",
+        "Baumert",
+        "Journal",
+        "ACM",
+        "Southern California",
+        "Jet Propulsion Laboratory",
+        "1965"
+      ],
+      "source": {
+        "title": "Golomb, S. W. and Baumert, L. D., Backtrack Programming, Journal of the ACM 12(4):516-524, October 1965",
+        "url": "https://dl.acm.org/doi/pdf/10.1145/321296.321300",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The paper advocates what it calls the fewest elements rule: all other things being equal, it is more efficient to make the next choice from the set with fewest elements, and from an information-theoretic point of view this can be shown to be more efficient on average.",
+      "type": "quote",
+      "tokens": [
+        "Golomb",
+        "Baumert"
+      ],
+      "source": {
+        "title": "Golomb, S. W. and Baumert, L. D., Backtrack Programming, Journal of the ACM 12(4):516-524, October 1965",
+        "url": "https://dl.acm.org/doi/pdf/10.1145/321296.321300",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Bitner and Reingold credit Derrick Lehmer with first using the term backtrack in the 1950s, noting that the technique has been discovered and rediscovered many times, and record that Robert Walker was the first to call a well-known depth-first procedure backtracking, in 1960.",
+      "type": "date",
+      "tokens": [
+        "Bitner",
+        "Reingold",
+        "Derrick Lehmer",
+        "Lehmer",
+        "Robert Walker",
+        "Walker",
+        "1960"
+      ],
+      "source": {
+        "title": "Bitner, J. R. and Reingold, E. M., Backtrack programming techniques, Communications of the ACM — on the history of the term and its attribution to Lehmer and Walker",
+        "url": "https://dl.acm.org/doi/abs/10.1145/361219.361224",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "Tarjan’s 1972 paper treats the two as one technique, opening with the statement that the value of depth-first search, or backtracking, is illustrated by two examples, and listing both backtracking and depth-first among its key words.",
+      "type": "event",
+      "tokens": [
+        "Tarjan",
+        "1972"
+      ],
+      "source": {
+        "title": "Tarjan, R., Depth-First Search and Linear Graph Algorithms, SIAM Journal on Computing 1(2):146-160, June 1972",
+        "url": "https://sites.cs.ucsb.edu/~gilbert/cs240a/old/cs240aSpr2011/slides/TarjanDFS.pdf",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a combinatorial search space is far too large to enumerate and far too large to store, so any method that builds the candidate set before filtering it is finished before it starts",
+    "fix": "generate the space depth-first one decision at a time, and abandon a partial assignment the moment it cannot possibly be completed",
+    "cost": "the saving is entirely in what you refuse to generate, so a backtracking search with no usable test is exhaustive enumeration with extra steps",
+    "interview": "why the order in which you make the choices changes the running time by orders of magnitude"
+  }
+}

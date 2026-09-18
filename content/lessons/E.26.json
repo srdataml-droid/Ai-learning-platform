@@ -1,0 +1,49 @@
+{
+  "id": "E.26",
+  "trackId": "E",
+  "trackName": "Data structures and algorithms",
+  "title": "Bit manipulation basics",
+  "status": "traced",
+  "seed": "E.26",
+  "story": "There is almost nothing new here, which is the most useful thing to know about it. Bitwise operations are the algebra of F.6 applied to each position of a word independently — Boole’s three operations, one bit at a time. Every law therefore carries over without modification: negation distributes by flipping the connective, the same expression can be simplified the same way, and a mask is set membership written in the notation of switching circuits. If you understand the algebra you already understand the operations.\n\nWhat you do not already understand is everything the algebra does not mention, and that is where every bug lives. The algebra describes values. It says nothing about how many bits there are, nothing about which of them is taken to mean a sign, and nothing about what happens to a bit shifted off the end — because in Shannon’s relay networks those questions did not arise. A machine word raises all three.\n\nTake the operation people get wrong. Shifting left one place doubles a number, and continues to do so exactly until a significant bit reaches the top and leaves, at which point it silently does something else. Shifting right one place halves a number, and does so for non-negative values — but a right shift that preserves the sign replicates the sign bit rather than introducing a zero, so for negative values the result rounds towards negative infinity rather than towards zero, which disagrees with what division does in most languages. And shifting by at least the width of the word is not defined by the algebra at all, so languages resolve it however their hardware does, which is one of the few genuinely unpredictable things in ordinary code.\n\nSo the discipline is small and specific. Treat the operations as Boolean algebra, which they are, and treat width and sign as a separate layer that the algebra does not cover. The two idioms worth memorising both follow from thinking about borrows: subtracting one from a value flips its lowest set bit and everything below it, so a value combined with itself-minus-one clears that lowest bit, and combined with its own negation isolates it.",
+  "problem": {
+    "name": "Boolean algebra on fixed-width words",
+    "aka": [
+      "bit manipulation",
+      "masks",
+      "shifts"
+    ],
+    "shape": "You need to treat a machine word as a collection of independent flags or as a number, and the operations available treat it as both without saying which.",
+    "tell": [
+      "a value packs several booleans, or a small set, into one integer",
+      "you are using shifts to multiply or divide",
+      "a flag test is being written with arithmetic rather than a mask"
+    ],
+    "move": "Read every bitwise operator as the Boolean operation applied per position, and reason about it with the algebra. Then, separately, check the two things the algebra does not cover: how wide the word is and whether it is signed.",
+    "invariant": "The operations are the Boolean laws applied elementwise, so every algebraic identity holds per bit. Width and signedness are outside that guarantee, which is why they are the only place a bitwise expression can surprise you.",
+    "breaks": "It breaks at the edges the algebra never described. Bits shifted beyond the width vanish, so a left shift stops being multiplication without any signal; a sign-preserving right shift replicates the sign bit, so it rounds toward negative infinity and disagrees with division; and a shift by at least the word width is left to the hardware, so the result differs between machines and languages.",
+    "cost": {
+      "time": "a single instruction for each operation, which is why the idioms persist",
+      "space": "a word instead of a structure, which is the point when packing flags",
+      "beats": "arithmetic and boolean fields, which are clearer and larger — so this is a trade for density and speed, not for readability"
+    },
+    "worked": {
+      "problem": "Why is shifting right equivalent to dividing by two only sometimes?",
+      "reasoning": "Because two different operations share the notation, and only one of them is what division does.\n\nFor a non-negative value, moving every bit one place toward the least significant position halves it, discarding the remainder. That matches integer division by two exactly.\n\nFor a negative value in the usual representation, the top bit means the sign, so the shift has to decide what to bring in at the top. A logical shift brings in a zero, which changes the sign and gives an enormous positive number. An arithmetic shift replicates the sign bit, which preserves the sign — and the result it gives is the value rounded towards negative infinity, while division in most languages rounds towards zero. For minus three, one rounds to minus two and the other to minus one.\n\nSo the identity holds for non-negative values and fails by one in the negative case, for a reason the algebra cannot express: Boolean algebra has no concept of a sign bit, because a relay network has no sign.\n\nWhich is the general shape here. The operations are exactly the algebra; the surprises are exactly the parts that are not.",
+      "code": "bitwise = Boolean algebra, per position.\n  all of F.4 and F.6's laws hold. nothing new.\n\nwhat the algebra never mentions:\n  how many bits there are\n  which one means \"negative\"\n  what happens to a bit pushed off the end\n\n  shift LEFT   x2 ... until a significant bit\n               leaves the top. then silently not.\n\n  shift RIGHT  /2 for non-negative\n               negative + sign-preserving shift:\n                  replicates the sign bit\n                  rounds toward -infinity\n                  division rounds toward zero\n                  -3: shift -> -2, divide -> -1\n\n  shift by >= width\n               not defined by the algebra\n               -> whatever the hardware does\n\ntwo idioms, both from thinking about the borrow:\n\n  x - 1        flips the lowest set bit and all\n               zeros below it\n  x & (x-1)    clears the lowest set bit\n  x & -x       isolates the lowest set bit"
+    },
+    "practice": "Evaluate a right shift and an integer division by two on minus three in your language, and confirm they differ. Then shift a value by exactly the word width and see whether you get zero, the original value, or something else."
+  },
+  "beats": {
+    "broke": "A word is simultaneously a number and a row of independent flags, and the operators available act on it as both without indicating which reading is intended.",
+    "fix": "Treat bitwise operations as Boole’s three operations applied to each position independently — the algebra of 1854 that Shannon showed in 1937 also describes switching circuits — so every law you already know carries across unchanged.",
+    "cost": "The algebra says nothing about width or sign, and those are precisely where bitwise code fails: shifted-out bits vanish, sign-preserving shifts round the wrong way, and shifting by the word width is left to the hardware.",
+    "interview": {
+      "q": "Why is a right shift equivalent to dividing by two only sometimes?",
+      "trap": "Answering that it fails for negative numbers, and stopping. The reason it fails is the interesting part, and it also tells you why nothing in the algebra warned you.",
+      "answer": "Because two operations share one notation, and only one of them matches division.\n\nFor a non-negative value, moving every bit one place toward the least significant position halves it and discards the remainder, which is exactly integer division by two.\n\nFor a negative value the top bit carries the sign, so the shift must decide what to introduce at the top. A logical shift brings in a zero and produces a large positive number. A sign-preserving shift replicates the sign bit and keeps the value negative — but the result is rounded towards negative infinity, whereas division in most languages rounds towards zero. For minus three, the shift gives minus two and the division gives minus one.\n\nThe reason nothing warned you is the general lesson. Bitwise operations are Boolean algebra applied per position, so every algebraic law holds — but the algebra has no notion of a sign bit or a word width, because a relay network has neither. So the operations are exactly the algebra and the surprises are exactly the parts that are not: bits shifted off the end, the sign interpretation, and shifting by at least the width, which the hardware resolves however it likes."
+    }
+  },
+  "blueprint": "Two layers, and only one of them you already know:\n\n   LAYER 1   Boolean algebra, applied per position\n             (Boole 1854, three operations suffice;\n              Shannon 1937, the same algebra is a\n              switching circuit)\n             -> every law from F.4/F.6 holds\n             -> masks are set membership\n             -> nothing new to learn\n\n   LAYER 2   the parts the algebra never described:\n             how WIDE the word is\n             which bit means NEGATIVE\n             what happens at the EDGE\n\n             << x2 until a significant bit leaves\n             >> /2 only for non-negative\n                sign-preserving shift rounds toward\n                -infinity; division rounds toward 0\n                -3 >> 1 = -2,  -3 / 2 = -1\n             shift by >= width: hardware's choice\n\n  every bitwise bug is in layer 2.\n\n  two idioms, both about the borrow:\n     x & (x-1)  clears the lowest set bit\n     x & -x     isolates it",
+  "takeaway": "Bitwise operations are Boolean algebra applied one position at a time, so every law carries over unchanged — and every surprise comes from width and sign, which the algebra never described because a relay network has neither."
+}
