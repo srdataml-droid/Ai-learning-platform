@@ -1,0 +1,43 @@
+{
+  "taskId": "M.2",
+  "title": "Vectors",
+  "researchedAt": "2026-09-19",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Cayley’s memoir of 1858 introduced matrices in order to simplify the notation arising in simultaneous linear equations, together with matrix addition and multiplication, the unit matrix, the inverse and powers of matrices.",
+      "type": "date",
+      "tokens": [
+        "Cayley",
+        "1858"
+      ],
+      "source": {
+        "title": "Cayley, A., A Memoir on the Theory of Matrices, Philosophical Transactions of the Royal Society of London 148:17-37, 1858",
+        "url": "https://royalsocietypublishing.org/doi/10.1098/rstl.1858.0002",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The term matrix had already been coined by James Joseph Sylvester, who defined it as a rectangular array of terms; sources date this to 1850 or to an 1851 paper on the relations between the minor determinants of linearly equivalent quadratic functions.",
+      "type": "date",
+      "tokens": [
+        "James Joseph Sylvester",
+        "Sylvester",
+        "1850",
+        "1851"
+      ],
+      "source": {
+        "title": "Higham, N. J., Cayley, Sylvester, and Early Matrix Theory, 2008 — on the attribution of matrix theory and the reception of Cayley’s memoir",
+        "url": "https://eprints.maths.manchester.ac.uk/923/1/cay_syl_07.pdf",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a list of numbers has no meaning until you say what the positions are, and code that treats a vector as a list loses exactly that information",
+    "fix": "treat a vector as a point in a space whose axes you chose, so that the operations available — adding, scaling, taking the dot product — have meanings rather than just definitions",
+    "cost": "the coordinates depend on the basis, so two vectors of numbers are comparable only if they were produced in the same space, which nothing in the type enforces",
+    "interview": "why adding two vectors is meaningful and adding two lists of numbers is not"
+  }
+}

@@ -1,6 +1,6 @@
 # Tasks with no lesson
 
-Regenerated 2026-09-18. Derived from content/lessons/ against the curriculum — not maintained by hand, so it cannot drift.
+Regenerated 2026-09-19. Derived from content/lessons/ against the curriculum — not maintained by hand, so it cannot drift.
 
 Study order: the sequence first, then the five habits running underneath.
 
@@ -76,20 +76,8 @@ Study order: the sequence first, then the five habits running underneath.
 
 ## Track M — Math for machines
 
-14 of 16 still missing.
+2 of 16 still missing.
 
-- [ ] `M.1` How much math you actually need, precisely
-- [ ] `M.2` Vectors
-- [ ] `M.3` Matrices and matrix multiplication
-- [ ] `M.5` Shape and dimension errors
-- [ ] `M.6` Functions and graphs
-- [ ] `M.7` Slope and the derivative
-- [ ] `M.9` Gradients in many dimensions
-- [ ] `M.10` Probability basics
-- [ ] `M.11` Distributions
-- [ ] `M.12` Mean, variance, standard deviation
-- [ ] `M.13` Conditional probability and Bayes
-- [ ] `M.14` Sampling and bias
 - [ ] `M.15` Logs and exponents, and why loss functions use them
 - [ ] `M.16` Do all of the above in numpy
 
@@ -207,7 +195,7 @@ Study order: the sequence first, then the five habits running underneath.
 
 ---
 
-**Total remaining: 121 of 313.**
+**Total remaining: 109 of 313.**
 
 Regenerate: `node tools/missing-lessons.mjs > docs/MISSING-LESSONS.md`
 

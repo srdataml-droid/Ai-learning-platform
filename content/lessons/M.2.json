@@ -1,0 +1,48 @@
+{
+  "id": "M.2",
+  "trackId": "M",
+  "trackName": "Math for machines",
+  "title": "Vectors",
+  "status": "traced",
+  "seed": "M.2",
+  "story": "A vector arrives in code as an array of numbers, and that representation is a compression that throws away the thing that makes it a vector. What makes it one is that the positions mean something fixed — the same axis, in the same order, for every vector you intend to compare — and that you can therefore add two of them, scale one, and ask how aligned two are.\n\nAdding is the clearest case of why this matters. Adding two lists of numbers is a syntactic operation that always succeeds when the lengths match. Adding two vectors is meaningful only when the positions correspond: position three has to mean the same thing in both, or the sum is arithmetic on unrelated quantities. Nothing in the array says whether that holds, which is why the most common error in this whole area is combining two representations produced by different processes and getting a number rather than an exception.\n\nThe same is true of similarity. M.4 covers the dot product as a measure of alignment, and the reason it measures anything is that the axes are shared. Two embeddings from the same model are comparable; two from different models are not, however similar the shapes look, because the coordinates refer to different axes. The arithmetic is identical and the meaning is absent.\n\nThe historical note is a useful reminder that this notation is younger than it looks. Sylvester coined the word matrix around 1850, defining it as a rectangular array of terms, and Cayley’s 1858 memoir introduced the operations — addition, multiplication, the unit matrix, the inverse — originally to simplify the notation for simultaneous linear equations. The representation came from wanting to write something down compactly, which is exactly how it is still used and exactly why it is so easy to forget that the compactness is hiding a choice of axes.",
+  "problem": {
+    "name": "Coordinates relative to a basis",
+    "aka": [
+      "vectors",
+      "the shared axis assumption"
+    ],
+    "shape": "Quantities are represented as ordered numbers, and the ordering carries meaning that the representation does not record.",
+    "tell": [
+      "two arrays from different sources are being combined or compared",
+      "a similarity score is computed between things produced by different models or versions",
+      "a vector is reordered, sliced or concatenated and still treated as the same object"
+    ],
+    "move": "Treat a vector as a point in a specific space: record which space, and permit arithmetic only between vectors of that space. The operations — addition, scaling, dot product — are meaningful exactly when the axes agree.",
+    "invariant": "Every position means the same thing in every vector being combined. This is what makes the operations interpretable, and it is not represented in the array, so it must be maintained by you or by the type system.",
+    "breaks": "It breaks silently. Combining vectors from different spaces produces a number rather than an error, because the arithmetic is well-defined on any two arrays of equal length — so the failure surfaces as a slightly wrong result, which is the hardest kind to notice.",
+    "cost": {
+      "time": "none; this is a discipline about what you allow, not an operation",
+      "space": "metadata recording which space a vector belongs to, which almost no system keeps",
+      "beats": "treating vectors as arrays, which is simpler and permits exactly the comparisons that are meaningless"
+    },
+    "worked": {
+      "problem": "Why is adding two vectors meaningful when adding two lists of numbers is not?",
+      "reasoning": "Because addition of vectors is defined to correspond to something, and addition of lists is not defined to correspond to anything.\n\nIf both vectors live in the same space, position three means the same axis in each, so adding position to position produces a point whose third coordinate is the sum of two quantities of the same kind. The result is in the space and means something.\n\nIf they do not, the operation still succeeds — arrays of equal length always add — and the third entry of the result is the sum of two unrelated quantities. It is a number, it is not a coordinate, and nothing distinguishes it from a valid one.\n\nThat is why the interesting property of a vector is not its contents but its membership. Two embeddings from the same model are comparable; two from different models, or from different versions of the same model, are not — the coordinates refer to different axes, and every operation between them is arithmetic without meaning.\n\nThe practical consequence is that vector systems need to record provenance, because the failure mode is a plausible number rather than an exception.",
+      "code": "two arrays of length 768:\n\n   from model A, and from model B (or A v2)\n\n   a + b       succeeds\n   dot(a, b)   returns a number in [-1, 1]\n   nothing fails. nothing warns.\n\n   but position 3 means a different axis in each\n   -> the sum is not a point in either space\n   -> the similarity measures nothing\n\n  what makes a vector a vector:\n     not its contents\n     its MEMBERSHIP of a space whose axes are fixed\n\n  the operations are meaningful exactly when the\n  axes agree:\n     add    same kind + same kind\n     scale  a point moved along the same axes\n     dot    alignment, relative to shared axes (M.4)\n\n  and the representation records NONE of this,\n  which is why vector stores need provenance\n  and why a model version change is a data\n  migration."
+    },
+    "practice": "Take two embeddings produced by different models with the same dimensionality and compute their cosine similarity. Note that you get a plausible number, and that nothing in your code could have told you it was meaningless."
+  },
+  "beats": {
+    "broke": "A vector in code is an array, and the array does not record what its positions mean. The thing that makes the operations meaningful is exactly the thing the representation discards.",
+    "fix": "Treat a vector as a point in a named space with fixed axes, and permit arithmetic only within it. The notation itself is young — the word was coined around 1850 and the operations set out in 1858, originally to write simultaneous equations compactly.",
+    "cost": "The constraint is not representable in the array, so violating it produces a plausible number rather than an error, and the failure appears as a slightly wrong result far from its cause.",
+    "interview": {
+      "q": "Why is adding two vectors meaningful when adding two lists of numbers is not?",
+      "trap": "Answering that vectors have direction and magnitude. That is a picture for two dimensions and does not explain what goes wrong with two embeddings.",
+      "answer": "Because vector addition is defined to correspond to something and list addition is not.\n\nIf both vectors belong to the same space, position three names the same axis in each, so adding position by position sums two quantities of the same kind and the result is a point in that space that means something.\n\nIf they belong to different spaces the operation still succeeds — any two arrays of equal length add — and each entry of the result sums two unrelated quantities. It is a number rather than a coordinate, and nothing distinguishes it from a valid one.\n\nSo the defining property of a vector is not its contents but its membership. Two embeddings from the same model are comparable; two from different models, or different versions of the same model, are not, because the coordinates refer to different axes. The arithmetic is identical and the meaning is gone.\n\nThe practical consequence is that vector systems must record provenance and that a model upgrade is a data migration — because the failure mode here is a plausible similarity score rather than an exception."
+    }
+  },
+  "blueprint": "What the array does not record:\n\n   [0.13, -0.42, 0.87, ...]\n\n   position 3 means... which axis?\n   the array does not say. the space does.\n\n  operations are meaningful iff the axes agree:\n\n     add    two quantities of the SAME kind\n     scale  movement along the same axes\n     dot    alignment w.r.t. shared axes  (M.4)\n\n  and when they don't agree:\n\n     a + b       succeeds\n     cosine(a,b) returns a plausible number\n     nothing fails, nothing warns\n     -> a slightly wrong answer, far from the cause\n\n  therefore:\n     vector stores need PROVENANCE\n     a model version bump is a DATA MIGRATION\n     \"same dimensionality\" means nothing at all",
+  "takeaway": "A vector is a point in a space with fixed axes, and the array representing it records the coordinates while discarding the space — which is why combining vectors from different models produces a plausible number instead of an error."
+}

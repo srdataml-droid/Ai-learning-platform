@@ -1,0 +1,111 @@
+{
+  "taskId": "M.14",
+  "title": "Sampling and bias",
+  "researchedAt": "2026-09-19",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The Literary Digest mailed ten million ballots for the 1936 United States presidential election, drawing its list from telephone books, club and association rosters, city directories, voter registration lists and mail-order and occupational data. Almost 2.4 million ballots were returned.",
+      "type": "number",
+      "tokens": [
+        "Literary Digest",
+        "Digest",
+        "1936"
+      ],
+      "source": {
+        "title": "The Literary Digest poll of 1936 and Gallup’s contrasting forecast — the canonical demonstration that sample size does not correct sample bias",
+        "url": "https://www2.math.upenn.edu/~deturck/m170/wk4/lecture/case1.html",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "It predicted Landon would take 57% against Roosevelt’s 43%. The actual result was 62% Roosevelt to 38% Landon — an error of about 19 percentage points, the largest ever in a major public opinion poll, and practically all of it the result of sample bias.",
+      "type": "number",
+      "tokens": [
+        "Landon",
+        "Roosevelt",
+        "Digest",
+        "57%",
+        "43%",
+        "62%",
+        "38%",
+        "19"
+      ],
+      "source": {
+        "title": "The Literary Digest poll of 1936 and Gallup’s contrasting forecast — the canonical demonstration that sample size does not correct sample bias",
+        "url": "https://www2.math.upenn.edu/~deturck/m170/wk4/lecture/case1.html",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The bias had two components. The frame was drawn from telephone, vehicle and club records at the height of the Depression, when those were largely confined to the wealthy; and only about a quarter of the ballots came back, with supporters of one candidate far more likely to return them.",
+      "type": "event",
+      "tokens": [
+        "Depression"
+      ],
+      "source": {
+        "title": "The Literary Digest poll of 1936 and Gallup’s contrasting forecast — the canonical demonstration that sample size does not correct sample bias",
+        "url": "https://www2.math.upenn.edu/~deturck/m170/wk4/lecture/case1.html",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "Gallup’s final poll, based on around 50,000 voters, predicted Roosevelt would win with 56% — below the actual figure but correct on the winner. Gallup also predicted the Digest’s error in advance, using a survey of 3,000 people sampled at random from the Digest’s own mailing lists.",
+      "type": "number",
+      "tokens": [
+        "Gallup",
+        "Roosevelt",
+        "Digest",
+        "56%"
+      ],
+      "source": {
+        "title": "The Literary Digest poll of 1936 and Gallup’s contrasting forecast — the canonical demonstration that sample size does not correct sample bias",
+        "url": "https://www2.math.upenn.edu/~deturck/m170/wk4/lecture/case1.html",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "Bickel, Hammel and O’Connell examined graduate admissions at Berkeley for autumn 1973 in Science volume 187, pages 398 to 404, published 7 February 1975. Aggregate figures showed about 44.2% of 8,442 men admitted against about 34.6% of 4,321 women. Disaggregated by department, few units showed statistically significant departures and about as many favoured women as men; pooled properly, there was a small but statistically significant bias in favour of women.",
+      "type": "number",
+      "tokens": [
+        "Bickel",
+        "Hammel",
+        "Berkeley",
+        "Science",
+        "44.2%",
+        "34.6%",
+        "1973",
+        "1975"
+      ],
+      "source": {
+        "title": "Bickel, P. J., Hammel, E. A. and O’Connell, J. W., Sex Bias in Graduate Admissions: Data from Berkeley, Science 187(4175):398-404, 7 February 1975",
+        "url": "https://www.science.org/doi/10.1126/science.187.4175.398",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c6",
+      "text": "A correction to the story as usually told: Berkeley was never actually sued. Officials feared bias and asked Bickel to analyse the data, with an associate dean thinking the university might be sued.",
+      "type": "event",
+      "tokens": [
+        "Berkeley",
+        "Bickel"
+      ],
+      "source": {
+        "title": "Bickel, P. J., Hammel, E. A. and O’Connell, J. W., Sex Bias in Graduate Admissions: Data from Berkeley, Science 187(4175):398-404, 7 February 1975",
+        "url": "https://www.science.org/doi/10.1126/science.187.4175.398",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a sample is used to learn about a population, and the obvious way to make it more trustworthy — collect more — does nothing about the way that matters most",
+    "fix": "separate the two ways a sample can be wrong: noise, which shrinks as you collect more, and bias, which does not shrink at all",
+    "cost": "bias cannot be detected from inside the sample, so no amount of examining your data tells you the data was the wrong data",
+    "interview": "why a sample of 2.4 million was beaten by a sample of 50,000"
+  }
+}

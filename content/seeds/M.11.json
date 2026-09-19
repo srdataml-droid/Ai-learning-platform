@@ -1,0 +1,46 @@
+{
+  "taskId": "M.11",
+  "title": "Distributions",
+  "researchedAt": "2026-09-19",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Pearson’s paper on the dissection of asymmetrical frequency curves was published in the Philosophical Transactions of the Royal Society A, volume 185, pages 719 to 810, in 1894 — a study of data whose distribution is not symmetric.",
+      "type": "date",
+      "tokens": [
+        "Pearson",
+        "Philosophical Transactions",
+        "Royal Society",
+        "1894"
+      ],
+      "source": {
+        "title": "Pearson, K., On the dissection of asymmetrical frequency curves, Philosophical Transactions of the Royal Society A 185:719-810, 1894",
+        "url": "https://royalsocietypublishing.org/doi/10.1098/rsta.1894.0003",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The term standard deviation was first used in writing by Pearson in that period, replacing earlier names for the same quantity including Gauss’s mean error, mean square error, and Airy’s error of mean square. Sources differ on the date: 1894 is the first published use, while 1893 refers to an earlier lecture.",
+      "type": "date",
+      "tokens": [
+        "Pearson",
+        "Gauss",
+        "Airy",
+        "1893",
+        "1894"
+      ],
+      "source": {
+        "title": "Pearson, K., On the dissection of asymmetrical frequency curves, Philosophical Transactions of the Royal Society A 185:719-810, 1894",
+        "url": "https://royalsocietypublishing.org/doi/10.1098/rsta.1894.0003",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a collection of numbers summarised by an average and a spread is being treated as though those two numbers described it, which is true for one family of shapes and false for most",
+    "fix": "name the distribution — the assignment of probability across outcomes — and treat any summary as a consequence of it rather than a substitute for it",
+    "cost": "naming a distribution is a modelling claim about the world that the data can contradict, and defaulting to the familiar one is a claim made silently",
+    "interview": "what assuming a normal distribution actually commits you to"
+  }
+}

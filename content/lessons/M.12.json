@@ -1,0 +1,48 @@
+{
+  "id": "M.12",
+  "trackId": "M",
+  "trackName": "Math for machines",
+  "title": "Mean, variance, standard deviation",
+  "status": "traced",
+  "seed": "M.12",
+  "story": "These are taught as three formulas and are better understood as two decisions and a unit conversion.\n\nThe first decision is what a summary is for. Ask for the single number that minimises the total squared distance to your data and you get the mean. Ask for the one that minimises the total absolute distance and you get the median. Both are correct answers to precisely stated questions, and the questions differ in how they price being far away: squaring makes a point at ten times the distance a hundred times as important, so the mean is pulled toward extremes while the median barely notices them. Choosing between them is choosing whether a single distant observation should be allowed to move your answer.\n\nThe second decision is how to describe spread, and the same squaring reappears. Variance — a term Fisher coined in his 1918 paper on Mendelian inheritance, written two years earlier — is the average squared distance from the mean. Squaring makes it well behaved mathematically and leaves it in squared units, which are meaningless to look at: the variance of a set of prices is in squared currency. Standard deviation is the square root of that, which exists almost entirely so that the number is in the units of the data, and the name is Pearson’s, introduced to replace Gauss’s mean error and Airy’s error of mean square.\n\nThe history has a small caveat worth keeping. Pearson’s first use in print is usually dated 1894, with 1893 referring to an earlier lecture, so both dates appear legitimately. And Fisher’s paper coins variance while the phrase analysis of variance appears only in a section heading in its contents rather than its body.\n\nWhat matters in practice is that the output hides the decision. A mean and a median are both a number with the same units and the same name-shaped role, and nothing in a report records which question was answered or whether the data made it a reasonable one.",
+  "problem": {
+    "name": "Choosing a summary statistic",
+    "aka": [
+      "mean versus median",
+      "variance and standard deviation"
+    ],
+    "shape": "A collection of values has to be represented by one or two numbers, and each way of doing so is insensitive to something different.",
+    "tell": [
+      "an average is being reported for something with a long tail",
+      "a single large observation changed a reported figure noticeably",
+      "a spread is being quoted in units that do not match the data"
+    ],
+    "move": "Decide what you want the summary to ignore. Minimising squared error gives the mean and weights distant points heavily; minimising absolute error gives the median and does not. Then report spread in the units of the data, which is what the square root is for.",
+    "invariant": "Each summary is the exact minimiser of a particular error measure. That is why none of them is more correct than another and why the choice is a statement about which errors you are willing to tolerate.",
+    "breaks": "It breaks because the choice leaves no trace. Both summaries produce one number, in the same units, presented the same way, so a reader cannot tell which question was answered — and under a long-tailed distribution the two can differ enough to reverse a decision.",
+    "cost": {
+      "time": "none; both are cheap",
+      "space": "none",
+      "beats": "reporting the full distribution, which is more honest and cannot be put in a single cell"
+    },
+    "worked": {
+      "problem": "Why are the mean and the median both correct and not interchangeable?",
+      "reasoning": "Because they are the answers to two different optimisation problems, and the difference is entirely in how each prices distance.\n\nThe mean is the value minimising the sum of squared differences from the data. The median is the value minimising the sum of absolute differences. Both are exact solutions; neither approximates the other.\n\nSquaring is what separates them. A point ten units away contributes a hundred to a squared total and ten to an absolute one, so under the squared measure a single far-off value can outweigh many nearby ones and drag the answer toward itself. Under the absolute measure it counts once, like everything else.\n\nSo the question is not which is right but which errors you want to be sensitive to. If a distant observation is a real and important case, you want it to move your summary and the mean does. If it is a measurement artefact or a rare extreme you do not want to plan around, the median is the one that ignores it.\n\nAnd the same squaring explains the spread statistics: variance is the average squared distance, which is why it is in squared units, and standard deviation is its root purely so the number can be read against the data.",
+      "code": "both are exact minimisers, of different things:\n\n   mean    minimises  sum of (x - c)^2\n   median  minimises  sum of |x - c|\n\n  what squaring does:\n\n     a point 10 away contributes\n        100  to the squared total\n         10  to the absolute total\n     -> one far point can outweigh many near ones\n     -> the mean moves toward it; the median doesn't\n\n  so the question is not \"which is right\" but:\n\n     should a single distant observation be allowed\n     to move my answer?\n        real and important -> yes -> mean\n        artefact or rare extreme -> no -> median\n\n  and spread inherits the same squaring:\n\n     variance = average squared distance\n                -> squared units (currency squared!)\n     std dev  = its square root\n                -> exists mainly so the number is\n                   in the units of the data\n\n  the decision leaves NO TRACE in the output."
+    },
+    "practice": "Take a latency or price dataset, compute the mean and the median, and then add one plausible extreme value. Record how much each moved, and decide which behaviour you wanted before you looked."
+  },
+  "beats": {
+    "broke": "A set of numbers must be reduced to one or two, and every reduction discards something. Presented as formulas, the choice looks like a convention rather than a decision.",
+    "fix": "Read each summary as the exact minimiser of an error measure: squared error gives the mean, absolute error gives the median. Variance — Fisher’s term from 1918 — is average squared distance, and standard deviation is its root so the number is in the data’s units.",
+    "cost": "The decision is invisible in the result. Both summaries are a single number with the same units, so nothing records which question was answered or whether the data made it a sensible one.",
+    "interview": {
+      "q": "Why are the mean and the median both correct, and why are they not interchangeable?",
+      "trap": "Answering that the median is robust to outliers. True, and it is the consequence rather than the reason — and it does not explain why anyone would prefer the mean.",
+      "answer": "Because each is the exact minimiser of a different error measure. The mean minimises the sum of squared differences from the data; the median minimises the sum of absolute differences. Both are solutions, not approximations of one another.\n\nSquaring is the entire difference. A point ten units away contributes a hundred to a squared total and ten to an absolute one, so under the squared measure a single distant value can outweigh many nearby ones and pull the answer toward itself, while under the absolute measure it counts once like everything else.\n\nThat reframes the choice usefully: it is not about which is right but about whether a single distant observation should be permitted to move your summary. If it is a real and important case, you want that and the mean provides it. If it is an artefact or a rare extreme you will not plan around, the median ignores it.\n\nAnd the same squaring explains the spread statistics — variance is the average squared distance, which is why it is in squared units, and standard deviation exists mainly so the number can be read against the data."
+    }
+  },
+  "blueprint": "Three formulas, two decisions and a unit fix:\n\n   mean    = argmin  sum (x - c)^2\n   median  = argmin  sum |x - c|\n\n   both exact. neither approximates the other.\n\n   squaring prices distance differently:\n      a point 10 away -> 100 squared, 10 absolute\n      -> one far point can outvote many near ones\n\n   so the real question:\n      should one distant observation move my answer?\n         yes -> mean       no -> median\n\n   spread inherits the squaring:\n\n      variance   average squared distance\n                 -> SQUARED UNITS (currency^2)\n      std dev    its square root\n                 -> exists so the number is readable\n                    against the data\n\n   and the choice leaves no trace: same units,\n   same shape of number, no record of the question.",
+  "takeaway": "The mean and median are exact minimisers of squared and absolute error, so choosing between them is choosing whether one distant observation may move your answer — and standard deviation exists chiefly to undo the squaring that variance introduced."
+}

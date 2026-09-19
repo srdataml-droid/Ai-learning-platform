@@ -1,0 +1,56 @@
+{
+  "taskId": "M.3",
+  "title": "Matrices and matrix multiplication",
+  "researchedAt": "2026-09-19",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Cayley introduced matrices in a memoir published in the Philosophical Transactions of the Royal Society of London, volume 148, pages 17 to 37, in 1858, in order to simplify the notation arising in simultaneous linear equations. The memoir introduced the unit matrix, matrix addition and multiplication, the inverse matrix and powers of matrices, and explored the non-commutative algebra associated with matrix multiplication.",
+      "type": "date",
+      "tokens": [
+        "Cayley",
+        "Philosophical Transactions",
+        "Royal Society",
+        "1858"
+      ],
+      "source": {
+        "title": "Cayley, A., A Memoir on the Theory of Matrices, Philosophical Transactions of the Royal Society of London 148:17-37, 1858",
+        "url": "https://royalsocietypublishing.org/doi/10.1098/rstl.1858.0002",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The memoir also proved that every matrix satisfies its own characteristic equation, and observed that matrices could be added and multiplied so as to form what is now called a linear associative algebra.",
+      "type": "event",
+      "tokens": [
+        "Cayley"
+      ],
+      "source": {
+        "title": "Cayley, A., A Memoir on the Theory of Matrices, Philosophical Transactions of the Royal Society of London 148:17-37, 1858",
+        "url": "https://royalsocietypublishing.org/doi/10.1098/rstl.1858.0002",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The standard attribution is contested. Credit for founding the theory is generally given to Cayley because he published the first expository articles, though the term had been coined earlier by Sylvester; and Cayley’s memoir went generally unnoticed, especially outside England, until the 1880s, with the Cayley-as-founder narrative described by later historians as simplistic.",
+      "type": "event",
+      "tokens": [
+        "Cayley",
+        "Sylvester"
+      ],
+      "source": {
+        "title": "Higham, N. J., Cayley, Sylvester, and Early Matrix Theory, 2008 — on the attribution of matrix theory and the reception of Cayley’s memoir",
+        "url": "https://eprints.maths.manchester.ac.uk/923/1/cay_syl_07.pdf",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "linear transformations compose, and writing the composition out by substituting one set of equations into another is unreadable and hides that the result is a transformation of the same kind",
+    "fix": "define a product on the arrays of coefficients whose result is the array of the composed transformation — which fixes the definition completely and leaves no freedom",
+    "cost": "the definition is inherited rather than chosen, so it is not elementwise, not commutative, and demands that inner dimensions agree — none of which is arbitrary and all of which surprises people",
+    "interview": "why matrix multiplication is defined that way rather than elementwise"
+  }
+}

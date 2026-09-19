@@ -1,0 +1,49 @@
+{
+  "id": "M.14",
+  "trackId": "M",
+  "trackName": "Math for machines",
+  "title": "Sampling and bias",
+  "status": "traced",
+  "seed": "M.14",
+  "story": "There is a single demonstration that settles this, and it is worth knowing in numbers rather than as a moral. In 1936 the Literary Digest mailed ten million ballots and got back almost 2.4 million. It predicted the challenger would take 57% against the incumbent’s 43%. The result was 62% to 38% the other way — an error of about nineteen percentage points, the largest ever in a major poll, and practically all of it sample bias. In the same election Gallup polled around fifty thousand people and called the winner.\n\nTwo and a half million lost to fifty thousand. That is the whole lesson, and the mechanism is not mysterious. The Digest’s list came from telephone books, vehicle registrations and club rosters — in the depths of the Depression, a list of the comparatively wealthy. And only about a quarter of the ballots came back, with supporters of one side far likelier to return them. Both effects pushed the same way, and neither is reduced by mailing more ballots to the same kind of person.\n\nThat is the distinction to carry. A sample can be wrong in two ways. It can be noisy, meaning it scatters around the truth, and collecting more shrinks that scatter in a predictable way. It can be biased, meaning it is systematically drawn from the wrong population, and collecting more does nothing whatever — it makes a more precise estimate of the wrong quantity. Sample size is a remedy for exactly one of the two, and it is the one that was not the problem.\n\nThe other failure is subtler and has its own canonical study. Bickel, Hammel and O’Connell looked at Berkeley graduate admissions for autumn 1973: in aggregate about 44.2% of men were admitted against 34.6% of women, and yet department by department few units showed significant departures and about as many favoured women as men — with the properly pooled figure showing a small bias in favour of women. Grouping changed the direction of the answer. One correction to the story as usually told: Berkeley was never sued; officials feared they might be and asked for the analysis.",
+  "problem": {
+    "name": "Bias versus noise",
+    "aka": [
+      "sampling bias",
+      "selection effects",
+      "aggregation reversal"
+    ],
+    "shape": "Conclusions about a population are drawn from a subset, and the subset can be unrepresentative in a way that more data does not fix.",
+    "tell": [
+      "confidence in a result rests mainly on how much data there is",
+      "the sample was whoever responded, whoever was logged, or whoever was available",
+      "a conclusion changes when the data is grouped differently"
+    ],
+    "move": "Ask how the sample was selected before asking how large it is. Then ask whether the selection could correlate with what you are measuring — and check whether the conclusion survives disaggregation.",
+    "invariant": "Increasing the sample reduces noise and leaves bias untouched. Those are different failures with different remedies, and conflating them is what makes large datasets feel authoritative when they are not.",
+    "breaks": "Bias is undetectable from inside the sample. Nothing in the data reveals that the wrong population was drawn from, because the data is a faithful record of the population that was — so the only defence is knowing the selection mechanism, which is information outside the dataset.",
+    "cost": {
+      "time": "thinking about provenance, which is cheaper than collecting more and feels less like progress",
+      "space": "none",
+      "beats": "collecting more data, which is expensive, feels rigorous, and addresses only the failure you probably did not have"
+    },
+    "worked": {
+      "problem": "Why was a sample of 2.4 million beaten by a sample of 50,000?",
+      "reasoning": "Because they failed at different things, and only one of the two failures responds to size.\n\nNoise is scatter around the truth. Draw a sample at random and your estimate wobbles, and the wobble shrinks as the sample grows. Fifty thousand is more than enough to make that wobble small for a national question.\n\nBias is being drawn from the wrong population, and it does not shrink. The Digest’s frame came from telephone books, vehicle registrations and club rosters during the Depression, which selected for wealth, and its response rate of around a quarter selected again for enthusiasm. Both pushed the same direction. Mailing ten million rather than one million makes the estimate of that skewed population more precise; it does not make that population the electorate.\n\nSo the large sample produced a very precise measurement of the wrong thing, and the small one produced a rougher measurement of the right thing.\n\nThe part that should be unsettling is that no examination of the 2.4 million responses would have revealed the problem. The data was an accurate record of who answered. What was wrong was who was asked, which is not in the data at all — and Gallup demonstrated this by predicting the error in advance from three thousand people drawn from the Digest’s own lists.",
+      "code": "two failures, one remedy:\n\n   NOISE   scatter around the truth\n           shrinks with n\n           50,000 is plenty for a national question\n\n   BIAS    drawn from the wrong population\n           does NOT shrink with n\n           -> more data = a more precise estimate\n              of the wrong quantity\n\n  1936:\n     10,000,000 mailed, ~2,400,000 returned\n        frame: phone books, vehicles, clubs\n               (in the Depression = the wealthy)\n        response: ~1 in 4, and not at random\n        predicted 57-43 the wrong way\n        actual 62-38  -> ~19 points out\n\n     ~50,000 sampled -> called the winner\n\n  and the unsettling part:\n\n     no inspection of the 2.4M would reveal it.\n     the data faithfully records WHO ANSWERED.\n     what was wrong is WHO WAS ASKED -- which is\n     not in the dataset at all.\n\n  (demonstrated: 3,000 drawn from the Digest's own\n   lists predicted the Digest's error in advance.)"
+    },
+    "practice": "Take a dataset you rely on and write down the selection mechanism — who or what got included, and why. Then name one way that mechanism could correlate with the thing you are measuring."
+  },
+  "beats": {
+    "broke": "A subset stands in for a population, and the instinctive way to make it trustworthy is to collect more — which addresses only one of the two ways a sample can be wrong.",
+    "fix": "Separate noise from bias. Noise scatters around the truth and shrinks with size; bias means drawing from the wrong population and does not shrink at all. In 1936 a sample of 2.4 million was nineteen points wrong and one of 50,000 was right.",
+    "cost": "Bias is invisible from inside the data, because the data is an accurate record of whoever was selected — so the only defence is knowledge of the selection mechanism, which lives outside the dataset.",
+    "interview": {
+      "q": "Why was a sample of 2.4 million beaten by a sample of 50,000?",
+      "trap": "Answering that the larger poll was badly run. It was run competently; the failure was in the frame and the response, not the execution.",
+      "answer": "Because they failed at different things and only one of those failures responds to size.\n\nNoise is scatter around the truth, and it shrinks as the sample grows — fifty thousand is ample to make it small for a national question. Bias is being drawn from the wrong population, and it does not shrink at all: more data gives a more precise estimate of the wrong quantity.\n\nThe 1936 frame came from telephone books, vehicle registrations and club rosters during the Depression, which selected for wealth, and only about a quarter of ballots were returned, which selected again for enthusiasm. Both pushed the same way. Mailing ten million rather than one million sharpened the measurement of that skewed group without making it the electorate — so the poll was about nineteen points wrong, the largest error in a major poll, while a fifty-thousand sample called the winner.\n\nWhat should be unsettling is that no amount of examining those 2.4 million responses would have exposed the problem. The data accurately records who answered; what was wrong is who was asked, which is not in the dataset. Gallup demonstrated exactly this by predicting the error in advance from three thousand people drawn from the Digest's own lists."
+    }
+  },
+  "blueprint": "Two failures. One remedy. They don't match.\n\n   NOISE  scatter around the truth\n          shrinks with n         <- what size fixes\n   BIAS   wrong population\n          does NOT shrink        <- what went wrong\n\n  1936, in numbers:\n\n     2,400,000 returned   ->  57-43  WRONG WAY\n     actual                   62-38\n     error ~19 points, largest in a major poll\n     ~50,000 sampled      ->  called it\n\n     frame:    phone / vehicle / club records,\n               in the Depression = the wealthy\n     response: ~25%, and not at random\n     both push the SAME direction\n\n  the part that should worry you:\n\n     inspecting the 2.4M reveals nothing.\n     it faithfully records WHO ANSWERED.\n     the fault is WHO WAS ASKED -- not in the data.\n\n  second failure, second study:\n     Berkeley 1973: aggregate 44.2% vs 34.6%\n     by department: few significant, about as many\n     favouring women; pooled properly, a small bias\n     toward women.\n     -> GROUPING reversed the direction.\n     (and the lawsuit everyone mentions never\n      happened)",
+  "takeaway": "More data shrinks noise and does nothing to bias, which is why 2.4 million responses lost to fifty thousand — and bias is undetectable from inside the sample, because the data faithfully records whoever was asked."
+}

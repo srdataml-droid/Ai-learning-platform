@@ -1,0 +1,39 @@
+{
+  "taskId": "M.5",
+  "title": "Shape and dimension errors",
+  "researchedAt": "2026-09-19",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "In Cayley’s formulation a matrix represents a linear transformation, and the product of two matrices is the matrix of their composition, which is why the inner dimensions must agree: the outputs of the first transformation are the inputs of the second.",
+      "type": "event",
+      "tokens": [
+        "Cayley"
+      ],
+      "source": {
+        "title": "Cayley, A., A Memoir on the Theory of Matrices, Philosophical Transactions of the Royal Society of London 148:17-37, 1858",
+        "url": "https://royalsocietypublishing.org/doi/10.1098/rstl.1858.0002",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The memoir explored the non-commutative algebra associated with matrix multiplication, so the order of a product carries meaning and is not a matter of arrangement.",
+      "type": "event",
+      "tokens": [
+        "Cayley"
+      ],
+      "source": {
+        "title": "Cayley, A., A Memoir on the Theory of Matrices, Philosophical Transactions of the Royal Society of London 148:17-37, 1858",
+        "url": "https://royalsocietypublishing.org/doi/10.1098/rstl.1858.0002",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "array libraries have two kinds of shape failure and only one of them raises an error, so the dangerous kind is invisible",
+    "fix": "read every operation as either a composition, where a mismatch is an impossibility, or an elementwise operation, where a mismatch may be silently repaired by broadcasting",
+    "cost": "broadcasting is a convenience that makes wrong programs run, and the rules it uses are not the rules you had in mind",
+    "interview": "which shape error is worse, the one that raises an exception or the one that does not"
+  }
+}

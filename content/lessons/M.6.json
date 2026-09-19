@@ -1,0 +1,49 @@
+{
+  "id": "M.6",
+  "trackId": "M",
+  "trackName": "Math for machines",
+  "title": "Functions and graphs",
+  "status": "traced",
+  "seed": "M.6",
+  "story": "A function is a rule giving exactly one output for each input, and its graph is the set of input-output pairs. Stated that way it sounds like a definition to get past, and it is worth pausing on because the second description is the useful one.\n\nEverything you want to know about a function in this context is a property of its shape rather than of its formula. Does it have one lowest point or many. Does going downhill from anywhere get you to the lowest one. Does it have flat regions where you cannot tell which way to move. Do small changes in input produce small changes in output. None of those questions is answered by looking at the expression, and all of them decide whether an optimisation procedure will work — the procedure Cauchy published in 1847, which moves in the direction the function decreases, only finds the lowest point if the shape cooperates.\n\nThat is why the same formula can be easy or hard depending on where you start, and why two formulas that look nothing alike can behave identically. The expression is a way of computing points on the surface; the surface is the thing the algorithm is walking on.\n\nThe honest limitation is that the surfaces that matter have too many dimensions to draw. You will build intuition from pictures in two and three dimensions, and that intuition is genuinely useful and genuinely misleading — high-dimensional surfaces have properties with no low-dimensional analogue, and a valley in three dimensions is a reliable mental image of something that mostly does not happen in a million. So carry the pictures as a vocabulary for talking about shape, and check specific claims against the mathematics rather than against the drawing.",
+  "problem": {
+    "name": "Reasoning about a function by its shape",
+    "aka": [
+      "graphs",
+      "landscapes",
+      "loss surfaces"
+    ],
+    "shape": "You need to predict how a procedure will behave on a function, and the formula defining it does not expose the properties the procedure depends on.",
+    "tell": [
+      "an optimisation gets stuck, oscillates, or gives different answers from different starting points",
+      "someone is reasoning about training behaviour from the algebraic form of the loss",
+      "the question is whether going downhill will get you to the bottom"
+    ],
+    "move": "Ask about the shape rather than the expression: how many low points, whether downhill always leads to the lowest, whether there are flat regions, and how fast the output changes with the input.",
+    "invariant": "The behaviour of a descent procedure depends on the surface, not on how the surface is written. Two different formulas producing the same surface behave identically, which is why reasoning from the algebra misleads.",
+    "breaks": "The intuition breaks with dimension. Pictures in two or three dimensions are how everyone reasons about this, and high-dimensional surfaces have properties with no low-dimensional counterpart — so the drawing remains a good vocabulary and a poor authority.",
+    "cost": {
+      "time": "none; this is a way of asking questions",
+      "space": "none",
+      "beats": "reasoning from the formula, which is available and answers a different question"
+    },
+    "worked": {
+      "problem": "Why does the formula tell you less than the shape does?",
+      "reasoning": "Because the procedure does not read the formula. It samples the surface.\n\nA descent method evaluates the function somewhere, looks at how it is changing there, takes a step, and repeats. Nothing in that loop has access to the expression — two functions written completely differently but producing identical values behave identically under it, and a single expression can be easy from one starting point and hopeless from another.\n\nSo the questions that determine success are all shape questions. How many low points are there. Is the lowest one reachable by going downhill from where you started. Are there flat stretches where the direction of improvement is undetectable. How sharply does the output change, which decides how far you can step before the local information stops applying.\n\nNone of those are visible in the algebra, and all of them are visible — in principle — in the surface.\n\nWhich is also the warning: in principle. The surfaces in question have far too many dimensions to inspect, so shape reasoning here is a way of asking the right question rather than a way of getting an answer by looking.",
+      "code": "what a descent procedure actually sees:\n\n     evaluate here\n     which way is down?\n     step\n     repeat\n\n  it never reads the formula.\n\n  -> two different expressions, same surface\n     = identical behaviour\n  -> one expression, two starting points\n     = possibly opposite outcomes\n\n  the questions that decide the outcome are all\n  about the surface:\n\n     how many low points?\n     is the lowest one reachable downhill from here?\n     are there FLAT regions?   (no direction to read)\n     how fast does it change?  (how far can I step\n                                before the local\n                                information expires?)\n\n  none of these are in the algebra.\n\n  and the caveat: the surfaces that matter have\n  too many dimensions to look at, so this is a way\n  of asking the right question -- not of answering\n  it by inspection."
+    },
+    "practice": "Take a loss curve you have seen during training and describe it as a shape rather than as a formula: where it was steep, where it was flat, and whether the point you stopped at was the lowest or merely the nearest."
+  },
+  "beats": {
+    "broke": "A formula says how to compute an output and is silent about the properties that decide whether an optimisation procedure will succeed — which are all about the shape of the surface it produces.",
+    "fix": "Treat the function as the set of its input-output pairs. The descent procedure Cauchy published in 1847 walks that surface and never reads the expression, so the surface is what determines its behaviour.",
+    "cost": "The surfaces that matter are too high-dimensional to inspect, so low-dimensional pictures remain the only intuition available — useful as vocabulary and unreliable as evidence.",
+    "interview": {
+      "q": "Why does the formula defining a function tell you less than its shape does?",
+      "trap": "Answering that the shape is easier to understand. It is often not; the point is about what the algorithm has access to.",
+      "answer": "Because the procedure never reads the formula. A descent method evaluates the function somewhere, observes how it is changing at that point, steps, and repeats — so two expressions written completely differently but producing the same values behave identically under it, and a single expression can be easy from one starting point and hopeless from another.\n\nThat means every question determining success is a question about the surface. How many low points are there. Is the lowest reachable by going downhill from where you started. Are there flat regions where no direction of improvement is detectable. How sharply does the output change, which decides how far a step can go before the local information stops applying.\n\nNone of those are visible in the algebra.\n\nThe honest limitation is that they are visible in the surface only in principle — the surfaces in question have far too many dimensions to inspect. So shape reasoning is a way of asking the right questions rather than a way of answering them by looking, and low-dimensional pictures are good vocabulary and poor authority."
+    }
+  },
+  "blueprint": "The algorithm never sees your formula:\n\n     evaluate -> which way is down -> step -> repeat\n\n   therefore:\n      different expressions, same surface\n         -> identical behaviour\n      same expression, different start\n         -> possibly opposite outcomes\n\n  the questions that decide everything:\n\n     how many low points?\n     is the lowest one reachable downhill from HERE?\n     any FLAT regions?    (no direction to read)\n     how fast does it change?\n         -> how far can you step before the local\n            information expires?   (M.7)\n\n  none of these are in the algebra.\n\n  and the caveat, stated rather than buried:\n     these surfaces have too many dimensions to draw.\n     2D and 3D pictures are VOCABULARY, not evidence.",
+  "takeaway": "A descent procedure samples the surface and never reads the expression, so behaviour is determined by shape — how many low points, whether downhill reaches the lowest, where it is flat — and none of that is visible in the formula."
+}

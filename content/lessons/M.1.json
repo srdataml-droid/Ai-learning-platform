@@ -1,0 +1,48 @@
+{
+  "id": "M.1",
+  "trackId": "M",
+  "trackName": "Math for machines",
+  "title": "How much math you actually need, precisely",
+  "status": "traced",
+  "seed": "M.1",
+  "story": "The question has two standard answers and both are useless. One says you need a degree in it. The other says you need none, because the libraries handle it. Neither is a claim you can act on, and the reason is that the amount depends on which job you are doing, and three different jobs get called the same thing.\n\nUsing a model that someone else built and trained. Here what you need is shape discipline and the ability to read a probability without misinterpreting it. Almost every error at this level is a dimension that was not what you assumed, or a number between zero and one that was treated as a confidence when it was nothing of the kind. Notice that neither of those is calculus.\n\nDiagnosing or tuning training. Now you need derivatives, because the entire mechanism is a derivative — the method Cauchy published in 1847 and Hadamard later named the method of descent. You do not need to be able to derive anything; you need to know what a gradient is, why its direction is the steepest one, and why a step size exists at all. Without that, learning rates and exploding losses are superstition.\n\nDeriving a method, or reading the papers that do. This is where linear algebra stops being array manipulation and becomes what it actually is — Cayley’s 1858 memoir introduces matrix multiplication, the inverse, and the non-commutative algebra that goes with it — and where you need probability as a structure rather than as a vocabulary.\n\nThe honest summary is that the middle level is where most people are, and most people arrive there having skipped exactly the wrong things. Not the hard things: the cheap ones. Shapes, base rates, what a distribution assumes, and why an average is a choice. This track is ordered accordingly.",
+  "problem": {
+    "name": "Scoping the prerequisite",
+    "aka": [
+      "how much math",
+      "prerequisite calibration"
+    ],
+    "shape": "A large subject is presented as a single prerequisite, so it is either overestimated into paralysis or dismissed entirely, and both responses are wrong in the same way.",
+    "tell": [
+      "someone is learning linear algebra before they have a task that needs it",
+      "someone is tuning a learning rate without being able to say what it multiplies",
+      "a probability output is being reported as a confidence to a user"
+    ],
+    "move": "Name the job first. Using a model needs shape discipline and probability literacy. Diagnosing training adds derivatives and the chain rule. Deriving methods adds linear algebra and probability as structures. Learn the level you are at and stop.",
+    "invariant": "The requirement is set by what you intend to do, not by the subject’s extent. That is why the question has no answer in the abstract and a short answer once the job is named.",
+    "breaks": "It breaks when the job changes underneath you, which it does — the person using a model becomes the person debugging its training without warning. So the levels are a sequence rather than a choice, and the honest version of this lesson is that you will need the next one sooner than you expect.",
+    "cost": {
+      "time": "the middle level is a few weeks of specific material rather than a degree",
+      "space": "none, but the temptation to keep going past the level you need is real",
+      "beats": "learning it all first, which delays everything; and learning none, which makes the middle level impossible to enter"
+    },
+    "worked": {
+      "problem": "What actually goes wrong for people who skipped the math?",
+      "reasoning": "Not what they fear. The failures are rarely about calculus and are almost always about the cheap things.\n\nShapes. A dimension that was not what was assumed, and an operation that silently succeeded on the wrong alignment instead of failing. This is the single most common error and it needs no mathematics beyond care.\n\nBase rates. A test, a classifier or a retrieval score that is read as though the probability of the evidence given the hypothesis were the probability of the hypothesis given the evidence. The arithmetic is trivial; the error is in which conditional you are looking at.\n\nThe meaning of an average. A mean reported where the distribution makes it meaningless, because nobody asked what shape the data had.\n\nAnd at the middle level, the derivative. Not computing one — knowing what it is, so that a learning rate stops being a magic number.\n\nSo the prerequisite people skip successfully is the hard part, and the prerequisite they skip fatally is the part that would have taken a week.",
+      "code": "three jobs, three lists:\n\n  USE a model\n     shapes and dimensions\n     reading a probability correctly\n     -> no calculus at all\n\n  DIAGNOSE training\n     + derivatives: what a gradient IS\n     + why a step size exists\n     (Cauchy 1847, \"method of descent\")\n     -> still not deriving anything\n\n  DERIVE a method / read the papers\n     + linear algebra as transformations\n       (Cayley 1858: multiplication, inverse,\n        non-commutativity)\n     + probability as structure\n\n  where the failures actually are:\n\n     shape mismatches      <- most common, no math\n     P(A|B) vs P(B|A)      <- trivial arithmetic\n     an average on the\n       wrong distribution  <- one question unasked\n     learning rate as a\n       magic number        <- the middle level"
+    },
+    "practice": "Write down the last three things that went wrong in your work with models. Classify each as a shape problem, a probability-reading problem, or something that genuinely needed calculus — and see which list is longest."
+  },
+  "beats": {
+    "broke": "The prerequisite is stated as a subject rather than as a requirement, so it is either overestimated into a degree or dismissed as handled by libraries — and neither answer tells you what to learn first.",
+    "fix": "Scope it by job. Using a model needs shapes and probability reading; diagnosing training adds derivatives and what a gradient is; deriving methods adds linear algebra and probability as structures.",
+    "cost": "The levels are a sequence rather than a menu, because the job changes underneath you — and the honest answer disappoints both the people who wanted permission to skip it and the people who wanted a reading list.",
+    "interview": {
+      "q": "What actually goes wrong for people who skipped the mathematics?",
+      "trap": "Answering that they cannot derive backpropagation. Almost nobody needs to, and it is not where the failures are.",
+      "answer": "Not the hard things. Almost every failure is in the cheap ones.\n\nShapes: a dimension that was not what was assumed, combined with an operation that silently succeeded on the wrong alignment instead of failing. That is the most common error in practice and needs no mathematics beyond care.\n\nBase rates: a classifier score, a test result or a retrieval score read as though the probability of the evidence given the hypothesis were the probability of the hypothesis given the evidence. The arithmetic is trivial; the mistake is about which conditional you are holding.\n\nThe meaning of a summary: a mean reported where the distribution makes it meaningless, because nobody asked what shape the data had.\n\nAnd at the diagnostic level, the derivative — not computing one, but knowing what a gradient is, so that a learning rate stops being a magic number and an exploding loss stops being superstition.\n\nSo the part people skip successfully is the genuinely hard mathematics, and the part they skip fatally is the part that would have taken a week."
+    }
+  },
+  "blueprint": "The question has no answer until you name the job:\n\n   USE a model        shapes; reading a probability\n                      -> no calculus\n\n   DIAGNOSE training  + what a gradient IS\n                      + why a step size exists\n                      (Cauchy 1847; named \"method of\n                       descent\" by Hadamard)\n\n   DERIVE a method    + linear algebra as\n                        transformations\n                        (Cayley 1858)\n                      + probability as structure\n\n  and the levels are a SEQUENCE, not a menu --\n  the job changes under you.\n\n  where the damage actually is:\n\n     shape mismatch          most common, zero math\n     P(A|B) vs P(B|A)        trivial arithmetic\n     mean of a bad\n       distribution          one unasked question\n     learning rate as magic  the middle level\n\n  the hard mathematics is what people skip safely.",
+  "takeaway": "The prerequisite is set by the job rather than by the subject — using a model needs shapes and probability, diagnosing training needs what a gradient is, deriving methods needs the rest — and the failures in practice come from the cheap parts, not the hard ones."
+}

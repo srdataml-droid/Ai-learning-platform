@@ -1,0 +1,48 @@
+{
+  "id": "M.10",
+  "trackId": "M",
+  "trackName": "Math for machines",
+  "title": "Probability basics",
+  "status": "traced",
+  "seed": "M.10",
+  "story": "The rules are short. Every outcome gets a number between zero and one, the numbers over all outcomes sum to one, and the probability of either of two outcomes that cannot both happen is the sum of theirs. Almost everything else is derived, and the arithmetic is arithmetic a child can do.\n\nWhich raises the question this lesson is really about: if the arithmetic is that easy, why is this subject so reliably got wrong? The answer is that the arithmetic operates on a set of outcomes — a sample space — and choosing that set is the part with no rules. Nothing in the formalism tells you what counts as a distinct outcome, whether two events can both occur, or whether one carries information about the other. Those are modelling decisions, made before any calculation, and they are where the errors live.\n\nTwo failures account for most of it. Choosing a space too coarse to express the question, so that the thing you want to ask about is not an outcome in it. And assuming independence — multiplying probabilities together — when the events share a cause, which makes the product far smaller than the truth. That second one is behind most spectacular risk miscalculations: ten components each failing one time in a thousand gives one chance in a quintillion only if their failures are unrelated, and they are usually in the same building on the same power supply.\n\nThe history is a reminder that this is younger and more contested than it looks. The essay that founded inference from data to hypothesis was published in 1763, two years after its author had died, communicated by Price and prepared by him with amendments. Doctrine of chances was simply what the subject was called, following de Moivre’s book title. Laplace adopted the argument and made it the basis of statistical inference; Boole later challenged it. This was a live dispute, not a settled body of technique, and some of it still is.",
+  "problem": {
+    "name": "Choosing the sample space",
+    "aka": [
+      "probability axioms",
+      "independence assumptions"
+    ],
+    "shape": "Uncertainty must be reasoned about quantitatively, and the calculus for doing so operates on a set of outcomes that you supply.",
+    "tell": [
+      "probabilities are being multiplied together",
+      "a risk estimate is far smaller than intuition suggests",
+      "the question being asked cannot be expressed as an outcome in the model you built"
+    ],
+    "move": "Write the sample space down before calculating. State what counts as an outcome, which outcomes are mutually exclusive, and — explicitly — which events you are assuming carry no information about each other.",
+    "invariant": "The outcomes are exhaustive and mutually exclusive, and their probabilities sum to one. Every rule of the calculus rests on that, and nothing in the calculus checks that the set you supplied has the property.",
+    "breaks": "It breaks on independence, which is an assumption people make by writing a multiplication rather than by deciding. Events that share a cause are not independent, so multiplying gives an answer that can be wrong by many orders of magnitude while looking rigorous — and it breaks on spaces too coarse to contain the question being asked.",
+    "cost": {
+      "time": "none; the expense is the thinking before the arithmetic",
+      "space": "none",
+      "beats": "reasoning in words, which cannot combine, compare or be checked against outcomes"
+    },
+    "worked": {
+      "problem": "Where do probability errors actually come from, if the arithmetic is simple?",
+      "reasoning": "From the model, not the calculation — and specifically from two decisions taken before any arithmetic happens.\n\nThe first is what counts as an outcome. The calculus requires a set that is exhaustive and mutually exclusive, and supplies no way to check that yours is. A space too coarse to distinguish the cases you care about produces perfectly correct answers to a different question.\n\nThe second is independence, and it is the expensive one because it is assumed by notation. Writing a product asserts that neither event carries information about the other, and nobody experiences that as a claim — it feels like arithmetic. But events with a common cause are correlated, so the product understates the joint probability, often enormously.\n\nTake ten components each failing one time in a thousand. Multiplying gives one chance in a quintillion, which sounds like a guarantee. It is correct only if the failures are unrelated — and they share a power supply, a batch, a building and a maintenance schedule, so the real number is closer to one in a thousand.\n\nThe useful habit is therefore to treat every multiplication of probabilities as a claim requiring justification rather than as a step.",
+      "code": "the rules: short.\n  0 <= P(x) <= 1\n  sum over all outcomes = 1\n  P(A or B) = P(A) + P(B)   if disjoint\n\nthe hard part: choosing the OUTCOMES.\n  the calculus does not supply them\n  and cannot check them.\n\ntwo failures account for most of it:\n\n  1. space too coarse\n       correct answers to a different question\n\n  2. independence assumed by NOTATION\n       writing  P(A) * P(B)  asserts that neither\n       carries information about the other\n       -- and it feels like arithmetic, not a claim\n\n  10 components, each fails 1 in 1,000:\n\n     independent:  1 in 10^30      \"impossible\"\n     same power supply, same batch,\n     same building, same maintenance:\n                   ~1 in 1,000\n\n  so: every multiplication of probabilities is a\n  claim that needs justifying, not a step."
+    },
+    "practice": "Find a risk or reliability number in your systems that was computed by multiplying probabilities. Write down what would have to be true for those events to be independent, and then check whether it is."
+  },
+  "beats": {
+    "broke": "Uncertainty discussed in words cannot be combined, compared, or checked against what actually happened — \"probably\" and \"rarely\" have no arithmetic.",
+    "fix": "Assign numbers to outcomes so they combine by fixed rules. The founding essay on reasoning from data to hypothesis was published in 1763, posthumously, communicated and amended by Price and later adopted by Laplace.",
+    "cost": "The rules operate on a set of outcomes you chose, and nothing in them checks that choice — so a correct calculation can answer a question you did not ask, and an assumed independence can be wrong by orders of magnitude.",
+    "interview": {
+      "q": "If the arithmetic of probability is simple, where do the errors actually come from?",
+      "trap": "Answering that people are bad at intuition about probability. True and unhelpful — the question is which specific step goes wrong.",
+      "answer": "From two decisions made before any arithmetic, neither of which the calculus can check.\n\nThe first is what counts as an outcome. The rules require a set that is exhaustive and mutually exclusive and give you no way to verify that yours is — so a space too coarse to distinguish the cases you care about yields perfectly correct answers to a different question.\n\nThe second is independence, and it is the expensive one because it is asserted by notation rather than by decision. Writing a product of two probabilities claims that neither event carries information about the other, and nobody experiences that as a claim; it feels like a step. But events with a common cause are correlated, so the product understates the joint probability, sometimes by orders of magnitude.\n\nTen components each failing one time in a thousand gives one chance in a quintillion if the failures are unrelated — and they share a power supply, a manufacturing batch, a building and a maintenance schedule, so the real figure is nearer one in a thousand.\n\nThe habit that follows is to treat every multiplication of probabilities as a claim requiring justification."
+    }
+  },
+  "blueprint": "Short rules, hard inputs:\n\n   0 <= P <= 1\n   probabilities over all outcomes sum to 1\n   P(A or B) = P(A) + P(B)   when disjoint\n\n   ...all of which operate on a SAMPLE SPACE that\n   you supplied and the calculus cannot check.\n\n  the two failures:\n\n    space too coarse\n       -> right answers, wrong question\n\n    independence assumed by NOTATION\n       P(A) * P(B) asserts \"neither informs the\n       other\" -- and it feels like arithmetic\n\n       10 components @ 1-in-1000 each:\n          independent   1 in 10^30\n          shared cause  ~1 in 1,000\n\n  rule: a multiplication of probabilities is a\n  CLAIM. justify it or don't write it.",
+  "takeaway": "The rules of probability are trivial and operate on a sample space the rules cannot check — so errors come from choosing outcomes too coarse to hold the question, and from asserting independence by writing a multiplication."
+}

@@ -1,0 +1,60 @@
+{
+  "taskId": "M.10",
+  "title": "Probability basics",
+  "researchedAt": "2026-09-19",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The essay that founded inverse probability was published in the Philosophical Transactions, volume 53, pages 370 to 418, in 1763, two years after its author’s death, communicated by Richard Price in a letter to John Canton and prepared for publication by Price with amendments and additions.",
+      "type": "date",
+      "tokens": [
+        "Philosophical Transactions",
+        "Richard Price",
+        "Price",
+        "John Canton",
+        "Canton",
+        "1763"
+      ],
+      "source": {
+        "title": "Bayes, T., An Essay towards Solving a Problem in the Doctrine of Chances, communicated by Mr Price in a letter to John Canton, Philosophical Transactions 53:370-418, 1763",
+        "url": "https://royalsocietypublishing.org/doi/10.1098/rstl.1763.0053",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Doctrine of chances was the contemporary term for probability theory, a usage introduced by the title of a book by Abraham de Moivre. Contemporary reprints carried a more descriptive title: a method of calculating the exact probability of all conclusions founded on induction.",
+      "type": "event",
+      "tokens": [
+        "Abraham de Moivre",
+        "Moivre"
+      ],
+      "source": {
+        "title": "Bayes, T., An Essay towards Solving a Problem in the Doctrine of Chances, communicated by Mr Price in a letter to John Canton, Philosophical Transactions 53:370-418, 1763",
+        "url": "https://royalsocietypublishing.org/doi/10.1098/rstl.1763.0053",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The arguments in the essay were adopted by Laplace, who saw in them the basis for statistical inference, and were later challenged by George Boole.",
+      "type": "event",
+      "tokens": [
+        "Laplace",
+        "George Boole",
+        "Boole"
+      ],
+      "source": {
+        "title": "Bayes, T., An Essay towards Solving a Problem in the Doctrine of Chances, communicated by Mr Price in a letter to John Canton, Philosophical Transactions 53:370-418, 1763",
+        "url": "https://royalsocietypublishing.org/doi/10.1098/rstl.1763.0053",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "uncertainty gets discussed in words — likely, probably, rarely — which cannot be combined, compared or checked against what happened",
+    "fix": "assign numbers to outcomes so that they combine by fixed rules, which turns arguments about likelihood into arithmetic",
+    "cost": "the numbers apply to a set of outcomes you had to choose, and the arithmetic cannot tell you that you chose it wrongly",
+    "interview": "where probability errors actually come from, given that the arithmetic is simple"
+  }
+}

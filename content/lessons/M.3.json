@@ -1,0 +1,48 @@
+{
+  "id": "M.3",
+  "trackId": "M",
+  "trackName": "Math for machines",
+  "title": "Matrices and matrix multiplication",
+  "status": "traced",
+  "seed": "M.3",
+  "story": "Matrix multiplication is the operation everyone learns as a procedure and almost nobody is told the reason for, which is a shame, because the reason determines every property that makes it strange.\n\nStart where Cayley did in 1858: matrices were introduced to simplify the notation arising in simultaneous linear equations. A system of linear equations is a transformation — it takes a vector of inputs and produces a vector of outputs — and the array is just the coefficients written in a block. Now do two transformations one after the other. Substituting one set of equations into the other gives a mess, and the mess simplifies to another set of linear equations, which means the composition is a transformation of the same kind and therefore has its own array of coefficients.\n\nMatrix multiplication is defined to be the operation that produces that array. That is the whole definition, and once you have it the strange properties stop being strange. It is not elementwise because composition is not elementwise — the output in position i depends on every input, so each entry of the product is a sum over a shared index. It is not commutative because doing one transformation then another is not the same as doing them in the other order, and Cayley’s memoir explores exactly that non-commutative algebra. And the inner dimensions must agree because the output of the first transformation is the input to the second, so a mismatch is not a formatting problem but two transformations that cannot be composed at all.\n\nThe history is worth handling carefully, because the tidy version is disputed. The word was coined earlier by Sylvester; credit for founding the theory goes to Cayley largely because he wrote the first expository articles; and the memoir went generally unnoticed, especially outside England, until the 1880s. Later historians describe the Cayley-as-founder story as simplistic. Useful to know when a textbook presents it as settled.",
+  "problem": {
+    "name": "Composition of linear maps",
+    "aka": [
+      "matrix multiplication",
+      "why not elementwise"
+    ],
+    "shape": "Transformations are applied one after another, and you want the combined effect as a single object of the same kind.",
+    "tell": [
+      "several linear operations are applied in sequence to the same data",
+      "someone is surprised that the product is not elementwise, or that the order matters",
+      "a dimension mismatch is being treated as a reshaping problem"
+    ],
+    "move": "Read a matrix as a transformation and the product as their composition. Then every property of the operation is derived from what composition must do, rather than memorised as a rule.",
+    "invariant": "The product of two matrices is the matrix of the composed transformation. That single requirement determines the definition completely — there is no design freedom in it, which is why the definition looks arbitrary and is not.",
+    "breaks": "It breaks the intuition of anyone who expects an elementwise operation, which every other array operation is. That expectation is why libraries need two different operators, and why the elementwise one silently broadcasting is such a reliable source of wrong answers rather than errors.",
+    "cost": {
+      "time": "proportional to the product of the three dimensions involved, rather than to the size of the arrays",
+      "space": "the result, whose shape is the outer dimensions",
+      "beats": "writing out the composed equations, which is correct, unreadable, and hides that the result is the same kind of thing"
+    },
+    "worked": {
+      "problem": "Why is matrix multiplication defined that way rather than elementwise?",
+      "reasoning": "Because the definition is not a choice. It is forced by the requirement that the product represent composition.\n\nA matrix is a linear transformation: each output coordinate is a weighted sum of all input coordinates. Apply one transformation and then another. The second one’s output coordinate is a weighted sum of the first one’s outputs, and each of those is itself a weighted sum of the original inputs. Collect terms and each final coordinate is a weighted sum of the original inputs — so the composition is again a linear transformation, and its coefficient for a given input-output pair is a sum of products over the intermediate coordinate.\n\nThat sum over the shared index is exactly the definition of the matrix product. Nothing was chosen; it was computed.\n\nAnd now the properties follow rather than being learned. Not elementwise, because each output depends on every input. Not commutative, because composition is not. Inner dimensions must match, because the first transformation’s outputs are the second’s inputs — so a mismatch is not a shape problem to be reshaped around, it is two transformations that do not compose.",
+      "code": "a matrix IS a linear transformation.\n\n  apply B, then A:\n\n     y_i = sum_k A_ik * z_k\n     z_k = sum_j B_kj * x_j\n\n     y_i = sum_k A_ik * (sum_j B_kj * x_j)\n         = sum_j ( sum_k A_ik * B_kj ) * x_j\n                  ^^^^^^^^^^^^^^^^^^^\n                  that is (AB)_ij\n\n  the definition was COMPUTED, not chosen.\n\n  and every \"strange\" property follows:\n\n     not elementwise   each output depends on\n                       EVERY input\n     not commutative   B-then-A != A-then-B\n     inner dims match  first's outputs are\n                       second's inputs\n                       -> a mismatch is not a\n                          reshaping problem; the\n                          transformations do not\n                          compose at all\n\n  which is why libraries need TWO operators, and\n  why the elementwise one broadcasting silently\n  is such a reliable source of wrong answers."
+    },
+    "practice": "Take two small matrices and compute their product twice, in both orders. Then write out what transformation each represents and say in words why the two results describe different things."
+  },
+  "beats": {
+    "broke": "Transformations get applied in sequence, and writing the composition by substitution is unreadable and obscures that the result is a transformation of the same kind with its own coefficients.",
+    "fix": "Define the product so that it yields the coefficients of the composition. Cayley’s 1858 memoir introduced multiplication, the unit matrix, the inverse and powers, along with the non-commutative algebra that comes with them.",
+    "cost": "The definition is inherited from composition rather than chosen, so it violates every expectation set by elementwise array operations — which is why a mismatch is a genuine impossibility rather than a formatting issue.",
+    "interview": {
+      "q": "Why is matrix multiplication defined the way it is rather than elementwise?",
+      "trap": "Answering that elementwise multiplication exists separately and is used for other things. True, and it explains the notation rather than the definition.",
+      "answer": "Because the definition is forced rather than chosen. It is whatever makes the product represent composition.\n\nA matrix is a linear transformation in which each output coordinate is a weighted sum of all input coordinates. Apply one and then another: the second transformation's output is a weighted sum of the first's outputs, each of which is a weighted sum of the original inputs. Collect terms and every final coordinate is a weighted sum of the original inputs — so the composition is again linear, and its coefficient for a given pair is a sum of products over the intermediate index. That sum over a shared index is exactly the matrix product. It was computed, not designed.\n\nEvery property people find strange then follows instead of being memorised. Not elementwise, because each output depends on every input. Not commutative, because doing one transformation then another differs from the reverse — which is precisely the non-commutative algebra Cayley's 1858 memoir explores. And the inner dimensions must agree because the first map's outputs are the second's inputs, so a mismatch is not a shape to be worked around; the two transformations genuinely do not compose."
+    }
+  },
+  "blueprint": "The definition is derived, not designed:\n\n   requirement: (AB) must be the matrix of\n                \"apply B, then A\"\n\n   y_i = sum_k A_ik z_k ,  z_k = sum_j B_kj x_j\n   => y_i = sum_j ( sum_k A_ik B_kj ) x_j\n                    ^^^^^^^^^^^^^^^ = (AB)_ij\n\n  everything else falls out:\n\n     not elementwise    every output uses every input\n     not commutative    order of composition matters\n     inner dims agree   outputs of one = inputs of\n                        the next\n                        -> mismatch = they do not\n                           compose. not a reshape.\n\n  history, handled honestly:\n     \"matrix\" coined earlier by Sylvester\n     Cayley credited for the first expository work\n     the memoir went unnoticed outside England\n       until the 1880s\n     historians call the tidy story simplistic.",
+  "takeaway": "Matrix multiplication is whatever operation makes the product represent composition, so it was computed rather than chosen — and that single requirement forces it to be non-elementwise, non-commutative, and to demand agreeing inner dimensions."
+}

@@ -6007,6 +6007,393 @@
     "blueprint": "// Production Prompt Conditioning Pattern:\nconst SYSTEM_PROMPT = `\nYou are a factual corporate assistant. Answer the question STRICTLY using only the CONTEXT below.\nIf the answer cannot be directly determined from the CONTEXT, you MUST state:\n\"I do not have sufficient information in the provided records to answer this question.\"\nDo NOT extrapolate or use outside training data.\n`;",
     "takeaway": "The ability to reliably say 'I don't know' is what separates a production AI product from a toy demo."
   },
+  "M.1": {
+    "id": "M.1",
+    "trackId": "M",
+    "trackName": "Math for machines",
+    "title": "How much math you actually need, precisely",
+    "status": "traced",
+    "seed": "M.1",
+    "story": "The question has two standard answers and both are useless. One says you need a degree in it. The other says you need none, because the libraries handle it. Neither is a claim you can act on, and the reason is that the amount depends on which job you are doing, and three different jobs get called the same thing.\n\nUsing a model that someone else built and trained. Here what you need is shape discipline and the ability to read a probability without misinterpreting it. Almost every error at this level is a dimension that was not what you assumed, or a number between zero and one that was treated as a confidence when it was nothing of the kind. Notice that neither of those is calculus.\n\nDiagnosing or tuning training. Now you need derivatives, because the entire mechanism is a derivative — the method Cauchy published in 1847 and Hadamard later named the method of descent. You do not need to be able to derive anything; you need to know what a gradient is, why its direction is the steepest one, and why a step size exists at all. Without that, learning rates and exploding losses are superstition.\n\nDeriving a method, or reading the papers that do. This is where linear algebra stops being array manipulation and becomes what it actually is — Cayley’s 1858 memoir introduces matrix multiplication, the inverse, and the non-commutative algebra that goes with it — and where you need probability as a structure rather than as a vocabulary.\n\nThe honest summary is that the middle level is where most people are, and most people arrive there having skipped exactly the wrong things. Not the hard things: the cheap ones. Shapes, base rates, what a distribution assumes, and why an average is a choice. This track is ordered accordingly.",
+    "problem": {
+      "name": "Scoping the prerequisite",
+      "aka": [
+        "how much math",
+        "prerequisite calibration"
+      ],
+      "shape": "A large subject is presented as a single prerequisite, so it is either overestimated into paralysis or dismissed entirely, and both responses are wrong in the same way.",
+      "tell": [
+        "someone is learning linear algebra before they have a task that needs it",
+        "someone is tuning a learning rate without being able to say what it multiplies",
+        "a probability output is being reported as a confidence to a user"
+      ],
+      "move": "Name the job first. Using a model needs shape discipline and probability literacy. Diagnosing training adds derivatives and the chain rule. Deriving methods adds linear algebra and probability as structures. Learn the level you are at and stop.",
+      "invariant": "The requirement is set by what you intend to do, not by the subject’s extent. That is why the question has no answer in the abstract and a short answer once the job is named.",
+      "breaks": "It breaks when the job changes underneath you, which it does — the person using a model becomes the person debugging its training without warning. So the levels are a sequence rather than a choice, and the honest version of this lesson is that you will need the next one sooner than you expect.",
+      "cost": {
+        "time": "the middle level is a few weeks of specific material rather than a degree",
+        "space": "none, but the temptation to keep going past the level you need is real",
+        "beats": "learning it all first, which delays everything; and learning none, which makes the middle level impossible to enter"
+      },
+      "worked": {
+        "problem": "What actually goes wrong for people who skipped the math?",
+        "reasoning": "Not what they fear. The failures are rarely about calculus and are almost always about the cheap things.\n\nShapes. A dimension that was not what was assumed, and an operation that silently succeeded on the wrong alignment instead of failing. This is the single most common error and it needs no mathematics beyond care.\n\nBase rates. A test, a classifier or a retrieval score that is read as though the probability of the evidence given the hypothesis were the probability of the hypothesis given the evidence. The arithmetic is trivial; the error is in which conditional you are looking at.\n\nThe meaning of an average. A mean reported where the distribution makes it meaningless, because nobody asked what shape the data had.\n\nAnd at the middle level, the derivative. Not computing one — knowing what it is, so that a learning rate stops being a magic number.\n\nSo the prerequisite people skip successfully is the hard part, and the prerequisite they skip fatally is the part that would have taken a week.",
+        "code": "three jobs, three lists:\n\n  USE a model\n     shapes and dimensions\n     reading a probability correctly\n     -> no calculus at all\n\n  DIAGNOSE training\n     + derivatives: what a gradient IS\n     + why a step size exists\n     (Cauchy 1847, \"method of descent\")\n     -> still not deriving anything\n\n  DERIVE a method / read the papers\n     + linear algebra as transformations\n       (Cayley 1858: multiplication, inverse,\n        non-commutativity)\n     + probability as structure\n\n  where the failures actually are:\n\n     shape mismatches      <- most common, no math\n     P(A|B) vs P(B|A)      <- trivial arithmetic\n     an average on the\n       wrong distribution  <- one question unasked\n     learning rate as a\n       magic number        <- the middle level"
+      },
+      "practice": "Write down the last three things that went wrong in your work with models. Classify each as a shape problem, a probability-reading problem, or something that genuinely needed calculus — and see which list is longest."
+    },
+    "beats": {
+      "broke": "The prerequisite is stated as a subject rather than as a requirement, so it is either overestimated into a degree or dismissed as handled by libraries — and neither answer tells you what to learn first.",
+      "fix": "Scope it by job. Using a model needs shapes and probability reading; diagnosing training adds derivatives and what a gradient is; deriving methods adds linear algebra and probability as structures.",
+      "cost": "The levels are a sequence rather than a menu, because the job changes underneath you — and the honest answer disappoints both the people who wanted permission to skip it and the people who wanted a reading list.",
+      "interview": {
+        "q": "What actually goes wrong for people who skipped the mathematics?",
+        "trap": "Answering that they cannot derive backpropagation. Almost nobody needs to, and it is not where the failures are.",
+        "answer": "Not the hard things. Almost every failure is in the cheap ones.\n\nShapes: a dimension that was not what was assumed, combined with an operation that silently succeeded on the wrong alignment instead of failing. That is the most common error in practice and needs no mathematics beyond care.\n\nBase rates: a classifier score, a test result or a retrieval score read as though the probability of the evidence given the hypothesis were the probability of the hypothesis given the evidence. The arithmetic is trivial; the mistake is about which conditional you are holding.\n\nThe meaning of a summary: a mean reported where the distribution makes it meaningless, because nobody asked what shape the data had.\n\nAnd at the diagnostic level, the derivative — not computing one, but knowing what a gradient is, so that a learning rate stops being a magic number and an exploding loss stops being superstition.\n\nSo the part people skip successfully is the genuinely hard mathematics, and the part they skip fatally is the part that would have taken a week."
+      }
+    },
+    "blueprint": "The question has no answer until you name the job:\n\n   USE a model        shapes; reading a probability\n                      -> no calculus\n\n   DIAGNOSE training  + what a gradient IS\n                      + why a step size exists\n                      (Cauchy 1847; named \"method of\n                       descent\" by Hadamard)\n\n   DERIVE a method    + linear algebra as\n                        transformations\n                        (Cayley 1858)\n                      + probability as structure\n\n  and the levels are a SEQUENCE, not a menu --\n  the job changes under you.\n\n  where the damage actually is:\n\n     shape mismatch          most common, zero math\n     P(A|B) vs P(B|A)        trivial arithmetic\n     mean of a bad\n       distribution          one unasked question\n     learning rate as magic  the middle level\n\n  the hard mathematics is what people skip safely.",
+    "takeaway": "The prerequisite is set by the job rather than by the subject — using a model needs shapes and probability, diagnosing training needs what a gradient is, deriving methods needs the rest — and the failures in practice come from the cheap parts, not the hard ones."
+  },
+  "M.10": {
+    "id": "M.10",
+    "trackId": "M",
+    "trackName": "Math for machines",
+    "title": "Probability basics",
+    "status": "traced",
+    "seed": "M.10",
+    "story": "The rules are short. Every outcome gets a number between zero and one, the numbers over all outcomes sum to one, and the probability of either of two outcomes that cannot both happen is the sum of theirs. Almost everything else is derived, and the arithmetic is arithmetic a child can do.\n\nWhich raises the question this lesson is really about: if the arithmetic is that easy, why is this subject so reliably got wrong? The answer is that the arithmetic operates on a set of outcomes — a sample space — and choosing that set is the part with no rules. Nothing in the formalism tells you what counts as a distinct outcome, whether two events can both occur, or whether one carries information about the other. Those are modelling decisions, made before any calculation, and they are where the errors live.\n\nTwo failures account for most of it. Choosing a space too coarse to express the question, so that the thing you want to ask about is not an outcome in it. And assuming independence — multiplying probabilities together — when the events share a cause, which makes the product far smaller than the truth. That second one is behind most spectacular risk miscalculations: ten components each failing one time in a thousand gives one chance in a quintillion only if their failures are unrelated, and they are usually in the same building on the same power supply.\n\nThe history is a reminder that this is younger and more contested than it looks. The essay that founded inference from data to hypothesis was published in 1763, two years after its author had died, communicated by Price and prepared by him with amendments. Doctrine of chances was simply what the subject was called, following de Moivre’s book title. Laplace adopted the argument and made it the basis of statistical inference; Boole later challenged it. This was a live dispute, not a settled body of technique, and some of it still is.",
+    "problem": {
+      "name": "Choosing the sample space",
+      "aka": [
+        "probability axioms",
+        "independence assumptions"
+      ],
+      "shape": "Uncertainty must be reasoned about quantitatively, and the calculus for doing so operates on a set of outcomes that you supply.",
+      "tell": [
+        "probabilities are being multiplied together",
+        "a risk estimate is far smaller than intuition suggests",
+        "the question being asked cannot be expressed as an outcome in the model you built"
+      ],
+      "move": "Write the sample space down before calculating. State what counts as an outcome, which outcomes are mutually exclusive, and — explicitly — which events you are assuming carry no information about each other.",
+      "invariant": "The outcomes are exhaustive and mutually exclusive, and their probabilities sum to one. Every rule of the calculus rests on that, and nothing in the calculus checks that the set you supplied has the property.",
+      "breaks": "It breaks on independence, which is an assumption people make by writing a multiplication rather than by deciding. Events that share a cause are not independent, so multiplying gives an answer that can be wrong by many orders of magnitude while looking rigorous — and it breaks on spaces too coarse to contain the question being asked.",
+      "cost": {
+        "time": "none; the expense is the thinking before the arithmetic",
+        "space": "none",
+        "beats": "reasoning in words, which cannot combine, compare or be checked against outcomes"
+      },
+      "worked": {
+        "problem": "Where do probability errors actually come from, if the arithmetic is simple?",
+        "reasoning": "From the model, not the calculation — and specifically from two decisions taken before any arithmetic happens.\n\nThe first is what counts as an outcome. The calculus requires a set that is exhaustive and mutually exclusive, and supplies no way to check that yours is. A space too coarse to distinguish the cases you care about produces perfectly correct answers to a different question.\n\nThe second is independence, and it is the expensive one because it is assumed by notation. Writing a product asserts that neither event carries information about the other, and nobody experiences that as a claim — it feels like arithmetic. But events with a common cause are correlated, so the product understates the joint probability, often enormously.\n\nTake ten components each failing one time in a thousand. Multiplying gives one chance in a quintillion, which sounds like a guarantee. It is correct only if the failures are unrelated — and they share a power supply, a batch, a building and a maintenance schedule, so the real number is closer to one in a thousand.\n\nThe useful habit is therefore to treat every multiplication of probabilities as a claim requiring justification rather than as a step.",
+        "code": "the rules: short.\n  0 <= P(x) <= 1\n  sum over all outcomes = 1\n  P(A or B) = P(A) + P(B)   if disjoint\n\nthe hard part: choosing the OUTCOMES.\n  the calculus does not supply them\n  and cannot check them.\n\ntwo failures account for most of it:\n\n  1. space too coarse\n       correct answers to a different question\n\n  2. independence assumed by NOTATION\n       writing  P(A) * P(B)  asserts that neither\n       carries information about the other\n       -- and it feels like arithmetic, not a claim\n\n  10 components, each fails 1 in 1,000:\n\n     independent:  1 in 10^30      \"impossible\"\n     same power supply, same batch,\n     same building, same maintenance:\n                   ~1 in 1,000\n\n  so: every multiplication of probabilities is a\n  claim that needs justifying, not a step."
+      },
+      "practice": "Find a risk or reliability number in your systems that was computed by multiplying probabilities. Write down what would have to be true for those events to be independent, and then check whether it is."
+    },
+    "beats": {
+      "broke": "Uncertainty discussed in words cannot be combined, compared, or checked against what actually happened — \"probably\" and \"rarely\" have no arithmetic.",
+      "fix": "Assign numbers to outcomes so they combine by fixed rules. The founding essay on reasoning from data to hypothesis was published in 1763, posthumously, communicated and amended by Price and later adopted by Laplace.",
+      "cost": "The rules operate on a set of outcomes you chose, and nothing in them checks that choice — so a correct calculation can answer a question you did not ask, and an assumed independence can be wrong by orders of magnitude.",
+      "interview": {
+        "q": "If the arithmetic of probability is simple, where do the errors actually come from?",
+        "trap": "Answering that people are bad at intuition about probability. True and unhelpful — the question is which specific step goes wrong.",
+        "answer": "From two decisions made before any arithmetic, neither of which the calculus can check.\n\nThe first is what counts as an outcome. The rules require a set that is exhaustive and mutually exclusive and give you no way to verify that yours is — so a space too coarse to distinguish the cases you care about yields perfectly correct answers to a different question.\n\nThe second is independence, and it is the expensive one because it is asserted by notation rather than by decision. Writing a product of two probabilities claims that neither event carries information about the other, and nobody experiences that as a claim; it feels like a step. But events with a common cause are correlated, so the product understates the joint probability, sometimes by orders of magnitude.\n\nTen components each failing one time in a thousand gives one chance in a quintillion if the failures are unrelated — and they share a power supply, a manufacturing batch, a building and a maintenance schedule, so the real figure is nearer one in a thousand.\n\nThe habit that follows is to treat every multiplication of probabilities as a claim requiring justification."
+      }
+    },
+    "blueprint": "Short rules, hard inputs:\n\n   0 <= P <= 1\n   probabilities over all outcomes sum to 1\n   P(A or B) = P(A) + P(B)   when disjoint\n\n   ...all of which operate on a SAMPLE SPACE that\n   you supplied and the calculus cannot check.\n\n  the two failures:\n\n    space too coarse\n       -> right answers, wrong question\n\n    independence assumed by NOTATION\n       P(A) * P(B) asserts \"neither informs the\n       other\" -- and it feels like arithmetic\n\n       10 components @ 1-in-1000 each:\n          independent   1 in 10^30\n          shared cause  ~1 in 1,000\n\n  rule: a multiplication of probabilities is a\n  CLAIM. justify it or don't write it.",
+    "takeaway": "The rules of probability are trivial and operate on a sample space the rules cannot check — so errors come from choosing outcomes too coarse to hold the question, and from asserting independence by writing a multiplication."
+  },
+  "M.11": {
+    "id": "M.11",
+    "trackId": "M",
+    "trackName": "Math for machines",
+    "title": "Distributions",
+    "status": "traced",
+    "seed": "M.11",
+    "story": "A distribution is the assignment of probability across the possible outcomes — the whole shape, not a summary of it. That distinction is the lesson, because in practice people carry two numbers, a centre and a spread, and reason as though those determined the rest. For one family of shapes they nearly do. For most they do not, and the reasoning fails in a specific direction: the extremes.\n\nIt is worth knowing that the vocabulary itself came out of studying the shapes that do not behave. Pearson’s 1894 paper is about dissecting asymmetrical frequency curves — data that is not symmetric — and it is in this period that he introduced the term standard deviation in writing, replacing older names for the same quantity: Gauss’s mean error, mean square error, Airy’s error of mean square. The summary statistic everyone reaches for was named in the course of work about distributions that a centre and a spread describe badly.\n\nSo the question to ask of any data is not what its average is but what shape it has, and the answer is a modelling claim. Assuming the familiar bell means committing to specific things: that values far from the centre are extraordinarily rare, that the centre and the spread really do determine everything, and that no small number of observations can dominate a total. Those commitments are sometimes justified and they are never free, and they are almost always made by default rather than by decision.\n\nThe practical consequence shows up wherever tails matter. Latency, income, file sizes, request volumes, losses: these are routinely asymmetric with a long tail, and under such a shape the mean is not a typical value, the standard deviation understates how far things reach, and the rare event is many times more likely than the bell would predict. Nothing warns you, because the summary statistics compute perfectly well on any data whatsoever.",
+    "problem": {
+      "name": "The shape behind the summary",
+      "aka": [
+        "distributions",
+        "the normal assumption",
+        "tails"
+      ],
+      "shape": "A collection of measurements is being reasoned about through a centre and a spread, and those determine the rest only for particular shapes.",
+      "tell": [
+        "an average is quoted for something like latency, income or file size",
+        "a threshold is set at some number of standard deviations",
+        "the rare case turns out to be much less rare than the model predicted"
+      ],
+      "move": "Ask what shape the data has before summarising it. Plot it, look at the extremes, and treat any assumed distribution as a claim to be checked rather than a default to be inherited.",
+      "invariant": "A summary statistic is a consequence of the distribution and not a description of it. Two datasets can share a mean and a standard deviation and differ completely in the behaviour you care about, which is the reason to look rather than to compute.",
+      "breaks": "It breaks in the tails, and always in the same direction. Under an assumed bell, far-from-centre values are extraordinarily rare; under the asymmetric long-tailed shapes common in real systems they are merely uncommon, so capacity, risk and alerting thresholds derived from the assumption are all set too low.",
+      "cost": {
+        "time": "looking at the data rather than reducing it, which is a habit rather than an expense",
+        "space": "none",
+        "beats": "quoting a mean, which is instant, computes on anything, and is silent about whether it means anything"
+      },
+      "worked": {
+        "problem": "What does assuming a normal distribution actually commit you to?",
+        "reasoning": "Three specific claims about the world, each of which can be false and none of which is stated when you make the assumption by default.\n\nThat extreme values are extraordinarily rare, falling off very fast with distance from the centre. In an asymmetric long-tailed distribution they fall off slowly, so an event the assumption calls essentially impossible may occur weekly.\n\nThat the centre and the spread determine everything else. Under the assumption, quoting two numbers is a complete description; under most real shapes, two datasets can agree on both and behave entirely differently where it matters.\n\nThat no small number of observations dominates a total. Under the assumption, the average is stable and each new observation moves it a little; with heavy tails a single observation can exceed the sum of all the others, so the average is a quantity that keeps changing rather than one you are converging on.\n\nThe reason this bites is that none of the three is checked by anything. A mean and a standard deviation can be computed from any numbers at all, so the summary arrives looking identical whether the assumption holds or not.",
+        "code": "a distribution is the WHOLE SHAPE.\na mean and a standard deviation are two\nconsequences of it.\n\n  assuming the bell commits you to:\n\n    1. extremes are extraordinarily rare\n       (long tail: merely uncommon -> the\n        \"impossible\" event happens weekly)\n\n    2. centre + spread describe everything\n       (two datasets, same both, different\n        behaviour where it matters)\n\n    3. no few points dominate the total\n       (heavy tail: one observation can exceed\n        the sum of the rest -> the \"average\" never\n        settles)\n\n  and nothing checks any of them:\n     mean and sd compute fine on ANY numbers.\n\n  where it bites, always the same direction:\n     latency, income, file sizes, losses\n     -> thresholds set too low\n     -> capacity planned too small\n     -> \"rare\" events, on a schedule"
+      },
+      "practice": "Take a latency dataset from your systems and compute the mean and standard deviation, then plot the histogram and find the 99th percentile. Compare that percentile with what the two summary numbers would have predicted."
+    },
+    "beats": {
+      "broke": "Data gets summarised by a centre and a spread and then reasoned about as though those two numbers described it — which holds for one family of shapes and fails for most, always in the tails.",
+      "fix": "Treat the distribution — the whole assignment of probability across outcomes — as the object, and any statistic as a consequence of it. The vocabulary itself came from work on asymmetric curves, where Pearson introduced the term standard deviation in place of older names.",
+      "cost": "Naming a distribution is a claim about the world that the data can contradict, and the familiar one is usually assumed silently rather than chosen — so the commitment is made without being noticed.",
+      "interview": {
+        "q": "What does assuming a normal distribution actually commit you to?",
+        "trap": "Answering that it assumes the data is bell-shaped. That restates the assumption; the question is what follows from it that can be false.",
+        "answer": "Three claims about the world, none of which is stated when the assumption is made by default.\n\nFirst, that extreme values are extraordinarily rare, falling away very fast with distance from the centre. In the asymmetric long-tailed shapes common in real systems they fall away slowly, so an event the assumption treats as essentially impossible may happen weekly.\n\nSecond, that the centre and the spread determine everything else. Under the assumption, two numbers are a complete description; under most real shapes two datasets can agree on both and behave completely differently where it matters.\n\nThird, that no small number of observations dominates a total. With heavy tails a single observation can exceed the sum of all the others, so the average is not a quantity you are converging on — it keeps moving.\n\nWhat makes this dangerous is that nothing checks any of them. A mean and a standard deviation compute perfectly well on any numbers at all, so the summary looks identical whether the assumption holds or not — which is why latency and cost thresholds derived this way are consistently set too low."
+      }
+    },
+    "blueprint": "The distribution is the SHAPE.\nMean and spread are two consequences of it.\n\n  assuming the bell commits you to:\n\n    extremes are extraordinarily rare\n       long tail -> merely uncommon\n       -> your \"impossible\" event, weekly\n\n    centre + spread describe the rest\n       -> false for most real shapes\n\n    no few points dominate the total\n       heavy tail -> one point > sum of the rest\n       -> the average never settles\n\n  and nothing checks any of it, because mean and\n  standard deviation compute on ANY numbers.\n\n  where it bites (always the same direction):\n     latency, income, file size, loss\n     -> thresholds too low, capacity too small\n\n  note the irony in the vocabulary:\n     \"standard deviation\" was named by Pearson in\n     the course of work on ASYMMETRICAL frequency\n     curves -- shapes it describes badly.",
+    "takeaway": "A distribution is the whole shape and a summary is a consequence of it, so assuming the familiar bell commits you to rare extremes, sufficiency of two numbers, and no dominant observations — three claims nothing in the arithmetic will check."
+  },
+  "M.12": {
+    "id": "M.12",
+    "trackId": "M",
+    "trackName": "Math for machines",
+    "title": "Mean, variance, standard deviation",
+    "status": "traced",
+    "seed": "M.12",
+    "story": "These are taught as three formulas and are better understood as two decisions and a unit conversion.\n\nThe first decision is what a summary is for. Ask for the single number that minimises the total squared distance to your data and you get the mean. Ask for the one that minimises the total absolute distance and you get the median. Both are correct answers to precisely stated questions, and the questions differ in how they price being far away: squaring makes a point at ten times the distance a hundred times as important, so the mean is pulled toward extremes while the median barely notices them. Choosing between them is choosing whether a single distant observation should be allowed to move your answer.\n\nThe second decision is how to describe spread, and the same squaring reappears. Variance — a term Fisher coined in his 1918 paper on Mendelian inheritance, written two years earlier — is the average squared distance from the mean. Squaring makes it well behaved mathematically and leaves it in squared units, which are meaningless to look at: the variance of a set of prices is in squared currency. Standard deviation is the square root of that, which exists almost entirely so that the number is in the units of the data, and the name is Pearson’s, introduced to replace Gauss’s mean error and Airy’s error of mean square.\n\nThe history has a small caveat worth keeping. Pearson’s first use in print is usually dated 1894, with 1893 referring to an earlier lecture, so both dates appear legitimately. And Fisher’s paper coins variance while the phrase analysis of variance appears only in a section heading in its contents rather than its body.\n\nWhat matters in practice is that the output hides the decision. A mean and a median are both a number with the same units and the same name-shaped role, and nothing in a report records which question was answered or whether the data made it a reasonable one.",
+    "problem": {
+      "name": "Choosing a summary statistic",
+      "aka": [
+        "mean versus median",
+        "variance and standard deviation"
+      ],
+      "shape": "A collection of values has to be represented by one or two numbers, and each way of doing so is insensitive to something different.",
+      "tell": [
+        "an average is being reported for something with a long tail",
+        "a single large observation changed a reported figure noticeably",
+        "a spread is being quoted in units that do not match the data"
+      ],
+      "move": "Decide what you want the summary to ignore. Minimising squared error gives the mean and weights distant points heavily; minimising absolute error gives the median and does not. Then report spread in the units of the data, which is what the square root is for.",
+      "invariant": "Each summary is the exact minimiser of a particular error measure. That is why none of them is more correct than another and why the choice is a statement about which errors you are willing to tolerate.",
+      "breaks": "It breaks because the choice leaves no trace. Both summaries produce one number, in the same units, presented the same way, so a reader cannot tell which question was answered — and under a long-tailed distribution the two can differ enough to reverse a decision.",
+      "cost": {
+        "time": "none; both are cheap",
+        "space": "none",
+        "beats": "reporting the full distribution, which is more honest and cannot be put in a single cell"
+      },
+      "worked": {
+        "problem": "Why are the mean and the median both correct and not interchangeable?",
+        "reasoning": "Because they are the answers to two different optimisation problems, and the difference is entirely in how each prices distance.\n\nThe mean is the value minimising the sum of squared differences from the data. The median is the value minimising the sum of absolute differences. Both are exact solutions; neither approximates the other.\n\nSquaring is what separates them. A point ten units away contributes a hundred to a squared total and ten to an absolute one, so under the squared measure a single far-off value can outweigh many nearby ones and drag the answer toward itself. Under the absolute measure it counts once, like everything else.\n\nSo the question is not which is right but which errors you want to be sensitive to. If a distant observation is a real and important case, you want it to move your summary and the mean does. If it is a measurement artefact or a rare extreme you do not want to plan around, the median is the one that ignores it.\n\nAnd the same squaring explains the spread statistics: variance is the average squared distance, which is why it is in squared units, and standard deviation is its root purely so the number can be read against the data.",
+        "code": "both are exact minimisers, of different things:\n\n   mean    minimises  sum of (x - c)^2\n   median  minimises  sum of |x - c|\n\n  what squaring does:\n\n     a point 10 away contributes\n        100  to the squared total\n         10  to the absolute total\n     -> one far point can outweigh many near ones\n     -> the mean moves toward it; the median doesn't\n\n  so the question is not \"which is right\" but:\n\n     should a single distant observation be allowed\n     to move my answer?\n        real and important -> yes -> mean\n        artefact or rare extreme -> no -> median\n\n  and spread inherits the same squaring:\n\n     variance = average squared distance\n                -> squared units (currency squared!)\n     std dev  = its square root\n                -> exists mainly so the number is\n                   in the units of the data\n\n  the decision leaves NO TRACE in the output."
+      },
+      "practice": "Take a latency or price dataset, compute the mean and the median, and then add one plausible extreme value. Record how much each moved, and decide which behaviour you wanted before you looked."
+    },
+    "beats": {
+      "broke": "A set of numbers must be reduced to one or two, and every reduction discards something. Presented as formulas, the choice looks like a convention rather than a decision.",
+      "fix": "Read each summary as the exact minimiser of an error measure: squared error gives the mean, absolute error gives the median. Variance — Fisher’s term from 1918 — is average squared distance, and standard deviation is its root so the number is in the data’s units.",
+      "cost": "The decision is invisible in the result. Both summaries are a single number with the same units, so nothing records which question was answered or whether the data made it a sensible one.",
+      "interview": {
+        "q": "Why are the mean and the median both correct, and why are they not interchangeable?",
+        "trap": "Answering that the median is robust to outliers. True, and it is the consequence rather than the reason — and it does not explain why anyone would prefer the mean.",
+        "answer": "Because each is the exact minimiser of a different error measure. The mean minimises the sum of squared differences from the data; the median minimises the sum of absolute differences. Both are solutions, not approximations of one another.\n\nSquaring is the entire difference. A point ten units away contributes a hundred to a squared total and ten to an absolute one, so under the squared measure a single distant value can outweigh many nearby ones and pull the answer toward itself, while under the absolute measure it counts once like everything else.\n\nThat reframes the choice usefully: it is not about which is right but about whether a single distant observation should be permitted to move your summary. If it is a real and important case, you want that and the mean provides it. If it is an artefact or a rare extreme you will not plan around, the median ignores it.\n\nAnd the same squaring explains the spread statistics — variance is the average squared distance, which is why it is in squared units, and standard deviation exists mainly so the number can be read against the data."
+      }
+    },
+    "blueprint": "Three formulas, two decisions and a unit fix:\n\n   mean    = argmin  sum (x - c)^2\n   median  = argmin  sum |x - c|\n\n   both exact. neither approximates the other.\n\n   squaring prices distance differently:\n      a point 10 away -> 100 squared, 10 absolute\n      -> one far point can outvote many near ones\n\n   so the real question:\n      should one distant observation move my answer?\n         yes -> mean       no -> median\n\n   spread inherits the squaring:\n\n      variance   average squared distance\n                 -> SQUARED UNITS (currency^2)\n      std dev    its square root\n                 -> exists so the number is readable\n                    against the data\n\n   and the choice leaves no trace: same units,\n   same shape of number, no record of the question.",
+    "takeaway": "The mean and median are exact minimisers of squared and absolute error, so choosing between them is choosing whether one distant observation may move your answer — and standard deviation exists chiefly to undo the squaring that variance introduced."
+  },
+  "M.13": {
+    "id": "M.13",
+    "trackId": "M",
+    "trackName": "Math for machines",
+    "title": "Conditional probability and Bayes",
+    "status": "traced",
+    "seed": "M.13",
+    "story": "Two quantities are constantly confused because ordinary language gives them the same shape of sentence. The probability that the test is positive given that you have the disease. The probability that you have the disease given that the test is positive. Both sound like the accuracy of the test, and they can differ by a factor of a hundred.\n\nThe relation between them is what the 1763 essay supplies, and it forces a third quantity into the open: how common the condition was before any test was run. That is the base rate, and it is the number everyone omits, because it is not a property of the test and does not appear in the test’s marketing.\n\nWork the standard example, because the size of the effect is the point rather than the formula. A condition affects one person in ten thousand. A test is ninety-nine percent accurate in both directions. Take a million people: a hundred have the condition, and the test catches ninety-nine of them. The other nine hundred and ninety-nine thousand nine hundred do not, and the test wrongly flags one percent of them — nearly ten thousand people. So a positive result is one of roughly ten thousand and ninety-nine positives, of which ninety-nine are real. Being told you tested positive means you probably do not have it, for a test that is right ninety-nine times out of a hundred.\n\nNothing about that is subtle once the base rate is visible, and everything about it is invisible while it is not. The same structure governs fraud detection, security alerting, medical screening and retrieval: whenever what you are looking for is rare, a very accurate detector produces mostly false positives, and the rate of them is set by the rarity rather than by the quality of the detector.\n\nThe history is worth keeping because it is unusually human. The author died in 1761; his friend Price, a minister and actuary, found the paper among the bequeathed papers and submitted it, adding to it; Price thought it supported the existence of God. Laplace made it the basis of statistical inference and Boole later attacked it.",
+    "problem": {
+      "name": "Inverting a conditional",
+      "aka": [
+        "Bayes’ rule",
+        "base rates",
+        "the false positive problem"
+      ],
+      "shape": "You know how often a signal appears when something is true, and you need to know how often something is true when the signal appears.",
+      "tell": [
+        "an accuracy figure is being quoted for a detector of something rare",
+        "an alert fires and is assumed to mean what it detects",
+        "nobody has stated how common the thing being detected is"
+      ],
+      "move": "Write down three numbers, not one: how often the signal appears when the thing is present, how often it appears when it is absent, and how common the thing is. Then count out of a concrete population rather than manipulating percentages.",
+      "invariant": "The probability of the hypothesis given the evidence depends on the base rate. No property of the test alone determines it, which is why a detector cannot be evaluated without knowing what it is deployed against.",
+      "breaks": "It breaks when the base rate is unknown or shifts, which is common: fraud rates change, attack rates change, and a detector tuned on one population behaves differently on another without anything about the detector changing. The calculation is then only as good as a number you assumed.",
+      "cost": {
+        "time": "nothing; counting out of a population is arithmetic",
+        "space": "none",
+        "beats": "quoting accuracy, which is one number, sounds sufficient, and answers a question nobody asked"
+      },
+      "worked": {
+        "problem": "Why does a highly accurate test for a rare condition mostly return false positives?",
+        "reasoning": "Because the errors are drawn from a much larger pool than the successes, and the ratio is set by rarity rather than by accuracy.\n\nCount out of a million people, with a condition affecting one in ten thousand and a test right ninety-nine times in a hundred.\n\nA hundred people have it. The test correctly flags ninety-nine of them.\n\nNine hundred and ninety-nine thousand nine hundred do not have it. The test wrongly flags one percent — about ten thousand people.\n\nSo roughly ten thousand and ninety-nine positives, of which ninety-nine are genuine: under one in a hundred. A positive result means you almost certainly do not have the condition.\n\nThe structural point is that the false positives come from the enormous healthy population and the true positives from the tiny affected one, so even a small error rate applied to a huge group swamps a high success rate applied to a small one. Improving the test from ninety-nine percent to ninety-nine point nine percent helps, and does not change the shape — what changes the shape is testing a population where the condition is less rare.\n\nWhich is exactly why screening is done on risk groups rather than everyone.",
+        "code": "1,000,000 people\ncondition: 1 in 10,000      test: 99% both ways\n\n       have it:        100\n          flagged:      99      <- true positives\n       don't have it:  999,900\n          flagged 1%:  ~9,999   <- false positives\n\n   positives total: ~10,098\n   genuine:             99\n   -> under 1 in 100\n\n  \"99% accurate\" and a positive means you almost\n  certainly do NOT have it.\n\n  the mechanism:\n     false positives come from the HUGE group\n     true positives come from the TINY one\n     -> a small error rate on a big population\n        swamps a high hit rate on a small one\n\n  improving 99% -> 99.9% helps and does not change\n  the shape. what changes the shape is testing a\n  population where it is LESS RARE.\n  (which is why screening targets risk groups.)"
+      },
+      "practice": "Take an alerting rule in your systems and estimate three numbers: how often it fires when the problem is real, how often it fires when it is not, and how often the problem actually occurs. Then compute what fraction of alerts are real."
+    },
+    "beats": {
+      "broke": "The probability of the evidence given the hypothesis and the probability of the hypothesis given the evidence are different quantities, and ordinary language renders them with the same phrasing.",
+      "fix": "Relate the two explicitly, which forces the base rate into view — the thing everyone omits because it is a property of the population rather than of the test. The essay doing this was read to the Royal Society in December 1763, two years after its author’s death.",
+      "cost": "The base rate is often unknown or unstable, so the answer depends on a number you assumed rather than measured — and a detector tuned on one population misbehaves on another with nothing about it having changed.",
+      "interview": {
+        "q": "Why does a highly accurate test for a rare condition mostly return false positives?",
+        "trap": "Answering that no test is perfect. The effect is not about the residual error being nonzero — it is about which population each kind of error is drawn from.",
+        "answer": "Because the false positives are drawn from a vastly larger pool than the true positives, so rarity rather than accuracy sets the ratio.\n\nCount out of a million people, with a condition affecting one in ten thousand and a test correct ninety-nine times in a hundred. A hundred people have it and the test flags ninety-nine. Nine hundred and ninety-nine thousand nine hundred do not, and the test wrongly flags one percent of them — about ten thousand. So there are roughly ten thousand and ninety-nine positives of which ninety-nine are genuine: under one in a hundred.\n\nThe structure is what matters. A small error rate applied to an enormous group swamps a high success rate applied to a tiny one. Improving the test from ninety-nine to ninety-nine point nine percent helps and does not change the shape — what changes the shape is testing a population in which the condition is less rare, which is exactly why screening targets risk groups rather than everyone.\n\nThe same structure governs fraud detection, security alerting and retrieval: whenever the target is rare, an accurate detector still produces mostly false alarms."
+      }
+    },
+    "blueprint": "Two different numbers, one English sentence:\n\n   P(positive | disease)   <- the test's property\n   P(disease | positive)   <- what you want\n\n   and they differ by the BASE RATE, which belongs\n   to the population, not the test.\n\n  1,000,000 people, 1-in-10,000 condition,\n  99% accurate test:\n\n       have it       100   -> flagged      99\n       don't    999,900   -> flagged  ~9,999\n\n       positives ~10,098, genuine 99\n       -> under 1%\n\n  why: small error rate x HUGE group\n       beats high hit rate x tiny group\n\n  so:\n     a detector cannot be evaluated without knowing\n     what it is pointed at\n     improving accuracy shifts the number, not the\n     shape\n     changing the POPULATION changes the shape\n     -> screen risk groups, not everyone",
+    "takeaway": "The probability of a hypothesis given evidence depends on how common the hypothesis was beforehand, so an accurate detector aimed at something rare returns mostly false positives — a ratio set by rarity rather than by the quality of the detector."
+  },
+  "M.14": {
+    "id": "M.14",
+    "trackId": "M",
+    "trackName": "Math for machines",
+    "title": "Sampling and bias",
+    "status": "traced",
+    "seed": "M.14",
+    "story": "There is a single demonstration that settles this, and it is worth knowing in numbers rather than as a moral. In 1936 the Literary Digest mailed ten million ballots and got back almost 2.4 million. It predicted the challenger would take 57% against the incumbent’s 43%. The result was 62% to 38% the other way — an error of about nineteen percentage points, the largest ever in a major poll, and practically all of it sample bias. In the same election Gallup polled around fifty thousand people and called the winner.\n\nTwo and a half million lost to fifty thousand. That is the whole lesson, and the mechanism is not mysterious. The Digest’s list came from telephone books, vehicle registrations and club rosters — in the depths of the Depression, a list of the comparatively wealthy. And only about a quarter of the ballots came back, with supporters of one side far likelier to return them. Both effects pushed the same way, and neither is reduced by mailing more ballots to the same kind of person.\n\nThat is the distinction to carry. A sample can be wrong in two ways. It can be noisy, meaning it scatters around the truth, and collecting more shrinks that scatter in a predictable way. It can be biased, meaning it is systematically drawn from the wrong population, and collecting more does nothing whatever — it makes a more precise estimate of the wrong quantity. Sample size is a remedy for exactly one of the two, and it is the one that was not the problem.\n\nThe other failure is subtler and has its own canonical study. Bickel, Hammel and O’Connell looked at Berkeley graduate admissions for autumn 1973: in aggregate about 44.2% of men were admitted against 34.6% of women, and yet department by department few units showed significant departures and about as many favoured women as men — with the properly pooled figure showing a small bias in favour of women. Grouping changed the direction of the answer. One correction to the story as usually told: Berkeley was never sued; officials feared they might be and asked for the analysis.",
+    "problem": {
+      "name": "Bias versus noise",
+      "aka": [
+        "sampling bias",
+        "selection effects",
+        "aggregation reversal"
+      ],
+      "shape": "Conclusions about a population are drawn from a subset, and the subset can be unrepresentative in a way that more data does not fix.",
+      "tell": [
+        "confidence in a result rests mainly on how much data there is",
+        "the sample was whoever responded, whoever was logged, or whoever was available",
+        "a conclusion changes when the data is grouped differently"
+      ],
+      "move": "Ask how the sample was selected before asking how large it is. Then ask whether the selection could correlate with what you are measuring — and check whether the conclusion survives disaggregation.",
+      "invariant": "Increasing the sample reduces noise and leaves bias untouched. Those are different failures with different remedies, and conflating them is what makes large datasets feel authoritative when they are not.",
+      "breaks": "Bias is undetectable from inside the sample. Nothing in the data reveals that the wrong population was drawn from, because the data is a faithful record of the population that was — so the only defence is knowing the selection mechanism, which is information outside the dataset.",
+      "cost": {
+        "time": "thinking about provenance, which is cheaper than collecting more and feels less like progress",
+        "space": "none",
+        "beats": "collecting more data, which is expensive, feels rigorous, and addresses only the failure you probably did not have"
+      },
+      "worked": {
+        "problem": "Why was a sample of 2.4 million beaten by a sample of 50,000?",
+        "reasoning": "Because they failed at different things, and only one of the two failures responds to size.\n\nNoise is scatter around the truth. Draw a sample at random and your estimate wobbles, and the wobble shrinks as the sample grows. Fifty thousand is more than enough to make that wobble small for a national question.\n\nBias is being drawn from the wrong population, and it does not shrink. The Digest’s frame came from telephone books, vehicle registrations and club rosters during the Depression, which selected for wealth, and its response rate of around a quarter selected again for enthusiasm. Both pushed the same direction. Mailing ten million rather than one million makes the estimate of that skewed population more precise; it does not make that population the electorate.\n\nSo the large sample produced a very precise measurement of the wrong thing, and the small one produced a rougher measurement of the right thing.\n\nThe part that should be unsettling is that no examination of the 2.4 million responses would have revealed the problem. The data was an accurate record of who answered. What was wrong was who was asked, which is not in the data at all — and Gallup demonstrated this by predicting the error in advance from three thousand people drawn from the Digest’s own lists.",
+        "code": "two failures, one remedy:\n\n   NOISE   scatter around the truth\n           shrinks with n\n           50,000 is plenty for a national question\n\n   BIAS    drawn from the wrong population\n           does NOT shrink with n\n           -> more data = a more precise estimate\n              of the wrong quantity\n\n  1936:\n     10,000,000 mailed, ~2,400,000 returned\n        frame: phone books, vehicles, clubs\n               (in the Depression = the wealthy)\n        response: ~1 in 4, and not at random\n        predicted 57-43 the wrong way\n        actual 62-38  -> ~19 points out\n\n     ~50,000 sampled -> called the winner\n\n  and the unsettling part:\n\n     no inspection of the 2.4M would reveal it.\n     the data faithfully records WHO ANSWERED.\n     what was wrong is WHO WAS ASKED -- which is\n     not in the dataset at all.\n\n  (demonstrated: 3,000 drawn from the Digest's own\n   lists predicted the Digest's error in advance.)"
+      },
+      "practice": "Take a dataset you rely on and write down the selection mechanism — who or what got included, and why. Then name one way that mechanism could correlate with the thing you are measuring."
+    },
+    "beats": {
+      "broke": "A subset stands in for a population, and the instinctive way to make it trustworthy is to collect more — which addresses only one of the two ways a sample can be wrong.",
+      "fix": "Separate noise from bias. Noise scatters around the truth and shrinks with size; bias means drawing from the wrong population and does not shrink at all. In 1936 a sample of 2.4 million was nineteen points wrong and one of 50,000 was right.",
+      "cost": "Bias is invisible from inside the data, because the data is an accurate record of whoever was selected — so the only defence is knowledge of the selection mechanism, which lives outside the dataset.",
+      "interview": {
+        "q": "Why was a sample of 2.4 million beaten by a sample of 50,000?",
+        "trap": "Answering that the larger poll was badly run. It was run competently; the failure was in the frame and the response, not the execution.",
+        "answer": "Because they failed at different things and only one of those failures responds to size.\n\nNoise is scatter around the truth, and it shrinks as the sample grows — fifty thousand is ample to make it small for a national question. Bias is being drawn from the wrong population, and it does not shrink at all: more data gives a more precise estimate of the wrong quantity.\n\nThe 1936 frame came from telephone books, vehicle registrations and club rosters during the Depression, which selected for wealth, and only about a quarter of ballots were returned, which selected again for enthusiasm. Both pushed the same way. Mailing ten million rather than one million sharpened the measurement of that skewed group without making it the electorate — so the poll was about nineteen points wrong, the largest error in a major poll, while a fifty-thousand sample called the winner.\n\nWhat should be unsettling is that no amount of examining those 2.4 million responses would have exposed the problem. The data accurately records who answered; what was wrong is who was asked, which is not in the dataset. Gallup demonstrated exactly this by predicting the error in advance from three thousand people drawn from the Digest's own lists."
+      }
+    },
+    "blueprint": "Two failures. One remedy. They don't match.\n\n   NOISE  scatter around the truth\n          shrinks with n         <- what size fixes\n   BIAS   wrong population\n          does NOT shrink        <- what went wrong\n\n  1936, in numbers:\n\n     2,400,000 returned   ->  57-43  WRONG WAY\n     actual                   62-38\n     error ~19 points, largest in a major poll\n     ~50,000 sampled      ->  called it\n\n     frame:    phone / vehicle / club records,\n               in the Depression = the wealthy\n     response: ~25%, and not at random\n     both push the SAME direction\n\n  the part that should worry you:\n\n     inspecting the 2.4M reveals nothing.\n     it faithfully records WHO ANSWERED.\n     the fault is WHO WAS ASKED -- not in the data.\n\n  second failure, second study:\n     Berkeley 1973: aggregate 44.2% vs 34.6%\n     by department: few significant, about as many\n     favouring women; pooled properly, a small bias\n     toward women.\n     -> GROUPING reversed the direction.\n     (and the lawsuit everyone mentions never\n      happened)",
+    "takeaway": "More data shrinks noise and does nothing to bias, which is why 2.4 million responses lost to fifty thousand — and bias is undetectable from inside the sample, because the data faithfully records whoever was asked."
+  },
+  "M.2": {
+    "id": "M.2",
+    "trackId": "M",
+    "trackName": "Math for machines",
+    "title": "Vectors",
+    "status": "traced",
+    "seed": "M.2",
+    "story": "A vector arrives in code as an array of numbers, and that representation is a compression that throws away the thing that makes it a vector. What makes it one is that the positions mean something fixed — the same axis, in the same order, for every vector you intend to compare — and that you can therefore add two of them, scale one, and ask how aligned two are.\n\nAdding is the clearest case of why this matters. Adding two lists of numbers is a syntactic operation that always succeeds when the lengths match. Adding two vectors is meaningful only when the positions correspond: position three has to mean the same thing in both, or the sum is arithmetic on unrelated quantities. Nothing in the array says whether that holds, which is why the most common error in this whole area is combining two representations produced by different processes and getting a number rather than an exception.\n\nThe same is true of similarity. M.4 covers the dot product as a measure of alignment, and the reason it measures anything is that the axes are shared. Two embeddings from the same model are comparable; two from different models are not, however similar the shapes look, because the coordinates refer to different axes. The arithmetic is identical and the meaning is absent.\n\nThe historical note is a useful reminder that this notation is younger than it looks. Sylvester coined the word matrix around 1850, defining it as a rectangular array of terms, and Cayley’s 1858 memoir introduced the operations — addition, multiplication, the unit matrix, the inverse — originally to simplify the notation for simultaneous linear equations. The representation came from wanting to write something down compactly, which is exactly how it is still used and exactly why it is so easy to forget that the compactness is hiding a choice of axes.",
+    "problem": {
+      "name": "Coordinates relative to a basis",
+      "aka": [
+        "vectors",
+        "the shared axis assumption"
+      ],
+      "shape": "Quantities are represented as ordered numbers, and the ordering carries meaning that the representation does not record.",
+      "tell": [
+        "two arrays from different sources are being combined or compared",
+        "a similarity score is computed between things produced by different models or versions",
+        "a vector is reordered, sliced or concatenated and still treated as the same object"
+      ],
+      "move": "Treat a vector as a point in a specific space: record which space, and permit arithmetic only between vectors of that space. The operations — addition, scaling, dot product — are meaningful exactly when the axes agree.",
+      "invariant": "Every position means the same thing in every vector being combined. This is what makes the operations interpretable, and it is not represented in the array, so it must be maintained by you or by the type system.",
+      "breaks": "It breaks silently. Combining vectors from different spaces produces a number rather than an error, because the arithmetic is well-defined on any two arrays of equal length — so the failure surfaces as a slightly wrong result, which is the hardest kind to notice.",
+      "cost": {
+        "time": "none; this is a discipline about what you allow, not an operation",
+        "space": "metadata recording which space a vector belongs to, which almost no system keeps",
+        "beats": "treating vectors as arrays, which is simpler and permits exactly the comparisons that are meaningless"
+      },
+      "worked": {
+        "problem": "Why is adding two vectors meaningful when adding two lists of numbers is not?",
+        "reasoning": "Because addition of vectors is defined to correspond to something, and addition of lists is not defined to correspond to anything.\n\nIf both vectors live in the same space, position three means the same axis in each, so adding position to position produces a point whose third coordinate is the sum of two quantities of the same kind. The result is in the space and means something.\n\nIf they do not, the operation still succeeds — arrays of equal length always add — and the third entry of the result is the sum of two unrelated quantities. It is a number, it is not a coordinate, and nothing distinguishes it from a valid one.\n\nThat is why the interesting property of a vector is not its contents but its membership. Two embeddings from the same model are comparable; two from different models, or from different versions of the same model, are not — the coordinates refer to different axes, and every operation between them is arithmetic without meaning.\n\nThe practical consequence is that vector systems need to record provenance, because the failure mode is a plausible number rather than an exception.",
+        "code": "two arrays of length 768:\n\n   from model A, and from model B (or A v2)\n\n   a + b       succeeds\n   dot(a, b)   returns a number in [-1, 1]\n   nothing fails. nothing warns.\n\n   but position 3 means a different axis in each\n   -> the sum is not a point in either space\n   -> the similarity measures nothing\n\n  what makes a vector a vector:\n     not its contents\n     its MEMBERSHIP of a space whose axes are fixed\n\n  the operations are meaningful exactly when the\n  axes agree:\n     add    same kind + same kind\n     scale  a point moved along the same axes\n     dot    alignment, relative to shared axes (M.4)\n\n  and the representation records NONE of this,\n  which is why vector stores need provenance\n  and why a model version change is a data\n  migration."
+      },
+      "practice": "Take two embeddings produced by different models with the same dimensionality and compute their cosine similarity. Note that you get a plausible number, and that nothing in your code could have told you it was meaningless."
+    },
+    "beats": {
+      "broke": "A vector in code is an array, and the array does not record what its positions mean. The thing that makes the operations meaningful is exactly the thing the representation discards.",
+      "fix": "Treat a vector as a point in a named space with fixed axes, and permit arithmetic only within it. The notation itself is young — the word was coined around 1850 and the operations set out in 1858, originally to write simultaneous equations compactly.",
+      "cost": "The constraint is not representable in the array, so violating it produces a plausible number rather than an error, and the failure appears as a slightly wrong result far from its cause.",
+      "interview": {
+        "q": "Why is adding two vectors meaningful when adding two lists of numbers is not?",
+        "trap": "Answering that vectors have direction and magnitude. That is a picture for two dimensions and does not explain what goes wrong with two embeddings.",
+        "answer": "Because vector addition is defined to correspond to something and list addition is not.\n\nIf both vectors belong to the same space, position three names the same axis in each, so adding position by position sums two quantities of the same kind and the result is a point in that space that means something.\n\nIf they belong to different spaces the operation still succeeds — any two arrays of equal length add — and each entry of the result sums two unrelated quantities. It is a number rather than a coordinate, and nothing distinguishes it from a valid one.\n\nSo the defining property of a vector is not its contents but its membership. Two embeddings from the same model are comparable; two from different models, or different versions of the same model, are not, because the coordinates refer to different axes. The arithmetic is identical and the meaning is gone.\n\nThe practical consequence is that vector systems must record provenance and that a model upgrade is a data migration — because the failure mode here is a plausible similarity score rather than an exception."
+      }
+    },
+    "blueprint": "What the array does not record:\n\n   [0.13, -0.42, 0.87, ...]\n\n   position 3 means... which axis?\n   the array does not say. the space does.\n\n  operations are meaningful iff the axes agree:\n\n     add    two quantities of the SAME kind\n     scale  movement along the same axes\n     dot    alignment w.r.t. shared axes  (M.4)\n\n  and when they don't agree:\n\n     a + b       succeeds\n     cosine(a,b) returns a plausible number\n     nothing fails, nothing warns\n     -> a slightly wrong answer, far from the cause\n\n  therefore:\n     vector stores need PROVENANCE\n     a model version bump is a DATA MIGRATION\n     \"same dimensionality\" means nothing at all",
+    "takeaway": "A vector is a point in a space with fixed axes, and the array representing it records the coordinates while discarding the space — which is why combining vectors from different models produces a plausible number instead of an error."
+  },
+  "M.3": {
+    "id": "M.3",
+    "trackId": "M",
+    "trackName": "Math for machines",
+    "title": "Matrices and matrix multiplication",
+    "status": "traced",
+    "seed": "M.3",
+    "story": "Matrix multiplication is the operation everyone learns as a procedure and almost nobody is told the reason for, which is a shame, because the reason determines every property that makes it strange.\n\nStart where Cayley did in 1858: matrices were introduced to simplify the notation arising in simultaneous linear equations. A system of linear equations is a transformation — it takes a vector of inputs and produces a vector of outputs — and the array is just the coefficients written in a block. Now do two transformations one after the other. Substituting one set of equations into the other gives a mess, and the mess simplifies to another set of linear equations, which means the composition is a transformation of the same kind and therefore has its own array of coefficients.\n\nMatrix multiplication is defined to be the operation that produces that array. That is the whole definition, and once you have it the strange properties stop being strange. It is not elementwise because composition is not elementwise — the output in position i depends on every input, so each entry of the product is a sum over a shared index. It is not commutative because doing one transformation then another is not the same as doing them in the other order, and Cayley’s memoir explores exactly that non-commutative algebra. And the inner dimensions must agree because the output of the first transformation is the input to the second, so a mismatch is not a formatting problem but two transformations that cannot be composed at all.\n\nThe history is worth handling carefully, because the tidy version is disputed. The word was coined earlier by Sylvester; credit for founding the theory goes to Cayley largely because he wrote the first expository articles; and the memoir went generally unnoticed, especially outside England, until the 1880s. Later historians describe the Cayley-as-founder story as simplistic. Useful to know when a textbook presents it as settled.",
+    "problem": {
+      "name": "Composition of linear maps",
+      "aka": [
+        "matrix multiplication",
+        "why not elementwise"
+      ],
+      "shape": "Transformations are applied one after another, and you want the combined effect as a single object of the same kind.",
+      "tell": [
+        "several linear operations are applied in sequence to the same data",
+        "someone is surprised that the product is not elementwise, or that the order matters",
+        "a dimension mismatch is being treated as a reshaping problem"
+      ],
+      "move": "Read a matrix as a transformation and the product as their composition. Then every property of the operation is derived from what composition must do, rather than memorised as a rule.",
+      "invariant": "The product of two matrices is the matrix of the composed transformation. That single requirement determines the definition completely — there is no design freedom in it, which is why the definition looks arbitrary and is not.",
+      "breaks": "It breaks the intuition of anyone who expects an elementwise operation, which every other array operation is. That expectation is why libraries need two different operators, and why the elementwise one silently broadcasting is such a reliable source of wrong answers rather than errors.",
+      "cost": {
+        "time": "proportional to the product of the three dimensions involved, rather than to the size of the arrays",
+        "space": "the result, whose shape is the outer dimensions",
+        "beats": "writing out the composed equations, which is correct, unreadable, and hides that the result is the same kind of thing"
+      },
+      "worked": {
+        "problem": "Why is matrix multiplication defined that way rather than elementwise?",
+        "reasoning": "Because the definition is not a choice. It is forced by the requirement that the product represent composition.\n\nA matrix is a linear transformation: each output coordinate is a weighted sum of all input coordinates. Apply one transformation and then another. The second one’s output coordinate is a weighted sum of the first one’s outputs, and each of those is itself a weighted sum of the original inputs. Collect terms and each final coordinate is a weighted sum of the original inputs — so the composition is again a linear transformation, and its coefficient for a given input-output pair is a sum of products over the intermediate coordinate.\n\nThat sum over the shared index is exactly the definition of the matrix product. Nothing was chosen; it was computed.\n\nAnd now the properties follow rather than being learned. Not elementwise, because each output depends on every input. Not commutative, because composition is not. Inner dimensions must match, because the first transformation’s outputs are the second’s inputs — so a mismatch is not a shape problem to be reshaped around, it is two transformations that do not compose.",
+        "code": "a matrix IS a linear transformation.\n\n  apply B, then A:\n\n     y_i = sum_k A_ik * z_k\n     z_k = sum_j B_kj * x_j\n\n     y_i = sum_k A_ik * (sum_j B_kj * x_j)\n         = sum_j ( sum_k A_ik * B_kj ) * x_j\n                  ^^^^^^^^^^^^^^^^^^^\n                  that is (AB)_ij\n\n  the definition was COMPUTED, not chosen.\n\n  and every \"strange\" property follows:\n\n     not elementwise   each output depends on\n                       EVERY input\n     not commutative   B-then-A != A-then-B\n     inner dims match  first's outputs are\n                       second's inputs\n                       -> a mismatch is not a\n                          reshaping problem; the\n                          transformations do not\n                          compose at all\n\n  which is why libraries need TWO operators, and\n  why the elementwise one broadcasting silently\n  is such a reliable source of wrong answers."
+      },
+      "practice": "Take two small matrices and compute their product twice, in both orders. Then write out what transformation each represents and say in words why the two results describe different things."
+    },
+    "beats": {
+      "broke": "Transformations get applied in sequence, and writing the composition by substitution is unreadable and obscures that the result is a transformation of the same kind with its own coefficients.",
+      "fix": "Define the product so that it yields the coefficients of the composition. Cayley’s 1858 memoir introduced multiplication, the unit matrix, the inverse and powers, along with the non-commutative algebra that comes with them.",
+      "cost": "The definition is inherited from composition rather than chosen, so it violates every expectation set by elementwise array operations — which is why a mismatch is a genuine impossibility rather than a formatting issue.",
+      "interview": {
+        "q": "Why is matrix multiplication defined the way it is rather than elementwise?",
+        "trap": "Answering that elementwise multiplication exists separately and is used for other things. True, and it explains the notation rather than the definition.",
+        "answer": "Because the definition is forced rather than chosen. It is whatever makes the product represent composition.\n\nA matrix is a linear transformation in which each output coordinate is a weighted sum of all input coordinates. Apply one and then another: the second transformation's output is a weighted sum of the first's outputs, each of which is a weighted sum of the original inputs. Collect terms and every final coordinate is a weighted sum of the original inputs — so the composition is again linear, and its coefficient for a given pair is a sum of products over the intermediate index. That sum over a shared index is exactly the matrix product. It was computed, not designed.\n\nEvery property people find strange then follows instead of being memorised. Not elementwise, because each output depends on every input. Not commutative, because doing one transformation then another differs from the reverse — which is precisely the non-commutative algebra Cayley's 1858 memoir explores. And the inner dimensions must agree because the first map's outputs are the second's inputs, so a mismatch is not a shape to be worked around; the two transformations genuinely do not compose."
+      }
+    },
+    "blueprint": "The definition is derived, not designed:\n\n   requirement: (AB) must be the matrix of\n                \"apply B, then A\"\n\n   y_i = sum_k A_ik z_k ,  z_k = sum_j B_kj x_j\n   => y_i = sum_j ( sum_k A_ik B_kj ) x_j\n                    ^^^^^^^^^^^^^^^ = (AB)_ij\n\n  everything else falls out:\n\n     not elementwise    every output uses every input\n     not commutative    order of composition matters\n     inner dims agree   outputs of one = inputs of\n                        the next\n                        -> mismatch = they do not\n                           compose. not a reshape.\n\n  history, handled honestly:\n     \"matrix\" coined earlier by Sylvester\n     Cayley credited for the first expository work\n     the memoir went unnoticed outside England\n       until the 1880s\n     historians call the tidy story simplistic.",
+    "takeaway": "Matrix multiplication is whatever operation makes the product represent composition, so it was computed rather than chosen — and that single requirement forces it to be non-elementwise, non-commutative, and to demand agreeing inner dimensions."
+  },
   "M.4": {
     "id": "M.4",
     "trackId": "M",
@@ -6027,6 +6414,152 @@
     "blueprint": "import numpy as np\n\ndef cosine_similarity(v1, v2):\n    # Normalize vectors to unit length\n    u1 = v1 / np.linalg.norm(v1)\n    u2 = v2 / np.linalg.norm(v2)\n    # Dot product of unit vectors IS cosine similarity\n    return np.dot(u1, u2)",
     "takeaway": "An embedding is geometry as meaning. The dot product is the ruler that measures semantic distance."
   },
+  "M.5": {
+    "id": "M.5",
+    "trackId": "M",
+    "trackName": "Math for machines",
+    "title": "Shape and dimension errors",
+    "status": "traced",
+    "seed": "M.5",
+    "story": "There are two kinds of shape error and they have opposite severities, which is the opposite of how people rank them.\n\nThe first is a mismatch in a composition. M.3 explains why the inner dimensions of a matrix product must agree: the outputs of the first transformation are the inputs of the second, so a mismatch means the two do not compose. This raises an exception, you read the shapes, you fix it, and nothing is at risk. It is the kind of failure people complain about and it is the harmless one.\n\nThe second is an elementwise operation whose shapes did not match and were repaired for you. Broadcasting aligns arrays from the trailing dimension and stretches any axis of size one to match, so a great many mismatched pairs are compatible under its rules rather than erroneous. The canonical instance: a column of shape n by 1 combined with a flat array of length n does not fail and does not give you n results — it gives you n by n, because the size-one axis stretched against the flat one. No exception, an array a thousand times larger than intended, and a downstream mean or sum that quietly reports a number.\n\nThe asymmetry is worth stating plainly. The loud error costs you a minute. The quiet one produces a plausible result, and plausible results propagate: they get averaged, logged, plotted and reported, and by the time anything looks wrong the cause is many steps back. So the loud failures are the ones the system handles for you, and the quiet ones are the ones you have to handle yourself.\n\nWhich gives a discipline rather than a rule. Before any elementwise operation, know the shape of both operands rather than assuming; and when an operation succeeds, check that the output shape is what you expected rather than that it exists. The shape of the result is the only evidence you get that broadcasting did what you meant.",
+    "problem": {
+      "name": "Silent shape repair",
+      "aka": [
+        "broadcasting",
+        "dimension errors"
+      ],
+      "shape": "An array operation is given operands whose shapes do not match, and the system sometimes refuses and sometimes invents an interpretation.",
+      "tell": [
+        "an array is unexpectedly large, or a reduction returns a scalar where a vector was expected",
+        "a result is plausible but slightly wrong and the cause is not local",
+        "code reshapes with a trailing axis of size one to make something work"
+      ],
+      "move": "Classify the operation first. Composition — a matrix product — has a hard constraint and will refuse. Elementwise operations have broadcasting, so they may not refuse, and you must assert the output shape rather than trusting that it succeeded.",
+      "invariant": "Broadcasting aligns from the trailing axis and stretches any axis of extent one. That rule, not your intention, determines whether an operation succeeds — so the set of shapes it accepts is much larger than the set you meant.",
+      "breaks": "It breaks by succeeding. An operation that should have failed instead produces a larger array, whose subsequent reduction gives a number of the right type and the wrong value — and because nothing raised, the error surfaces far downstream and is attributed to whatever is nearest.",
+      "cost": {
+        "time": "nothing to check shapes; a great deal to find a wrong number that was never flagged",
+        "space": "a broadcast operation can allocate the product of two dimensions where you expected one",
+        "beats": "requiring exact shapes everywhere, which is safer and would make ordinary code unbearably verbose"
+      },
+      "worked": {
+        "problem": "Which shape error is worse — the one that raises an exception or the one that does not?",
+        "reasoning": "The one that does not, by a wide margin, and the ranking is the reverse of how people experience them.\n\nAn exception is a complete diagnosis delivered instantly. It names the operation, gives both shapes, and stops before anything downstream is contaminated. The cost is a minute and the blast radius is nothing.\n\nA silent repair produces an array. It has the right dtype, it flows into the next operation, and whatever reduction follows returns a number of the expected type. Nothing in the pipeline can distinguish it from the intended result, so it is averaged, logged, charted and reported — and when someone finally notices that a metric looks wrong, the cause is many steps upstream and the nearest suspicious code is blamed instead.\n\nSo the operation that refuses is doing you a service, and the operation that accommodates is deferring the failure to a point where it is expensive.\n\nThe practical rule that follows is to treat success as uninformative. Checking that an operation ran tells you nothing; checking that the output shape is what you expected is the only evidence available.",
+        "code": "two failures, opposite severities:\n\n  matmul, inner dims disagree\n     -> EXCEPTION\n     -> names the op, gives both shapes\n     -> nothing downstream touched\n     -> costs a minute\n\n  elementwise, shapes disagree\n     -> broadcasting: align from the TRAILING axis,\n        stretch any axis of extent 1\n     -> often SUCCEEDS\n\n  the canonical one:\n\n     a.shape == (n, 1)\n     b.shape == (n,)\n     a + b   ->  (n, n)        not (n,) and not an error\n\n     then .mean() -> a number, right type, wrong value\n\n  so:\n     success is not evidence.\n     the OUTPUT SHAPE is the evidence.\n\n  assert it. every time it matters."
+      },
+      "practice": "Create an array of shape n by 1 and one of shape n, add them, and print the result's shape. Then take the mean of the result and compare it with the mean you intended — note that both are numbers and only one is right."
+    },
+    "beats": {
+      "broke": "Array operations have two kinds of shape failure with opposite costs, and only the cheap one raises. The expensive one is repaired silently and produces something that looks like an answer.",
+      "fix": "Classify the operation. Composition imposes a hard constraint and refuses — a matrix product’s inner dimensions must agree because the first transformation’s outputs are the second’s inputs. Elementwise operations broadcast, so they must be checked by asserting the output shape.",
+      "cost": "Broadcasting is genuinely useful and is what makes ordinary numerical code readable, so the answer is not to remove it — which means the checking obligation stays with you permanently.",
+      "interview": {
+        "q": "Which shape error is worse: the one that raises an exception or the one that does not?",
+        "trap": "Answering the exception, because it stops your program. Stopping is the feature.",
+        "answer": "The silent one, by a long way, and the ranking is the reverse of how they feel.\n\nAn exception is a complete diagnosis delivered immediately: it names the operation, reports both shapes, and halts before anything downstream is contaminated. It costs a minute and has no blast radius.\n\nA broadcast repair produces an array of the right type that flows into the next operation. Whatever reduction follows returns a number that looks entirely normal, so it gets averaged, logged, plotted and reported — and when a metric eventually looks wrong, the cause is many steps upstream and the nearest plausible code gets blamed instead.\n\nThe canonical case is an array of shape n by 1 combined with a flat array of length n. Broadcasting aligns from the trailing axis and stretches the size-one axis, so the result is n by n — not a failure, not the n values you wanted, and a thousand times larger if n is a thousand.\n\nThe rule that follows is that success is not evidence. The output shape is the only evidence you get, so assert it rather than checking that the operation ran."
+      }
+    },
+    "blueprint": "Two failures, ranked backwards by intuition:\n\n   matmul, inner dims disagree\n      EXCEPTION. names the op, both shapes, stops.\n      cost: a minute. blast radius: none.\n      (and it is a real impossibility -- the\n       transformations do not compose)\n\n   elementwise, shapes disagree\n      broadcasting: align from the TRAILING axis,\n                    stretch any axis of extent 1\n      -> often succeeds, and gives you something else\n\n   (n,1) + (n,)  ->  (n,n)\n      no error. 1000x the memory. then .mean()\n      returns a number of the right type and the\n      wrong value, which propagates.\n\n  therefore:\n\n     the operation that REFUSES is doing you a favour\n     the operation that ACCOMMODATES defers the bill\n\n     success tells you nothing.\n     the OUTPUT SHAPE is the evidence. assert it.",
+    "takeaway": "The shape error that raises is the cheap one — a complete diagnosis before anything is contaminated — while broadcasting silently repairs mismatches into plausible wrong answers, which is why success is not evidence and the output shape is."
+  },
+  "M.6": {
+    "id": "M.6",
+    "trackId": "M",
+    "trackName": "Math for machines",
+    "title": "Functions and graphs",
+    "status": "traced",
+    "seed": "M.6",
+    "story": "A function is a rule giving exactly one output for each input, and its graph is the set of input-output pairs. Stated that way it sounds like a definition to get past, and it is worth pausing on because the second description is the useful one.\n\nEverything you want to know about a function in this context is a property of its shape rather than of its formula. Does it have one lowest point or many. Does going downhill from anywhere get you to the lowest one. Does it have flat regions where you cannot tell which way to move. Do small changes in input produce small changes in output. None of those questions is answered by looking at the expression, and all of them decide whether an optimisation procedure will work — the procedure Cauchy published in 1847, which moves in the direction the function decreases, only finds the lowest point if the shape cooperates.\n\nThat is why the same formula can be easy or hard depending on where you start, and why two formulas that look nothing alike can behave identically. The expression is a way of computing points on the surface; the surface is the thing the algorithm is walking on.\n\nThe honest limitation is that the surfaces that matter have too many dimensions to draw. You will build intuition from pictures in two and three dimensions, and that intuition is genuinely useful and genuinely misleading — high-dimensional surfaces have properties with no low-dimensional analogue, and a valley in three dimensions is a reliable mental image of something that mostly does not happen in a million. So carry the pictures as a vocabulary for talking about shape, and check specific claims against the mathematics rather than against the drawing.",
+    "problem": {
+      "name": "Reasoning about a function by its shape",
+      "aka": [
+        "graphs",
+        "landscapes",
+        "loss surfaces"
+      ],
+      "shape": "You need to predict how a procedure will behave on a function, and the formula defining it does not expose the properties the procedure depends on.",
+      "tell": [
+        "an optimisation gets stuck, oscillates, or gives different answers from different starting points",
+        "someone is reasoning about training behaviour from the algebraic form of the loss",
+        "the question is whether going downhill will get you to the bottom"
+      ],
+      "move": "Ask about the shape rather than the expression: how many low points, whether downhill always leads to the lowest, whether there are flat regions, and how fast the output changes with the input.",
+      "invariant": "The behaviour of a descent procedure depends on the surface, not on how the surface is written. Two different formulas producing the same surface behave identically, which is why reasoning from the algebra misleads.",
+      "breaks": "The intuition breaks with dimension. Pictures in two or three dimensions are how everyone reasons about this, and high-dimensional surfaces have properties with no low-dimensional counterpart — so the drawing remains a good vocabulary and a poor authority.",
+      "cost": {
+        "time": "none; this is a way of asking questions",
+        "space": "none",
+        "beats": "reasoning from the formula, which is available and answers a different question"
+      },
+      "worked": {
+        "problem": "Why does the formula tell you less than the shape does?",
+        "reasoning": "Because the procedure does not read the formula. It samples the surface.\n\nA descent method evaluates the function somewhere, looks at how it is changing there, takes a step, and repeats. Nothing in that loop has access to the expression — two functions written completely differently but producing identical values behave identically under it, and a single expression can be easy from one starting point and hopeless from another.\n\nSo the questions that determine success are all shape questions. How many low points are there. Is the lowest one reachable by going downhill from where you started. Are there flat stretches where the direction of improvement is undetectable. How sharply does the output change, which decides how far you can step before the local information stops applying.\n\nNone of those are visible in the algebra, and all of them are visible — in principle — in the surface.\n\nWhich is also the warning: in principle. The surfaces in question have far too many dimensions to inspect, so shape reasoning here is a way of asking the right question rather than a way of getting an answer by looking.",
+        "code": "what a descent procedure actually sees:\n\n     evaluate here\n     which way is down?\n     step\n     repeat\n\n  it never reads the formula.\n\n  -> two different expressions, same surface\n     = identical behaviour\n  -> one expression, two starting points\n     = possibly opposite outcomes\n\n  the questions that decide the outcome are all\n  about the surface:\n\n     how many low points?\n     is the lowest one reachable downhill from here?\n     are there FLAT regions?   (no direction to read)\n     how fast does it change?  (how far can I step\n                                before the local\n                                information expires?)\n\n  none of these are in the algebra.\n\n  and the caveat: the surfaces that matter have\n  too many dimensions to look at, so this is a way\n  of asking the right question -- not of answering\n  it by inspection."
+      },
+      "practice": "Take a loss curve you have seen during training and describe it as a shape rather than as a formula: where it was steep, where it was flat, and whether the point you stopped at was the lowest or merely the nearest."
+    },
+    "beats": {
+      "broke": "A formula says how to compute an output and is silent about the properties that decide whether an optimisation procedure will succeed — which are all about the shape of the surface it produces.",
+      "fix": "Treat the function as the set of its input-output pairs. The descent procedure Cauchy published in 1847 walks that surface and never reads the expression, so the surface is what determines its behaviour.",
+      "cost": "The surfaces that matter are too high-dimensional to inspect, so low-dimensional pictures remain the only intuition available — useful as vocabulary and unreliable as evidence.",
+      "interview": {
+        "q": "Why does the formula defining a function tell you less than its shape does?",
+        "trap": "Answering that the shape is easier to understand. It is often not; the point is about what the algorithm has access to.",
+        "answer": "Because the procedure never reads the formula. A descent method evaluates the function somewhere, observes how it is changing at that point, steps, and repeats — so two expressions written completely differently but producing the same values behave identically under it, and a single expression can be easy from one starting point and hopeless from another.\n\nThat means every question determining success is a question about the surface. How many low points are there. Is the lowest reachable by going downhill from where you started. Are there flat regions where no direction of improvement is detectable. How sharply does the output change, which decides how far a step can go before the local information stops applying.\n\nNone of those are visible in the algebra.\n\nThe honest limitation is that they are visible in the surface only in principle — the surfaces in question have far too many dimensions to inspect. So shape reasoning is a way of asking the right questions rather than a way of answering them by looking, and low-dimensional pictures are good vocabulary and poor authority."
+      }
+    },
+    "blueprint": "The algorithm never sees your formula:\n\n     evaluate -> which way is down -> step -> repeat\n\n   therefore:\n      different expressions, same surface\n         -> identical behaviour\n      same expression, different start\n         -> possibly opposite outcomes\n\n  the questions that decide everything:\n\n     how many low points?\n     is the lowest one reachable downhill from HERE?\n     any FLAT regions?    (no direction to read)\n     how fast does it change?\n         -> how far can you step before the local\n            information expires?   (M.7)\n\n  none of these are in the algebra.\n\n  and the caveat, stated rather than buried:\n     these surfaces have too many dimensions to draw.\n     2D and 3D pictures are VOCABULARY, not evidence.",
+    "takeaway": "A descent procedure samples the surface and never reads the expression, so behaviour is determined by shape — how many low points, whether downhill reaches the lowest, where it is flat — and none of that is visible in the formula."
+  },
+  "M.7": {
+    "id": "M.7",
+    "trackId": "M",
+    "trackName": "Math for machines",
+    "title": "Slope and the derivative",
+    "status": "traced",
+    "seed": "M.7",
+    "story": "The derivative is usually introduced as a rate of change, which is true and underplays what it is for. The useful description is that it is the best straight-line approximation to a function at a point — and the reason that matters is that straight lines are trivial to reason about and functions are not.\n\nThat framing makes the whole of optimisation legible. You have a complicated surface and you want to go downhill. You cannot see the surface, and you do not need to: you replace it near where you are standing with the line that matches it there, read off which direction that line descends, and move. The procedure Cauchy published in 1847 is exactly this, and Hadamard later named it the method of descent. The complexity of the function has been traded for a local approximation you can act on.\n\nEverything awkward about training follows from what that trade costs. The line agrees with the function at the point and diverges from it as you move away, at a rate the derivative does not report. So the direction is reliable and the distance is not, and the size of the step is a separate decision that the derivative cannot make for you. Step too far and you have used a description of the surface that expired somewhere behind you — which is why a loss can increase after a step taken in the correct direction, a result that looks like a bug and is the approximation being used outside its range.\n\nThe history has a caveat worth carrying, because this one is often flattened to a single name and date. Steepest descent is traced to Cauchy in 1829 for a nonlinear equation, the 1847 note is the one usually cited, Curry published on the nonlinear minimisation case in 1944, and the form in use today was introduced by Kantorovich in 1945. The method has four plausible origin points depending on what you mean by it.",
+    "problem": {
+      "name": "Local linear approximation",
+      "aka": [
+        "the derivative",
+        "slope",
+        "steepest descent"
+      ],
+      "shape": "You must choose a direction to move in order to improve a quantity, and the function relating your position to that quantity is too complicated to solve.",
+      "tell": [
+        "the question is which way to adjust something, not what its exact optimum is",
+        "the function can be evaluated but not inverted or solved",
+        "you are tuning a step size, a learning rate, or a nudge"
+      ],
+      "move": "Replace the function near your current position with the line that best matches it there. Read the direction of descent from that line, take a step, and re-approximate at the new position.",
+      "invariant": "The approximation is exact at the point and degrades with distance. That is why the direction it gives is trustworthy and the magnitude is not, and why re-approximating after each step is the whole method rather than an optimisation of it.",
+      "breaks": "It breaks as soon as you step beyond the range where the line resembles the function — and the derivative does not report that range, so the step size has to come from somewhere else. This is why a loss can rise after a step in the correct direction: the direction was right and the distance used a description that had expired.",
+      "cost": {
+        "time": "one evaluation of the slope per step, in exchange for never solving the function",
+        "space": "none beyond the current position",
+        "beats": "solving for the optimum directly, which is exact and usually impossible"
+      },
+      "worked": {
+        "problem": "Why does a step size exist at all, if the derivative already tells you which way to go?",
+        "reasoning": "Because the derivative tells you the direction and says nothing about the distance, and those are separate pieces of information.\n\nWhat the derivative gives you is the line that matches the function at your exact position. At that position the match is perfect. One step away it is close. Far away it may bear no relation — and crucially, the slope is a single number that describes the line, not a description of how quickly the line stops resembling the surface.\n\nSo a step is an extrapolation using a description that was only guaranteed at one point. Take a small step and the description was probably still roughly valid. Take a large one and you have acted on information about somewhere you are no longer near.\n\nThis explains the failure that confuses people most: a loss increasing after a step taken in the correct downhill direction. Nothing went wrong with the direction. The step went past the region where the approximation held, over the bottom of a valley and up the other side.\n\nWhich is why every practical method is really a policy for choosing distances, and why the direction is the easy half.",
+        "code": "the derivative gives you a LINE at a point:\n\n     f(x)      the surface: complicated\n     tangent   the line: exact AT x, and only there\n\n  what it tells you:   which way is down     RELIABLE\n  what it does not:    how far that stays true\n\n  so a step is an extrapolation from a description\n  guaranteed at ONE point.\n\n     small step -> description probably still valid\n     large step -> acted on information about\n                   somewhere you are no longer near\n\n  which explains the confusing failure:\n\n     loss INCREASED after a step in the\n     correct downhill direction\n     -> the direction was right\n     -> the distance used an expired description\n     -> stepped past the bottom, up the far side\n\n  hence: direction is the easy half. every practical\n  method is a policy for choosing the DISTANCE."
+      },
+      "practice": "Take a simple curved function and a point on it. Compute the tangent line, then evaluate both the function and the line at increasing distances and record where they diverge by more than a percent — that distance is what the derivative did not tell you."
+    },
+    "beats": {
+      "broke": "Improving something requires knowing which way to move, and the function relating position to outcome is too complicated to solve and only needs to be understood locally.",
+      "fix": "Replace the function near a point with the line that best matches it there. That is a single number, it is enough to give a direction, and it is what the method Cauchy published in 1847 walks on.",
+      "cost": "The line matches only at the point and diverges with distance at a rate the derivative never reports, so the direction is trustworthy and the step size is a separate decision that must come from elsewhere.",
+      "interview": {
+        "q": "Why does a step size exist at all, given that the derivative already tells you which way to go?",
+        "trap": "Answering that big steps are unstable. That is the observed symptom; the question is why the derivative cannot settle the distance itself.",
+        "answer": "Because the derivative supplies a direction and carries no information about distance.\n\nWhat it gives you is the line matching the function at your exact position. At that position the match is perfect; a little way off it is close; far away it may bear no relation. And the slope is a single number describing that line — it is not a description of how quickly the line stops resembling the surface, so nothing in it bounds how far you may act on it.\n\nA step is therefore an extrapolation from a description guaranteed at one point only. A small step is probably still within the range where it holds; a large one acts on information about somewhere you are no longer near.\n\nThat explains the failure people find most confusing: a loss increasing after a step taken in the correct downhill direction. The direction was right. The distance carried the approximation past the point where it applied — over the bottom and up the far side.\n\nSo direction is the easy half, and every practical optimiser is really a policy for choosing distances."
+      }
+    },
+    "blueprint": "The derivative is a LOCAL LINEAR APPROXIMATION:\n\n    surface   complicated, can't be solved\n    tangent   exact AT the point, and only there\n\n    gives:    which way is down       RELIABLE\n    omits:    how far that holds      NOT REPORTED\n\n  so every step is an extrapolation from a\n  guarantee that applied at one point.\n\n     loss went UP after a correct-direction step?\n        direction: right\n        distance:  used an expired description\n        -> past the bottom, up the other side\n\n  direction is the easy half.\n  every optimiser is a policy for DISTANCE.\n\n  and the history is layered, not a single date:\n     1829  Cauchy, nonlinear case\n     1847  the note usually cited\n           (named \"method of descent\" by Hadamard)\n     1944  Curry, nonlinear minimization\n     1945  Kantorovich, the modern form",
+    "takeaway": "The derivative is the line that matches a function at a point, so it gives a reliable direction and no information about how far that direction stays true — which is why a step size is a separate decision and why a loss can rise after a correct step."
+  },
   "M.8": {
     "id": "M.8",
     "trackId": "M",
@@ -6046,6 +6579,55 @@
     },
     "blueprint": "# Chain rule in 3 lines of autograd:\n# If L = (w * x + b)^2, where z = w * x + b and L = z^2:\n# dz/dw = x, and dL/dz = 2 * z\n# By Chain Rule: dL/dw = (dL/dz) * (dz/dw) = (2 * z) * x",
     "takeaway": "Backpropagation is not machine learning magic. It is just the chain rule applied backwards through a graph."
+  },
+  "M.9": {
+    "id": "M.9",
+    "trackId": "M",
+    "trackName": "Math for machines",
+    "title": "Gradients in many dimensions",
+    "status": "traced",
+    "seed": "M.9",
+    "story": "In one dimension the derivative answers the whole question, because there are only two directions and a sign picks one. In many dimensions there are infinitely many directions to move in, and a single number cannot choose between them. The gradient is what replaces it: the slope along each axis, collected into a vector.\n\nThat vector has a property worth stating carefully, because it is usually stated too loosely. Its direction is the direction in which the function increases fastest — so moving against it is the steepest available descent, which is what makes the method Cauchy published in 1847 possible in more than one variable. The partial derivatives are not merely bundled for convenience; their arrangement as a vector is what makes the direction meaningful.\n\nNow the part that is usually left out and that explains a great deal of practical behaviour. Steepest means fastest increase per unit of distance moved, and that requires a notion of distance. The gradient gives steepest ascent with respect to ordinary Euclidean distance, where moving one unit along any axis costs the same. That is a choice, and it is a choice about your inputs rather than about your function.\n\nWhich is why rescaling matters and why feature normalisation is not cosmetic. If one input is measured in millions and another between zero and one, then a unit of movement means something wildly different along each axis, and the direction that is steepest under that metric points mostly along the large-scaled axis regardless of where the function actually improves. The descent path zig-zags, the step size that suits one axis is wrong for the other, and none of it is a defect of the method — it is the method faithfully answering a question about distances you did not realise you had specified.",
+    "problem": {
+      "name": "Steepest direction under a metric",
+      "aka": [
+        "the gradient",
+        "partial derivatives",
+        "why normalisation matters"
+      ],
+      "shape": "A quantity depends on many inputs at once, and you need a single direction to move them all in.",
+      "tell": [
+        "more than one parameter is being adjusted to improve a single outcome",
+        "training oscillates, or converges far more slowly than expected",
+        "inputs are on very different scales and nobody has normalised them"
+      ],
+      "move": "Take the slope along each axis and treat the collection as a vector. Move against it for descent — and, because steepest is defined relative to distance, make the axes comparable first.",
+      "invariant": "The gradient is the steepest direction with respect to a chosen notion of distance, ordinarily the Euclidean one in which a unit along each axis costs the same. That choice is inherited from your parameterisation rather than from the problem.",
+      "breaks": "It breaks when the axes are not comparable. With inputs on very different scales, equal steps along different axes mean unequal changes, so the steepest direction is dominated by the large-scaled axis and the path zig-zags across the valley rather than along it — with no single step size suiting both axes.",
+      "cost": {
+        "time": "one partial derivative per input, which is what makes the chain rule matter",
+        "space": "a vector the size of the parameter set",
+        "beats": "searching directions by trial, which needs no derivatives and is hopeless past a few dimensions"
+      },
+      "worked": {
+        "problem": "Why does rescaling your inputs change the path that gradient descent takes?",
+        "reasoning": "Because steepest means most increase per unit of distance, and rescaling changes what a unit of distance is.\n\nThe gradient answers: among all directions of the same length, which gives the largest increase. That question is meaningless without a definition of length, and the ordinary answer uses the Euclidean one in which moving one unit along any axis is equally costly.\n\nNow suppose one input is a price in millions and another a ratio between zero and one. Moving one unit along the first is a negligible change in the quantity it represents; moving one unit along the second changes it completely. The metric treats them as equal, so the direction it calls steepest is dominated by whichever axis has the large numeric range — not by where the function actually improves most.\n\nThe visible consequence is a path that crosses back and forth across a narrow valley instead of running down it, and a step size that is simultaneously too large for one axis and too small for the other.\n\nSo normalisation is not tidying. It is making the metric that the gradient silently assumes match the one you meant.",
+        "code": "\"steepest\" = most increase PER UNIT OF DISTANCE\n\n   -> requires a definition of distance\n   -> the usual one: a unit along any axis costs\n      the same (Euclidean)\n   -> that is a claim about your PARAMETERISATION,\n      not about your function\n\n  inputs: price in millions, ratio in [0,1]\n\n     one unit along price  -> negligible change\n     one unit along ratio  -> total change\n     the metric says these are equal\n\n     -> steepest direction is dominated by the\n        large-range axis\n     -> path zig-zags ACROSS the valley instead of\n        running down it\n     -> one step size is too big for one axis and\n        too small for the other, simultaneously\n\n  so normalisation is not tidying:\n     it makes the metric the gradient assumes\n     match the one you meant."
+      },
+      "practice": "Train a simple model twice on the same data, once with features normalised and once with one feature multiplied by a thousand. Compare the number of steps to converge, and the largest learning rate that does not diverge."
+    },
+    "beats": {
+      "broke": "One number picks between two directions. With many inputs there are infinitely many directions and no single number can choose, so the one-dimensional tool does not generalise by itself.",
+      "fix": "Collect the slope along each axis into a vector whose direction is the fastest increase. Moving against it is the steepest descent, which is what makes the 1847 method work in more than one variable.",
+      "cost": "Steepest is relative to a notion of distance that comes from your parameterisation, so inputs on different scales produce a steepest direction dominated by the largest-ranged axis — a zig-zagging path and no step size that suits both.",
+      "interview": {
+        "q": "Why does rescaling your inputs change the path gradient descent takes?",
+        "trap": "Answering that it changes the numbers, so of course the path changes. The question is why it changes the *direction* the method calls steepest, which sounds like it should be a property of the function.",
+        "answer": "Because steepest means most increase per unit of distance, and rescaling changes what a unit of distance is.\n\nThe gradient answers: among all directions of equal length, which gives the largest increase. That is meaningless without a definition of length, and the usual one is Euclidean — moving one unit along any axis costs the same. That definition comes from how you parameterised the problem, not from the function.\n\nSo if one input is a price in millions and another a ratio between zero and one, a unit along the first is a negligible change in what it represents while a unit along the second changes it completely. The metric treats those as equal steps, so the direction it calls steepest is dominated by whichever axis has the larger numeric range rather than by where the function actually improves.\n\nThe visible symptom is a path that crosses back and forth across a narrow valley instead of running down it, and a learning rate that is simultaneously too large for one axis and too small for another.\n\nWhich is why normalisation is not cosmetic: it makes the metric the gradient silently assumes match the one you intended."
+      }
+    },
+    "blueprint": "One dimension: a sign picks between two directions.\nMany dimensions: infinitely many, and a number can't.\n\n   gradient = slope along each axis, as a VECTOR\n   its direction = fastest increase\n   move against it = steepest descent\n\n  and the clause everyone drops:\n\n     fastest increase PER UNIT OF DISTANCE\n     -> needs a metric\n     -> the default: one unit along any axis costs\n        the same\n     -> that comes from your PARAMETERISATION\n\n  consequences when axes aren't comparable:\n\n     price (millions) vs ratio (0..1)\n        metric says a unit each way is equal\n        -> steepest is dominated by the big axis\n        -> zig-zag ACROSS the valley\n        -> no single step size fits both\n\n  normalisation = making the assumed metric match\n  the intended one. not tidying.",
+    "takeaway": "The gradient points in the direction of steepest increase with respect to a distance you never chose explicitly — the one implied by your parameterisation — which is why unnormalised inputs make the steepest direction point at the largest-scaled axis."
   },
   "N.13": {
     "id": "N.13",
@@ -8948,6 +9530,234 @@
       "claim": "The notation Hoare introduced is read as: if the first assertion holds before the program runs, the second holds when it ends. It offers no guarantee of termination, since executing the program from a state satisfying the precondition need not halt — the phrase in Floyd’s formulation is that the command will be left \"if at all\".",
       "title": "Hoare, C. A. R., An Axiomatic Basis for Computer Programming, Communications of the ACM 12(10):576-580, 1969",
       "url": "https://dl.acm.org/doi/10.1145/363235.363259",
+      "kind": "primary"
+    }
+  ],
+  "M.1": [
+    {
+      "claim": "The method underlying model training was introduced by Cauchy on 18 October 1847 in a note on the general method for resolving systems of simultaneous equations, and was later named the method of descent by Hadamard.",
+      "title": "Cauchy, A. L., Méthode générale pour la résolution des systèmes d’équations simultanées, Comptes Rendus de l’Académie des Sciences, Paris, 25:536-538, 1847",
+      "url": "https://www.semanticscholar.org/paper/ANALYSE-MATH%C3%89MATIQUE.-%E2%80%93-M%C3%A9thodc-g%C3%A9n%C3%A9rale-pour-la-Cauchy/8759d91b54eb78349ee75a9f0493d99ca9fc84e0",
+      "kind": "primary"
+    },
+    {
+      "claim": "The attribution is not simple: historians of numerical analysis trace steepest descent to Cauchy in 1829 as a means of solving a nonlinear equation, and note that the form in use today was introduced by Kantorovich in 1945, with Curry’s 1944 paper on steepest descent for non-linear minimization problems an earlier milestone in the nonlinear case.",
+      "title": "Cauchy, A. L., Méthode générale pour la résolution des systèmes d’équations simultanées, Comptes Rendus de l’Académie des Sciences, Paris, 25:536-538, 1847",
+      "url": "https://www.semanticscholar.org/paper/ANALYSE-MATH%C3%89MATIQUE.-%E2%80%93-M%C3%A9thodc-g%C3%A9n%C3%A9rale-pour-la-Cauchy/8759d91b54eb78349ee75a9f0493d99ca9fc84e0",
+      "kind": "primary"
+    },
+    {
+      "claim": "Matrix multiplication, matrix addition, the unit matrix, the inverse and powers of matrices were introduced by Cayley in a memoir of 1858, which also explored the non-commutative algebra associated with matrix multiplication.",
+      "title": "Cayley, A., A Memoir on the Theory of Matrices, Philosophical Transactions of the Royal Society of London 148:17-37, 1858",
+      "url": "https://royalsocietypublishing.org/doi/10.1098/rstl.1858.0002",
+      "kind": "primary"
+    }
+  ],
+  "M.10": [
+    {
+      "claim": "The essay that founded inverse probability was published in the Philosophical Transactions, volume 53, pages 370 to 418, in 1763, two years after its author’s death, communicated by Richard Price in a letter to John Canton and prepared for publication by Price with amendments and additions.",
+      "title": "Bayes, T., An Essay towards Solving a Problem in the Doctrine of Chances, communicated by Mr Price in a letter to John Canton, Philosophical Transactions 53:370-418, 1763",
+      "url": "https://royalsocietypublishing.org/doi/10.1098/rstl.1763.0053",
+      "kind": "primary"
+    },
+    {
+      "claim": "Doctrine of chances was the contemporary term for probability theory, a usage introduced by the title of a book by Abraham de Moivre. Contemporary reprints carried a more descriptive title: a method of calculating the exact probability of all conclusions founded on induction.",
+      "title": "Bayes, T., An Essay towards Solving a Problem in the Doctrine of Chances, communicated by Mr Price in a letter to John Canton, Philosophical Transactions 53:370-418, 1763",
+      "url": "https://royalsocietypublishing.org/doi/10.1098/rstl.1763.0053",
+      "kind": "primary"
+    },
+    {
+      "claim": "The arguments in the essay were adopted by Laplace, who saw in them the basis for statistical inference, and were later challenged by George Boole.",
+      "title": "Bayes, T., An Essay towards Solving a Problem in the Doctrine of Chances, communicated by Mr Price in a letter to John Canton, Philosophical Transactions 53:370-418, 1763",
+      "url": "https://royalsocietypublishing.org/doi/10.1098/rstl.1763.0053",
+      "kind": "primary"
+    }
+  ],
+  "M.11": [
+    {
+      "claim": "Pearson’s paper on the dissection of asymmetrical frequency curves was published in the Philosophical Transactions of the Royal Society A, volume 185, pages 719 to 810, in 1894 — a study of data whose distribution is not symmetric.",
+      "title": "Pearson, K., On the dissection of asymmetrical frequency curves, Philosophical Transactions of the Royal Society A 185:719-810, 1894",
+      "url": "https://royalsocietypublishing.org/doi/10.1098/rsta.1894.0003",
+      "kind": "primary"
+    },
+    {
+      "claim": "The term standard deviation was first used in writing by Pearson in that period, replacing earlier names for the same quantity including Gauss’s mean error, mean square error, and Airy’s error of mean square. Sources differ on the date: 1894 is the first published use, while 1893 refers to an earlier lecture.",
+      "title": "Pearson, K., On the dissection of asymmetrical frequency curves, Philosophical Transactions of the Royal Society A 185:719-810, 1894",
+      "url": "https://royalsocietypublishing.org/doi/10.1098/rsta.1894.0003",
+      "kind": "primary"
+    }
+  ],
+  "M.12": [
+    {
+      "claim": "Fisher coined the term variance, along with the concept now called analysis of variance, in The Correlation Between Relatives on the Supposition of Mendelian Inheritance, published in the Transactions of the Royal Society of Edinburgh, volume 52, pages 399 to 433, in 1918. The paper was written in 1916 and not published until 1918.",
+      "title": "Fisher, R. A., The Correlation Between Relatives on the Supposition of Mendelian Inheritance, Transactions of the Royal Society of Edinburgh 52:399-433, 1918",
+      "url": "https://www.cambridge.org/core/journals/transactions-of-the-royal-society-of-edinburgh/article/abs/xvthe-correlation-between-relatives-on-the-supposition-of-mendelian-inheritance/A60675containing",
+      "kind": "primary"
+    },
+    {
+      "claim": "A nuance about that paper: the phrase analysis of variance does not appear in its body, only in the heading of a section as listed in the contents.",
+      "title": "Fisher, R. A., The Correlation Between Relatives on the Supposition of Mendelian Inheritance, Transactions of the Royal Society of Edinburgh 52:399-433, 1918",
+      "url": "https://www.cambridge.org/core/journals/transactions-of-the-royal-society-of-edinburgh/article/abs/xvthe-correlation-between-relatives-on-the-supposition-of-mendelian-inheritance/A60675containing",
+      "kind": "primary"
+    },
+    {
+      "claim": "The term standard deviation was first used in writing by Pearson, replacing earlier names for the same quantity including Gauss’s mean error, mean square error, and Airy’s error of mean square; Pearson also introduced the symbol for it. Sources differ on the date: 1894 is the first published use, while 1893 refers to an earlier lecture.",
+      "title": "Pearson, K., On the dissection of asymmetrical frequency curves, Philosophical Transactions of the Royal Society A 185:719-810, 1894",
+      "url": "https://royalsocietypublishing.org/doi/10.1098/rsta.1894.0003",
+      "kind": "primary"
+    }
+  ],
+  "M.13": [
+    {
+      "claim": "The essay was read to the Royal Society on 23 December 1763 and published in the Philosophical Transactions, volume 53, pages 370 to 418, two years after its author had died on 17 April 1761. It was communicated by Richard Price in a letter to John Canton, and prepared for publication by Price with amendments and additions.",
+      "title": "Bayes, T., An Essay towards Solving a Problem in the Doctrine of Chances, communicated by Mr Price in a letter to John Canton, Philosophical Transactions 53:370-418, 1763",
+      "url": "https://royalsocietypublishing.org/doi/10.1098/rstl.1763.0053",
+      "kind": "primary"
+    },
+    {
+      "claim": "Price was a fellow Nonconformist minister, economist and actuary, to whom the papers had been bequeathed; he found the essay and submitted it to the Society, and believed the theorem offered support for the existence of God.",
+      "title": "Bayes, T., An Essay towards Solving a Problem in the Doctrine of Chances, communicated by Mr Price in a letter to John Canton, Philosophical Transactions 53:370-418, 1763",
+      "url": "https://royalsocietypublishing.org/doi/10.1098/rstl.1763.0053",
+      "kind": "primary"
+    },
+    {
+      "claim": "The arguments were adopted by Laplace, who saw in them the basis for statistical inference, and were later challenged by George Boole. A second paper by the same author, demonstrating the second rule of the essay, appeared in volume 54 pages 296 to 325 and is often missed because the author’s name appears neither in its title nor in the volume index.",
+      "title": "Bayes, T., An Essay towards Solving a Problem in the Doctrine of Chances, communicated by Mr Price in a letter to John Canton, Philosophical Transactions 53:370-418, 1763",
+      "url": "https://royalsocietypublishing.org/doi/10.1098/rstl.1763.0053",
+      "kind": "primary"
+    }
+  ],
+  "M.14": [
+    {
+      "claim": "The Literary Digest mailed ten million ballots for the 1936 United States presidential election, drawing its list from telephone books, club and association rosters, city directories, voter registration lists and mail-order and occupational data. Almost 2.4 million ballots were returned.",
+      "title": "The Literary Digest poll of 1936 and Gallup’s contrasting forecast — the canonical demonstration that sample size does not correct sample bias",
+      "url": "https://www2.math.upenn.edu/~deturck/m170/wk4/lecture/case1.html",
+      "kind": "secondary"
+    },
+    {
+      "claim": "It predicted Landon would take 57% against Roosevelt’s 43%. The actual result was 62% Roosevelt to 38% Landon — an error of about 19 percentage points, the largest ever in a major public opinion poll, and practically all of it the result of sample bias.",
+      "title": "The Literary Digest poll of 1936 and Gallup’s contrasting forecast — the canonical demonstration that sample size does not correct sample bias",
+      "url": "https://www2.math.upenn.edu/~deturck/m170/wk4/lecture/case1.html",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The bias had two components. The frame was drawn from telephone, vehicle and club records at the height of the Depression, when those were largely confined to the wealthy; and only about a quarter of the ballots came back, with supporters of one candidate far more likely to return them.",
+      "title": "The Literary Digest poll of 1936 and Gallup’s contrasting forecast — the canonical demonstration that sample size does not correct sample bias",
+      "url": "https://www2.math.upenn.edu/~deturck/m170/wk4/lecture/case1.html",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Gallup’s final poll, based on around 50,000 voters, predicted Roosevelt would win with 56% — below the actual figure but correct on the winner. Gallup also predicted the Digest’s error in advance, using a survey of 3,000 people sampled at random from the Digest’s own mailing lists.",
+      "title": "The Literary Digest poll of 1936 and Gallup’s contrasting forecast — the canonical demonstration that sample size does not correct sample bias",
+      "url": "https://www2.math.upenn.edu/~deturck/m170/wk4/lecture/case1.html",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Bickel, Hammel and O’Connell examined graduate admissions at Berkeley for autumn 1973 in Science volume 187, pages 398 to 404, published 7 February 1975. Aggregate figures showed about 44.2% of 8,442 men admitted against about 34.6% of 4,321 women. Disaggregated by department, few units showed statistically significant departures and about as many favoured women as men; pooled properly, there was a small but statistically significant bias in favour of women.",
+      "title": "Bickel, P. J., Hammel, E. A. and O’Connell, J. W., Sex Bias in Graduate Admissions: Data from Berkeley, Science 187(4175):398-404, 7 February 1975",
+      "url": "https://www.science.org/doi/10.1126/science.187.4175.398",
+      "kind": "primary"
+    },
+    {
+      "claim": "A correction to the story as usually told: Berkeley was never actually sued. Officials feared bias and asked Bickel to analyse the data, with an associate dean thinking the university might be sued.",
+      "title": "Bickel, P. J., Hammel, E. A. and O’Connell, J. W., Sex Bias in Graduate Admissions: Data from Berkeley, Science 187(4175):398-404, 7 February 1975",
+      "url": "https://www.science.org/doi/10.1126/science.187.4175.398",
+      "kind": "primary"
+    }
+  ],
+  "M.2": [
+    {
+      "claim": "Cayley’s memoir of 1858 introduced matrices in order to simplify the notation arising in simultaneous linear equations, together with matrix addition and multiplication, the unit matrix, the inverse and powers of matrices.",
+      "title": "Cayley, A., A Memoir on the Theory of Matrices, Philosophical Transactions of the Royal Society of London 148:17-37, 1858",
+      "url": "https://royalsocietypublishing.org/doi/10.1098/rstl.1858.0002",
+      "kind": "primary"
+    },
+    {
+      "claim": "The term matrix had already been coined by James Joseph Sylvester, who defined it as a rectangular array of terms; sources date this to 1850 or to an 1851 paper on the relations between the minor determinants of linearly equivalent quadratic functions.",
+      "title": "Higham, N. J., Cayley, Sylvester, and Early Matrix Theory, 2008 — on the attribution of matrix theory and the reception of Cayley’s memoir",
+      "url": "https://eprints.maths.manchester.ac.uk/923/1/cay_syl_07.pdf",
+      "kind": "primary"
+    }
+  ],
+  "M.3": [
+    {
+      "claim": "Cayley introduced matrices in a memoir published in the Philosophical Transactions of the Royal Society of London, volume 148, pages 17 to 37, in 1858, in order to simplify the notation arising in simultaneous linear equations. The memoir introduced the unit matrix, matrix addition and multiplication, the inverse matrix and powers of matrices, and explored the non-commutative algebra associated with matrix multiplication.",
+      "title": "Cayley, A., A Memoir on the Theory of Matrices, Philosophical Transactions of the Royal Society of London 148:17-37, 1858",
+      "url": "https://royalsocietypublishing.org/doi/10.1098/rstl.1858.0002",
+      "kind": "primary"
+    },
+    {
+      "claim": "The memoir also proved that every matrix satisfies its own characteristic equation, and observed that matrices could be added and multiplied so as to form what is now called a linear associative algebra.",
+      "title": "Cayley, A., A Memoir on the Theory of Matrices, Philosophical Transactions of the Royal Society of London 148:17-37, 1858",
+      "url": "https://royalsocietypublishing.org/doi/10.1098/rstl.1858.0002",
+      "kind": "primary"
+    },
+    {
+      "claim": "The standard attribution is contested. Credit for founding the theory is generally given to Cayley because he published the first expository articles, though the term had been coined earlier by Sylvester; and Cayley’s memoir went generally unnoticed, especially outside England, until the 1880s, with the Cayley-as-founder narrative described by later historians as simplistic.",
+      "title": "Higham, N. J., Cayley, Sylvester, and Early Matrix Theory, 2008 — on the attribution of matrix theory and the reception of Cayley’s memoir",
+      "url": "https://eprints.maths.manchester.ac.uk/923/1/cay_syl_07.pdf",
+      "kind": "primary"
+    }
+  ],
+  "M.5": [
+    {
+      "claim": "In Cayley’s formulation a matrix represents a linear transformation, and the product of two matrices is the matrix of their composition, which is why the inner dimensions must agree: the outputs of the first transformation are the inputs of the second.",
+      "title": "Cayley, A., A Memoir on the Theory of Matrices, Philosophical Transactions of the Royal Society of London 148:17-37, 1858",
+      "url": "https://royalsocietypublishing.org/doi/10.1098/rstl.1858.0002",
+      "kind": "primary"
+    },
+    {
+      "claim": "The memoir explored the non-commutative algebra associated with matrix multiplication, so the order of a product carries meaning and is not a matter of arrangement.",
+      "title": "Cayley, A., A Memoir on the Theory of Matrices, Philosophical Transactions of the Royal Society of London 148:17-37, 1858",
+      "url": "https://royalsocietypublishing.org/doi/10.1098/rstl.1858.0002",
+      "kind": "primary"
+    }
+  ],
+  "M.6": [
+    {
+      "claim": "Cauchy’s note of 1847 on a general method for resolving systems of simultaneous equations introduced the procedure later named by Hadamard the method of descent — a procedure that operates on a function by moving in the direction in which it decreases.",
+      "title": "Cauchy, A. L., Méthode générale pour la résolution des systèmes d’équations simultanées, Comptes Rendus de l’Académie des Sciences, Paris, 25:536-538, 1847",
+      "url": "https://www.semanticscholar.org/paper/ANALYSE-MATH%C3%89MATIQUE.-%E2%80%93-M%C3%A9thodc-g%C3%A9n%C3%A9rale-pour-la-Cauchy/8759d91b54eb78349ee75a9f0493d99ca9fc84e0",
+      "kind": "primary"
+    },
+    {
+      "claim": "Historians of numerical analysis trace steepest descent to Cauchy in 1829 in the nonlinear case, and note that the form in use today was introduced by Kantorovich in 1945, with Curry’s 1944 paper on steepest descent for non-linear minimization problems an earlier milestone.",
+      "title": "Cauchy, A. L., Méthode générale pour la résolution des systèmes d’équations simultanées, Comptes Rendus de l’Académie des Sciences, Paris, 25:536-538, 1847",
+      "url": "https://www.semanticscholar.org/paper/ANALYSE-MATH%C3%89MATIQUE.-%E2%80%93-M%C3%A9thodc-g%C3%A9n%C3%A9rale-pour-la-Cauchy/8759d91b54eb78349ee75a9f0493d99ca9fc84e0",
+      "kind": "primary"
+    }
+  ],
+  "M.7": [
+    {
+      "claim": "Cauchy introduced the general method for resolving systems of simultaneous equations on 18 October 1847, in a note in the Comptes Rendus, and Hadamard later gave the procedure the name method of descent.",
+      "title": "Cauchy, A. L., Méthode générale pour la résolution des systèmes d’équations simultanées, Comptes Rendus de l’Académie des Sciences, Paris, 25:536-538, 1847",
+      "url": "https://www.semanticscholar.org/paper/ANALYSE-MATH%C3%89MATIQUE.-%E2%80%93-M%C3%A9thodc-g%C3%A9n%C3%A9rale-pour-la-Cauchy/8759d91b54eb78349ee75a9f0493d99ca9fc84e0",
+      "kind": "primary"
+    },
+    {
+      "claim": "The attribution is layered: steepest descent is traced to Cauchy in 1829 for solving a nonlinear equation connected to approximating an integral, Curry published on the method for non-linear minimization problems in 1944, and Kantorovich introduced the form used today in 1945.",
+      "title": "Cauchy, A. L., Méthode générale pour la résolution des systèmes d’équations simultanées, Comptes Rendus de l’Académie des Sciences, Paris, 25:536-538, 1847",
+      "url": "https://www.semanticscholar.org/paper/ANALYSE-MATH%C3%89MATIQUE.-%E2%80%93-M%C3%A9thodc-g%C3%A9n%C3%A9rale-pour-la-Cauchy/8759d91b54eb78349ee75a9f0493d99ca9fc84e0",
+      "kind": "primary"
+    }
+  ],
+  "M.9": [
+    {
+      "claim": "Cauchy introduced the general method for resolving systems of simultaneous equations on 18 October 1847, and Hadamard later named the procedure the method of descent.",
+      "title": "Cauchy, A. L., Méthode générale pour la résolution des systèmes d’équations simultanées, Comptes Rendus de l’Académie des Sciences, Paris, 25:536-538, 1847",
+      "url": "https://www.semanticscholar.org/paper/ANALYSE-MATH%C3%89MATIQUE.-%E2%80%93-M%C3%A9thodc-g%C3%A9n%C3%A9rale-pour-la-Cauchy/8759d91b54eb78349ee75a9f0493d99ca9fc84e0",
+      "kind": "primary"
+    },
+    {
+      "claim": "The origin is layered rather than single: steepest descent is traced to Cauchy in 1829 for a nonlinear equation, Curry published on the non-linear minimization case in 1944, and Kantorovich introduced the form in use today in 1945.",
+      "title": "Cauchy, A. L., Méthode générale pour la résolution des systèmes d’équations simultanées, Comptes Rendus de l’Académie des Sciences, Paris, 25:536-538, 1847",
+      "url": "https://www.semanticscholar.org/paper/ANALYSE-MATH%C3%89MATIQUE.-%E2%80%93-M%C3%A9thodc-g%C3%A9n%C3%A9rale-pour-la-Cauchy/8759d91b54eb78349ee75a9f0493d99ca9fc84e0",
+      "kind": "primary"
+    },
+    {
+      "claim": "The ordinary notion of distance used when saying a direction is steepest is the Euclidean one, in which moving one unit along any axis costs the same — a property of the coordinates chosen rather than of the function being optimised.",
+      "title": "Cauchy, A. L., Méthode générale pour la résolution des systèmes d’équations simultanées, Comptes Rendus 25:536-538, 1847",
+      "url": "https://www.semanticscholar.org/paper/ANALYSE-MATH%C3%89MATIQUE.-%E2%80%93-M%C3%A9thodc-g%C3%A9n%C3%A9rale-pour-la-Cauchy/8759d91b54eb78349ee75a9f0493d99ca9fc84e0",
       "kind": "primary"
     }
   ],

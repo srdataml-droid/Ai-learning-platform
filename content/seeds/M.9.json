@@ -1,0 +1,59 @@
+{
+  "taskId": "M.9",
+  "title": "Gradients in many dimensions",
+  "researchedAt": "2026-09-19",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Cauchy introduced the general method for resolving systems of simultaneous equations on 18 October 1847, and Hadamard later named the procedure the method of descent.",
+      "type": "date",
+      "tokens": [
+        "Cauchy",
+        "Hadamard",
+        "1847"
+      ],
+      "source": {
+        "title": "Cauchy, A. L., Méthode générale pour la résolution des systèmes d’équations simultanées, Comptes Rendus de l’Académie des Sciences, Paris, 25:536-538, 1847",
+        "url": "https://www.semanticscholar.org/paper/ANALYSE-MATH%C3%89MATIQUE.-%E2%80%93-M%C3%A9thodc-g%C3%A9n%C3%A9rale-pour-la-Cauchy/8759d91b54eb78349ee75a9f0493d99ca9fc84e0",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The origin is layered rather than single: steepest descent is traced to Cauchy in 1829 for a nonlinear equation, Curry published on the non-linear minimization case in 1944, and Kantorovich introduced the form in use today in 1945.",
+      "type": "date",
+      "tokens": [
+        "Cauchy",
+        "Curry",
+        "Kantorovich",
+        "1829",
+        "1944",
+        "1945"
+      ],
+      "source": {
+        "title": "Cauchy, A. L., Méthode générale pour la résolution des systèmes d’équations simultanées, Comptes Rendus de l’Académie des Sciences, Paris, 25:536-538, 1847",
+        "url": "https://www.semanticscholar.org/paper/ANALYSE-MATH%C3%89MATIQUE.-%E2%80%93-M%C3%A9thodc-g%C3%A9n%C3%A9rale-pour-la-Cauchy/8759d91b54eb78349ee75a9f0493d99ca9fc84e0",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The ordinary notion of distance used when saying a direction is steepest is the Euclidean one, in which moving one unit along any axis costs the same — a property of the coordinates chosen rather than of the function being optimised.",
+      "type": "event",
+      "tokens": [
+        "Euclidean"
+      ],
+      "source": {
+        "title": "Cauchy, A. L., Méthode générale pour la résolution des systèmes d’équations simultanées, Comptes Rendus 25:536-538, 1847",
+        "url": "https://www.semanticscholar.org/paper/ANALYSE-MATH%C3%89MATIQUE.-%E2%80%93-M%C3%A9thodc-g%C3%A9n%C3%A9rale-pour-la-Cauchy/8759d91b54eb78349ee75a9f0493d99ca9fc84e0",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "in one dimension there are two directions and the slope picks one, and in many dimensions there are infinitely many directions and no single number can choose",
+    "fix": "collect the slope along each axis into a vector, whose direction is the one in which the function increases fastest",
+    "cost": "fastest is measured against a notion of distance you never stated, so rescaling an input changes which direction counts as steepest",
+    "interview": "why rescaling your inputs changes the path that gradient descent takes"
+  }
+}

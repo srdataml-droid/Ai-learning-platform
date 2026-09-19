@@ -1,0 +1,48 @@
+{
+  "id": "M.5",
+  "trackId": "M",
+  "trackName": "Math for machines",
+  "title": "Shape and dimension errors",
+  "status": "traced",
+  "seed": "M.5",
+  "story": "There are two kinds of shape error and they have opposite severities, which is the opposite of how people rank them.\n\nThe first is a mismatch in a composition. M.3 explains why the inner dimensions of a matrix product must agree: the outputs of the first transformation are the inputs of the second, so a mismatch means the two do not compose. This raises an exception, you read the shapes, you fix it, and nothing is at risk. It is the kind of failure people complain about and it is the harmless one.\n\nThe second is an elementwise operation whose shapes did not match and were repaired for you. Broadcasting aligns arrays from the trailing dimension and stretches any axis of size one to match, so a great many mismatched pairs are compatible under its rules rather than erroneous. The canonical instance: a column of shape n by 1 combined with a flat array of length n does not fail and does not give you n results — it gives you n by n, because the size-one axis stretched against the flat one. No exception, an array a thousand times larger than intended, and a downstream mean or sum that quietly reports a number.\n\nThe asymmetry is worth stating plainly. The loud error costs you a minute. The quiet one produces a plausible result, and plausible results propagate: they get averaged, logged, plotted and reported, and by the time anything looks wrong the cause is many steps back. So the loud failures are the ones the system handles for you, and the quiet ones are the ones you have to handle yourself.\n\nWhich gives a discipline rather than a rule. Before any elementwise operation, know the shape of both operands rather than assuming; and when an operation succeeds, check that the output shape is what you expected rather than that it exists. The shape of the result is the only evidence you get that broadcasting did what you meant.",
+  "problem": {
+    "name": "Silent shape repair",
+    "aka": [
+      "broadcasting",
+      "dimension errors"
+    ],
+    "shape": "An array operation is given operands whose shapes do not match, and the system sometimes refuses and sometimes invents an interpretation.",
+    "tell": [
+      "an array is unexpectedly large, or a reduction returns a scalar where a vector was expected",
+      "a result is plausible but slightly wrong and the cause is not local",
+      "code reshapes with a trailing axis of size one to make something work"
+    ],
+    "move": "Classify the operation first. Composition — a matrix product — has a hard constraint and will refuse. Elementwise operations have broadcasting, so they may not refuse, and you must assert the output shape rather than trusting that it succeeded.",
+    "invariant": "Broadcasting aligns from the trailing axis and stretches any axis of extent one. That rule, not your intention, determines whether an operation succeeds — so the set of shapes it accepts is much larger than the set you meant.",
+    "breaks": "It breaks by succeeding. An operation that should have failed instead produces a larger array, whose subsequent reduction gives a number of the right type and the wrong value — and because nothing raised, the error surfaces far downstream and is attributed to whatever is nearest.",
+    "cost": {
+      "time": "nothing to check shapes; a great deal to find a wrong number that was never flagged",
+      "space": "a broadcast operation can allocate the product of two dimensions where you expected one",
+      "beats": "requiring exact shapes everywhere, which is safer and would make ordinary code unbearably verbose"
+    },
+    "worked": {
+      "problem": "Which shape error is worse — the one that raises an exception or the one that does not?",
+      "reasoning": "The one that does not, by a wide margin, and the ranking is the reverse of how people experience them.\n\nAn exception is a complete diagnosis delivered instantly. It names the operation, gives both shapes, and stops before anything downstream is contaminated. The cost is a minute and the blast radius is nothing.\n\nA silent repair produces an array. It has the right dtype, it flows into the next operation, and whatever reduction follows returns a number of the expected type. Nothing in the pipeline can distinguish it from the intended result, so it is averaged, logged, charted and reported — and when someone finally notices that a metric looks wrong, the cause is many steps upstream and the nearest suspicious code is blamed instead.\n\nSo the operation that refuses is doing you a service, and the operation that accommodates is deferring the failure to a point where it is expensive.\n\nThe practical rule that follows is to treat success as uninformative. Checking that an operation ran tells you nothing; checking that the output shape is what you expected is the only evidence available.",
+      "code": "two failures, opposite severities:\n\n  matmul, inner dims disagree\n     -> EXCEPTION\n     -> names the op, gives both shapes\n     -> nothing downstream touched\n     -> costs a minute\n\n  elementwise, shapes disagree\n     -> broadcasting: align from the TRAILING axis,\n        stretch any axis of extent 1\n     -> often SUCCEEDS\n\n  the canonical one:\n\n     a.shape == (n, 1)\n     b.shape == (n,)\n     a + b   ->  (n, n)        not (n,) and not an error\n\n     then .mean() -> a number, right type, wrong value\n\n  so:\n     success is not evidence.\n     the OUTPUT SHAPE is the evidence.\n\n  assert it. every time it matters."
+    },
+    "practice": "Create an array of shape n by 1 and one of shape n, add them, and print the result's shape. Then take the mean of the result and compare it with the mean you intended — note that both are numbers and only one is right."
+  },
+  "beats": {
+    "broke": "Array operations have two kinds of shape failure with opposite costs, and only the cheap one raises. The expensive one is repaired silently and produces something that looks like an answer.",
+    "fix": "Classify the operation. Composition imposes a hard constraint and refuses — a matrix product’s inner dimensions must agree because the first transformation’s outputs are the second’s inputs. Elementwise operations broadcast, so they must be checked by asserting the output shape.",
+    "cost": "Broadcasting is genuinely useful and is what makes ordinary numerical code readable, so the answer is not to remove it — which means the checking obligation stays with you permanently.",
+    "interview": {
+      "q": "Which shape error is worse: the one that raises an exception or the one that does not?",
+      "trap": "Answering the exception, because it stops your program. Stopping is the feature.",
+      "answer": "The silent one, by a long way, and the ranking is the reverse of how they feel.\n\nAn exception is a complete diagnosis delivered immediately: it names the operation, reports both shapes, and halts before anything downstream is contaminated. It costs a minute and has no blast radius.\n\nA broadcast repair produces an array of the right type that flows into the next operation. Whatever reduction follows returns a number that looks entirely normal, so it gets averaged, logged, plotted and reported — and when a metric eventually looks wrong, the cause is many steps upstream and the nearest plausible code gets blamed instead.\n\nThe canonical case is an array of shape n by 1 combined with a flat array of length n. Broadcasting aligns from the trailing axis and stretches the size-one axis, so the result is n by n — not a failure, not the n values you wanted, and a thousand times larger if n is a thousand.\n\nThe rule that follows is that success is not evidence. The output shape is the only evidence you get, so assert it rather than checking that the operation ran."
+    }
+  },
+  "blueprint": "Two failures, ranked backwards by intuition:\n\n   matmul, inner dims disagree\n      EXCEPTION. names the op, both shapes, stops.\n      cost: a minute. blast radius: none.\n      (and it is a real impossibility -- the\n       transformations do not compose)\n\n   elementwise, shapes disagree\n      broadcasting: align from the TRAILING axis,\n                    stretch any axis of extent 1\n      -> often succeeds, and gives you something else\n\n   (n,1) + (n,)  ->  (n,n)\n      no error. 1000x the memory. then .mean()\n      returns a number of the right type and the\n      wrong value, which propagates.\n\n  therefore:\n\n     the operation that REFUSES is doing you a favour\n     the operation that ACCOMMODATES defers the bill\n\n     success tells you nothing.\n     the OUTPUT SHAPE is the evidence. assert it.",
+  "takeaway": "The shape error that raises is the cheap one — a complete diagnosis before anything is contaminated — while broadcasting silently repairs mismatches into plausible wrong answers, which is why success is not evidence and the output shape is."
+}

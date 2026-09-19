@@ -1,0 +1,60 @@
+{
+  "taskId": "M.1",
+  "title": "How much math you actually need, precisely",
+  "researchedAt": "2026-09-19",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The method underlying model training was introduced by Cauchy on 18 October 1847 in a note on the general method for resolving systems of simultaneous equations, and was later named the method of descent by Hadamard.",
+      "type": "date",
+      "tokens": [
+        "Cauchy",
+        "Hadamard",
+        "1847"
+      ],
+      "source": {
+        "title": "Cauchy, A. L., Méthode générale pour la résolution des systèmes d’équations simultanées, Comptes Rendus de l’Académie des Sciences, Paris, 25:536-538, 1847",
+        "url": "https://www.semanticscholar.org/paper/ANALYSE-MATH%C3%89MATIQUE.-%E2%80%93-M%C3%A9thodc-g%C3%A9n%C3%A9rale-pour-la-Cauchy/8759d91b54eb78349ee75a9f0493d99ca9fc84e0",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The attribution is not simple: historians of numerical analysis trace steepest descent to Cauchy in 1829 as a means of solving a nonlinear equation, and note that the form in use today was introduced by Kantorovich in 1945, with Curry’s 1944 paper on steepest descent for non-linear minimization problems an earlier milestone in the nonlinear case.",
+      "type": "date",
+      "tokens": [
+        "Cauchy",
+        "Kantorovich",
+        "Curry",
+        "1829",
+        "1944",
+        "1945"
+      ],
+      "source": {
+        "title": "Cauchy, A. L., Méthode générale pour la résolution des systèmes d’équations simultanées, Comptes Rendus de l’Académie des Sciences, Paris, 25:536-538, 1847",
+        "url": "https://www.semanticscholar.org/paper/ANALYSE-MATH%C3%89MATIQUE.-%E2%80%93-M%C3%A9thodc-g%C3%A9n%C3%A9rale-pour-la-Cauchy/8759d91b54eb78349ee75a9f0493d99ca9fc84e0",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Matrix multiplication, matrix addition, the unit matrix, the inverse and powers of matrices were introduced by Cayley in a memoir of 1858, which also explored the non-commutative algebra associated with matrix multiplication.",
+      "type": "date",
+      "tokens": [
+        "Cayley",
+        "1858"
+      ],
+      "source": {
+        "title": "Cayley, A., A Memoir on the Theory of Matrices, Philosophical Transactions of the Royal Society of London 148:17-37, 1858",
+        "url": "https://royalsocietypublishing.org/doi/10.1098/rstl.1858.0002",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "the question is asked as how much math, which has no answer, because the amount depends entirely on which of three quite different jobs you intend to do",
+    "fix": "name the job first — using a model, diagnosing one, or deriving a method — because each needs a different and specifiable set",
+    "cost": "the honest answer is smaller than the intimidating version and larger than the dismissive one, and it satisfies nobody",
+    "interview": "what actually goes wrong for people who skipped the math"
+  }
+}

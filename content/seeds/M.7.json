@@ -1,0 +1,47 @@
+{
+  "taskId": "M.7",
+  "title": "Slope and the derivative",
+  "researchedAt": "2026-09-19",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Cauchy introduced the general method for resolving systems of simultaneous equations on 18 October 1847, in a note in the Comptes Rendus, and Hadamard later gave the procedure the name method of descent.",
+      "type": "date",
+      "tokens": [
+        "Cauchy",
+        "Comptes Rendus",
+        "Hadamard",
+        "1847"
+      ],
+      "source": {
+        "title": "Cauchy, A. L., Méthode générale pour la résolution des systèmes d’équations simultanées, Comptes Rendus de l’Académie des Sciences, Paris, 25:536-538, 1847",
+        "url": "https://www.semanticscholar.org/paper/ANALYSE-MATH%C3%89MATIQUE.-%E2%80%93-M%C3%A9thodc-g%C3%A9n%C3%A9rale-pour-la-Cauchy/8759d91b54eb78349ee75a9f0493d99ca9fc84e0",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The attribution is layered: steepest descent is traced to Cauchy in 1829 for solving a nonlinear equation connected to approximating an integral, Curry published on the method for non-linear minimization problems in 1944, and Kantorovich introduced the form used today in 1945.",
+      "type": "date",
+      "tokens": [
+        "Cauchy",
+        "Curry",
+        "Kantorovich",
+        "1829",
+        "1944",
+        "1945"
+      ],
+      "source": {
+        "title": "Cauchy, A. L., Méthode générale pour la résolution des systèmes d’équations simultanées, Comptes Rendus de l’Académie des Sciences, Paris, 25:536-538, 1847",
+        "url": "https://www.semanticscholar.org/paper/ANALYSE-MATH%C3%89MATIQUE.-%E2%80%93-M%C3%A9thodc-g%C3%A9n%C3%A9rale-pour-la-Cauchy/8759d91b54eb78349ee75a9f0493d99ca9fc84e0",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "you need to know which way to move to improve something, and the function relating the two is complicated everywhere and only needs to be understood nearby",
+    "fix": "replace the function near a point with the straight line that best matches it there, which is a single number and is enough to say which way is down",
+    "cost": "the line only resembles the function near the point, so any use of it is valid only within a distance the derivative itself does not tell you",
+    "interview": "why a step size exists at all, given that the derivative already tells you which way to go"
+  }
+}

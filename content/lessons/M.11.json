@@ -1,0 +1,49 @@
+{
+  "id": "M.11",
+  "trackId": "M",
+  "trackName": "Math for machines",
+  "title": "Distributions",
+  "status": "traced",
+  "seed": "M.11",
+  "story": "A distribution is the assignment of probability across the possible outcomes — the whole shape, not a summary of it. That distinction is the lesson, because in practice people carry two numbers, a centre and a spread, and reason as though those determined the rest. For one family of shapes they nearly do. For most they do not, and the reasoning fails in a specific direction: the extremes.\n\nIt is worth knowing that the vocabulary itself came out of studying the shapes that do not behave. Pearson’s 1894 paper is about dissecting asymmetrical frequency curves — data that is not symmetric — and it is in this period that he introduced the term standard deviation in writing, replacing older names for the same quantity: Gauss’s mean error, mean square error, Airy’s error of mean square. The summary statistic everyone reaches for was named in the course of work about distributions that a centre and a spread describe badly.\n\nSo the question to ask of any data is not what its average is but what shape it has, and the answer is a modelling claim. Assuming the familiar bell means committing to specific things: that values far from the centre are extraordinarily rare, that the centre and the spread really do determine everything, and that no small number of observations can dominate a total. Those commitments are sometimes justified and they are never free, and they are almost always made by default rather than by decision.\n\nThe practical consequence shows up wherever tails matter. Latency, income, file sizes, request volumes, losses: these are routinely asymmetric with a long tail, and under such a shape the mean is not a typical value, the standard deviation understates how far things reach, and the rare event is many times more likely than the bell would predict. Nothing warns you, because the summary statistics compute perfectly well on any data whatsoever.",
+  "problem": {
+    "name": "The shape behind the summary",
+    "aka": [
+      "distributions",
+      "the normal assumption",
+      "tails"
+    ],
+    "shape": "A collection of measurements is being reasoned about through a centre and a spread, and those determine the rest only for particular shapes.",
+    "tell": [
+      "an average is quoted for something like latency, income or file size",
+      "a threshold is set at some number of standard deviations",
+      "the rare case turns out to be much less rare than the model predicted"
+    ],
+    "move": "Ask what shape the data has before summarising it. Plot it, look at the extremes, and treat any assumed distribution as a claim to be checked rather than a default to be inherited.",
+    "invariant": "A summary statistic is a consequence of the distribution and not a description of it. Two datasets can share a mean and a standard deviation and differ completely in the behaviour you care about, which is the reason to look rather than to compute.",
+    "breaks": "It breaks in the tails, and always in the same direction. Under an assumed bell, far-from-centre values are extraordinarily rare; under the asymmetric long-tailed shapes common in real systems they are merely uncommon, so capacity, risk and alerting thresholds derived from the assumption are all set too low.",
+    "cost": {
+      "time": "looking at the data rather than reducing it, which is a habit rather than an expense",
+      "space": "none",
+      "beats": "quoting a mean, which is instant, computes on anything, and is silent about whether it means anything"
+    },
+    "worked": {
+      "problem": "What does assuming a normal distribution actually commit you to?",
+      "reasoning": "Three specific claims about the world, each of which can be false and none of which is stated when you make the assumption by default.\n\nThat extreme values are extraordinarily rare, falling off very fast with distance from the centre. In an asymmetric long-tailed distribution they fall off slowly, so an event the assumption calls essentially impossible may occur weekly.\n\nThat the centre and the spread determine everything else. Under the assumption, quoting two numbers is a complete description; under most real shapes, two datasets can agree on both and behave entirely differently where it matters.\n\nThat no small number of observations dominates a total. Under the assumption, the average is stable and each new observation moves it a little; with heavy tails a single observation can exceed the sum of all the others, so the average is a quantity that keeps changing rather than one you are converging on.\n\nThe reason this bites is that none of the three is checked by anything. A mean and a standard deviation can be computed from any numbers at all, so the summary arrives looking identical whether the assumption holds or not.",
+      "code": "a distribution is the WHOLE SHAPE.\na mean and a standard deviation are two\nconsequences of it.\n\n  assuming the bell commits you to:\n\n    1. extremes are extraordinarily rare\n       (long tail: merely uncommon -> the\n        \"impossible\" event happens weekly)\n\n    2. centre + spread describe everything\n       (two datasets, same both, different\n        behaviour where it matters)\n\n    3. no few points dominate the total\n       (heavy tail: one observation can exceed\n        the sum of the rest -> the \"average\" never\n        settles)\n\n  and nothing checks any of them:\n     mean and sd compute fine on ANY numbers.\n\n  where it bites, always the same direction:\n     latency, income, file sizes, losses\n     -> thresholds set too low\n     -> capacity planned too small\n     -> \"rare\" events, on a schedule"
+    },
+    "practice": "Take a latency dataset from your systems and compute the mean and standard deviation, then plot the histogram and find the 99th percentile. Compare that percentile with what the two summary numbers would have predicted."
+  },
+  "beats": {
+    "broke": "Data gets summarised by a centre and a spread and then reasoned about as though those two numbers described it — which holds for one family of shapes and fails for most, always in the tails.",
+    "fix": "Treat the distribution — the whole assignment of probability across outcomes — as the object, and any statistic as a consequence of it. The vocabulary itself came from work on asymmetric curves, where Pearson introduced the term standard deviation in place of older names.",
+    "cost": "Naming a distribution is a claim about the world that the data can contradict, and the familiar one is usually assumed silently rather than chosen — so the commitment is made without being noticed.",
+    "interview": {
+      "q": "What does assuming a normal distribution actually commit you to?",
+      "trap": "Answering that it assumes the data is bell-shaped. That restates the assumption; the question is what follows from it that can be false.",
+      "answer": "Three claims about the world, none of which is stated when the assumption is made by default.\n\nFirst, that extreme values are extraordinarily rare, falling away very fast with distance from the centre. In the asymmetric long-tailed shapes common in real systems they fall away slowly, so an event the assumption treats as essentially impossible may happen weekly.\n\nSecond, that the centre and the spread determine everything else. Under the assumption, two numbers are a complete description; under most real shapes two datasets can agree on both and behave completely differently where it matters.\n\nThird, that no small number of observations dominates a total. With heavy tails a single observation can exceed the sum of all the others, so the average is not a quantity you are converging on — it keeps moving.\n\nWhat makes this dangerous is that nothing checks any of them. A mean and a standard deviation compute perfectly well on any numbers at all, so the summary looks identical whether the assumption holds or not — which is why latency and cost thresholds derived this way are consistently set too low."
+    }
+  },
+  "blueprint": "The distribution is the SHAPE.\nMean and spread are two consequences of it.\n\n  assuming the bell commits you to:\n\n    extremes are extraordinarily rare\n       long tail -> merely uncommon\n       -> your \"impossible\" event, weekly\n\n    centre + spread describe the rest\n       -> false for most real shapes\n\n    no few points dominate the total\n       heavy tail -> one point > sum of the rest\n       -> the average never settles\n\n  and nothing checks any of it, because mean and\n  standard deviation compute on ANY numbers.\n\n  where it bites (always the same direction):\n     latency, income, file size, loss\n     -> thresholds too low, capacity too small\n\n  note the irony in the vocabulary:\n     \"standard deviation\" was named by Pearson in\n     the course of work on ASYMMETRICAL frequency\n     curves -- shapes it describes badly.",
+  "takeaway": "A distribution is the whole shape and a summary is a consequence of it, so assuming the familiar bell commits you to rare extremes, sufficiency of two numbers, and no dominant observations — three claims nothing in the arithmetic will check."
+}

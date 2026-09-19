@@ -1,0 +1,49 @@
+{
+  "id": "M.9",
+  "trackId": "M",
+  "trackName": "Math for machines",
+  "title": "Gradients in many dimensions",
+  "status": "traced",
+  "seed": "M.9",
+  "story": "In one dimension the derivative answers the whole question, because there are only two directions and a sign picks one. In many dimensions there are infinitely many directions to move in, and a single number cannot choose between them. The gradient is what replaces it: the slope along each axis, collected into a vector.\n\nThat vector has a property worth stating carefully, because it is usually stated too loosely. Its direction is the direction in which the function increases fastest — so moving against it is the steepest available descent, which is what makes the method Cauchy published in 1847 possible in more than one variable. The partial derivatives are not merely bundled for convenience; their arrangement as a vector is what makes the direction meaningful.\n\nNow the part that is usually left out and that explains a great deal of practical behaviour. Steepest means fastest increase per unit of distance moved, and that requires a notion of distance. The gradient gives steepest ascent with respect to ordinary Euclidean distance, where moving one unit along any axis costs the same. That is a choice, and it is a choice about your inputs rather than about your function.\n\nWhich is why rescaling matters and why feature normalisation is not cosmetic. If one input is measured in millions and another between zero and one, then a unit of movement means something wildly different along each axis, and the direction that is steepest under that metric points mostly along the large-scaled axis regardless of where the function actually improves. The descent path zig-zags, the step size that suits one axis is wrong for the other, and none of it is a defect of the method — it is the method faithfully answering a question about distances you did not realise you had specified.",
+  "problem": {
+    "name": "Steepest direction under a metric",
+    "aka": [
+      "the gradient",
+      "partial derivatives",
+      "why normalisation matters"
+    ],
+    "shape": "A quantity depends on many inputs at once, and you need a single direction to move them all in.",
+    "tell": [
+      "more than one parameter is being adjusted to improve a single outcome",
+      "training oscillates, or converges far more slowly than expected",
+      "inputs are on very different scales and nobody has normalised them"
+    ],
+    "move": "Take the slope along each axis and treat the collection as a vector. Move against it for descent — and, because steepest is defined relative to distance, make the axes comparable first.",
+    "invariant": "The gradient is the steepest direction with respect to a chosen notion of distance, ordinarily the Euclidean one in which a unit along each axis costs the same. That choice is inherited from your parameterisation rather than from the problem.",
+    "breaks": "It breaks when the axes are not comparable. With inputs on very different scales, equal steps along different axes mean unequal changes, so the steepest direction is dominated by the large-scaled axis and the path zig-zags across the valley rather than along it — with no single step size suiting both axes.",
+    "cost": {
+      "time": "one partial derivative per input, which is what makes the chain rule matter",
+      "space": "a vector the size of the parameter set",
+      "beats": "searching directions by trial, which needs no derivatives and is hopeless past a few dimensions"
+    },
+    "worked": {
+      "problem": "Why does rescaling your inputs change the path that gradient descent takes?",
+      "reasoning": "Because steepest means most increase per unit of distance, and rescaling changes what a unit of distance is.\n\nThe gradient answers: among all directions of the same length, which gives the largest increase. That question is meaningless without a definition of length, and the ordinary answer uses the Euclidean one in which moving one unit along any axis is equally costly.\n\nNow suppose one input is a price in millions and another a ratio between zero and one. Moving one unit along the first is a negligible change in the quantity it represents; moving one unit along the second changes it completely. The metric treats them as equal, so the direction it calls steepest is dominated by whichever axis has the large numeric range — not by where the function actually improves most.\n\nThe visible consequence is a path that crosses back and forth across a narrow valley instead of running down it, and a step size that is simultaneously too large for one axis and too small for the other.\n\nSo normalisation is not tidying. It is making the metric that the gradient silently assumes match the one you meant.",
+      "code": "\"steepest\" = most increase PER UNIT OF DISTANCE\n\n   -> requires a definition of distance\n   -> the usual one: a unit along any axis costs\n      the same (Euclidean)\n   -> that is a claim about your PARAMETERISATION,\n      not about your function\n\n  inputs: price in millions, ratio in [0,1]\n\n     one unit along price  -> negligible change\n     one unit along ratio  -> total change\n     the metric says these are equal\n\n     -> steepest direction is dominated by the\n        large-range axis\n     -> path zig-zags ACROSS the valley instead of\n        running down it\n     -> one step size is too big for one axis and\n        too small for the other, simultaneously\n\n  so normalisation is not tidying:\n     it makes the metric the gradient assumes\n     match the one you meant."
+    },
+    "practice": "Train a simple model twice on the same data, once with features normalised and once with one feature multiplied by a thousand. Compare the number of steps to converge, and the largest learning rate that does not diverge."
+  },
+  "beats": {
+    "broke": "One number picks between two directions. With many inputs there are infinitely many directions and no single number can choose, so the one-dimensional tool does not generalise by itself.",
+    "fix": "Collect the slope along each axis into a vector whose direction is the fastest increase. Moving against it is the steepest descent, which is what makes the 1847 method work in more than one variable.",
+    "cost": "Steepest is relative to a notion of distance that comes from your parameterisation, so inputs on different scales produce a steepest direction dominated by the largest-ranged axis — a zig-zagging path and no step size that suits both.",
+    "interview": {
+      "q": "Why does rescaling your inputs change the path gradient descent takes?",
+      "trap": "Answering that it changes the numbers, so of course the path changes. The question is why it changes the *direction* the method calls steepest, which sounds like it should be a property of the function.",
+      "answer": "Because steepest means most increase per unit of distance, and rescaling changes what a unit of distance is.\n\nThe gradient answers: among all directions of equal length, which gives the largest increase. That is meaningless without a definition of length, and the usual one is Euclidean — moving one unit along any axis costs the same. That definition comes from how you parameterised the problem, not from the function.\n\nSo if one input is a price in millions and another a ratio between zero and one, a unit along the first is a negligible change in what it represents while a unit along the second changes it completely. The metric treats those as equal steps, so the direction it calls steepest is dominated by whichever axis has the larger numeric range rather than by where the function actually improves.\n\nThe visible symptom is a path that crosses back and forth across a narrow valley instead of running down it, and a learning rate that is simultaneously too large for one axis and too small for another.\n\nWhich is why normalisation is not cosmetic: it makes the metric the gradient silently assumes match the one you intended."
+    }
+  },
+  "blueprint": "One dimension: a sign picks between two directions.\nMany dimensions: infinitely many, and a number can't.\n\n   gradient = slope along each axis, as a VECTOR\n   its direction = fastest increase\n   move against it = steepest descent\n\n  and the clause everyone drops:\n\n     fastest increase PER UNIT OF DISTANCE\n     -> needs a metric\n     -> the default: one unit along any axis costs\n        the same\n     -> that comes from your PARAMETERISATION\n\n  consequences when axes aren't comparable:\n\n     price (millions) vs ratio (0..1)\n        metric says a unit each way is equal\n        -> steepest is dominated by the big axis\n        -> zig-zag ACROSS the valley\n        -> no single step size fits both\n\n  normalisation = making the assumed metric match\n  the intended one. not tidying.",
+  "takeaway": "The gradient points in the direction of steepest increase with respect to a distance you never chose explicitly — the one implied by your parameterisation — which is why unnormalised inputs make the steepest direction point at the largest-scaled axis."
+}

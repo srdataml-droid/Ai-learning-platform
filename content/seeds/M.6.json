@@ -1,0 +1,46 @@
+{
+  "taskId": "M.6",
+  "title": "Functions and graphs",
+  "researchedAt": "2026-09-19",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Cauchy’s note of 1847 on a general method for resolving systems of simultaneous equations introduced the procedure later named by Hadamard the method of descent — a procedure that operates on a function by moving in the direction in which it decreases.",
+      "type": "date",
+      "tokens": [
+        "Cauchy",
+        "Hadamard",
+        "1847"
+      ],
+      "source": {
+        "title": "Cauchy, A. L., Méthode générale pour la résolution des systèmes d’équations simultanées, Comptes Rendus de l’Académie des Sciences, Paris, 25:536-538, 1847",
+        "url": "https://www.semanticscholar.org/paper/ANALYSE-MATH%C3%89MATIQUE.-%E2%80%93-M%C3%A9thodc-g%C3%A9n%C3%A9rale-pour-la-Cauchy/8759d91b54eb78349ee75a9f0493d99ca9fc84e0",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Historians of numerical analysis trace steepest descent to Cauchy in 1829 in the nonlinear case, and note that the form in use today was introduced by Kantorovich in 1945, with Curry’s 1944 paper on steepest descent for non-linear minimization problems an earlier milestone.",
+      "type": "date",
+      "tokens": [
+        "Cauchy",
+        "Kantorovich",
+        "Curry",
+        "1829",
+        "1944",
+        "1945"
+      ],
+      "source": {
+        "title": "Cauchy, A. L., Méthode générale pour la résolution des systèmes d’équations simultanées, Comptes Rendus de l’Académie des Sciences, Paris, 25:536-538, 1847",
+        "url": "https://www.semanticscholar.org/paper/ANALYSE-MATH%C3%89MATIQUE.-%E2%80%93-M%C3%A9thodc-g%C3%A9n%C3%A9rale-pour-la-Cauchy/8759d91b54eb78349ee75a9f0493d99ca9fc84e0",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a formula tells you how to compute an output and tells you almost nothing about the behaviour you care about",
+    "fix": "treat the function as its shape — the set of input-output pairs — because every property that matters for optimisation is a property of the shape and not of the expression",
+    "cost": "the shape of anything interesting lives in too many dimensions to draw, so the intuition you build from pictures has to be carried carefully rather than trusted",
+    "interview": "why the formula tells you less than the shape does"
+  }
+}

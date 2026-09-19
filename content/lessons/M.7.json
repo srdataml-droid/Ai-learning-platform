@@ -1,0 +1,49 @@
+{
+  "id": "M.7",
+  "trackId": "M",
+  "trackName": "Math for machines",
+  "title": "Slope and the derivative",
+  "status": "traced",
+  "seed": "M.7",
+  "story": "The derivative is usually introduced as a rate of change, which is true and underplays what it is for. The useful description is that it is the best straight-line approximation to a function at a point — and the reason that matters is that straight lines are trivial to reason about and functions are not.\n\nThat framing makes the whole of optimisation legible. You have a complicated surface and you want to go downhill. You cannot see the surface, and you do not need to: you replace it near where you are standing with the line that matches it there, read off which direction that line descends, and move. The procedure Cauchy published in 1847 is exactly this, and Hadamard later named it the method of descent. The complexity of the function has been traded for a local approximation you can act on.\n\nEverything awkward about training follows from what that trade costs. The line agrees with the function at the point and diverges from it as you move away, at a rate the derivative does not report. So the direction is reliable and the distance is not, and the size of the step is a separate decision that the derivative cannot make for you. Step too far and you have used a description of the surface that expired somewhere behind you — which is why a loss can increase after a step taken in the correct direction, a result that looks like a bug and is the approximation being used outside its range.\n\nThe history has a caveat worth carrying, because this one is often flattened to a single name and date. Steepest descent is traced to Cauchy in 1829 for a nonlinear equation, the 1847 note is the one usually cited, Curry published on the nonlinear minimisation case in 1944, and the form in use today was introduced by Kantorovich in 1945. The method has four plausible origin points depending on what you mean by it.",
+  "problem": {
+    "name": "Local linear approximation",
+    "aka": [
+      "the derivative",
+      "slope",
+      "steepest descent"
+    ],
+    "shape": "You must choose a direction to move in order to improve a quantity, and the function relating your position to that quantity is too complicated to solve.",
+    "tell": [
+      "the question is which way to adjust something, not what its exact optimum is",
+      "the function can be evaluated but not inverted or solved",
+      "you are tuning a step size, a learning rate, or a nudge"
+    ],
+    "move": "Replace the function near your current position with the line that best matches it there. Read the direction of descent from that line, take a step, and re-approximate at the new position.",
+    "invariant": "The approximation is exact at the point and degrades with distance. That is why the direction it gives is trustworthy and the magnitude is not, and why re-approximating after each step is the whole method rather than an optimisation of it.",
+    "breaks": "It breaks as soon as you step beyond the range where the line resembles the function — and the derivative does not report that range, so the step size has to come from somewhere else. This is why a loss can rise after a step in the correct direction: the direction was right and the distance used a description that had expired.",
+    "cost": {
+      "time": "one evaluation of the slope per step, in exchange for never solving the function",
+      "space": "none beyond the current position",
+      "beats": "solving for the optimum directly, which is exact and usually impossible"
+    },
+    "worked": {
+      "problem": "Why does a step size exist at all, if the derivative already tells you which way to go?",
+      "reasoning": "Because the derivative tells you the direction and says nothing about the distance, and those are separate pieces of information.\n\nWhat the derivative gives you is the line that matches the function at your exact position. At that position the match is perfect. One step away it is close. Far away it may bear no relation — and crucially, the slope is a single number that describes the line, not a description of how quickly the line stops resembling the surface.\n\nSo a step is an extrapolation using a description that was only guaranteed at one point. Take a small step and the description was probably still roughly valid. Take a large one and you have acted on information about somewhere you are no longer near.\n\nThis explains the failure that confuses people most: a loss increasing after a step taken in the correct downhill direction. Nothing went wrong with the direction. The step went past the region where the approximation held, over the bottom of a valley and up the other side.\n\nWhich is why every practical method is really a policy for choosing distances, and why the direction is the easy half.",
+      "code": "the derivative gives you a LINE at a point:\n\n     f(x)      the surface: complicated\n     tangent   the line: exact AT x, and only there\n\n  what it tells you:   which way is down     RELIABLE\n  what it does not:    how far that stays true\n\n  so a step is an extrapolation from a description\n  guaranteed at ONE point.\n\n     small step -> description probably still valid\n     large step -> acted on information about\n                   somewhere you are no longer near\n\n  which explains the confusing failure:\n\n     loss INCREASED after a step in the\n     correct downhill direction\n     -> the direction was right\n     -> the distance used an expired description\n     -> stepped past the bottom, up the far side\n\n  hence: direction is the easy half. every practical\n  method is a policy for choosing the DISTANCE."
+    },
+    "practice": "Take a simple curved function and a point on it. Compute the tangent line, then evaluate both the function and the line at increasing distances and record where they diverge by more than a percent — that distance is what the derivative did not tell you."
+  },
+  "beats": {
+    "broke": "Improving something requires knowing which way to move, and the function relating position to outcome is too complicated to solve and only needs to be understood locally.",
+    "fix": "Replace the function near a point with the line that best matches it there. That is a single number, it is enough to give a direction, and it is what the method Cauchy published in 1847 walks on.",
+    "cost": "The line matches only at the point and diverges with distance at a rate the derivative never reports, so the direction is trustworthy and the step size is a separate decision that must come from elsewhere.",
+    "interview": {
+      "q": "Why does a step size exist at all, given that the derivative already tells you which way to go?",
+      "trap": "Answering that big steps are unstable. That is the observed symptom; the question is why the derivative cannot settle the distance itself.",
+      "answer": "Because the derivative supplies a direction and carries no information about distance.\n\nWhat it gives you is the line matching the function at your exact position. At that position the match is perfect; a little way off it is close; far away it may bear no relation. And the slope is a single number describing that line — it is not a description of how quickly the line stops resembling the surface, so nothing in it bounds how far you may act on it.\n\nA step is therefore an extrapolation from a description guaranteed at one point only. A small step is probably still within the range where it holds; a large one acts on information about somewhere you are no longer near.\n\nThat explains the failure people find most confusing: a loss increasing after a step taken in the correct downhill direction. The direction was right. The distance carried the approximation past the point where it applied — over the bottom and up the far side.\n\nSo direction is the easy half, and every practical optimiser is really a policy for choosing distances."
+    }
+  },
+  "blueprint": "The derivative is a LOCAL LINEAR APPROXIMATION:\n\n    surface   complicated, can't be solved\n    tangent   exact AT the point, and only there\n\n    gives:    which way is down       RELIABLE\n    omits:    how far that holds      NOT REPORTED\n\n  so every step is an extrapolation from a\n  guarantee that applied at one point.\n\n     loss went UP after a correct-direction step?\n        direction: right\n        distance:  used an expired description\n        -> past the bottom, up the other side\n\n  direction is the easy half.\n  every optimiser is a policy for DISTANCE.\n\n  and the history is layered, not a single date:\n     1829  Cauchy, nonlinear case\n     1847  the note usually cited\n           (named \"method of descent\" by Hadamard)\n     1944  Curry, nonlinear minimization\n     1945  Kantorovich, the modern form",
+  "takeaway": "The derivative is the line that matches a function at a point, so it gives a reliable direction and no information about how far that direction stays true — which is why a step size is a separate decision and why a loss can rise after a correct step."
+}

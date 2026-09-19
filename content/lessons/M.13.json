@@ -1,0 +1,49 @@
+{
+  "id": "M.13",
+  "trackId": "M",
+  "trackName": "Math for machines",
+  "title": "Conditional probability and Bayes",
+  "status": "traced",
+  "seed": "M.13",
+  "story": "Two quantities are constantly confused because ordinary language gives them the same shape of sentence. The probability that the test is positive given that you have the disease. The probability that you have the disease given that the test is positive. Both sound like the accuracy of the test, and they can differ by a factor of a hundred.\n\nThe relation between them is what the 1763 essay supplies, and it forces a third quantity into the open: how common the condition was before any test was run. That is the base rate, and it is the number everyone omits, because it is not a property of the test and does not appear in the test’s marketing.\n\nWork the standard example, because the size of the effect is the point rather than the formula. A condition affects one person in ten thousand. A test is ninety-nine percent accurate in both directions. Take a million people: a hundred have the condition, and the test catches ninety-nine of them. The other nine hundred and ninety-nine thousand nine hundred do not, and the test wrongly flags one percent of them — nearly ten thousand people. So a positive result is one of roughly ten thousand and ninety-nine positives, of which ninety-nine are real. Being told you tested positive means you probably do not have it, for a test that is right ninety-nine times out of a hundred.\n\nNothing about that is subtle once the base rate is visible, and everything about it is invisible while it is not. The same structure governs fraud detection, security alerting, medical screening and retrieval: whenever what you are looking for is rare, a very accurate detector produces mostly false positives, and the rate of them is set by the rarity rather than by the quality of the detector.\n\nThe history is worth keeping because it is unusually human. The author died in 1761; his friend Price, a minister and actuary, found the paper among the bequeathed papers and submitted it, adding to it; Price thought it supported the existence of God. Laplace made it the basis of statistical inference and Boole later attacked it.",
+  "problem": {
+    "name": "Inverting a conditional",
+    "aka": [
+      "Bayes’ rule",
+      "base rates",
+      "the false positive problem"
+    ],
+    "shape": "You know how often a signal appears when something is true, and you need to know how often something is true when the signal appears.",
+    "tell": [
+      "an accuracy figure is being quoted for a detector of something rare",
+      "an alert fires and is assumed to mean what it detects",
+      "nobody has stated how common the thing being detected is"
+    ],
+    "move": "Write down three numbers, not one: how often the signal appears when the thing is present, how often it appears when it is absent, and how common the thing is. Then count out of a concrete population rather than manipulating percentages.",
+    "invariant": "The probability of the hypothesis given the evidence depends on the base rate. No property of the test alone determines it, which is why a detector cannot be evaluated without knowing what it is deployed against.",
+    "breaks": "It breaks when the base rate is unknown or shifts, which is common: fraud rates change, attack rates change, and a detector tuned on one population behaves differently on another without anything about the detector changing. The calculation is then only as good as a number you assumed.",
+    "cost": {
+      "time": "nothing; counting out of a population is arithmetic",
+      "space": "none",
+      "beats": "quoting accuracy, which is one number, sounds sufficient, and answers a question nobody asked"
+    },
+    "worked": {
+      "problem": "Why does a highly accurate test for a rare condition mostly return false positives?",
+      "reasoning": "Because the errors are drawn from a much larger pool than the successes, and the ratio is set by rarity rather than by accuracy.\n\nCount out of a million people, with a condition affecting one in ten thousand and a test right ninety-nine times in a hundred.\n\nA hundred people have it. The test correctly flags ninety-nine of them.\n\nNine hundred and ninety-nine thousand nine hundred do not have it. The test wrongly flags one percent — about ten thousand people.\n\nSo roughly ten thousand and ninety-nine positives, of which ninety-nine are genuine: under one in a hundred. A positive result means you almost certainly do not have the condition.\n\nThe structural point is that the false positives come from the enormous healthy population and the true positives from the tiny affected one, so even a small error rate applied to a huge group swamps a high success rate applied to a small one. Improving the test from ninety-nine percent to ninety-nine point nine percent helps, and does not change the shape — what changes the shape is testing a population where the condition is less rare.\n\nWhich is exactly why screening is done on risk groups rather than everyone.",
+      "code": "1,000,000 people\ncondition: 1 in 10,000      test: 99% both ways\n\n       have it:        100\n          flagged:      99      <- true positives\n       don't have it:  999,900\n          flagged 1%:  ~9,999   <- false positives\n\n   positives total: ~10,098\n   genuine:             99\n   -> under 1 in 100\n\n  \"99% accurate\" and a positive means you almost\n  certainly do NOT have it.\n\n  the mechanism:\n     false positives come from the HUGE group\n     true positives come from the TINY one\n     -> a small error rate on a big population\n        swamps a high hit rate on a small one\n\n  improving 99% -> 99.9% helps and does not change\n  the shape. what changes the shape is testing a\n  population where it is LESS RARE.\n  (which is why screening targets risk groups.)"
+    },
+    "practice": "Take an alerting rule in your systems and estimate three numbers: how often it fires when the problem is real, how often it fires when it is not, and how often the problem actually occurs. Then compute what fraction of alerts are real."
+  },
+  "beats": {
+    "broke": "The probability of the evidence given the hypothesis and the probability of the hypothesis given the evidence are different quantities, and ordinary language renders them with the same phrasing.",
+    "fix": "Relate the two explicitly, which forces the base rate into view — the thing everyone omits because it is a property of the population rather than of the test. The essay doing this was read to the Royal Society in December 1763, two years after its author’s death.",
+    "cost": "The base rate is often unknown or unstable, so the answer depends on a number you assumed rather than measured — and a detector tuned on one population misbehaves on another with nothing about it having changed.",
+    "interview": {
+      "q": "Why does a highly accurate test for a rare condition mostly return false positives?",
+      "trap": "Answering that no test is perfect. The effect is not about the residual error being nonzero — it is about which population each kind of error is drawn from.",
+      "answer": "Because the false positives are drawn from a vastly larger pool than the true positives, so rarity rather than accuracy sets the ratio.\n\nCount out of a million people, with a condition affecting one in ten thousand and a test correct ninety-nine times in a hundred. A hundred people have it and the test flags ninety-nine. Nine hundred and ninety-nine thousand nine hundred do not, and the test wrongly flags one percent of them — about ten thousand. So there are roughly ten thousand and ninety-nine positives of which ninety-nine are genuine: under one in a hundred.\n\nThe structure is what matters. A small error rate applied to an enormous group swamps a high success rate applied to a tiny one. Improving the test from ninety-nine to ninety-nine point nine percent helps and does not change the shape — what changes the shape is testing a population in which the condition is less rare, which is exactly why screening targets risk groups rather than everyone.\n\nThe same structure governs fraud detection, security alerting and retrieval: whenever the target is rare, an accurate detector still produces mostly false alarms."
+    }
+  },
+  "blueprint": "Two different numbers, one English sentence:\n\n   P(positive | disease)   <- the test's property\n   P(disease | positive)   <- what you want\n\n   and they differ by the BASE RATE, which belongs\n   to the population, not the test.\n\n  1,000,000 people, 1-in-10,000 condition,\n  99% accurate test:\n\n       have it       100   -> flagged      99\n       don't    999,900   -> flagged  ~9,999\n\n       positives ~10,098, genuine 99\n       -> under 1%\n\n  why: small error rate x HUGE group\n       beats high hit rate x tiny group\n\n  so:\n     a detector cannot be evaluated without knowing\n     what it is pointed at\n     improving accuracy shifts the number, not the\n     shape\n     changing the POPULATION changes the shape\n     -> screen risk groups, not everyone",
+  "takeaway": "The probability of a hypothesis given evidence depends on how common the hypothesis was beforehand, so an accurate detector aimed at something rare returns mostly false positives — a ratio set by rarity rather than by the quality of the detector."
+}
