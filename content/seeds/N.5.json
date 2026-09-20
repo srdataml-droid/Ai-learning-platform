@@ -1,0 +1,54 @@
+{
+  "taskId": "N.5",
+  "title": "Missing data",
+  "researchedAt": "2026-09-20",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Rubin's paper of 1976 in Biometrika, volume 63, pages 581 to 592, set out the conditions under which the process that causes data to be missing can be ignored. For sampling distribution inference it is appropriate to ignore that process if the missing data are missing at random and the observed data are observed at random; for direct likelihood and Bayesian inference it is appropriate if the missing data are missing at random and the parameter governing the missingness is distinct from the parameter of interest. He argues these are the weakest general conditions under which ignoring the process always leads to correct inferences.",
+      "type": "event",
+      "tokens": [
+        "Rubin",
+        "Biometrika",
+        "1976"
+      ],
+      "source": {
+        "title": "Donald B. Rubin, Inference and missing data, Biometrika 63(3):581-592, December 1976, doi 10.1093/biomet/63.3.581",
+        "url": "https://academic.oup.com/biomet/article-abstract/63/3/581/270932",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "A correction to the terminology as it is usually taught: the three-way taxonomy commonly attributed wholesale to that paper does not appear there in its modern form. Rubin's own terms are missing at random and observed at random, and the combination of the two corresponds to what is now conventionally called missing completely at random.",
+      "type": "event",
+      "tokens": [
+        "Rubin"
+      ],
+      "source": {
+        "title": "Donald B. Rubin, Inference and missing data, Biometrika 63(3):581-592, December 1976, doi 10.1093/biomet/63.3.581",
+        "url": "https://academic.oup.com/biomet/article-abstract/63/3/581/270932",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The practical consequence of the conditions is that ignorability is an assumption about the mechanism, not a property that can be read off the observed data. Whether the missingness depends on the unobserved value itself cannot be settled from within a dataset in which that value is precisely what is absent.",
+      "type": "event",
+      "tokens": [
+        "Rubin"
+      ],
+      "source": {
+        "title": "Donald B. Rubin, Inference and missing data, Biometrika 63(3):581-592, December 1976, doi 10.1093/biomet/63.3.581",
+        "url": "https://academic.oup.com/biomet/article-abstract/63/3/581/270932",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a value is absent, and every operation downstream needs something in the cell, so the choice is not whether to make an assumption about it but which assumption to make silently",
+    "fix": "classify the mechanism before choosing the remedy — whether the absence is unrelated to everything, related only to what you did observe, or related to the missing value itself — because only the first two let you ignore the process",
+    "cost": "the classification is an assumption about a mechanism outside the data, and the case that most needs detecting is exactly the one the data cannot reveal, since the value that would settle it is the one that is missing",
+    "interview": "what filling missing values with the column mean actually does to the dataset"
+  }
+}

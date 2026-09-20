@@ -1,0 +1,57 @@
+{
+  "taskId": "N.11",
+  "title": "Exploratory analysis: look before you model",
+  "researchedAt": "2026-09-20",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Anscombe constructed four data sets, each of 11 observations, sharing the same mean of x at 9 and mean of y at 7.5, the same fitted regression line, the same regression and residual sums of squares and therefore the same coefficient of determination of 0.67 — yet representing very different situations. In the second set the relationship is obvious but not linear, which makes the correlation coefficient irrelevant.",
+      "type": "number",
+      "tokens": [
+        "Anscombe",
+        "American Statistician",
+        "1973"
+      ],
+      "source": {
+        "title": "F. J. Anscombe, Graphs in Statistical Analysis, The American Statistician 27(1):17-21, February 1973, doi 10.1080/00031305.1973.10478966",
+        "url": "https://www.sjsu.edu/faculty/gerstman/StatPrimer/anscombe1973.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Anscombe described the article as intended to counter an impression among statisticians that numerical calculations are exact, but graphs are rough, and the four sets were built to demonstrate both the importance of graphing data when analysing it and the effect of outliers and other influential observations on statistical properties.",
+      "type": "quote",
+      "tokens": [
+        "Anscombe"
+      ],
+      "source": {
+        "title": "F. J. Anscombe, Graphs in Statistical Analysis, The American Statistician 27(1):17-21, February 1973, doi 10.1080/00031305.1973.10478966",
+        "url": "https://www.sjsu.edu/faculty/gerstman/StatPrimer/anscombe1973.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Tukey's Exploratory Data Analysis was published by Addison-Wesley in 1977 and runs to 688 pages. Its much-quoted formulation, on page 3, is that exploratory data analysis can never be the whole story, but nothing else can serve as the foundation stone, as the first step.",
+      "type": "quote",
+      "tokens": [
+        "Tukey",
+        "Exploratory Data Analysis",
+        "Addison-Wesley",
+        "1977"
+      ],
+      "source": {
+        "title": "John W. Tukey, Exploratory Data Analysis, Addison-Wesley, Reading, Mass., 1977, xvi + 688 pages — bibliographic record and review, Biometrical Journal 23(4), 1981",
+        "url": "https://onlinelibrary.wiley.com/doi/abs/10.1002/bimj.4710230408",
+        "kind": "secondary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "you cannot read a million rows, so you compute summaries of them, and a summary is a lossy compression whose losses are chosen before anyone has seen what is being compressed",
+    "fix": "look at the distribution and the shape first, because the shape is what decides whether a given summary means anything at all",
+    "cost": "looking has no completion criterion and no natural stopping point, and it actively invites you to find structure in noise, since a person examining enough views of enough columns will always find something",
+    "interview": "what a coefficient of determination of 0.67 tells you about the shape of the data"
+  }
+}

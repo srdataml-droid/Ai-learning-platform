@@ -1,0 +1,47 @@
+{
+  "taskId": "N.6",
+  "title": "Duplicates and keys",
+  "researchedAt": "2026-09-20",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Codd's relational model, published in Communications of the ACM in 1970, volume 13, pages 377 to 387, introduced relations in a normal form in which each relation carries a designated primary key. Its opening argument is data independence: users of large data banks must be protected from having to know how the data is organised in the machine, so that applications remain unaffected when the internal representation changes.",
+      "type": "event",
+      "tokens": [
+        "Codd",
+        "Communications of the ACM",
+        "ACM",
+        "1970"
+      ],
+      "source": {
+        "title": "E. F. Codd, A Relational Model of Data for Large Shared Data Banks, Communications of the ACM 13(6):377-387, June 1970, doi 10.1145/362384.362685",
+        "url": "https://dl.acm.org/doi/10.1145/362384.362685",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Fellegi and Sunter gave record linkage its decision-theoretic formalisation in the Journal of the American Statistical Association in 1969, volume 64, pages 1183 to 1210, formalising the earlier approach of Newcombe and colleagues from 1959. Comparing a pair of records yields one of three decisions — link, non-link, or possible link — and their fundamental theorem shows the optimal procedure is a likelihood ratio test, which minimises the number of pairs left as possible links while holding two error rates at stipulated levels: linking records that do not match, and failing to link records that do.",
+      "type": "event",
+      "tokens": [
+        "Fellegi",
+        "Sunter",
+        "Journal of the American Statistical Association",
+        "Newcombe",
+        "1969",
+        "1959"
+      ],
+      "source": {
+        "title": "Ivan P. Fellegi and Alan B. Sunter, A Theory for Record Linkage, Journal of the American Statistical Association 64(328):1183-1210, December 1969, doi 10.1080/01621459.1969.10501049",
+        "url": "https://www.tandfonline.com/doi/abs/10.1080/01621459.1969.10501049",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "two rows can describe the same thing without being the same row, so the count of distinct things in a table is not the count of its rows and cannot be recovered by comparing rows for equality",
+    "fix": "declare a key — the field or combination that identifies the thing rather than the record — and where no such field exists, treat matching as a decision problem with two error rates rather than as a comparison",
+    "cost": "an exact comparison finds only the duplicates that were already identical, and every probabilistic method trades the two errors against each other: no threshold removes both, so the choice is which of the two you would rather make",
+    "interview": "why dropping exact duplicates can leave the totals still failing to reconcile"
+  }
+}

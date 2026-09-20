@@ -1,0 +1,69 @@
+{
+  "taskId": "N.7",
+  "title": "Type coercion errors",
+  "researchedAt": "2026-09-20",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Microsoft Excel, on default settings, converts gene names into dates and into floating point numbers. A programmatic scan of supplementary files from 18 genomics journals published between 2005 and 2015 found that roughly one fifth of papers carrying supplementary gene lists contained erroneous gene name conversions. Of the 987 affected files identified, 166 contained no other identifying information, such as accession numbers or genomic coordinates, from which the original names could be recovered. The underlying behaviour was first characterised in 2004 by Zeeberg and colleagues.",
+      "type": "number",
+      "tokens": [
+        "Microsoft Excel",
+        "Excel",
+        "Microsoft",
+        "Zeeberg",
+        "2004",
+        "2005",
+        "2015"
+      ],
+      "source": {
+        "title": "Mark Ziemann, Yotam Eren and Assam El-Osta, Gene name errors are widespread in the scientific literature, Genome Biology 17:177, 23 August 2016, doi 10.1186/s13059-016-1044-7",
+        "url": "https://genomebiology.biomedcentral.com/articles/10.1186/s13059-016-1044-7",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "A follow-up scan covering 2014 to 2020 assembled 166,139 genomics articles, of which 32,841 carried spreadsheet supplements and 11,117 held gene symbol lists. After manual checking, 3,436 of those were confirmed to contain errors — 30.9 percent, described by the authors as substantially higher than previously reported, against the earlier figure of 19.6 percent. Gene name errors continued to accumulate unabated in the period after 2016.",
+      "type": "number",
+      "tokens": [
+        "30.9%",
+        "19.6%",
+        "2014",
+        "2016",
+        "2020"
+      ],
+      "source": {
+        "title": "Mandhri Abeysooriya, Megan Soria, Mary Sravya Kasu and Mark Ziemann, Gene name errors: Lessons not learned, PLoS Computational Biology 17(7):e1008984, 30 July 2021, doi 10.1371/journal.pcbi.1008984",
+        "url": "https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1008984",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The response was to change the data rather than the software. In 2020 the HUGO Gene Nomenclature Committee outlined plans for changing gene symbols specifically to avoid auto-correction, so that SEPT1 becomes SEPTIN1 and MARCH1 becomes MARCHF1. Human, mouse and rat symbols were updated; equivalent changes are yet to take place for other species, and a scan of eukaryotic annotations found 1,544 gene names across 104 taxa that still convert to dates.",
+      "type": "event",
+      "tokens": [
+        "HUGO Gene Nomenclature Committee",
+        "HUGO",
+        "HGNC",
+        "SEPT1",
+        "SEPTIN1",
+        "MARCH1",
+        "MARCHF1",
+        "2020"
+      ],
+      "source": {
+        "title": "Mandhri Abeysooriya, Megan Soria, Mary Sravya Kasu and Mark Ziemann, Gene name errors: Lessons not learned, PLoS Computational Biology 17(7):e1008984, 30 July 2021, doi 10.1371/journal.pcbi.1008984",
+        "url": "https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1008984",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a value arrives as text, and something between the source and your code decides what kind of thing it is by looking at how it is written",
+    "fix": "read everything as text and convert explicitly, column by column, because the type of a column is a fact about the data and not a property of any individual value in it",
+    "cost": "explicit typing means knowing and stating what every column is before you can load it, and the coercion has usually already happened upstream in a tool you do not control",
+    "interview": "whether a column of identifiers that has been partly converted into dates can be recovered"
+  }
+}

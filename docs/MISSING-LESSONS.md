@@ -80,20 +80,8 @@ Study order: the sequence first, then the five habits running underneath.
 
 ## Track N — Data work
 
-14 of 15 still missing.
+2 of 15 still missing.
 
-- [ ] `N.1` Where data comes from: files, APIs, databases, scraping
-- [ ] `N.2` CSV, JSON, Parquet
-- [ ] `N.3` numpy arrays
-- [ ] `N.4` pandas: load, inspect, select, filter, group
-- [ ] `N.5` Missing data
-- [ ] `N.6` Duplicates and keys
-- [ ] `N.7` Type coercion errors
-- [ ] `N.8` Dates and timezones
-- [ ] `N.9` Encoding categorical data
-- [ ] `N.10` Scaling and normalising
-- [ ] `N.11` Exploratory analysis: look before you model
-- [ ] `N.12` Plotting to understand, not to present
 - [ ] `N.14` Splitting data honestly
 - [ ] `N.15` A reusable pipeline
 
@@ -192,7 +180,7 @@ Study order: the sequence first, then the five habits running underneath.
 
 ---
 
-**Total remaining: 107 of 313.**
+**Total remaining: 95 of 313.**
 
 Regenerate: `node tools/missing-lessons.mjs > docs/MISSING-LESSONS.md`
 

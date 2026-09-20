@@ -1,0 +1,118 @@
+{
+  "taskId": "N.2",
+  "title": "CSV, JSON, Parquet",
+  "researchedAt": "2026-09-20",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "RFC 4180 is Category Informational and states of itself that it does not specify an Internet standard of any kind. Its introduction says that, surprisingly, while this format is very common, it has never been formally documented, and its interoperability considerations say that due to lack of a single specification, there are considerable differences among implementations.",
+      "type": "quote",
+      "tokens": [
+        "Internet"
+      ],
+      "source": {
+        "title": "RFC 4180, Common Format and MIME Type for Comma-Separated Values (CSV) Files, Y. Shafranovich, October 2005, Category: Informational",
+        "url": "https://www.rfc-editor.org/rfc/rfc4180.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The rules RFC 4180 does document include that each record is located on a separate line, delimited by a line break, and that a double quote appearing inside a field must be escaped by preceding it with another double quote. Fields containing line breaks, double quotes or commas are to be enclosed in double quotes, which is why a single cell of free text can legally contain the record separator.",
+      "type": "quote",
+      "tokens": [
+        "RFC",
+        "CSV"
+      ],
+      "source": {
+        "title": "RFC 4180, Common Format and MIME Type for Comma-Separated Values (CSV) Files, Y. Shafranovich, October 2005, Category: Informational",
+        "url": "https://www.rfc-editor.org/rfc/rfc4180.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "RFC 8259 is on the standards track and replaces RFC 7159. It allows implementations to set limits on the range and precision of numbers accepted, and notes that because software implementing double precision floating point is generally available and widely used, good interoperability can be achieved by implementations that expect no more precision or range than these provide.",
+      "type": "quote",
+      "tokens": [
+        "Bray"
+      ],
+      "source": {
+        "title": "RFC 8259, The JavaScript Object Notation (JSON) Data Interchange Format, T. Bray ed., December 2017, Standards Track",
+        "url": "https://www.rfc-editor.org/rfc/rfc8259.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "RFC 8259 states that integers in the range minus two to the fifty-third plus one, through two to the fifty-third minus one, are interoperable in the sense that implementations will agree exactly on their numeric values. It gives 1E400 and 3.141592653589793238462643383279 as examples of numbers that may indicate potential interoperability problems. Two to the fifty-third is 9007199254740992.",
+      "type": "number",
+      "tokens": [
+        "RFC",
+        "JSON"
+      ],
+      "source": {
+        "title": "RFC 8259, The JavaScript Object Notation (JSON) Data Interchange Format, T. Bray ed., December 2017, Standards Track",
+        "url": "https://www.rfc-editor.org/rfc/rfc8259.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "On duplicate keys, RFC 8259 says the names within an object SHOULD be unique, and that where they are not, the behavior of software that receives such an object is unpredictable: many implementations report the last name and value pair only, while others report an error, fail to parse the object, or report every pair including duplicates.",
+      "type": "quote",
+      "tokens": [
+        "RFC",
+        "SHOULD",
+        "JSON"
+      ],
+      "source": {
+        "title": "RFC 8259, The JavaScript Object Notation (JSON) Data Interchange Format, T. Bray ed., December 2017, Standards Track",
+        "url": "https://www.rfc-editor.org/rfc/rfc8259.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c6",
+      "text": "Parquet began in 2013 as a joint open source effort between engineers at Twitter and Cloudera, aiming to make compressed, efficient columnar representation available across the ecosystem, and became a top level Apache Software Foundation project in April 2015. It encodes nested structures using the record shredding and assembly algorithm described in the Dremel paper, with definition and repetition levels, rather than by flattening nested name spaces.",
+      "type": "event",
+      "tokens": [
+        "Parquet",
+        "Twitter",
+        "Cloudera",
+        "Apache Software Foundation",
+        "Apache",
+        "Dremel",
+        "2013",
+        "2015"
+      ],
+      "source": {
+        "title": "Apache Parquet format specification, project README, stating the Dremel lineage and the record shredding and assembly algorithm",
+        "url": "https://github.com/apache/parquet-format/blob/master/README.md",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c7",
+      "text": "The algorithm Parquet borrows was published as Dremel: Interactive Analysis of Web-Scale Datasets, by Melnik and colleagues, in the Proceedings of the VLDB Endowment, volume 3, pages 330 to 339, in 2010.",
+      "type": "event",
+      "tokens": [
+        "Melnik",
+        "Dremel",
+        "VLDB",
+        "2010"
+      ],
+      "source": {
+        "title": "S. Melnik et al., Dremel: Interactive Analysis of Web-Scale Datasets, Proceedings of the VLDB Endowment 3(1):330-339, 2010",
+        "url": "https://research.google/pubs/dremel-interactive-analysis-of-web-scale-datasets-2/",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "data has to be written down somewhere, and the format decides what survives the round trip: the types, the precision, the record boundaries and which columns you have to read in order to read one",
+    "fix": "three answers to what a row is — comma separated text with no governing authority, a standards track tree with no guaranteed number precision, and a binary columnar layout with a schema, borrowed from the Dremel shredding algorithm",
+    "cost": "text rows lose every type and disagree about their own escaping rules; the tree silently rounds anything past two to the fifty-third; the columnar file needs a reader and cannot be inspected in an editor",
+    "interview": "why the last digits of your identifiers change after a round trip through one of these formats"
+  }
+}

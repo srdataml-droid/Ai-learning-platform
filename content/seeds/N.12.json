@@ -1,0 +1,60 @@
+{
+  "taskId": "N.12",
+  "title": "Plotting to understand, not to present",
+  "researchedAt": "2026-09-20",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Matejka and Fitzmaurice presented a method for generating datasets that are identical over a number of statistical properties yet produce dissimilar graphs, at the 2017 conference on human factors in computing systems, pages 1290 to 1294. New datasets are generated iteratively from a seed dataset by random perturbation of individual data points, directed toward a desired outcome by a simulated annealing strategy, and the method is agnostic to which statistical properties are held constant. The dinosaur-shaped seed came from Alberto Cairo.",
+      "type": "event",
+      "tokens": [
+        "Matejka",
+        "Fitzmaurice",
+        "Alberto Cairo",
+        "Cairo",
+        "2017"
+      ],
+      "source": {
+        "title": "Justin Matejka and George Fitzmaurice, Same Stats, Different Graphs: Generating Datasets with Varied Appearance and Identical Statistics through Simulated Annealing, Proceedings of the 2017 CHI Conference on Human Factors in Computing Systems, pages 1290 to 1294, doi 10.1145/3025453.3025912",
+        "url": "https://dl.acm.org/doi/10.1145/3025453.3025912",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Cleveland and McGill identified a set of elementary perceptual tasks that people carry out when extracting quantitative information from graphs, and formulated a theory ranking them by the accuracy of the resulting judgements. From most to least accurate the ranking runs: position along a common scale; position along non-aligned scales; length, direction and angle; area; volume and curvature; then shading and colour saturation. The ordering was derived from ten common graph types, with formal experiments using about 50 subjects.",
+      "type": "event",
+      "tokens": [
+        "Cleveland",
+        "McGill",
+        "Journal of the American Statistical Association",
+        "1984"
+      ],
+      "source": {
+        "title": "William S. Cleveland and Robert McGill, Graphical Perception: Theory, Experimentation, and Application to the Development of Graphical Methods, Journal of the American Statistical Association 79(387):531-554, 1984",
+        "url": "https://www.jstor.org/stable/2288400",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The same authors cautioned against what they called the conceptual trap of adopting accuracy as the sole criterion for judging a graphical form, and their design principle is stated comparatively: a form whose perceptual tasks lead to more accurate judgements than another form conveying the same information will increase the chances of correct perception of patterns and behaviour.",
+      "type": "quote",
+      "tokens": [
+        "Cleveland",
+        "McGill"
+      ],
+      "source": {
+        "title": "William S. Cleveland and Robert McGill, Graphical Perception: Theory, Experimentation, and Application to the Development of Graphical Methods, Journal of the American Statistical Association 79(387):531-554, 1984",
+        "url": "https://www.jstor.org/stable/2288400",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "one word covers two different jobs — finding out what is in the data, and convincing somebody of a conclusion — and the standards that make a plot good at one make it bad at the other",
+    "fix": "separate them deliberately: disposable, ugly, numerous plots for yourself while you are still finding out, and one carefully encoded plot for the reader once you know what the claim is",
+    "cost": "the second job requires choosing an encoding, and encodings are not a matter of taste — they have a measured ranking by accuracy, which is itself not the only criterion that matters",
+    "interview": "why a pie chart is usually worse than a bar chart, and the case where it is not"
+  }
+}

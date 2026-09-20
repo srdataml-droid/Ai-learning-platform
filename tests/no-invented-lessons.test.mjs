@@ -34,10 +34,15 @@ test('no shipped file contains the fallback lesson template', async () => {
 
 test('a task with no lesson returns null rather than inventing one', async () => {
   const { CURRICULUM, CurriculumLessons } = await loadCurriculum();
-  // N.1 is a real task that has never had a lesson written for it.
-  const track = CURRICULUM.tracks.find((t) => t.id === 'N');
-  assert.ok(track, 'track N exists');
-  assert.equal(CurriculumLessons.getLesson(track.tasks[0].id), null);
+  // Derived rather than pinned. Naming a task here makes the test fail the day
+  // someone writes that lesson, which is the opposite of what it is guarding.
+  const uncovered = CURRICULUM.tracks
+    .flatMap((t) => t.tasks)
+    .find((t) => !CurriculumLessons.hasLesson(t.id));
+  if (uncovered) assert.equal(CurriculumLessons.getLesson(uncovered.id), null);
+
+  // Holds whether or not the curriculum is fully covered.
+  assert.equal(CurriculumLessons.getLesson('Z.999'), null);
 });
 
 test('every lesson declares a status the site knows how to render', async () => {

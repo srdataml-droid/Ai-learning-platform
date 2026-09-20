@@ -1,0 +1,52 @@
+{
+  "taskId": "N.10",
+  "title": "Scaling and normalising",
+  "researchedAt": "2026-09-20",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The standardising transformer computes the mean and standard deviation on a training set so as to be able to later re-apply the same transformation on the testing set, and is described as hence suitable for use in the early steps of a Pipeline. The documented example annotates the scoring call as applying scaling on testing data, without leaking training data.",
+      "type": "quote",
+      "tokens": [
+        "Pipeline"
+      ],
+      "source": {
+        "title": "Preprocessing data — scikit-learn user guide, sections on encoding categorical features, target encoding with cross fitting, and standardisation",
+        "url": "https://scikit-learn.org/stable/modules/preprocessing.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The documentation warns that if your data contains many outliers, scaling using the mean and variance of the data is likely to not work very well, and directs the reader to a robust scaler as a drop-in replacement which uses more robust estimates for the center and range of your data.",
+      "type": "quote",
+      "tokens": [
+        "The"
+      ],
+      "source": {
+        "title": "Preprocessing data — scikit-learn user guide, sections on encoding categorical features, target encoding with cross fitting, and standardisation",
+        "url": "https://scikit-learn.org/stable/modules/preprocessing.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "On the rank-based alternative, the documentation states that by performing a rank transformation, a quantile transform smooths out unusual distributions and is less influenced by outliers than scaling methods, but that it does, however, distort correlations and distances within and across features.",
+      "type": "quote",
+      "tokens": [
+        "On"
+      ],
+      "source": {
+        "title": "Preprocessing data — scikit-learn user guide, sections on encoding categorical features, target encoding with cross fitting, and standardisation",
+        "url": "https://scikit-learn.org/stable/modules/preprocessing.html",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a distance, a penalty and a gradient step all combine features by adding them together, so the units a column happens to be measured in decide how much of the model's attention it receives",
+    "fix": "put the columns on a comparable scale before any method that sums across them, using a centre and a spread estimated from the training data alone",
+    "cost": "the centre and spread are themselves statistics of the data, so a single extreme value sets the scale and compresses everything else into a narrow band — and a rank-based alternative that resists this distorts the correlations and the distances it was brought in to preserve",
+    "interview": "why scaling moves a linear model's score and leaves a tree-based model's score exactly where it was"
+  }
+}

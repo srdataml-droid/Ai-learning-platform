@@ -1,0 +1,52 @@
+{
+  "taskId": "N.3",
+  "title": "numpy arrays",
+  "researchedAt": "2026-09-20",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The array provides in-memory, multidimensional, homogeneously typed data — a single pointer with strides — storing regularly strided homogeneous values inside a contiguous block of memory. Indexing that retrieves a subarray returns a view sharing that memory wherever possible.",
+      "type": "event",
+      "tokens": [
+        "Indexing"
+      ],
+      "source": {
+        "title": "Charles R. Harris et al., Array programming with NumPy, Nature 585, pages 357 to 362, 2020, doi 10.1038/s41586-020-2649-2 (open access; preprint arXiv:2006.10256)",
+        "url": "https://arxiv.org/abs/2006.10256",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The numeric types are fixed in size, and the library's own documentation warns that they may overflow: a value exceeding the capacity of the type wraps around rather than being promoted, which differs from Python's arbitrary precision integers. There is no missing value within an integer type, because the not-a-number value is itself a floating point value.",
+      "type": "event",
+      "tokens": [
+        "Python"
+      ],
+      "source": {
+        "title": "Data types — NumPy user guide, on fixed-size types, overflow errors, and the absence of an integer missing value",
+        "url": "https://numpy.org/doc/stable/user/basics.types.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Double precision numbers carry a 53 bit significand, so every integer up to two to the fifty-third is representable exactly and beyond that the spacing between representable values grows: at two to the fifty-third it is 2. Two to the fifty-third is 9007199254740992, so that value and the integer above it both round to the same double.",
+      "type": "number",
+      "tokens": [
+        "Goldberg"
+      ],
+      "source": {
+        "title": "David Goldberg, What Every Computer Scientist Should Know About Floating-Point Arithmetic, ACM Computing Surveys 23(1):5-48, March 1991 (Oracle Numerical Computation Guide reprint)",
+        "url": "https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "the array's speed comes from a promise that every element has the same type and the same width, and real collected data breaks that promise in three ways at once: holes where values are missing, text of varying length, and columns that mix both",
+    "fix": "treat the type of a column as a declaration to be made deliberately rather than inferred, and know which of the three escapes you are taking when the promise cannot be kept: widen the type, fall back to holding pointers, or carry the missingness in a separate mask",
+    "cost": "the widening is automatic and silent, and it is lossy in a specific place — a single missing value promotes an integer column to floating point, and above two to the fifty-third that representation can no longer tell two adjacent identifiers apart",
+    "interview": "why one missing value in an identifier column can make two different identifiers compare equal"
+  }
+}

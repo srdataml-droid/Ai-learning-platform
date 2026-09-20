@@ -1,0 +1,63 @@
+{
+  "taskId": "N.4",
+  "title": "pandas: load, inspect, select, filter, group",
+  "researchedAt": "2026-09-20",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The library was presented at the ninth Python in Science Conference in 2010 by Wes McKinney, then at AQR Capital Management, as a set of data structures and statistical tools for data sets common to finance and statistics, designed with explicit comparison to the R language and with automatic data alignment as a central concern. Development began at that firm in 2008 and it was open sourced in 2009.",
+      "type": "event",
+      "tokens": [
+        "Wes McKinney",
+        "McKinney",
+        "AQR Capital Management",
+        "AQR",
+        "Python",
+        "2008",
+        "2009",
+        "2010"
+      ],
+      "source": {
+        "title": "Wes McKinney, Data Structures for Statistical Computing in Python, Proceedings of the 9th Python in Science Conference (SciPy 2010), pages 56 to 61, doi 10.25080/Majora-92bf1922-00a",
+        "url": "https://proceedings.scipy.org/articles/Majora-92bf1922-00a",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The grouped operation is not an invention of any one library: Wickham named and analysed the split-apply-combine strategy — break a large problem into manageable pieces, operate on each piece independently, then reassemble them — in the Journal of Statistical Software in 2011, describing it as a strategy that applies regardless of how the data is stored.",
+      "type": "event",
+      "tokens": [
+        "Wickham",
+        "Journal of Statistical Software",
+        "2011"
+      ],
+      "source": {
+        "title": "Hadley Wickham, The Split-Apply-Combine Strategy for Data Analysis, Journal of Statistical Software 40(1):1-29, April 2011, doi 10.18637/jss.v040.i01",
+        "url": "https://www.jstatsoft.org/v40/i01/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Copy-on-write became the default and only mode in pandas 3.0, released on 21 January 2026. Every object returned from an indexing operation now behaves as an independent copy, memory being shared internally until one side is mutated. The SettingWithCopyWarning was removed because the view or copy ambiguity that produced it no longer exists, and chained assignment now consistently fails, raising a ChainedAssignmentError rather than silently doing nothing.",
+      "type": "event",
+      "tokens": [
+        "SettingWithCopyWarning",
+        "ChainedAssignmentError",
+        "2026"
+      ],
+      "source": {
+        "title": "Migration guide and Copy-on-Write user guide, pandas 3.0 documentation, on copy-on-write becoming the only mode and the removal of SettingWithCopyWarning",
+        "url": "https://pandas.pydata.org/docs/user_guide/copy_on_write.html",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "an array has positions and no names, so every join, filter and grouped summary becomes manual bookkeeping of which row index means which entity",
+    "fix": "put labels on the axes and let operations align on the labels rather than on position, then express aggregation as the split-apply-combine strategy that predates the library and outlives it",
+    "cost": "alignment is silent in both directions: it will line up two objects you meant to line up without being asked, and it will also line up two objects you did not, producing a result of the right shape and the wrong contents",
+    "interview": "why adding two columns of equal length can give an answer that is wrong rather than an error"
+  }
+}

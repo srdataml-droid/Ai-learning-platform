@@ -1,0 +1,53 @@
+{
+  "taskId": "N.9",
+  "title": "Encoding categorical data",
+  "researchedAt": "2026-09-20",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Target encoding uses the target mean conditioned on the categorical feature for encoding unordered, nominal categories. The documentation gives its motivation as high cardinality, where one-hot encoding would inflate the feature space making it more expensive for a downstream model to process, and names location based categories such as zip code or region as the classical example.",
+      "type": "quote",
+      "tokens": [
+        "Target"
+      ],
+      "source": {
+        "title": "Preprocessing data — scikit-learn user guide, sections on encoding categorical features, target encoding with cross fitting, and standardisation",
+        "url": "https://scikit-learn.org/stable/modules/preprocessing.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The library builds leakage prevention into the difference between two method names. Fitting and then transforming does not equal fitting and transforming in one call: the combined call internally relies on a cross fitting scheme to prevent target information from leaking into the train-time representation, splitting the training data into k folds, determined by a cross-validation parameter defaulting to 5, and encoding each fold using the encodings learnt from the other folds. The separate fitting method uses no cross fitting and learns one encoding on the entire training set; the documentation states that it is discouraged to use this method because it can introduce data leakage.",
+      "type": "quote",
+      "tokens": [
+        "Fitting"
+      ],
+      "source": {
+        "title": "Preprocessing data — scikit-learn user guide, sections on encoding categorical features, target encoding with cross fitting, and standardisation",
+        "url": "https://scikit-learn.org/stable/modules/preprocessing.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The encoding is shrunk toward the global mean by a smoothing factor: the encoded value is a weighted blend of the category's own target mean and the overall target mean, with the weight given by the category's count divided by that count plus the smoothing factor. Large smoothing factors put more weight on the global mean, and on the automatic setting the factor is computed as an empirical Bayes estimate. Categories not seen during fitting are encoded with the overall target mean.",
+      "type": "quote",
+      "tokens": [
+        "Bayes",
+        "Large"
+      ],
+      "source": {
+        "title": "Preprocessing data — scikit-learn user guide, sections on encoding categorical features, target encoding with cross fitting, and standardisation",
+        "url": "https://scikit-learn.org/stable/modules/preprocessing.html",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a category is a name, models need numbers, and every way of turning the first into the second asserts something about the categories that the names themselves did not say",
+    "fix": "choose the encoding by what it asserts — integer codes assert an order and a spacing, indicator columns assert nothing and cost one column per level, and target statistics assert that the category's history predicts its future",
+    "cost": "the compact encoding is the informative one precisely because it contains the answer, which is why the library that offers it prevents leakage inside the method rather than trusting the caller",
+    "interview": "why cross-validation scores can jump after encoding a high-cardinality column by its target mean"
+  }
+}

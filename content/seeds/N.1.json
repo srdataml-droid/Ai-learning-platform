@@ -1,0 +1,72 @@
+{
+  "taskId": "N.1",
+  "title": "Where data comes from: files, APIs, databases, scraping",
+  "researchedAt": "2026-09-20",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The Robots Exclusion Protocol was defined by Martijn Koster in 1994 and operated as a convention for twenty-eight years before being published as a standards track document, RFC 9309, in September 2022. The standard adds definition language, error handling and caching rules to the original method, and states that it is not a substitute for valid content security measures, since listing a path in the file exposes it publicly.",
+      "type": "event",
+      "tokens": [
+        "Martijn Koster",
+        "Koster",
+        "1994",
+        "2022"
+      ],
+      "source": {
+        "title": "RFC 9309, Robots Exclusion Protocol, M. Koster, G. Illyes, H. Zeller, L. Sassman, September 2022, Standards Track",
+        "url": "https://www.rfc-editor.org/rfc/rfc9309.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "In hiQ Labs v. LinkedIn the Ninth Circuit considered whether scraping publicly available member profiles was access without authorization under the Computer Fraud and Abuse Act. The panel concluded that hiQ had raised a serious question as to whether the without authorization concept is inapplicable where prior authorization is not generally required but a particular person, or bot, is refused access.",
+      "type": "quote",
+      "tokens": [
+        "LinkedIn",
+        "Ninth Circuit",
+        "Computer Fraud and Abuse Act",
+        "CFAA"
+      ],
+      "source": {
+        "title": "hiQ Labs, Inc. v. LinkedIn Corp., No. 17-16783, United States Court of Appeals for the Ninth Circuit, opinion by Judge Berzon, filed 18 April 2022, on remand from the Supreme Court",
+        "url": "https://cdn.ca9.uscourts.gov/datastore/opinions/2022/04/18/17-16783.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "A correction to the story as it is usually told: the Ninth Circuit did not rule that scraping public data is legal. The panel affirmed the district court's determination that hiQ had established the elements required for a preliminary injunction, and remanded for further proceedings. A serious question at the preliminary injunction stage is not a final holding.",
+      "type": "event",
+      "tokens": [
+        "Ninth Circuit"
+      ],
+      "source": {
+        "title": "hiQ Labs, Inc. v. LinkedIn Corp., No. 17-16783, United States Court of Appeals for the Ninth Circuit, opinion by Judge Berzon, filed 18 April 2022, on remand from the Supreme Court",
+        "url": "https://cdn.ca9.uscourts.gov/datastore/opinions/2022/04/18/17-16783.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "hiQ nonetheless lost. In November 2022 the district court found it had breached the LinkedIn user agreement through its scraping and its creation of fake accounts, and on 6 December 2022 the parties filed a stipulated consent judgment: judgment of 500,000 dollars against hiQ, with all other monetary relief waived, plus a permanent injunction barring further scraping, barring fake accounts, and requiring deletion of the member profile data and of code written to access the platform. Because the conclusions were stipulated by the parties rather than found by the court, they carry no precedential value.",
+      "type": "number",
+      "tokens": [
+        "LinkedIn",
+        "2022"
+      ],
+      "source": {
+        "title": "hiQ and LinkedIn Reach Proposed Settlement in Landmark Scraping Case, New Media and Technology Law Blog, Proskauer, 8 December 2022, reporting the terms of the stipulated consent judgment",
+        "url": "https://newmedialaw.proskauer.com/2022/12/08/hiq-and-linkedin-reach-proposed-settlement-in-landmark-scraping-case/",
+        "kind": "secondary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "the data a model needs lives somewhere you do not control, and the four usual ways of getting it are not four levels of difficulty but four different arrangements with whoever holds it",
+    "fix": "classify a source by who can change it and what you are permitted to do with it, not by how hard it is to read: a file is frozen, an API is a contract the other side can revise, a database is shaped for the application rather than for you, and a scrape is the only source that never agreed to be one",
+    "cost": "every one of the four fails silently at read time — the file has no expiry date, the API returns page one of eight, the database answers a question about now that you will treat as a question about then, and the scrape keeps parsing after the layout changes",
+    "interview": "whether scraping publicly available data is legal, given that the famous case says yes and the company that won it was permanently enjoined and paid damages"
+  }
+}

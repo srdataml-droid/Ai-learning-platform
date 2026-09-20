@@ -1,0 +1,66 @@
+{
+  "taskId": "N.8",
+  "title": "Dates and timezones",
+  "researchedAt": "2026-09-20",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Samoa and Tokelau missed an entire day, Friday 30 December 2011, after an official change in the time zone, moving to the other side of the International Date Line because the inconvenience of being a day behind had meant lost business. To build support the government ruled that workers would still be paid and that banks would not be allowed to charge interest for the missing day.",
+      "type": "event",
+      "tokens": [
+        "Samoa",
+        "Tokelau",
+        "International Date Line",
+        "2011"
+      ],
+      "source": {
+        "title": "Pacific islands lose a day in dateline warp, Al Jazeera, 30 December 2011",
+        "url": "https://www.aljazeera.com/news/2011/12/30/pacific-islands-lose-a-day-in-dateline-warp",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "A correction to the way this is usually reported: the 2022 resolution does not abolish the leap second. Resolution 4 of the 27th General Conference on Weights and Measures, titled On the use and future development of UTC, decides that the maximum value for the difference between UT1 and UTC will be increased in, or before, 2035.",
+      "type": "quote",
+      "tokens": [
+        "General Conference on Weights and Measures",
+        "CGPM",
+        "UTC",
+        "UT1",
+        "2022",
+        "2035"
+      ],
+      "source": {
+        "title": "Resolution 4 of the 27th CGPM (2022), On the use and future development of UTC, Bureau International des Poids et Mesures, doi 10.59161/CGPM2022RES4E",
+        "url": "https://www.bipm.org/en/cgpm-2022/resolution-4",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The same resolution requests that the CIPM consult with the ITU and other organisations that may be impacted, in order to propose a new maximum value ensuring the continuity of UTC for at least a century, to prepare an implementation plan for that value by or before 2035, to suggest a review period so that the CGPM can maintain control on the applicability and acceptability of the value implemented, and to draft a resolution containing these proposals for the 28th meeting in 2026. The official version of the resolution is the French text.",
+      "type": "quote",
+      "tokens": [
+        "CIPM",
+        "ITU",
+        "CGPM",
+        "UTC",
+        "French",
+        "2026",
+        "2035"
+      ],
+      "source": {
+        "title": "Resolution 4 of the 27th CGPM (2022), On the use and future development of UTC, Bureau International des Poids et Mesures, doi 10.59161/CGPM2022RES4E",
+        "url": "https://www.bipm.org/en/cgpm-2022/resolution-4",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a timestamp looks like a number and is actually a political artefact: the rule that converts a local reading to an instant is set by governments and standards bodies and changes while your data is at rest",
+    "fix": "separate the instant from the intent — store an unambiguous point in time for things that happened, and store local time together with the named zone for things that are meant to happen, resolving to an instant only at the moment of use",
+    "cost": "two fields where you expected one, a zone database that is data rather than arithmetic and has to be kept current, and the acceptance that a future timestamp is a prediction rather than a fact",
+    "interview": "what to store for a meeting scheduled at nine in the morning several months from now"
+  }
+}
