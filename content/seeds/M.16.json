@@ -1,0 +1,155 @@
+{
+  "taskId": "M.16",
+  "title": "Do all of the above in numpy",
+  "researchedAt": "2026-09-20",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Jim Hugunin wrote Numeric in 1995 while a graduate student at MIT, basing it on previous work by Jim Fulton. After he graduated, Paul Dubois at the Lawrence Livermore National Laboratory became the maintainer. Numeric provided an array object and array-aware functions in Python, written in C, linking to standard fast implementations of linear algebra.",
+      "type": "event",
+      "tokens": [
+        "Jim Hugunin",
+        "Hugunin",
+        "Numeric",
+        "MIT",
+        "Jim Fulton",
+        "Paul Dubois",
+        "Lawrence Livermore National Laboratory",
+        "Python",
+        "1995"
+      ],
+      "source": {
+        "title": "Charles R. Harris et al., Array programming with NumPy, Nature 585, pages 357 to 362, 2020, doi 10.1038/s41586-020-2649-2 (open access; preprint arXiv:2006.10256)",
+        "url": "https://arxiv.org/abs/2006.10256",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "In 1998 the Space Telescope Science Institute started using Python, and in 2000 began developing a new array package called Numarray, written almost entirely by Jay Todd Miller from a prototype developed by Perry Greenfield. It was a reimplementation of Numeric built to handle the large astronomical images coming from the Hubble Space Telescope. The Numeric and Numarray split divided the community.",
+      "type": "event",
+      "tokens": [
+        "Space Telescope Science Institute",
+        "Numarray",
+        "Numeric",
+        "Jay Todd Miller",
+        "Perry Greenfield",
+        "Hubble Space Telescope",
+        "Python",
+        "1998",
+        "2000"
+      ],
+      "source": {
+        "title": "Charles R. Harris et al., Array programming with NumPy, Nature 585, pages 357 to 362, 2020, doi 10.1038/s41586-020-2649-2 (open access; preprint arXiv:2006.10256)",
+        "url": "https://arxiv.org/abs/2006.10256",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "In 2005 Travis Oliphant, who had taken over maintenance of Numeric shortly after Numarray development began, led the effort and did most of the work to unify the two and produce the first version of NumPy — a best of both worlds unification combining Numarray's features with Numeric's performance on small arrays and its rich C application programming interface.",
+      "type": "event",
+      "tokens": [
+        "Travis Oliphant",
+        "Oliphant",
+        "Numeric",
+        "Numarray",
+        "2005"
+      ],
+      "source": {
+        "title": "Charles R. Harris et al., Array programming with NumPy, Nature 585, pages 357 to 362, 2020, doi 10.1038/s41586-020-2649-2 (open access; preprint arXiv:2006.10256)",
+        "url": "https://arxiv.org/abs/2006.10256",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "Strides are what let linear computer memory be read as a multidimensional array: a stride is the number of bytes to move forward to jump from row to row or column to column. For a two-dimensional array of shape (4, 3) whose elements occupy 8 bytes each, moving between consecutive columns needs 8 bytes and moving to the next row needs 3 times 8, or 24 bytes, so the strides of that array are (24, 8). Arrays can be stored in either C or Fortran memory order, which is what lets external libraries written in those languages read the data directly.",
+      "type": "number",
+      "tokens": [
+        "Fortran",
+        "8 bytes",
+        "24 bytes"
+      ],
+      "source": {
+        "title": "Charles R. Harris et al., Array programming with NumPy, Nature 585, pages 357 to 362, 2020, doi 10.1038/s41586-020-2649-2 (open access; preprint arXiv:2006.10256)",
+        "url": "https://arxiv.org/abs/2006.10256",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "Vectorisation — operating on whole arrays rather than on their individual elements — is described as essential to array programming: operations that would take many tens of lines to express in languages such as C can often be written as a single clear expression, while the library handles looping over array elements near-optimally, taking strides into account to best use the computer's fast cache memory.",
+      "type": "event",
+      "tokens": [
+        "Vectorisation"
+      ],
+      "source": {
+        "title": "Charles R. Harris et al., Array programming with NumPy, Nature 585, pages 357 to 362, 2020, doi 10.1038/s41586-020-2649-2 (open access; preprint arXiv:2006.10256)",
+        "url": "https://arxiv.org/abs/2006.10256",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c6",
+      "text": "Wherever possible, indexing that retrieves a subarray returns a view on the original array, so that data is shared between the two arrays. In broadcasting, one or both arrays are virtually duplicated — that is, without copying any data in memory — so that the shapes of the operands match.",
+      "type": "event",
+      "tokens": [
+        "Wherever"
+      ],
+      "source": {
+        "title": "Charles R. Harris et al., Array programming with NumPy, Nature 585, pages 357 to 362, 2020, doi 10.1038/s41586-020-2649-2 (open access; preprint arXiv:2006.10256)",
+        "url": "https://arxiv.org/abs/2006.10256",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c7",
+      "text": "NumPy performs accelerated linear algebra by using one of several backends, such as OpenBLAS or Intel MKL, optimised for the CPUs at hand.",
+      "type": "event",
+      "tokens": [
+        "OpenBLAS",
+        "Intel MKL",
+        "MKL"
+      ],
+      "source": {
+        "title": "Charles R. Harris et al., Array programming with NumPy, Nature 585, pages 357 to 362, 2020, doi 10.1038/s41586-020-2649-2 (open access; preprint arXiv:2006.10256)",
+        "url": "https://arxiv.org/abs/2006.10256",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c8",
+      "text": "In astronomy, NumPy was an important part of the software stack used in the discovery of gravitational waves and the first imaging of a black hole. The eht-imaging library developed by the Event Horizon Telescope collaboration relies on it: NumPy arrays are used to store and manipulate numerical data at every step in the processing chain, from raw data through calibration and image reconstruction, with Matplotlib generating the final image of the black hole.",
+      "type": "event",
+      "tokens": [
+        "Event Horizon Telescope",
+        "Matplotlib"
+      ],
+      "source": {
+        "title": "Charles R. Harris et al., Array programming with NumPy, Nature 585, pages 357 to 362, 2020, doi 10.1038/s41586-020-2649-2 (open access; preprint arXiv:2006.10256)",
+        "url": "https://arxiv.org/abs/2006.10256",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c9",
+      "text": "NumPy's integer types are fixed in width, and the library's own documentation warns that they may therefore overflow: a value that exceeds the capacity of the type wraps around rather than being promoted, and the behaviour differs from Python's arbitrary precision integers.",
+      "type": "event",
+      "tokens": [
+        "Python"
+      ],
+      "source": {
+        "title": "Data types — NumPy user guide, section on overflow errors in fixed-size integer types",
+        "url": "https://numpy.org/doc/stable/user/basics.types.html",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "the maths of this track is written element by element, and the literal translation of index notation into a Python loop is correct, unusably slow, and the place the bugs live",
+    "fix": "make the array the unit of work rather than the element: one typed contiguous block, described by a shape and a set of strides, with the loop moved down into C and linear algebra handed to a tuned backend",
+    "cost": "the shape rules are silent — broadcasting will align shapes you did not mean and hand back a plausible wrong answer instead of raising, and a slice is a view, so writing to it writes to the original",
+    "interview": "why a mean squared error comes back as a matrix rather than a number, and why nothing raised"
+  }
+}

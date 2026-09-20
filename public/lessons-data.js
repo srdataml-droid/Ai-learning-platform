@@ -6298,6 +6298,108 @@
     "blueprint": "Two failures. One remedy. They don't match.\n\n   NOISE  scatter around the truth\n          shrinks with n         <- what size fixes\n   BIAS   wrong population\n          does NOT shrink        <- what went wrong\n\n  1936, in numbers:\n\n     2,400,000 returned   ->  57-43  WRONG WAY\n     actual                   62-38\n     error ~19 points, largest in a major poll\n     ~50,000 sampled      ->  called it\n\n     frame:    phone / vehicle / club records,\n               in the Depression = the wealthy\n     response: ~25%, and not at random\n     both push the SAME direction\n\n  the part that should worry you:\n\n     inspecting the 2.4M reveals nothing.\n     it faithfully records WHO ANSWERED.\n     the fault is WHO WAS ASKED -- not in the data.\n\n  second failure, second study:\n     Berkeley 1973: aggregate 44.2% vs 34.6%\n     by department: few significant, about as many\n     favouring women; pooled properly, a small bias\n     toward women.\n     -> GROUPING reversed the direction.\n     (and the lawsuit everyone mentions never\n      happened)",
     "takeaway": "More data shrinks noise and does nothing to bias, which is why 2.4 million responses lost to fifty thousand — and bias is undetectable from inside the sample, because the data faithfully records whoever was asked."
   },
+  "M.15": {
+    "id": "M.15",
+    "trackId": "M",
+    "trackName": "Math for machines",
+    "title": "Logs and exponents, and why loss functions use them",
+    "status": "traced",
+    "seed": "M.15",
+    "story": "The oldest reason to take a log has nothing to do with machine learning, and it is worth meeting in the original. Napier's Mirifici Logarithmorum Canonis Descriptio appeared in 1614, and its preface is a complaint about arithmetic: the multiplications, divisions, square and cubical extractions of great numbers cost, he wrote, the tedious expense of time, and are subject to many slippery errors. His remedy was to substitute numbers that do the same work by addition and subtraction. That is the whole trick, and four centuries later it is still the trick.\n\nWhat changed is what gets multiplied. A model scoring a sentence assigns a probability per token and multiplies them; a model scoring a dataset multiplies one probability per example. Both are products of numbers below one, and such products fall faster than intuition expects. Python's float is a double, and the smallest positive normalised value it holds is about two times ten to the minus 308 — one half multiplied by itself 1075 times is already exactly zero, and a thousand tokens is a short document. The same quantity written as a log is about minus 745, an unremarkable number with room to spare on either side.\n\nThe second reason is that the log is where the units of information live. Shannon in 1948 defined the entropy of a set of probabilities as minus the sum of p log p, remarking that the form would be recognised as the entropy of statistical mechanics. In the same paper he fixed the unit by fixing the base: the choice of a logarithmic base is the choice of a unit for measuring information, and with base 2 the resulting units may be called binary digits, or more briefly bits — a word he credits to Tukey. Cross-entropy, the loss nearly every classifier is trained on, is that expression with the model's probabilities standing in for the true ones, and the gap between the two distributions is the divergence Kullback and Leibler defined in 1951.\n\nThe third reason is the one that bites during training. Fisher's 1922 paper introduced maximum likelihood as the criterion for estimation, and what gets maximised in practice is always the log-likelihood, because a sum differentiates term by term while a product drags the chain rule across every factor. Goodfellow, Bengio and Courville put the sharpest version of the argument: the cost used with maximum likelihood is minus the log of the predicted probability, and that log undoes the exponentiation inside the sigmoid. Take the log away — use squared error instead — and the loss saturates exactly where the sigmoid saturates, so a model that is confidently wrong receives a gradient too small to learn from. The log is not there to tidy the numbers. It is there so the gradient survives.\n\nOne correction to the story as it is usually told. Napier's own logarithms were not really to any base at all, and his logarithm of one was not zero, which makes them awkward by modern standards. Briggs read the 1614 tables, rode from London to Edinburgh in the summer of 1615 to meet him, and base ten with the logarithm of one set to zero came out of that visit.",
+    "problem": {
+      "name": "Log space",
+      "aka": [
+        "log-likelihood",
+        "negative log-likelihood",
+        "cross-entropy",
+        "log-sum-exp"
+      ],
+      "shape": "A quantity you need to compare, differentiate or optimise is a product of many factors, each of them a probability between zero and one.",
+      "tell": [
+        "the score of a whole is the product of the scores of its parts",
+        "one factor enters per token, per example or per time step, and there are thousands of them",
+        "a loss prints as exactly zero, or as infinity, rather than as a number",
+        "the fix being discussed is rescaling the numbers so that they are less small"
+      ],
+      "move": "Work in logs from the start. Multiplication becomes addition, division becomes subtraction, and a power becomes a multiplication. Optimise the sum of logs, exponentiate at the very end if a probability is what the caller actually wanted, and when you genuinely must add in probability space, subtract the largest log first and add it back afterwards.",
+      "invariant": "log is strictly increasing, so whatever maximises a product maximises its log. The substitution preserves the ordering and the argmax and does not preserve the value; that trade is the entire licence for making it.",
+      "breaks": "When the value itself is the answer rather than a ranking or an optimum, the transform has to be undone, and undoing it restores the range problem it solved. And at the boundary: log of zero is negative infinity, so a single outcome the model assigned no probability to makes the whole loss infinite, which is why production code clips probabilities away from zero or smooths the counts before taking the log.",
+      "cost": {
+        "time": "one logarithm per factor, after which you add rather than multiply; the logs are the same order of work you were already doing, and additions are not the expensive part",
+        "space": "none — the same array, holding logs instead of probabilities",
+        "beats": "rescaling or renormalising partway through, which pushes the underflow further away without removing it, and which has to be got right at every step rather than once"
+      },
+      "worked": {
+        "problem": "Why does cross-entropy take the log of the predicted probability rather than the probability itself?",
+        "reasoning": "Three reasons, and they are independent — each would justify the log on its own.\n\nRange. A sequence score is a product of one probability per token. Products of numbers below one collapse: one half multiplied by itself 1075 times is exactly zero in a double, and a thousand tokens is a short document. In logs the same score is a sum of a thousand negative numbers, which is a perfectly ordinary number. Without the log the loss for a long sequence is not merely inaccurate, it is the constant zero, and a constant has no gradient.\n\nThe sum rule. Differentiating a product of a thousand factors means the chain rule across all of them. Differentiating a sum means differentiating each term and adding. The log converts the first problem into the second, and that is why every derivation in this track reads more easily in log space.\n\nSaturation, which is the one people miss. The predicted probability came out of a sigmoid or a softmax, and those are exponentials. The log in the loss cancels that exponential. What is left is roughly linear in the pre-activation, so a confidently wrong prediction produces a large gradient and gets corrected. Replace the log with squared error and the cancellation is gone: the loss flattens wherever the sigmoid flattens, and the more wrong the model is, the less it learns.\n\nAnd underneath all three, the reason the substitution is legal at all: log is strictly increasing, so it preserves ordering and preserves the argmax. You are optimising a different number and arriving at the same answer.",
+        "code": "why the log, in three independent reasons:\n\n  1. RANGE\n       p1 * p2 * ... * pn        one factor per token\n       (0.5)^1075  ==  0.0       exactly zero, in a double\n       smallest normal double ~ 2.2e-308\n\n       log:  sum of logs  ->  about -745\n             ordinary number, huge headroom\n\n  2. THE SUM RULE\n       d/dw [ p1 * p2 * ... ]    chain rule, n factors\n       d/dw [ l1 + l2 + ... ]    term by term\n\n  3. SATURATION  (the one people miss)\n       p = sigmoid(z)            = exp form\n       loss = -log p             the log undoes the exp\n            -> roughly linear in z\n            -> confidently wrong = big gradient\n\n       loss = (p - y)^2          no cancellation\n            -> flat where sigmoid is flat\n            -> confidently wrong = no gradient\n\n  and why the swap is legal:\n\n       log is strictly increasing\n       argmax of a product == argmax of its log\n       you optimise a different number,\n       you land on the same answer."
+      },
+      "practice": "Find code that multiplies probabilities — a spam filter that multiplies one probability per word, a sequence scorer, anything with a running product. Feed it an input long enough that the product returns exactly zero, then rewrite it as a sum of logs and check that the same input now returns a number. Then set one factor to zero and watch what the log version does about it."
+    },
+    "beats": {
+      "broke": "A score for anything made of parts is a product of per-part probabilities, and products of numbers below one fall out of the range a machine can hold long before the input gets interesting — one half multiplied by itself 1075 times is exactly zero in a double.",
+      "fix": "Take the log. The product becomes a sum, the numbers land in a comfortable range, differentiation goes term by term, and the log cancels the exponential that the sigmoid or softmax put there in the first place.",
+      "cost": "The number stops being readable as a probability, and log of zero is negative infinity, so any outcome the model ruled out entirely makes the loss infinite unless it is clipped or smoothed first.",
+      "interview": {
+        "q": "Why does cross-entropy take the log of the predicted probability rather than the probability itself?",
+        "trap": "Answering that the log makes the numbers tidier or easier to print. Convenience is a side effect; underflow, the sum rule and the cancellation with the exponential inside the sigmoid are the reasons, and the third is the one that decides whether the model trains.",
+        "answer": "Three reasons, any one of which would be enough.\n\nRange. The predicted probability for a sequence is a product of one probability per token, and products of numbers below one collapse. One half multiplied by itself 1075 times is exactly zero in a double, and a thousand tokens is a short document. Written as a sum of logs the same score is about minus 745, which is an ordinary number. Without the log the loss on a long sequence is not approximately zero, it is zero, and a constant has no gradient.\n\nDifferentiation. A sum differentiates term by term; a product of a thousand factors drags the chain rule across all of them. Fisher's estimation criterion is stated over the likelihood and always applied to the log-likelihood for exactly this reason.\n\nSaturation, which is the answer that separates people. The probability came out of a sigmoid or a softmax, which are exponentials, and the log in the loss cancels that exponential — the point Goodfellow, Bengio and Courville make directly. What remains is roughly linear in the pre-activation, so a confidently wrong prediction yields a large gradient. Swap in squared error and the cancellation disappears: the loss flattens wherever the sigmoid flattens, so the worse the model is, the less it learns.\n\nIt is also the natural unit. Shannon defined entropy as minus the sum of p log p in 1948, and cross-entropy is that expression with the model's distribution in place of the true one, so the loss is already measured in the units information theory uses.\n\nThe licence for all of it is that log is strictly increasing: the ordering and the argmax survive, the value does not, and only the value was expendable."
+      }
+    },
+    "blueprint": "PRODUCT                        SUM\n  p1 * p2 * ... * pn    -log->   l1 + l2 + ... + ln\n\n  underflows to 0.0              about -745\n  chain rule over n              differentiate term by term\n  cancels nothing                cancels the exp in sigmoid\n\n  the licence:\n     log is strictly increasing\n     -> ordering preserved\n     -> argmax preserved\n     -> value NOT preserved   (this is the cost)\n\n  the edge:\n     log(0) = -inf\n     one ruled-out outcome = infinite loss\n     -> clip, or smooth, before you take the log\n\n  where the pieces came from:\n     1614  Napier   product -> sum, to save arithmetic\n     1922  Fisher   maximum likelihood -> log-likelihood\n     1948  Shannon  -sum p log p, base 2 = bits\n     1951  Kullback and Leibler, the divergence",
+    "takeaway": "A log turns a product into a sum, which is the difference between a sequence score that underflows to exactly zero and one that reads about minus 745 — and because log is strictly increasing it costs you the value while keeping the argmax, which was the only part the optimiser needed."
+  },
+  "M.16": {
+    "id": "M.16",
+    "trackId": "M",
+    "trackName": "Math for machines",
+    "title": "Do all of the above in numpy",
+    "status": "traced",
+    "seed": "M.16",
+    "story": "Everything in this track so far has been written element by element: a sum over i, a dot product as a sum of products, a gradient as a partial derivative per parameter. Index notation is how the maths is stated, and the literal translation of it into Python is a loop per index. That translation is correct and it is unusable — summing ten million floating-point numbers takes a Python loop the better part of a second and takes the array's own sum a few milliseconds, which is two orders of magnitude for code that is shorter. Run that comparison yourself once; the number is more persuasive than the argument.\n\nSpeed is the advertised reason and it is the smaller one. The real change is that the array becomes the unit of thought. Vectorisation — operating on whole arrays rather than on their individual elements — turns expressions that would take many tens of lines in C into a single line, and the bookkeeping that the loop version made you do by hand is exactly where the errors in a hand-derived gradient come from. You stop writing the indices and start writing the operation.\n\nThe thing you are typing is also a truce. Jim Hugunin wrote Numeric in 1995 as a graduate student at MIT, and after he graduated Paul Dubois at the Lawrence Livermore National Laboratory maintained it. In 1998 the Space Telescope Science Institute started using Python, and in 2000 began a reimplementation called Numarray, built to handle the large astronomical images coming off the Hubble Space Telescope. The two packages split the community for years. In 2005 Travis Oliphant did most of the work of unifying them, keeping Numarray's features and Numeric's performance on small arrays, and that unification is the array you import today.\n\nUnderneath, an array is one contiguous block of same-typed values plus two small pieces of metadata: a shape, and a set of strides saying how many bytes to jump to reach the next row or the next column. For a two-dimensional array of shape (4, 3) whose elements are 8 bytes each, a step along a row is 8 bytes and a step down a column is three times that, 24 bytes — strides of (24, 8). That is the entire representation, and it is why the loop can be pushed down into C, why a slice can be handed to you as a view onto the same memory rather than a copy, and why linear algebra can be dispatched to a tuned backend such as OpenBLAS or Intel MKL instead of being interpreted.\n\nWhat you pay is that the shape rules are silent. Subtract a column of predictions of shape (n, 1) from a flat array of targets of shape (n,) and nothing raises: broadcasting virtually duplicates both operands, you get an n by n matrix of every prediction against every target, and taking its mean returns a number. A wrong number, of the right type, with no traceback. Views cut the same way — a slice shares memory, so writing to it writes to the original, while a fancy-indexed selection is a copy and does not. Neither behaviour is hidden, but neither announces itself.\n\nIt is worth knowing what this machinery has been load-bearing for. Array code of this kind was part of the software stack behind the discovery of gravitational waves and the first image of a black hole; the eht-imaging library built by the Event Horizon Telescope collaboration holds its data in these arrays at every step from raw data through calibration to image reconstruction, with Matplotlib drawing the final picture.",
+    "problem": {
+      "name": "Vectorisation",
+      "aka": [
+        "array programming",
+        "broadcasting",
+        "ufuncs",
+        "strided arrays"
+      ],
+      "shape": "Maths stated element by element has to be executed, and the obvious translation — one interpreted loop per index — is both far too slow and the place the arithmetic bugs hide.",
+      "tell": [
+        "the code contains a loop whose body is one arithmetic operation on one element",
+        "the same computation is expressible as an operation on whole rows, columns or arrays",
+        "index bookkeeping takes up more of the function than the arithmetic does",
+        "a profile shows the time going to the interpreter rather than to the operation"
+      ],
+      "move": "Make the array the unit of work. Express the operation over whole arrays and let the library do the looping in compiled code; use broadcasting deliberately for shape alignment rather than writing loops that copy; and hand matrix work to the linear algebra backend rather than reimplementing it. Then assert the shapes at the boundaries, because you have traded one class of bug for another.",
+      "invariant": "Every element has the same type and the same width, laid out in one contiguous block. That is what makes a shape and a set of strides a complete description of the array, and it is what lets the loop move down into compiled code at all.",
+      "breaks": "When the elements are not uniform, the representation stops paying: ragged rows, per-element control flow that cannot be written as a mask, values appended one at a time so the block has to be reallocated, or an array larger than memory. And it breaks quietly when a shape is wrong rather than absent — broadcasting aligns what you did not mean to align and returns an answer instead of an error.",
+      "cost": {
+        "time": "the operation itself gets one to two orders of magnitude faster; what you spend instead is the time to reason about shapes, which is now load-bearing",
+        "space": "an operation over whole arrays materialises whole intermediate arrays, so a chain of expressions can hold several copies of the data at once where a loop held one element",
+        "beats": "hand-written loops, which are slower and hide their bugs in the indices, and hand-rolled matrix routines, which will not beat a backend tuned for the processor they are running on"
+      },
+      "worked": {
+        "problem": "Your mean squared error came back as a matrix instead of a number, and nothing raised an exception. What happened?",
+        "reasoning": "Because the shapes were not what you thought, and the rules for repairing a shape mismatch are generous enough to repair this one silently.\n\nPredictions usually arrive as a column: shape (n, 1). Targets usually arrive flat: shape (n,). Subtraction requires matching shapes, so the shapes get aligned from the right — (n, 1) against (n,) becomes (n, 1) against (1, n), and both are stretched to (n, n). No data is copied; the operands are virtually duplicated. What comes back is every prediction minus every target, an n by n matrix, of which only the diagonal is the quantity you wanted.\n\nThen the mean over that matrix is a single float. It is finite, it is positive, it moves when you train, and it is wrong — inflated by the n squared minus n off-diagonal comparisons that pair a prediction with somebody else's target. There is no exception to catch because nothing exceptional happened: broadcasting did exactly what it documents.\n\nThe reason it survives review is that the symptom is a plausible number rather than a crash, and the loss curve still goes down. The gradient is wrong, the model trains anyway, and it trains badly.\n\nThe fix is one call — ravel the predictions, or reshape the targets, or reshape the targets into a column deliberately, so that the intent is written down — and the habit that prevents it is asserting the shape at the boundary of any function that does arithmetic on arrays you did not create. An assert on a shape costs nothing and catches the class of bug that nothing else in this track will catch for you.",
+        "code": "the shape bug, in full:\n\n  y      targets      shape (n,)     [1.0, 2.0, 3.0]\n  y_hat  predictions  shape (n, 1)   [[1.5],\n                                      [2.5],\n                                      [3.5]]\n\n  y_hat - y\n\n     align from the right:\n        (n, 1)\n        (   n)\n     ->  (n, 1)  vs  (1, n)\n     ->  stretch both  ->  (n, n)\n\n     every prediction MINUS every target:\n\n        [[ 0.5, -0.5, -1.5],\n         [ 1.5,  0.5, -0.5],\n         [ 2.5,  1.5,  0.5]]\n\n     only the diagonal was wanted.\n\n  ((y_hat - y) ** 2).mean()\n\n        1.58...     <- finite, positive, wrong\n     vs 0.25        <- ((y_hat.ravel() - y) ** 2).mean()\n\n  no exception. broadcasting did what it documents.\n\nthe fix, and the habit:\n\n  err = y_hat.ravel() - y\n  assert err.shape == y.shape, err.shape\n\n  # measure it once, on your own machine:\n  #   sum of 10 million floats\n  #   python loop  ~ 577 ms\n  #   arr.sum()    ~   4 ms      about 150x\n\n  # and the other silent one:\n  a[0:1]     -> VIEW    writing to it writes through\n  a[[0, 1]]  -> COPY    writing to it does not"
+      },
+      "practice": "Go back through this track and re-do each piece in arrays rather than on paper: the dot product, the matrix multiply, the norm, the derivative you worked by hand. Write each one twice — once as an explicit loop, once vectorised — assert that the two agree to within floating-point tolerance, and time both. Then deliberately pass one of them a column where it expected a flat array and see which of your versions notices."
+    },
+    "beats": {
+      "broke": "The maths of this track is written element by element, and translating it literally into interpreted loops gives code that is correct, two orders of magnitude too slow, and dense with index bookkeeping that is exactly where hand-derived gradients go wrong.",
+      "fix": "Make the array the unit of work. One contiguous block of same-typed values, a shape, and strides giving the bytes to the next row or column — for a (4, 3) array whose elements take 8 bytes each, strides of (24, 8) — which is enough for the loop to run in compiled code and for linear algebra to be handed to a backend such as OpenBLAS or Intel MKL.",
+      "cost": "The shape rules are silent. Broadcasting aligns operands you did not mean to align and returns a plausible wrong number rather than raising, and a slice is a view onto the original memory while a fancy-indexed selection is a copy — so the off-by-one is replaced by the off-by-shape, which does not announce itself.",
+      "interview": {
+        "q": "Your mean squared error came back as a matrix instead of a number, and nothing raised. What happened?",
+        "trap": "Treating it as a bug in the library, or reaching for a reshape until the number looks right. It is documented behaviour, and the reason it matters is that the wrong version still trains — the loss falls, on a gradient that is quietly wrong.",
+        "answer": "The shapes were not what I assumed, and broadcasting repaired the mismatch instead of reporting it.\n\nPredictions come back as a column, shape (n, 1). Targets are flat, shape (n,). Subtraction needs matching shapes, so they are aligned from the right: (n, 1) against (1, n), then both stretched to (n, n). Nothing is copied — the operands are virtually duplicated — and the result is every prediction minus every target. Only the diagonal was ever wanted.\n\nNothing raises because nothing exceptional happened. That is the documented rule, and it is the rule that makes scaling a column or building a coordinate grid a one-liner. The same generosity that makes the good case short makes this case silent.\n\nWhat makes it dangerous is the symptom. The mean of that matrix is finite and positive, the loss curve still falls, and the model still trains — on a gradient inflated by every off-diagonal pairing of a prediction with someone else's target. A crash would have been better.\n\nThe fix is a ravel or a reshape. The habit is to assert the shape wherever an array crosses into a function that will do arithmetic on it, because in array code the off-by-one has been replaced by the off-by-shape, and only one of those two announces itself."
+      }
+    },
+    "blueprint": "AN ARRAY IS THREE THINGS\n\n   one contiguous block of same-typed values\n   + shape    (4, 3)\n   + strides  (24, 8)      bytes to the next row / column\n                           8 bytes per element, 3 * 8 = 24\n\n   that is the whole representation, and it buys:\n      loop pushed down into C\n      slice returned as a VIEW, not a copy\n      linear algebra sent to OpenBLAS / Intel MKL\n\nTHE TRADE\n\n   element is the unit          array is the unit\n   ---------------------        --------------------\n   loop per index               one expression\n   10M sums: ~577 ms            ~4 ms\n     (one machine. measure yours.)\n   indices by hand              shapes by hand\n   bugs are off-by-one          bugs are off-by-shape\n\nTHE SILENT ONE\n\n   (n, 1)  -  (n,)   ->   (n, n)      and .mean() of that\n                                      is a plausible\n                                      wrong number\n\n   assert err.shape == y.shape\n\nTHE LINEAGE\n\n   1995  Numeric     Hugunin, at MIT\n   2000  Numarray    Space Telescope Science Institute,\n                     for Hubble Space Telescope images\n   2005  unified     Oliphant: Numarray's features,\n                     Numeric's speed on small arrays",
+    "takeaway": "An array is a contiguous block of same-typed values plus a shape and strides, and that is enough to move the loop into compiled code and the matrix work to a tuned backend — but the same rules that make the good case a one-liner will align shapes you never meant to align and hand you a plausible wrong number, so assert the shapes."
+  },
   "M.2": {
     "id": "M.2",
     "trackId": "M",
@@ -9662,6 +9764,118 @@
       "claim": "A correction to the story as usually told: Berkeley was never actually sued. Officials feared bias and asked Bickel to analyse the data, with an associate dean thinking the university might be sued.",
       "title": "Bickel, P. J., Hammel, E. A. and O’Connell, J. W., Sex Bias in Graduate Admissions: Data from Berkeley, Science 187(4175):398-404, 7 February 1975",
       "url": "https://www.science.org/doi/10.1126/science.187.4175.398",
+      "kind": "primary"
+    }
+  ],
+  "M.15": [
+    {
+      "claim": "Napier's account of logarithms appeared in Mirifici Logarithmorum Canonis Descriptio in 1614, with an English translation by Edward Wright two years later. The preface gives the motive as arithmetic labour: the multiplications, divisions, square and cubical extractions of great numbers cost the tedious expense of time and are subject to many slippery errors, and his method substitutes numbers that do the same work by addition and subtraction, division by two or division by three.",
+      "title": "John Napier — MacTutor History of Mathematics Archive, University of St Andrews, quoting the preface of the 1616 English translation of the Descriptio",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Napier/",
+      "kind": "secondary"
+    },
+    {
+      "claim": "A correction to the story as usually told: Napier's own logarithms were not really to any base, and his logarithm of one was not zero, which makes them inconvenient by modern standards. Briggs read the 1614 text, travelled from London to Edinburgh to meet Napier in the summer of 1615, and the base ten tables with the logarithm of one set to zero came out of that meeting.",
+      "title": "John Napier — MacTutor History of Mathematics Archive, University of St Andrews, quoting the preface of the 1616 English translation of the Descriptio",
+      "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Napier/",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Shannon, writing in 1948, defines the quantity this way: We shall call H = minus the sum of p log p the entropy of the set of probabilities. He notes that the form of H will be recognised as that of entropy as defined in certain formulations of statistical mechanics.",
+      "title": "C. E. Shannon, A Mathematical Theory of Communication, Bell System Technical Journal 27, pages 379 to 423 and 623 to 656, 1948 (reprint with corrections)",
+      "url": "https://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "In the same paper Shannon fixes the unit: the choice of a logarithmic base corresponds to the choice of a unit for measuring information, and if the base 2 is used the resulting units may be called binary digits, or more briefly bits, a word he credits to J. W. Tukey.",
+      "title": "C. E. Shannon, A Mathematical Theory of Communication, Bell System Technical Journal 27, pages 379 to 423 and 623 to 656, 1948 (reprint with corrections)",
+      "url": "https://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "Fisher introduced maximum likelihood as the criterion for estimation in On the mathematical foundations of theoretical statistics, Philosophical Transactions of the Royal Society A, volume 222, pages 309 to 368. The paper was submitted in June 1921, read that November, and published in 1922.",
+      "title": "R. A. Fisher, On the mathematical foundations of theoretical statistics, Philosophical Transactions of the Royal Society A 222(594-604):309-368, 1922, doi 10.1098/rsta.1922.0009",
+      "url": "https://royalsocietypublishing.org/doi/10.1098/rsta.1922.0009",
+      "kind": "primary"
+    },
+    {
+      "claim": "Kullback and Leibler defined the divergence between two distributions in On Information and Sufficiency, Annals of Mathematical Statistics volume 22, number 1, pages 79 to 86, March 1951. It is never negative, is zero exactly when the two distributions agree, and is not symmetric.",
+      "title": "S. Kullback and R. A. Leibler, On Information and Sufficiency, Annals of Mathematical Statistics 22(1):79-86, March 1951, doi 10.1214/aoms/1177729694",
+      "url": "https://projecteuclid.org/journals/annals-of-mathematical-statistics/volume-22/issue-1/On-Information-and-Sufficiency/10.1214/aoms/1177729694.full",
+      "kind": "primary"
+    },
+    {
+      "claim": "Python's float is the platform's double precision number. The smallest positive normalised value it can hold, reported as sys.float_info.min, is 2.2250738585072014e-308; below that the format degrades through subnormal values to about 5e-324, and anything smaller is exactly zero. One half multiplied by itself 1075 times reaches that point.",
+      "title": "sys.float_info — Python 3 standard library documentation, giving min as the minimum positive normalised float",
+      "url": "https://docs.python.org/3/library/sys.html#sys.float_info",
+      "kind": "primary"
+    },
+    {
+      "claim": "Goldberg's What Every Computer Scientist Should Know About Floating-Point Arithmetic, ACM Computing Surveys volume 23 number 1, pages 5 to 48, March 1991, describes the gulf between zero and the smallest normalised number in IEEE 754: a result that falls into that gulf is flushed to zero unless gradual underflow, using denormalised numbers, fills the gap.",
+      "title": "David Goldberg, What Every Computer Scientist Should Know About Floating-Point Arithmetic, ACM Computing Surveys 23(1):5-48, March 1991 (Oracle Numerical Computation Guide reprint)",
+      "url": "https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "Goodfellow, Bengio and Courville argue in Deep Learning, MIT Press 2016, section 6.2.2.2, that because the cost used with maximum likelihood is minus the log of the predicted probability, the log undoes the exponentiation of the sigmoid, so the gradient does not vanish when the model is confidently wrong. With other losses, such as mean squared error, the loss saturates whenever the sigmoid saturates, and the gradient can shrink too small to be useful for learning whether or not the answer is right.",
+      "title": "Ian Goodfellow, Yoshua Bengio and Aaron Courville, Deep Learning, MIT Press 2016, chapter 6, section 6.2.2.2 on sigmoid output units",
+      "url": "https://www.deeplearningbook.org/contents/mlp.html",
+      "kind": "primary"
+    }
+  ],
+  "M.16": [
+    {
+      "claim": "Jim Hugunin wrote Numeric in 1995 while a graduate student at MIT, basing it on previous work by Jim Fulton. After he graduated, Paul Dubois at the Lawrence Livermore National Laboratory became the maintainer. Numeric provided an array object and array-aware functions in Python, written in C, linking to standard fast implementations of linear algebra.",
+      "title": "Charles R. Harris et al., Array programming with NumPy, Nature 585, pages 357 to 362, 2020, doi 10.1038/s41586-020-2649-2 (open access; preprint arXiv:2006.10256)",
+      "url": "https://arxiv.org/abs/2006.10256",
+      "kind": "primary"
+    },
+    {
+      "claim": "In 1998 the Space Telescope Science Institute started using Python, and in 2000 began developing a new array package called Numarray, written almost entirely by Jay Todd Miller from a prototype developed by Perry Greenfield. It was a reimplementation of Numeric built to handle the large astronomical images coming from the Hubble Space Telescope. The Numeric and Numarray split divided the community.",
+      "title": "Charles R. Harris et al., Array programming with NumPy, Nature 585, pages 357 to 362, 2020, doi 10.1038/s41586-020-2649-2 (open access; preprint arXiv:2006.10256)",
+      "url": "https://arxiv.org/abs/2006.10256",
+      "kind": "primary"
+    },
+    {
+      "claim": "In 2005 Travis Oliphant, who had taken over maintenance of Numeric shortly after Numarray development began, led the effort and did most of the work to unify the two and produce the first version of NumPy — a best of both worlds unification combining Numarray's features with Numeric's performance on small arrays and its rich C application programming interface.",
+      "title": "Charles R. Harris et al., Array programming with NumPy, Nature 585, pages 357 to 362, 2020, doi 10.1038/s41586-020-2649-2 (open access; preprint arXiv:2006.10256)",
+      "url": "https://arxiv.org/abs/2006.10256",
+      "kind": "primary"
+    },
+    {
+      "claim": "Strides are what let linear computer memory be read as a multidimensional array: a stride is the number of bytes to move forward to jump from row to row or column to column. For a two-dimensional array of shape (4, 3) whose elements occupy 8 bytes each, moving between consecutive columns needs 8 bytes and moving to the next row needs 3 times 8, or 24 bytes, so the strides of that array are (24, 8). Arrays can be stored in either C or Fortran memory order, which is what lets external libraries written in those languages read the data directly.",
+      "title": "Charles R. Harris et al., Array programming with NumPy, Nature 585, pages 357 to 362, 2020, doi 10.1038/s41586-020-2649-2 (open access; preprint arXiv:2006.10256)",
+      "url": "https://arxiv.org/abs/2006.10256",
+      "kind": "primary"
+    },
+    {
+      "claim": "Vectorisation — operating on whole arrays rather than on their individual elements — is described as essential to array programming: operations that would take many tens of lines to express in languages such as C can often be written as a single clear expression, while the library handles looping over array elements near-optimally, taking strides into account to best use the computer's fast cache memory.",
+      "title": "Charles R. Harris et al., Array programming with NumPy, Nature 585, pages 357 to 362, 2020, doi 10.1038/s41586-020-2649-2 (open access; preprint arXiv:2006.10256)",
+      "url": "https://arxiv.org/abs/2006.10256",
+      "kind": "primary"
+    },
+    {
+      "claim": "Wherever possible, indexing that retrieves a subarray returns a view on the original array, so that data is shared between the two arrays. In broadcasting, one or both arrays are virtually duplicated — that is, without copying any data in memory — so that the shapes of the operands match.",
+      "title": "Charles R. Harris et al., Array programming with NumPy, Nature 585, pages 357 to 362, 2020, doi 10.1038/s41586-020-2649-2 (open access; preprint arXiv:2006.10256)",
+      "url": "https://arxiv.org/abs/2006.10256",
+      "kind": "primary"
+    },
+    {
+      "claim": "NumPy performs accelerated linear algebra by using one of several backends, such as OpenBLAS or Intel MKL, optimised for the CPUs at hand.",
+      "title": "Charles R. Harris et al., Array programming with NumPy, Nature 585, pages 357 to 362, 2020, doi 10.1038/s41586-020-2649-2 (open access; preprint arXiv:2006.10256)",
+      "url": "https://arxiv.org/abs/2006.10256",
+      "kind": "primary"
+    },
+    {
+      "claim": "In astronomy, NumPy was an important part of the software stack used in the discovery of gravitational waves and the first imaging of a black hole. The eht-imaging library developed by the Event Horizon Telescope collaboration relies on it: NumPy arrays are used to store and manipulate numerical data at every step in the processing chain, from raw data through calibration and image reconstruction, with Matplotlib generating the final image of the black hole.",
+      "title": "Charles R. Harris et al., Array programming with NumPy, Nature 585, pages 357 to 362, 2020, doi 10.1038/s41586-020-2649-2 (open access; preprint arXiv:2006.10256)",
+      "url": "https://arxiv.org/abs/2006.10256",
+      "kind": "primary"
+    },
+    {
+      "claim": "NumPy's integer types are fixed in width, and the library's own documentation warns that they may therefore overflow: a value that exceeds the capacity of the type wraps around rather than being promoted, and the behaviour differs from Python's arbitrary precision integers.",
+      "title": "Data types — NumPy user guide, section on overflow errors in fixed-size integer types",
+      "url": "https://numpy.org/doc/stable/user/basics.types.html",
       "kind": "primary"
     }
   ],

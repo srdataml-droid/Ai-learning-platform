@@ -1,6 +1,6 @@
 # Tasks with no lesson
 
-Regenerated 2026-09-19. Derived from content/lessons/ against the curriculum — not maintained by hand, so it cannot drift.
+Regenerated 2026-09-20. Derived from content/lessons/ against the curriculum — not maintained by hand, so it cannot drift.
 
 Study order: the sequence first, then the five habits running underneath.
 
@@ -76,10 +76,7 @@ Study order: the sequence first, then the five habits running underneath.
 
 ## Track M — Math for machines
 
-2 of 16 still missing.
-
-- [ ] `M.15` Logs and exponents, and why loss functions use them
-- [ ] `M.16` Do all of the above in numpy
+**Complete.** All 16 written.
 
 ## Track N — Data work
 
@@ -195,7 +192,7 @@ Study order: the sequence first, then the five habits running underneath.
 
 ---
 
-**Total remaining: 109 of 313.**
+**Total remaining: 107 of 313.**
 
 Regenerate: `node tools/missing-lessons.mjs > docs/MISSING-LESSONS.md`
 

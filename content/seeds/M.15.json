@@ -1,0 +1,156 @@
+{
+  "taskId": "M.15",
+  "title": "Logs and exponents, and why loss functions use them",
+  "researchedAt": "2026-09-20",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Napier's account of logarithms appeared in Mirifici Logarithmorum Canonis Descriptio in 1614, with an English translation by Edward Wright two years later. The preface gives the motive as arithmetic labour: the multiplications, divisions, square and cubical extractions of great numbers cost the tedious expense of time and are subject to many slippery errors, and his method substitutes numbers that do the same work by addition and subtraction, division by two or division by three.",
+      "type": "quote",
+      "tokens": [
+        "Napier",
+        "Mirifici Logarithmorum Canonis Descriptio",
+        "1614",
+        "Edward Wright"
+      ],
+      "source": {
+        "title": "John Napier — MacTutor History of Mathematics Archive, University of St Andrews, quoting the preface of the 1616 English translation of the Descriptio",
+        "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Napier/",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "A correction to the story as usually told: Napier's own logarithms were not really to any base, and his logarithm of one was not zero, which makes them inconvenient by modern standards. Briggs read the 1614 text, travelled from London to Edinburgh to meet Napier in the summer of 1615, and the base ten tables with the logarithm of one set to zero came out of that meeting.",
+      "type": "event",
+      "tokens": [
+        "Napier",
+        "Briggs",
+        "London",
+        "Edinburgh",
+        "1614",
+        "1615"
+      ],
+      "source": {
+        "title": "John Napier — MacTutor History of Mathematics Archive, University of St Andrews, quoting the preface of the 1616 English translation of the Descriptio",
+        "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Napier/",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Shannon, writing in 1948, defines the quantity this way: We shall call H = minus the sum of p log p the entropy of the set of probabilities. He notes that the form of H will be recognised as that of entropy as defined in certain formulations of statistical mechanics.",
+      "type": "quote",
+      "tokens": [
+        "Shannon",
+        "1948"
+      ],
+      "source": {
+        "title": "C. E. Shannon, A Mathematical Theory of Communication, Bell System Technical Journal 27, pages 379 to 423 and 623 to 656, 1948 (reprint with corrections)",
+        "url": "https://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "In the same paper Shannon fixes the unit: the choice of a logarithmic base corresponds to the choice of a unit for measuring information, and if the base 2 is used the resulting units may be called binary digits, or more briefly bits, a word he credits to J. W. Tukey.",
+      "type": "quote",
+      "tokens": [
+        "Shannon",
+        "Tukey",
+        "J. W. Tukey",
+        "1948"
+      ],
+      "source": {
+        "title": "C. E. Shannon, A Mathematical Theory of Communication, Bell System Technical Journal 27, pages 379 to 423 and 623 to 656, 1948 (reprint with corrections)",
+        "url": "https://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "Fisher introduced maximum likelihood as the criterion for estimation in On the mathematical foundations of theoretical statistics, Philosophical Transactions of the Royal Society A, volume 222, pages 309 to 368. The paper was submitted in June 1921, read that November, and published in 1922.",
+      "type": "event",
+      "tokens": [
+        "Fisher",
+        "Philosophical Transactions of the Royal Society",
+        "1921",
+        "1922"
+      ],
+      "source": {
+        "title": "R. A. Fisher, On the mathematical foundations of theoretical statistics, Philosophical Transactions of the Royal Society A 222(594-604):309-368, 1922, doi 10.1098/rsta.1922.0009",
+        "url": "https://royalsocietypublishing.org/doi/10.1098/rsta.1922.0009",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c6",
+      "text": "Kullback and Leibler defined the divergence between two distributions in On Information and Sufficiency, Annals of Mathematical Statistics volume 22, number 1, pages 79 to 86, March 1951. It is never negative, is zero exactly when the two distributions agree, and is not symmetric.",
+      "type": "event",
+      "tokens": [
+        "Kullback",
+        "Leibler",
+        "Annals of Mathematical Statistics",
+        "1951"
+      ],
+      "source": {
+        "title": "S. Kullback and R. A. Leibler, On Information and Sufficiency, Annals of Mathematical Statistics 22(1):79-86, March 1951, doi 10.1214/aoms/1177729694",
+        "url": "https://projecteuclid.org/journals/annals-of-mathematical-statistics/volume-22/issue-1/On-Information-and-Sufficiency/10.1214/aoms/1177729694.full",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c7",
+      "text": "Python's float is the platform's double precision number. The smallest positive normalised value it can hold, reported as sys.float_info.min, is 2.2250738585072014e-308; below that the format degrades through subnormal values to about 5e-324, and anything smaller is exactly zero. One half multiplied by itself 1075 times reaches that point.",
+      "type": "number",
+      "tokens": [
+        "Python"
+      ],
+      "source": {
+        "title": "sys.float_info — Python 3 standard library documentation, giving min as the minimum positive normalised float",
+        "url": "https://docs.python.org/3/library/sys.html#sys.float_info",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c8",
+      "text": "Goldberg's What Every Computer Scientist Should Know About Floating-Point Arithmetic, ACM Computing Surveys volume 23 number 1, pages 5 to 48, March 1991, describes the gulf between zero and the smallest normalised number in IEEE 754: a result that falls into that gulf is flushed to zero unless gradual underflow, using denormalised numbers, fills the gap.",
+      "type": "event",
+      "tokens": [
+        "Goldberg",
+        "ACM Computing Surveys",
+        "IEEE",
+        "1991"
+      ],
+      "source": {
+        "title": "David Goldberg, What Every Computer Scientist Should Know About Floating-Point Arithmetic, ACM Computing Surveys 23(1):5-48, March 1991 (Oracle Numerical Computation Guide reprint)",
+        "url": "https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c9",
+      "text": "Goodfellow, Bengio and Courville argue in Deep Learning, MIT Press 2016, section 6.2.2.2, that because the cost used with maximum likelihood is minus the log of the predicted probability, the log undoes the exponentiation of the sigmoid, so the gradient does not vanish when the model is confidently wrong. With other losses, such as mean squared error, the loss saturates whenever the sigmoid saturates, and the gradient can shrink too small to be useful for learning whether or not the answer is right.",
+      "type": "event",
+      "tokens": [
+        "Goodfellow",
+        "Bengio",
+        "Courville",
+        "Deep Learning",
+        "MIT Press",
+        "2016"
+      ],
+      "source": {
+        "title": "Ian Goodfellow, Yoshua Bengio and Aaron Courville, Deep Learning, MIT Press 2016, chapter 6, section 6.2.2.2 on sigmoid output units",
+        "url": "https://www.deeplearningbook.org/contents/mlp.html",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a score for anything made of parts is a product of per-part probabilities, and a product of numbers below one falls out of the range a machine can hold long before the sequence gets interesting",
+    "fix": "take the log: the product becomes a sum, the numbers land in a comfortable range, and the ordering is untouched because log is strictly increasing",
+    "cost": "the number stops being readable as a probability, and log of zero is negative infinity, so any outcome the model ruled out entirely makes the loss infinite unless it is clipped or smoothed",
+    "interview": "why cross-entropy takes the log of the predicted probability rather than the probability itself"
+  }
+}
