@@ -84,12 +84,8 @@ Study order: the sequence first, then the five habits running underneath.
 
 ## Track O — Classical ML
 
-19 of 20 still missing.
+15 of 20 still missing.
 
-- [ ] `O.1` What learning from data actually means
-- [ ] `O.2` Supervised versus unsupervised
-- [ ] `O.3` Features and labels
-- [ ] `O.4` Linear regression
 - [ ] `O.5` Logistic regression
 - [ ] `O.6` Decision trees
 - [ ] `O.7` Random forests
@@ -177,7 +173,7 @@ Study order: the sequence first, then the five habits running underneath.
 
 ---
 
-**Total remaining: 93 of 313.**
+**Total remaining: 89 of 313.**
 
 Regenerate: `node tools/missing-lessons.mjs > docs/MISSING-LESSONS.md`
 

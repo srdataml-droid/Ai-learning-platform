@@ -1,0 +1,86 @@
+{
+  "taskId": "M.4",
+  "title": "Dot product as similarity",
+  "researchedAt": "2026-09-21",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Salton, Wong and Yang set out the vector space model in Communications of the ACM in 1975, volume 18, pages 613 to 620, for an environment in which stored entities are compared with each other or with incoming search requests. Their argument is that the best indexing space is one in which each entity lies as far from the others as possible, so that the value of an indexing system can be expressed as a function of the density of the object space, with retrieval performance correlating inversely with that density.",
+      "type": "event",
+      "tokens": [
+        "Salton",
+        "Wong",
+        "Yang",
+        "Communications of the ACM",
+        "ACM",
+        "Their",
+        "1975"
+      ],
+      "source": {
+        "title": "G. Salton, A. Wong and C. S. Yang, A vector space model for automatic indexing, Communications of the ACM 18(11):613-620, November 1975, doi 10.1145/361219.361220",
+        "url": "https://dl.acm.org/doi/10.1145/361219.361220",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Mikolov, Chen, Corrado and Dean reported that similarity of word representations goes beyond simple syntactic regularities, and that using a word offset technique where simple algebraic operations are performed on the word vectors, the vector for King minus the vector for Man plus the vector for Woman results in a vector close to the expected answer. They derived 300-dimensional vectors for a vocabulary of one million words from a 1.6 billion word dataset in less than a day on a single processor.",
+      "type": "quote",
+      "tokens": [
+        "Mikolov",
+        "Chen",
+        "Corrado",
+        "Dean",
+        "King",
+        "Man",
+        "Woman",
+        "They",
+        "2013"
+      ],
+      "source": {
+        "title": "Tomas Mikolov, Kai Chen, Greg Corrado and Jeffrey Dean, Efficient Estimation of Word Representations in Vector Space, ICLR Workshop 2013, arXiv:1301.3781",
+        "url": "https://arxiv.org/abs/1301.3781",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "A correction to the story as it is usually told. Linzen showed that the offset method's apparent success partly reflects the evaluation protocol rather than consistent vector offsets. When the three query words are not excluded from the pool of candidate answers, the nearest neighbour of the computed vector was the third query word itself in 93% of cases and the second in 5% of cases, and never the first — so the famous result depends on those words being banned from being the answer.",
+      "type": "number",
+      "tokens": [
+        "Linzen",
+        "93%",
+        "5%",
+        "When",
+        "2016"
+      ],
+      "source": {
+        "title": "Tal Linzen, Issues in evaluating semantic spaces using word analogies, Proceedings of the 1st Workshop on Evaluating Vector-Space Representations for NLP, pages 13-18, Berlin, August 2016, doi 10.18653/v1/W16-2503",
+        "url": "https://aclanthology.org/W16-2503/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "Linzen also proposed baselines that ignore the offset entirely. One of them simply returns the nearest neighbour of the third query word, taking no account of the first two; on the plurals category it reached an accuracy of 0.70. Accuracy of the standard offset method varied dramatically across categories, from 0.13 to 0.90. Reversing the direction of each analogy lowered accuracy by 0.11 on average, and those changes correlated with changes in the offset-ignoring baseline at a coefficient of 0.72, which Linzen reads as evidence that the method jointly evaluates the consistency of the offsets and the probability that the answer is simply the nearest neighbour of the third word.",
+      "type": "number",
+      "tokens": [
+        "Linzen",
+        "One",
+        "Accuracy",
+        "Reversing"
+      ],
+      "source": {
+        "title": "Tal Linzen, Issues in evaluating semantic spaces using word analogies, Proceedings of the 1st Workshop on Evaluating Vector-Space Representations for NLP, pages 13-18, Berlin, August 2016, doi 10.18653/v1/W16-2503",
+        "url": "https://aclanthology.org/W16-2503/",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "meaning has to be compared, and comparison needs a number — but the things being compared are words, documents and images, which do not come with a natural notion of distance",
+    "fix": "place them as vectors in a space and let the dot product measure alignment, which normalised by the lengths is the cosine of the angle between them and is the entire machinery behind the word similarity",
+    "cost": "the geometry is only as meaningful as the space it was built in, and arithmetic that looks like reasoning about meaning can be dominated by which points happen to lie near which others",
+    "interview": "how much of the famous word analogy result is the arithmetic and how much is the evaluation protocol"
+  }
+}

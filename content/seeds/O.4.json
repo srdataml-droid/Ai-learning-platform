@@ -1,0 +1,67 @@
+{
+  "taskId": "O.4",
+  "title": "Linear regression",
+  "researchedAt": "2026-09-21",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Legendre published the method of least squares in 1805, in Nouvelles methodes pour la determination des orbites des cometes, and gave it that name. He offered little justification for minimising the sum of squared errors beyond computational convenience, but noted that for repeated direct observations of a single unknown it returns the arithmetic mean.",
+      "type": "event",
+      "tokens": [
+        "Legendre",
+        "Nouvelles",
+        "He",
+        "1805"
+      ],
+      "source": {
+        "title": "Adrien-Marie Legendre, Nouvelles methodes pour la determination des orbites des cometes, Paris, 1805, the first published description of the method of least squares",
+        "url": "https://archive.org/details/nouvellesmthod00lege",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "In 1809 Gauss discussed the method and, while mentioning Legendre's work, stated that he had himself been using it since 1795, calling it our principle, of which we have made use since the year 1795. Legendre was offended and wrote to Gauss on 31 May 1809 that priority is established only by publication; Gauss did not reply. Gauss's own computational notes were lost, and only Olbers, in 1816, put in print that Gauss had shown him the method in 1802.",
+      "type": "event",
+      "tokens": [
+        "Gauss",
+        "Legendre",
+        "Olbers",
+        "1795",
+        "1802",
+        "1809",
+        "1816"
+      ],
+      "source": {
+        "title": "R. L. Plackett, The discovery of the method of least squares, Biometrika 59(2):239-251, 1972",
+        "url": "https://hedibert.org/wp-content/uploads/2016/08/plackett1972-thediscoveryofthemethodofleastsquares.pdf",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The two contributions were different in kind and both stand. Legendre's publication was adopted as a standard tool in astronomy and geodesy across France, Italy and Prussia within about ten years. Gauss went deeper theoretically, connecting least squares to probability and the normal distribution, and Laplace formalised it as a probabilistic problem in 1812.",
+      "type": "event",
+      "tokens": [
+        "Legendre",
+        "Gauss",
+        "France",
+        "Italy",
+        "Prussia",
+        "Laplace",
+        "1812"
+      ],
+      "source": {
+        "title": "R. L. Plackett, The discovery of the method of least squares, Biometrika 59(2):239-251, 1972",
+        "url": "https://hedibert.org/wp-content/uploads/2016/08/plackett1972-thediscoveryofthemethodofleastsquares.pdf",
+        "kind": "secondary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "several measurements of the same thing disagree, and you need one answer plus a rule for combining them that does not depend on which measurement you happen to like",
+    "fix": "choose the line minimising the sum of the squared discrepancies, which has a closed form, is unique, and reduces to the arithmetic mean in the simplest case",
+    "cost": "squaring is chosen partly for tractability and it makes the fit respond to the square of a discrepancy, so a single distant point moves the line further than many nearby ones",
+    "interview": "why the squares, rather than the absolute values of the errors"
+  }
+}

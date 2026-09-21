@@ -8,12 +8,12 @@ A batch is one writing session and never spans two tracks.
 
 | # | Track | Missing | Batches | Why here |
 |---|---|---|---|---|
-| 1–2 | **O** Classical ML | 19 | 2 | Classical ML. Large, and needs real sourcing for every named method. |
+| 1–2 | **O** Classical ML | 15 | 2 | Classical ML. Large, and needs real sourcing for every named method. |
 | 3–4 | **K** Neural networks | 14 | 2 | Neural networks. Dates and papers throughout, so these want seeds, not just prose. |
 | 5–6 | **L** AI engineering | 23 | 2 | AI engineering. Fastest-moving material, so the most likely to date badly. |
 | 7–10 | **B** System design | 37 | 4 | System design. The largest single track and the heaviest research load. |
 
-**93 lessons across 10 batches.**
+**89 lessons across 10 batches.**
 
 ---
 
@@ -21,10 +21,6 @@ A batch is one writing session and never spans two tracks.
 
 12 lessons.
 
-- [ ] `O.1` What learning from data actually means
-- [ ] `O.2` Supervised versus unsupervised
-- [ ] `O.3` Features and labels
-- [ ] `O.4` Linear regression
 - [ ] `O.5` Logistic regression
 - [ ] `O.6` Decision trees
 - [ ] `O.7` Random forests
@@ -33,15 +29,15 @@ A batch is one writing session and never spans two tracks.
 - [ ] `O.10` k means clustering
 - [ ] `O.11` PCA
 - [ ] `O.12` Train, validation, test
-
-### Batch 2 — Track O: Classical ML (part 2 of 2)
-
-7 lessons.
-
 - [ ] `O.13` Cross validation
 - [ ] `O.14` Overfitting and underfitting
 - [ ] `O.15` Bias variance tradeoff
 - [ ] `O.16` Accuracy, precision, recall, F1, ROC AUC
+
+### Batch 2 — Track O: Classical ML (part 2 of 2)
+
+3 lessons.
+
 - [ ] `O.18` Feature importance
 - [ ] `O.19` When classical ML beats a neural network, which is often
 - [ ] `O.20` Always build the dumb baseline first
@@ -179,7 +175,7 @@ A batch is one writing session and never spans two tracks.
 - **Track P — Security: complete (13).**
 - **Track M — Math for machines: complete (16).**
 - **Track N — Data work: complete (15).**
-- Track O — Classical ML: 1 of 20.
+- Track O — Classical ML: 5 of 20.
 - Track K — Neural networks: 4 of 18.
 - Track L — AI engineering: 3 of 26.
 - **Track A — Systems thinking: complete (11).**

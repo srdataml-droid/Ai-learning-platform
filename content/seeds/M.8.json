@@ -1,0 +1,70 @@
+{
+  "taskId": "M.8",
+  "title": "The chain rule",
+  "researchedAt": "2026-09-21",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Rumelhart, Hinton and Williams described the procedure in Nature in 1986, volume 323, pages 533 to 536: it repeatedly adjusts the weights of the connections in the network so as to minimise a measure of the difference between the actual output vector of the net and the desired output vector. As a result of the weight adjustments, internal hidden units come to represent important features of the task domain, and it is this ability to create useful new features that distinguishes back-propagation from earlier and simpler methods such as the perceptron-convergence procedure.",
+      "type": "quote",
+      "tokens": [
+        "Rumelhart",
+        "Hinton",
+        "Williams",
+        "Nature",
+        "1986"
+      ],
+      "source": {
+        "title": "David E. Rumelhart, Geoffrey E. Hinton and Ronald J. Williams, Learning representations by back-propagating errors, Nature 323(6088):533-536, 8 October 1986, doi 10.1038/323533a0",
+        "url": "https://www.nature.com/articles/323533a0",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "A correction to the story as it is usually told: that paper made the method famous rather than introducing it. The work of Linnainmaa, in a 1970 master's thesis at the University of Helsinki with an English version published in 1976, is often cited as the first published description of the reverse mode, although it made no reference to neural networks. Werbos cast the method in more formal terms in a 1974 doctoral thesis at Harvard, Beyond Regression, which contained some preliminary discussion specific to networks. Within the machine learning community the method was reinvented several times, including by Parker in 1985, before being brought to fame in 1986.",
+      "type": "event",
+      "tokens": [
+        "Linnainmaa",
+        "University of Helsinki",
+        "Helsinki",
+        "Werbos",
+        "Harvard",
+        "Beyond Regression",
+        "Parker",
+        "Within",
+        "1970",
+        "1974",
+        "1976",
+        "1985",
+        "1986"
+      ],
+      "source": {
+        "title": "Atilim Gunes Baydin, Barak A. Pearlmutter, Alexey Andreyevich Radul and Jeffrey Mark Siskind, Automatic differentiation in machine learning: a survey, arXiv:1502.05767",
+        "url": "https://arxiv.org/abs/1502.05767",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The property that matters computationally is the direction of accumulation. In reverse mode the cost of the backward derivative calculation is essentially the same as the cost of the forward evaluation, and one backward sweep yields the derivative of a single output with respect to every input at once. Forward mode instead yields the derivatives of every output with respect to a single input per sweep, so the efficient direction depends on the ratio of inputs to outputs.",
+      "type": "event",
+      "tokens": [
+        "The",
+        "In",
+        "Forward"
+      ],
+      "source": {
+        "title": "Atilim Gunes Baydin, Barak A. Pearlmutter, Alexey Andreyevich Radul and Jeffrey Mark Siskind, Automatic differentiation in machine learning: a survey, arXiv:1502.05767",
+        "url": "https://arxiv.org/abs/1502.05767",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a network's loss depends on its parameters only through a long composition of functions, and improving a parameter requires knowing how the final number responds to a change in it",
+    "fix": "the chain rule, applied in the direction that suits the shape of the problem — accumulating from the output backwards gives the derivative of one number with respect to every parameter in a single sweep",
+    "cost": "the backward sweep needs the intermediate values from the forward one, so the memory required grows with the depth of the composition rather than with the number of parameters",
+    "interview": "why derivatives are accumulated backwards rather than forwards, and what the other direction would cost"
+  }
+}

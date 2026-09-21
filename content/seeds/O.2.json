@@ -1,0 +1,42 @@
+{
+  "taskId": "O.2",
+  "title": "Supervised versus unsupervised",
+  "researchedAt": "2026-09-21",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Learning in the formal sense is defined with respect to a target concept the learner is trying to recover, and the guarantee bounds the probability that the learned rule disagrees with that target by more than a stated amount. The existence of something to disagree with is what makes the guarantee statable at all.",
+      "type": "event",
+      "tokens": [
+        "Learning",
+        "The"
+      ],
+      "source": {
+        "title": "L. G. Valiant, A theory of the learnable, Communications of the ACM 27(11):1134-1142, November 1984, doi 10.1145/1968.1972",
+        "url": "https://dl.acm.org/doi/10.1145/1968.1972",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "MacQueen coined the term k-means in the Proceedings of the Fifth Berkeley Symposium in 1967, pages 281 to 297, describing methods for classification and analysis of multivariate observations. The procedure partitions observations to minimise a stated within-group criterion; the number of groups is supplied rather than discovered, and the criterion is chosen by the analyst rather than given by the data.",
+      "type": "event",
+      "tokens": [
+        "MacQueen",
+        "Berkeley",
+        "1967"
+      ],
+      "source": {
+        "title": "J. MacQueen, Some methods for classification and analysis of multivariate observations, Proceedings of the Fifth Berkeley Symposium on Mathematical Statistics and Probability, pages 281-297, 1967",
+        "url": "https://projecteuclid.org/proceedings/berkeley-symposium-on-mathematical-statistics-and-probability/proceedings-of-the-fifth-berkeley-symposium-on-mathematical-statistics-and/Chapter/Some-methods-for-classification-and-analysis-of-multivariate-observations/bsmsp/1200512992",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "two activities get filed under the same heading — recovering a rule that maps inputs to a known answer, and finding structure where no answer exists — and they differ in whether there is anything to be wrong about",
+    "fix": "ask what would count as an error before choosing a method: with a target, error is measurable and a held-out estimate means something; without one, the objective you chose is the only standard available",
+    "cost": "in the second case the objective is the assumption, so a result cannot be validated in the sense the first case allows — it can only be checked against the criterion that produced it, or against what it is later used for",
+    "interview": "how you would know whether a clustering is any good"
+  }
+}

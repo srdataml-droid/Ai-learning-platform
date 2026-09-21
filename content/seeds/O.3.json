@@ -1,0 +1,43 @@
+{
+  "taskId": "O.3",
+  "title": "Features and labels",
+  "researchedAt": "2026-09-21",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Leakage is defined as the introduction of information about the target that should not be legitimately available to mine from, and the illegitimate information is usually introduced unintentionally, facilitated by the data collection, aggregation and preparation process. The remedy proposed is a learn-predict separation, which makes legitimacy a question about when a value became knowable rather than about whether it appears in the table.",
+      "type": "quote",
+      "tokens": [
+        "Leakage",
+        "The"
+      ],
+      "source": {
+        "title": "Shachar Kaufman, Saharon Rosset, Claudia Perlich and Ori Stitelman, Leakage in data mining: formulation, detection, and avoidance, ACM Transactions on Knowledge Discovery from Data 6(4), article 15, December 2012, doi 10.1145/2382577.2382579",
+        "url": "https://dl.acm.org/doi/10.1145/2382577.2382579",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Models are described as machines for creating entanglement, which makes the isolation of improvements effectively impossible: changing the input distribution of one feature may alter the importance, weights or use of all the remaining features, and adding or removing a feature causes similar changes, because no inputs are ever really independent. This is named the CACE principle, Changing Anything Changes Everything.",
+      "type": "quote",
+      "tokens": [
+        "Models",
+        "CACE",
+        "Changing Anything Changes Everything",
+        "This"
+      ],
+      "source": {
+        "title": "D. Sculley et al., Hidden Technical Debt in Machine Learning Systems, Advances in Neural Information Processing Systems 28, 2015",
+        "url": "https://papers.neurips.cc/paper/5656-hidden-technical-debt-in-machine-learning-systems.pdf",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a table does not arrive divided into what you are predicting and what you are allowed to predict it from; somebody decides, and the decision defines the problem rather than describing the data",
+    "fix": "choose the label to be the thing you will actually act on, and admit a feature only if its value was knowable at the moment the prediction has to be made",
+    "cost": "both decisions are unverifiable from inside the dataset — legitimacy is a fact about when a value came into existence — and the features cannot be chosen one at a time, because adding or removing one changes the role of all the others",
+    "interview": "what makes a column a legitimate feature"
+  }
+}

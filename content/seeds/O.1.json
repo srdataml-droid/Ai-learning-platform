@@ -1,0 +1,65 @@
+{
+  "taskId": "O.1",
+  "title": "What learning from data actually means",
+  "researchedAt": "2026-09-21",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Valiant's paper in Communications of the ACM in 1984, volume 27, pages 1134 to 1142, regards learning as the acquisition of knowledge in the absence of explicit programming, and sets out to study it from a computational point of view. It shows that machines can be designed to provably learn whole characterisable classes of concepts, where those classes are appropriate and nontrivial for general-purpose knowledge, and where the machine deduces the desired programs in a feasible, polynomial number of steps.",
+      "type": "event",
+      "tokens": [
+        "Valiant",
+        "Communications of the ACM",
+        "ACM",
+        "1984"
+      ],
+      "source": {
+        "title": "L. G. Valiant, A theory of the learnable, Communications of the ACM 27(11):1134-1142, November 1984, doi 10.1145/1968.1972",
+        "url": "https://dl.acm.org/doi/10.1145/1968.1972",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The model it introduces is called probably approximately correct, and the name states its structure: the guarantee carries two separate tolerances, one bounding how wrong the learned rule may be and one bounding the probability that the learner fails to stay within that bound. Neither can be driven to zero with a finite sample, so the guarantee is always about both at once.",
+      "type": "event",
+      "tokens": [
+        "The",
+        "Neither"
+      ],
+      "source": {
+        "title": "L. G. Valiant, A theory of the learnable, Communications of the ACM 27(11):1134-1142, November 1984, doi 10.1145/1968.1972",
+        "url": "https://dl.acm.org/doi/10.1145/1968.1972",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The framework's central later result is that a concept class is learnable in this sense exactly when it has finite Vapnik-Chervonenkis dimension, established by Blumer, Ehrenfeucht, Haussler and Warmuth in the Journal of the ACM in 1989, volume 36, pages 929 to 965. Learnability is therefore a property of the class of hypotheses being searched, not of the algorithm doing the searching.",
+      "type": "event",
+      "tokens": [
+        "Vapnik",
+        "Chervonenkis",
+        "Blumer",
+        "Ehrenfeucht",
+        "Haussler",
+        "Warmuth",
+        "Journal of the ACM",
+        "ACM",
+        "Learnability",
+        "1989"
+      ],
+      "source": {
+        "title": "Anselm Blumer, Andrzej Ehrenfeucht, David Haussler and Manfred K. Warmuth, Learnability and the Vapnik-Chervonenkis dimension, Journal of the ACM 36(4):929-965, 1989",
+        "url": "https://dl.acm.org/doi/10.1145/76359.76371",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "you want a program that behaves correctly on inputs nobody has written down yet, and the ordinary way of getting one — stating the rule explicitly — is unavailable because nobody can state the rule",
+    "fix": "acquire the rule from examples instead, and replace the demand for correctness with a guarantee carrying two tolerances: probably, meaning with high confidence, and approximately, meaning within a stated error",
+    "cost": "the guarantee is about a class of hypotheses and a distribution rather than about your particular dataset, and neither tolerance can be driven to zero with a finite sample",
+    "interview": "what fitting a curve to points has that deserves to be called learning"
+  }
+}
