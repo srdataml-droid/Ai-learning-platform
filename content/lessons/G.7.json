@@ -3,7 +3,7 @@
   "trackId": "G",
   "trackName": "Critical thinking",
   "title": "Reversible versus irreversible decisions",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "Treating every decision with the same weight is a way of spending the same deliberation on things that differ by orders of magnitude in consequence. The distinction that matters is not how important a choice feels but how expensive it is to undo.\n\nMost technology choices are cheaper to reverse than the discussion around them implies. Frameworks get replaced, libraries get swapped, a service gets rewritten in a different language over a quarter. Expensive and possible. What is genuinely hard to undo is anything that has spread: a data model that every consumer now depends on, an identifier exposed in URLs and stored in other people's systems, an authorisation boundary that a hundred call sites assume, an API contract that customers have integrated against. Those are hard to reverse not because of the code but because the code is not the only thing holding them.\n\nSo the practical rule is to spend deliberation in proportion to the cost of being wrong. Decide reversible things quickly and change them when evidence arrives, because the cost of deciding slowly exceeds the cost of deciding wrongly. Slow down hard on the ones that will be load-bearing for everything built afterwards, and ask specifically what it would take to undo this in a year.",
   "beats": {
     "broke": "Every decision gets similar deliberation, so trivially reversible choices consume weeks of debate while a schema or an authorisation boundary is settled in an afternoon and becomes permanent. Effort is allocated by how contentious something feels rather than by consequence.",

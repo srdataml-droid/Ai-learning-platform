@@ -3,7 +3,7 @@
   "trackId": "H",
   "trackName": "Observation",
   "title": "Notice what is absent: the missing log line, the request that never arrived",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "Most monitoring is built to notice things happening. Errors raise alarms, latency crosses thresholds, exceptions get counted. Almost none of it notices things not happening, and a significant class of failure produces no event at all.\n\nA job that should run hourly and stops produces nothing. A queue consumer that dies leaves a queue that grows, and growth is only visible if somebody is watching the depth rather than the errors. A request that never arrives generates no log, no error and no metric, because the code that would have produced them never ran. These failures are quiet by construction, and they are frequently found by a customer rather than by a system, days later.\n\nDetecting absence requires inverting the question. Instead of alerting when something bad occurs, assert that something expected occurred and alert when it did not. A heartbeat is the simplest form: the job reports that it ran, and the alarm fires when the report fails to arrive. The habit generalises beyond monitoring — in debugging, asking which log line should be here and is not will often locate a fault faster than reading the lines that are.",
   "problem": {
     "name": "Detecting absence",

@@ -3,7 +3,7 @@
   "trackId": "J",
   "trackName": "Debugging",
   "title": "Add the test that would have caught it, before closing it",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "A bug that reached you got past everything already in place, which is a precise statement about a gap in the tests. Fixing the code without closing that gap leaves the gap open, and the same defect can be reintroduced by anyone, including by you, next month.\n\nThe test to write is the one that fails before the fix and passes after it. That ordering is not a formality: a test written after the fix and never observed failing may not exercise the bug at all, and a test that cannot fail is worse than no test because it is counted as coverage. Running it against the unfixed code, seeing it fail for the right reason, then applying the fix is what establishes that it tests what you believe.\n\nDoing it before closing matters because afterwards it does not happen. The bug is fixed, the pressure is off, and the test becomes a task that is always less urgent than the next thing. The moment when you understand the failure completely — which conditions trigger it, what the wrong behaviour is, what the right one would be — is the moment the test is easiest to write, and that understanding is the first thing to fade.",
   "beats": {
     "broke": "A bug that reached production got past every existing test, so the suite has a demonstrated gap. Fixing only the code leaves the gap, and nothing prevents the same defect being reintroduced later.",

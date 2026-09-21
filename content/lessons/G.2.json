@@ -3,7 +3,7 @@
   "trackId": "G",
   "trackName": "Critical thinking",
   "title": "Ask what would have to be true for this to be false",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "Left alone, the mind gathers support. Given a belief, it retrieves confirming instances effortlessly and disconfirming ones only with deliberate effort, and the effortlessness is itself mistaken for evidence — a theory that feels obviously right often feels that way because searching for objections was never attempted.\n\nThe question inverts the search. Rather than asking what supports this, ask what the world would have to look like for it to be wrong, and then go and check whether the world looks like that. It is a different cognitive operation, not a more sceptical version of the same one, and it retrieves entirely different information.\n\nIt also does something useful for a belief that survives: it tells you what your belief is actually resting on. A theory whose falsifying condition you can state is a theory you can test, and one whose falsifying condition you cannot state is not a theory but a preference. The most valuable outcome of the question is occasionally discovering that no observation would change your mind, which is worth knowing before you spend a week.",
   "beats": {
     "broke": "Searching for supporting evidence is the default and it always succeeds, because for almost any plausible claim some supporting instance can be found. Confidence therefore grows with time spent thinking, regardless of whether the claim is true.",

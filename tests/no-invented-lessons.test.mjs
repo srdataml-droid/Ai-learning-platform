@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readdir, readFile } from 'node:fs/promises';
 import { loadCurriculum } from '../tools/lib/load-curriculum.mjs';
+import { STATUSES } from '../tools/lib/lesson-schema.mjs';
 
 /**
  * The template that stood in for 243 tasks. Its tell is that it interpolated
@@ -48,7 +49,7 @@ test('a task with no lesson returns null rather than inventing one', async () =>
 test('every lesson declares a status the site knows how to render', async () => {
   const dir = new URL('../content/lessons/', import.meta.url);
   const files = (await readdir(dir)).filter((f) => f.endsWith('.json'));
-  const allowed = ['unsourced', 'traced', 'verified'];
+  const allowed = STATUSES; // derived, so adding a status does not break an unrelated test
   const bad = [];
 
   for (const file of files) {

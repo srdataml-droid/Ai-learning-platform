@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { validateLesson } from '../tools/lib/lesson-schema.mjs';
+import { validateLesson, STATUSES } from '../tools/lib/lesson-schema.mjs';
 
 const base = () => ({
   id: 'E.19', trackId: 'E', trackName: 'Data structures and algorithms',
@@ -66,8 +66,13 @@ test('reports a lesson missing its beats', () => {
   assert.deepEqual(validateLesson(l), ['E.19: missing beat "cost"']);
 });
 
-test('reports an unknown status', () => {
-  assert.deepEqual(validateLesson({ ...base(), status: 'probably-fine' }), ['E.19: status "probably-fine" is not one of unsourced, traced, verified']);
+test('reports an unknown status, and names the ones that exist', () => {
+  // Derived from STATUSES rather than pinned: adding a status is a deliberate
+  // act, and it should not also require editing an unrelated expectation.
+  assert.deepEqual(
+    validateLesson({ ...base(), status: 'probably-fine' }),
+    [`E.19: status "probably-fine" is not one of ${STATUSES.join(', ')}`],
+  );
 });
 
 test('collects several faults at once', () => {

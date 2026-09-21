@@ -3,7 +3,7 @@
   "trackId": "H",
   "trackName": "Observation",
   "title": "Measure before you optimise, always",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "Intuition about performance is unreliable in a specific and consistent way: it tracks what the code looks like rather than what the machine does. A nested loop looks expensive and may take microseconds. A single innocuous line may open a connection, wait on a disk, or serialise an object graph, and take a hundred times longer than everything around it combined.\n\nSo the rule is not a suggestion about rigour. It is a response to the fact that the guess is usually wrong, and acting on a wrong guess costs twice: the work spent optimising something that did not matter, and the complexity permanently added to code that was previously simple and fast enough. Optimised code is harder to read, harder to change and more likely to be subtly incorrect, and that price is paid whether or not the optimisation helped.\n\nMeasuring also establishes something optimisation cannot proceed without: a number from before. Without it there is no way to tell whether a change helped, and no way to notice when a later change quietly gives the improvement back.",
   "problem": {
     "name": "Optimisation target selection",
@@ -27,7 +27,7 @@
     },
     "worked": {
       "problem": "A nested loop looks expensive and a single line calls an external service. Which do you optimise?",
-      "reasoning": "Neither, until measured — but the prior strongly favours the single line. The nested loop is compute and may cost microseconds; the innocuous line may wait on a network round trip. Intuition tracks how intricate code looks, and cost tracks what the machine actually does, which is why the guess is usually wrong. Also: something that is 5% of runtime cannot win you more than 5%, no matter how clever the fix."
+      "reasoning": "Neither, until measured — but the prior strongly favours the single line. The nested loop is compute and may cost microseconds; the innocuous line may wait on a network round trip. Intuition tracks how intricate code looks, and cost tracks what the machine actually does, which is why the guess is usually wrong. Also: something that is a twentieth of runtime cannot win you more than a twentieth, no matter how clever the fix."
     },
     "practice": "Take something you believe is the bottleneck in your own code. Measure it before reading further, and record whether you were right."
   },

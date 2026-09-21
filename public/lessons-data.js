@@ -6610,8 +6610,8 @@
     "trackId": "G",
     "trackName": "Critical thinking",
     "title": "Separate the claim from the evidence for it",
-    "status": "unsourced",
-    "story": "Most disagreements in engineering are not disagreements about facts. They are two people holding claims of different strength, each believing the other is being unreasonable, because neither has said which part of what they are asserting is observed and which part is inferred.\n\n'The database is slow' is not one statement. It is an observation — requests are taking longer than they did — and a diagnosis attached to it, and the attachment happened so quickly that it does not feel like an inference. Separating them is mechanical: write what was measured, then write what you concluded, on different lines. The gap between the two lines is where the argument actually is, and it is usually much wider than it felt.\n\nThis is also the fastest way to make someone else's assertion useful. Asking what did you see, rather than disputing the conclusion, converts an unfalsifiable claim into evidence you can both work from. The person who says the cache is broken has usually seen something specific and real, and the specific real thing is frequently compatible with an entirely different explanation.",
+    "status": "claimless",
+    "story": "Most disagreements in engineering are not disagreements about facts. They are two people holding claims of different strength, each believing the other is being unreasonable, because neither has said which part of what they are asserting is observed and which part is inferred.\n\nA claim like 'the database is slow' is not one statement. It is an observation — requests are taking longer than they did — and a diagnosis attached to it, and the attachment happened so quickly that it does not feel like an inference. Separating them is mechanical: write what was measured, then write what you concluded, on different lines. The gap between the two lines is where the argument actually is, and it is usually much wider than it felt.\n\nThis is also the fastest way to make someone else's assertion useful. Asking what did you see, rather than disputing the conclusion, converts an unfalsifiable claim into evidence you can both work from. The person who says the cache is broken has usually seen something specific and real, and the specific real thing is frequently compatible with an entirely different explanation.",
     "beats": {
       "broke": "A claim and the evidence behind it arrive fused in one sentence, so the inference is never examined. Two people then argue about conclusions while the observations underneath them go unstated, and neither can tell whether they actually disagree.",
       "fix": "Split them explicitly. State what was observed and separately what was concluded from it. The gap between the two is the inference, and once it is visible it can be examined, tested, or found to be several inferences stacked.",
@@ -6630,7 +6630,7 @@
     "trackId": "G",
     "trackName": "Critical thinking",
     "title": "Evaluate a vendor pitch: what is the lock in, what is the exit cost",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "A pitch is optimised for the decision to adopt and says nothing about the decision to leave, because leaving is not the outcome being sold. So the questions that matter most are the ones the material is not organised to answer.\n\nLock-in is rarely contractual and is mostly structural. Your data ends up in a proprietary format, or reachable only through their API. Their concepts spread into your code until your domain model is shaped around their abstractions. Operational knowledge accumulates in their tooling. None of these appear as a line item and together they make leaving progressively more expensive, which is the actual product strategy rather than a side effect.\n\nSo the question to ask early, while you still have leverage, is what leaving looks like concretely. Can I export everything, in a format something else can read, without their cooperation. How long would a migration take and who would do it. What happens to my data if they are acquired, change their pricing, or shut the product down. A vendor who answers those clearly is worth more than one who is merely cheaper, and the answers are much harder to obtain after you have signed.",
     "beats": {
       "broke": "Evaluation focuses on capability and price, both of which are easy to compare, while the cost of reversing the decision is never assessed. That cost is discovered years later, when the price rises or the product is discontinued and there is no alternative available.",
@@ -6650,7 +6650,7 @@
     "trackId": "G",
     "trackName": "Critical thinking",
     "title": "Notice when you want something to be true",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "The most reliable distortion in technical judgment is not a shortage of information. It is a preference for one answer, held before the evidence is examined, quietly setting the standard of proof. Evidence for the preferred conclusion gets waved through; evidence against it gets scrutinised until a flaw is located, and there is always a flaw.\n\nWhat makes this hard is that it does not feel like bias from inside. It feels like being appropriately rigorous, and the asymmetry — rigour applied to one side only — is invisible because you never notice the scrutiny you did not apply. The only reliable signal is the wanting itself, and that is available if you look for it: the relief when a result supports you, the irritation when someone raises an objection, the speed with which a counter-argument gets dismissed.\n\nYou cannot eliminate it, so the practical move is to declare it. Saying aloud that you want this to work, before presenting the evidence, does two things. It warns others to weight your argument accordingly, and it makes the asymmetry visible to you, which is the only way it becomes correctable. The habit that follows is simple: when you notice the wanting, that is precisely when to apply the same scrutiny to your own side that you have been applying to the other.",
     "beats": {
       "broke": "A preference formed before the evidence quietly sets different standards of proof for different conclusions. From inside it feels like ordinary rigour, because the scrutiny you never applied to your own side leaves no trace.",
@@ -6670,7 +6670,7 @@
     "trackId": "G",
     "trackName": "Critical thinking",
     "title": "Ask what would have to be true for this to be false",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "Left alone, the mind gathers support. Given a belief, it retrieves confirming instances effortlessly and disconfirming ones only with deliberate effort, and the effortlessness is itself mistaken for evidence — a theory that feels obviously right often feels that way because searching for objections was never attempted.\n\nThe question inverts the search. Rather than asking what supports this, ask what the world would have to look like for it to be wrong, and then go and check whether the world looks like that. It is a different cognitive operation, not a more sceptical version of the same one, and it retrieves entirely different information.\n\nIt also does something useful for a belief that survives: it tells you what your belief is actually resting on. A theory whose falsifying condition you can state is a theory you can test, and one whose falsifying condition you cannot state is not a theory but a preference. The most valuable outcome of the question is occasionally discovering that no observation would change your mind, which is worth knowing before you spend a week.",
     "beats": {
       "broke": "Searching for supporting evidence is the default and it always succeeds, because for almost any plausible claim some supporting instance can be found. Confidence therefore grows with time spent thinking, regardless of whether the claim is true.",
@@ -6690,8 +6690,8 @@
     "trackId": "G",
     "trackName": "Critical thinking",
     "title": "Base rates: how often does this actually happen",
-    "status": "unsourced",
-    "story": "A vivid story crowds out a frequency. Somebody describes an outage caused by a subtle bug in a networking library, it is memorable and technically interesting, and for a while afterwards networking libraries feel like a likely cause of things. What is missing from that feeling is the denominator: out of all the outages, how many were that, and how many were a bad config, an expired certificate, a full disk, or a deploy.\n\nIn debugging this shows up as time spent on exotic hypotheses before ordinary ones have been eliminated. Exotic explanations are more interesting to think about and easier to remember, which is exactly the bias, and the cost is measured in hours spent inspecting the clever theory while the credential that expired on Sunday sits unexamined.\n\nThe correction is available and cheap. Before investigating, ask what usually causes this class of symptom, and check those in order of how often they occur rather than how interesting they are. Your own incident history is the best source, which is a strong practical argument for writing postmortems: they are the only base rate specific to your system.",
+    "status": "claimless",
+    "story": "A vivid story crowds out a frequency. Somebody describes an outage caused by a subtle bug in a networking library, it is memorable and technically interesting, and for a while afterwards networking libraries feel like a likely cause of things. What is missing from that feeling is the denominator: out of all the outages, how many were that, and how many were a bad config, an expired certificate, a full disk, or a deploy.\n\nIn debugging this shows up as time spent on exotic hypotheses before ordinary ones have been eliminated. Exotic explanations are more interesting to think about and easier to remember, which is exactly the bias, and the cost is measured in hours spent inspecting the clever theory while the credential that expired over the weekend sits unexamined.\n\nThe correction is available and cheap. Before investigating, ask what usually causes this class of symptom, and check those in order of how often they occur rather than how interesting they are. Your own incident history is the best source, which is a strong practical argument for writing postmortems: they are the only base rate specific to your system.",
     "beats": {
       "broke": "Judgment of likelihood is driven by how easily an example comes to mind, and memorability tracks how unusual and interesting something was rather than how often it happens. Rare, vivid causes are therefore systematically over-weighted.",
       "fix": "Ask for the frequency before acting on the impression. What usually causes this symptom, in this system, according to the record. Investigate in order of base rate rather than in order of interest.",
@@ -6710,14 +6710,14 @@
     "trackId": "G",
     "trackName": "Critical thinking",
     "title": "Correlation and causation, in performance work specifically",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "The general warning is familiar enough to be background noise. In performance work it has a specific and repeated shape worth naming, because the trap is not subtle reasoning about statistics — it is that deploys bundle changes and traffic varies on its own.\n\nA release goes out containing six changes. Latency improves. One of those changes was the one you argued for, and it is now credited, and the credit is permanent because nobody re-measures. Meanwhile traffic happened to drop that afternoon, which on its own would have produced the same graph. Both stories fit the evidence exactly, and the evidence cannot distinguish them because the experiment had six variables and no control.\n\nWhat separates them is deliberately arranged: ship one change alone, or put it behind a flag and compare populations at the same moment under the same traffic, or turn it off again and see whether the improvement leaves. Reverting is the underrated one. If the gain persists after the change is removed, the change was not the cause, and that test takes minutes and settles the question permanently.",
     "beats": {
       "broke": "Deploys carry many changes at once and the environment moves on its own, so a metric improving after a release is consistent with every change in it, with none of them, and with a shift in traffic. The evidence cannot distinguish the explanations.",
       "fix": "Arrange the comparison deliberately. Ship the change alone, or gate it so two populations run simultaneously under identical conditions, or remove it and check whether the effect goes with it. Same-moment comparison removes the environment as a variable.",
       "cost": "Shipping one change at a time slows delivery, and flags add branching that has to be cleaned up later or becomes permanent complexity. Reverting to test costs a deploy cycle and is unappealing when the metric currently looks good, which is exactly when nobody wants to touch it.",
       "interview": {
-        "q": "p99 latency dropped 30% after a release containing six changes. How do you establish which one was responsible?",
+        "q": "p99 latency dropped by thirty percent after a release containing six changes. How do you establish which one was responsible?",
         "trap": "Reasoning from the code about which change ought to have helped. That produces a plausible story, and a plausible story is what you already have.",
         "answer": "By making a comparison that the environment cannot explain. The strongest cheap test is to revert the suspected change alone and see whether the improvement leaves with it. Better still is to have gated it, so both variants ran at the same time under the same traffic and the comparison never involved a before and after at all. Without one of those, the honest answer is that the evidence does not identify a cause: a traffic drop that afternoon produces exactly the same graph, and so does any of the other five changes."
       }
@@ -6730,7 +6730,7 @@
     "trackId": "G",
     "trackName": "Critical thinking",
     "title": "Survivorship bias",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "The literature on technology decisions is written almost entirely by survivors. A team rewrites a service in a new language, it goes well, they write it up, it circulates. The team whose rewrite consumed a year and was quietly abandoned writes nothing, because there is no satisfying conclusion and describing it publicly is professionally unpleasant. The record you can read is therefore not a sample of what happens. It is a sample of what happens when it works.\n\nThis bends judgment in a consistent direction. Migrations look more successful than they are, rewrites look more tractable, ambitious architectural moves look like the sort of thing that generally pays off. Every individual account may be entirely honest and the aggregate still misleads, because the failures are not lying — they are absent.\n\nThe correction is to ask where the missing accounts are before updating on the ones you have. Who tried this and did not write about it, and how would I find out. A sentence in a postmortem, an abandoned branch, someone's offhand remark about the year they do not talk about. That evidence is much harder to gather, which is precisely why the bias is so durable.",
     "beats": {
       "broke": "Accounts of outcomes are produced voluntarily, and success is far more likely to be written up than failure. The visible record is a filtered sample, so reasoning from it estimates the success rate of a population that excludes everyone who failed.",
@@ -6750,7 +6750,7 @@
     "trackId": "G",
     "trackName": "Critical thinking",
     "title": "Steelman the option you rejected, out loud, before rejecting it",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "A decision defended only against a weak version of its alternative has not been tested. The usual pattern is unconscious: the option you prefer gets described at its best, the option you do not gets described at its worst, and the comparison that follows is real reasoning applied to an unfair setup.\n\nSteelmanning is stating the rejected option in the strongest form its actual advocates would recognise, out loud, before saying no to it. Out loud matters, because a steelman constructed silently tends to remain conveniently weak. Said to another person it has to survive their reaction, and someone who genuinely prefers that option will correct you immediately if you have softened it.\n\nTwo things come out of this, and the second is the more useful. Sometimes the rejected option turns out to be better and the decision changes, which is the obvious payoff and the rarer one. More often the decision stands but you now know precisely what it costs, which means you know what to watch for, and when the cost arrives six months later nobody is surprised and nobody relitigates.",
     "beats": {
       "broke": "Comparison is done against the weakest form of the alternative, because the weak form is what comes to mind when you already prefer something else. The reasoning may be sound and the inputs are unfair, so the conclusion is unreliable in a way that is invisible from inside it.",
@@ -6770,7 +6770,7 @@
     "trackId": "G",
     "trackName": "Critical thinking",
     "title": "Reversible versus irreversible decisions",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "Treating every decision with the same weight is a way of spending the same deliberation on things that differ by orders of magnitude in consequence. The distinction that matters is not how important a choice feels but how expensive it is to undo.\n\nMost technology choices are cheaper to reverse than the discussion around them implies. Frameworks get replaced, libraries get swapped, a service gets rewritten in a different language over a quarter. Expensive and possible. What is genuinely hard to undo is anything that has spread: a data model that every consumer now depends on, an identifier exposed in URLs and stored in other people's systems, an authorisation boundary that a hundred call sites assume, an API contract that customers have integrated against. Those are hard to reverse not because of the code but because the code is not the only thing holding them.\n\nSo the practical rule is to spend deliberation in proportion to the cost of being wrong. Decide reversible things quickly and change them when evidence arrives, because the cost of deciding slowly exceeds the cost of deciding wrongly. Slow down hard on the ones that will be load-bearing for everything built afterwards, and ask specifically what it would take to undo this in a year.",
     "beats": {
       "broke": "Every decision gets similar deliberation, so trivially reversible choices consume weeks of debate while a schema or an authorisation boundary is settled in an afternoon and becomes permanent. Effort is allocated by how contentious something feels rather than by consequence.",
@@ -6790,7 +6790,7 @@
     "trackId": "G",
     "trackName": "Critical thinking",
     "title": "Read a benchmark critically: what was measured, on what hardware, by whom",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "A benchmark is a measurement of one specific thing, on one specific machine, under one specific workload, by someone with a specific interest in the result. Reported as a single number it loses all four qualifications, and the number then travels much further than the conditions it was true under.\n\nFour questions recover most of what was lost. What exactly was measured — throughput and latency answer different questions, and an average hides the tail where users actually live. On what hardware, with what data volume, and was anything warmed up first. What was it compared against, and was the comparison configured by someone who knew how to configure it, because a default configuration against a tuned one is not a comparison. And who ran it, since a benchmark published by a vendor is not fraudulent but has been through a selection process where unflattering configurations were quietly not published.\n\nThe most common distortion is not dishonesty but workload mismatch. A system measured on a benchmark that resembles nothing you do can be entirely accurate and completely irrelevant, and the only defence is to measure on your own workload before believing anything about your own situation.",
     "beats": {
       "broke": "Results get compressed into a single comparative number, and the conditions that made it true — hardware, workload, data volume, configuration, who ran it — do not travel with it. The number then gets applied to situations resembling none of that.",
@@ -6810,7 +6810,7 @@
     "trackId": "G",
     "trackName": "Critical thinking",
     "title": "Read a research paper critically: claim, method, baseline, limitation",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "A paper is an argument, not a report of a fact, and it is written to persuade reviewers that a contribution is real. Reading it as an announcement of truth skips the part where you evaluate the argument.\n\nFour things carry most of the weight. The claim, stated precisely and narrowly — papers usually claim something much more specific than the headline suggests, and the gap between the two is where most misreading happens. The method, particularly whether the evaluation could have distinguished the claim from the alternatives. The baseline, which is where results are most often manufactured: a genuine improvement over a weak or undertuned comparison is not a genuine improvement, and choosing a baseline is a choice the authors made. And the limitations, which in a good paper are stated by the authors themselves and are frequently the most informative paragraph in it.\n\nIn machine learning specifically there is a recurring one worth knowing: an evaluation set that overlaps the training data produces excellent numbers and tells you nothing, and the overlap is often indirect enough that nobody involved was being careless. Before believing a result, it is worth asking exactly what the model was measured on and how confident anyone is that it had not seen it.",
     "beats": {
       "broke": "Results are read as settled facts rather than as arguments, so a claim is adopted without examining whether the evaluation could have distinguished it from the alternatives, or what it was compared against.",
@@ -6830,7 +6830,7 @@
     "trackId": "H",
     "trackName": "Observation",
     "title": "Read the whole error message, out loud if necessary",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "The instruction sounds insulting until you watch how people actually behave in front of a failure. The message appears, the eye goes to the last line, and a fix is attempted within seconds. The middle of the message, which frequently contains the answer, is never read.\n\nReading aloud works because it defeats the specific failure mode at play. Skimming is pattern matching: you recognise the shape of an error you have seen before and act on the recognition rather than the text. Saying the words forces serial processing, so a path you assumed said one thing turns out to say another, and a number you assumed was a count turns out to be a byte offset. The trick is not about diligence. It is about disabling a shortcut that is usually helpful and is wrong here.\n\nThe habit compounds because error messages are the highest quality evidence you will ever get. They are produced by the program at the moment it stopped, describing its own state, with no reconstruction involved. Every other debugging technique is an attempt to recover information that the error message may already be handing you.",
     "problem": {
       "name": "Evidence-first diagnosis",
@@ -6853,7 +6853,7 @@
       },
       "worked": {
         "problem": "ConnectionError appears during a deploy. What do you do first?",
-        "reasoning": "Read the whole thing. 'Connection refused to 127.0.0.1 port 5432 after 0.003 seconds' is a completely different problem from a timeout: three milliseconds to a loopback address means nothing is listening on that port. Not the network, not DNS, not a slow database. The three words in the middle eliminated four hypotheses before any were formed."
+        "reasoning": "Read the whole thing. a refusal to a loopback address after three milliseconds is a completely different problem from a timeout: three milliseconds to a loopback address means nothing is listening on that port. Not the network, not name resolution, not a slow database. The three words in the middle eliminated four hypotheses before any were formed."
       },
       "practice": "Next failure you hit, read it aloud before doing anything, and write down what you learn that you would have skipped."
     },
@@ -6875,7 +6875,7 @@
     "trackId": "H",
     "trackName": "Observation",
     "title": "Read a stack trace: where it started, where it surfaced",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "A stack trace is a record of unfinished business. Each frame is a function that called another and is still waiting for it to return, so the trace is a chain of who asked whom, captured at the instant the chain broke.\n\nTwo positions in it matter and they are rarely the same. The place it surfaced is the innermost frame, where the program finally could not continue. The place it started is the outermost, where execution entered. The cause usually sits at neither end but at the boundary: the last frame belonging to code you control, just before it hands a value to code you do not. Library functions mostly fail because they were given something wrong, so the frames inside the library describe the symptom in detail and say nothing about the cause.\n\nDifferent runtimes print the two ends in different orders, and getting that backwards wastes a great deal of time. Some print the innermost first, some last. Before relying on position, check which convention you are looking at, because a trace read upside down leads you to investigate the entry point of your program as though it were the fault.",
     "problem": {
       "name": "Fault localisation from a call chain",
@@ -6897,8 +6897,8 @@
         "beats": "reading the whole codebase looking for something that looks wrong"
       },
       "worked": {
-        "problem": "The trace ends at IntegrityError inside an ORM's insert path. Where do you look?",
-        "reasoning": "Not in the ORM. Walk up to the last frame you wrote — save_user — and look at what it handed over. The ORM is accurately reporting that the database rejected a row; the decision that produced that row was made one frame up. Check the value at the handover before suspecting the library."
+        "problem": "The trace ends at IntegrityError inside an object-relational mapper's insert path. Where do you look?",
+        "reasoning": "Not in the mapper. Walk up to the last frame you wrote — save_user — and look at what it handed over. The mapper is accurately reporting that the database rejected a row; the decision that produced that row was made one frame up. Check the value at the handover before suspecting the library."
       },
       "practice": "Take a recent trace and mark the boundary frame. Check whether the fix turned out to be above or below it."
     },
@@ -6920,7 +6920,7 @@
     "trackId": "H",
     "trackName": "Observation",
     "title": "Read logs at volume without drowning",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "A system under real load produces more log lines per minute than anyone can read in a day. Reading them in sequence does not scale and never will, so the skill is not reading faster. It is narrowing before reading.\n\nNarrowing has a natural order. Time first: establish when the problem occurred and discard everything outside a window around it. Identity second: find the one request, user or job that failed, and follow only that. Severity last, and with suspicion, because the line that explains the failure is frequently at info level while the errors are all downstream consequences shouting about a thing that already went wrong.\n\nThis is why structured logging matters more than it appears to. A log line that is a sentence can only be searched as text. A log line that is a record with fields can be filtered by any of them, so the narrowing is a query rather than a guess at a substring. The most useful field is the one that ties every line produced by a single request together, because that is what turns a flat stream of everything into the story of one thing.",
     "problem": {
       "name": "Needle-in-haystack retrieval under volume",
@@ -6965,7 +6965,7 @@
     "trackId": "H",
     "trackName": "Observation",
     "title": "Measure before you optimise, always",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "Intuition about performance is unreliable in a specific and consistent way: it tracks what the code looks like rather than what the machine does. A nested loop looks expensive and may take microseconds. A single innocuous line may open a connection, wait on a disk, or serialise an object graph, and take a hundred times longer than everything around it combined.\n\nSo the rule is not a suggestion about rigour. It is a response to the fact that the guess is usually wrong, and acting on a wrong guess costs twice: the work spent optimising something that did not matter, and the complexity permanently added to code that was previously simple and fast enough. Optimised code is harder to read, harder to change and more likely to be subtly incorrect, and that price is paid whether or not the optimisation helped.\n\nMeasuring also establishes something optimisation cannot proceed without: a number from before. Without it there is no way to tell whether a change helped, and no way to notice when a later change quietly gives the improvement back.",
     "problem": {
       "name": "Optimisation target selection",
@@ -6989,7 +6989,7 @@
       },
       "worked": {
         "problem": "A nested loop looks expensive and a single line calls an external service. Which do you optimise?",
-        "reasoning": "Neither, until measured — but the prior strongly favours the single line. The nested loop is compute and may cost microseconds; the innocuous line may wait on a network round trip. Intuition tracks how intricate code looks, and cost tracks what the machine actually does, which is why the guess is usually wrong. Also: something that is 5% of runtime cannot win you more than 5%, no matter how clever the fix."
+        "reasoning": "Neither, until measured — but the prior strongly favours the single line. The nested loop is compute and may cost microseconds; the innocuous line may wait on a network round trip. Intuition tracks how intricate code looks, and cost tracks what the machine actually does, which is why the guess is usually wrong. Also: something that is a twentieth of runtime cannot win you more than a twentieth, no matter how clever the fix."
       },
       "practice": "Take something you believe is the bottleneck in your own code. Measure it before reading further, and record whether you were right."
     },
@@ -7011,7 +7011,7 @@
     "trackId": "H",
     "trackName": "Observation",
     "title": "Profile a real program",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "A profiler answers a question a benchmark cannot: not how fast is this function, but where did the time actually go. The answer is regularly somewhere nobody would have proposed, which is the entire reason the tool exists.\n\nThere are two families and the difference matters. A sampling profiler interrupts the program many times a second and records what it was doing, producing a statistical picture with very little overhead. An instrumenting profiler records every call, which is exact and slows the program enough to change its behaviour, sometimes enough to move the bottleneck. Sampling is the right default for anything resembling a real workload.\n\nReading the output has one trap worth naming. Time spent inside a function alone is not the same as time spent inside it and everything it called. A function that appears to consume most of the runtime may be doing nothing but waiting for something further down. Sorting by the first number finds the work; sorting by the second finds the responsible path. Both are needed, and confusing them sends you to optimise a function whose body is three lines long.",
     "problem": {
       "name": "Runtime attribution",
@@ -7034,8 +7034,8 @@
         "beats": "hand-placed timers, which only measure your existing hypothesis"
       },
       "worked": {
-        "problem": "json.loads shows 94% self time. What do you change?",
-        "reasoning": "Probably not json.loads — it is already fast and hard to beat. Walk up the call tree: process_all has 97% total and 0.3% self, meaning it causes nearly all the work while doing almost none. The question worth asking is why it invokes the parser forty thousand times. The win is usually in the caller's behaviour, not in the leaf."
+        "problem": "json.loads shows ninety-four percent self time. What do you change?",
+        "reasoning": "Probably not json.loads — it is already fast and hard to beat. Walk up the call tree: process_all has ninety-seven percent total and three tenths of a percent self, meaning it causes nearly all the work while doing almost none. The question worth asking is why it invokes the parser forty thousand times. The win is usually in the caller's behaviour, not in the leaf."
       },
       "practice": "Profile something you wrote. Before looking, write down where you think the time goes, then compare."
     },
@@ -7049,7 +7049,7 @@
         "answer": "Self time is time spent executing that function's own instructions. Total time includes everything it called. Sorting by total time surfaces entry points that are responsible for a lot of work without doing any of it, so optimising them is meaningless. Sorting by self time finds where the work happens but hides the caller that invoked it a thousand times unnecessarily. The usual approach is to find the expensive self time, then walk back up to see who is causing it to be called that often."
       }
     },
-    "blueprint": "          total   self   function\n          98.2%   0.1%   main()           <- responsible, does nothing\n          97.9%   0.3%   process_all()\n          96.4%   2.1%   process_one()\n          94.0%  94.0%   json.loads()     <- the work is HERE\n\nOptimising main() is meaningless.\nOptimising json.loads() is hard.\nAsking why process_all() calls it 40,000 times is the win.\n\nCPU profile shows compute. It does not show waiting.\nA program 90% blocked on the network looks idle and is slow.",
+    "blueprint": "          total   self   function\n          98.2%   0.1%   main()           <- responsible, does nothing\n          97.9%   three tenths of a percent   process_all()\n          96.4%   2.1%   process_one()\n          94.0%  94.0%   json.loads()     <- the work is HERE\n\nOptimising main() is meaningless.\nOptimising json.loads() is hard.\nAsking why process_all() calls it 40,000 times is the win.\n\nCPU profile shows compute. It does not show waiting.\nA program 90% blocked on the network looks idle and is slow.",
     "takeaway": "Self time finds the work, total time finds who caused it, and a CPU profile is blind to waiting — which is where most web service latency lives."
   },
   "H.6": {
@@ -7057,7 +7057,7 @@
     "trackId": "H",
     "trackName": "Observation",
     "title": "Watch a real person use something you built, in silence",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "You cannot un-know your own interface. Every label is obvious because you chose the word, every next step is discoverable because you built the path. The only way to see the thing as it is, rather than as you intended it, is to watch somebody meet it for the first time.\n\nSilence is the method, not the manners. The moment you explain, you have repaired the interface with your voice, and what you learn is that the design plus a person explaining it works. Nobody ships with you attached. The hesitation before a click, the scroll back up to re-read a label, the wrong menu opened first — those are the data, and they only survive if you say nothing. Watching someone struggle without helping is genuinely uncomfortable, which is why so few people manage it.\n\nIt also takes very few people. The same confusions recur almost immediately across users, because they come from the design rather than from the individual. A handful of sessions surfaces most of what a hundred would, which means the excuse that proper testing is too expensive does not hold at the scale most work happens.",
     "problem": {
       "name": "Usability observation",
@@ -7103,7 +7103,7 @@
     "trackId": "H",
     "trackName": "Observation",
     "title": "Notice what is absent: the missing log line, the request that never arrived",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "Most monitoring is built to notice things happening. Errors raise alarms, latency crosses thresholds, exceptions get counted. Almost none of it notices things not happening, and a significant class of failure produces no event at all.\n\nA job that should run hourly and stops produces nothing. A queue consumer that dies leaves a queue that grows, and growth is only visible if somebody is watching the depth rather than the errors. A request that never arrives generates no log, no error and no metric, because the code that would have produced them never ran. These failures are quiet by construction, and they are frequently found by a customer rather than by a system, days later.\n\nDetecting absence requires inverting the question. Instead of alerting when something bad occurs, assert that something expected occurred and alert when it did not. A heartbeat is the simplest form: the job reports that it ran, and the alarm fires when the report fails to arrive. The habit generalises beyond monitoring — in debugging, asking which log line should be here and is not will often locate a fault faster than reading the lines that are.",
     "problem": {
       "name": "Detecting absence",
@@ -7149,7 +7149,7 @@
     "trackId": "H",
     "trackName": "Observation",
     "title": "Keep an engineering notebook: symptom, hypothesis, test, result",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "Debugging held entirely in your head degrades in a predictable way. After an hour you cannot recall whether a particular theory was tested or merely considered, which configurations have already been tried, or what the behaviour was before the last four changes. So theories get retested, changes accumulate unrecorded, and the original symptom becomes unreachable.\n\nFour fields fix most of it. The symptom, stated precisely enough to recognise if it returns. The hypothesis, one at a time, written before the test rather than after. The test that would distinguish it from the alternatives. The result, including the ones that ruled nothing out. Writing the hypothesis first is the part that does the work, because a theory written down can be wrong in a way a theory in your head cannot: it stops quietly reshaping itself to fit whatever you just observed.\n\nThe record keeps paying after the bug is closed. It is the raw material for the postmortem, it is the evidence when someone asks why the fix is what it is, and it is what you consult in eight months when the same symptom reappears and you have entirely forgotten that you have met it before.",
     "problem": {
       "name": "State externalisation during search",
@@ -7195,8 +7195,8 @@
     "trackId": "H",
     "trackName": "Observation",
     "title": "Learn your system's normal before you need to recognise abnormal",
-    "status": "unsourced",
-    "story": "Abnormal is not a property of a measurement. Four hundred milliseconds is fine for one endpoint and a crisis for another; eighty percent memory is steady state for a service that caches and a warning for one that does not. Without knowing what a system does when nothing is wrong, every number is uninterpretable, and the interpretation gets invented under pressure.\n\nThis is why the worst moment to first look at a dashboard is during an incident. Everything on it looks alarming, because you have no basis for comparison and adrenaline supplies one. Teams routinely spend the first half of an outage investigating a metric that has looked exactly like that every day for a year.\n\nNormal also has shape rather than a single value. Traffic has a daily rhythm and a weekly one; batch jobs make memory sawtooth; deploys leave a signature. Knowing the shape means an anomaly can be recognised as a break in a pattern rather than a threshold crossing, which catches things no fixed limit would — a Tuesday that looks like a Sunday is a problem even though every individual number is within range.",
+    "status": "claimless",
+    "story": "Abnormal is not a property of a measurement. Four hundred milliseconds is fine for one endpoint and a crisis for another; eighty percent memory is steady state for a service that caches and a warning for one that does not. Without knowing what a system does when nothing is wrong, every number is uninterpretable, and the interpretation gets invented under pressure.\n\nThis is why the worst moment to first look at a dashboard is during an incident. Everything on it looks alarming, because you have no basis for comparison and adrenaline supplies one. Teams routinely spend the first half of an outage investigating a metric that has looked exactly like that every day for a year.\n\nNormal also has shape rather than a single value. Traffic has a daily rhythm and a weekly one; batch jobs make memory sawtooth; deploys leave a signature. Knowing the shape means an anomaly can be recognised as a break in a pattern rather than a threshold crossing, which catches things no fixed limit would — a a weekday that looks like a a weekend day is a problem even though every individual number is within range.",
     "problem": {
       "name": "Anomaly detection against a baseline",
       "aka": [
@@ -7218,8 +7218,8 @@
         "beats": "a fixed threshold, which is wrong at some hour of some day"
       },
       "worked": {
-        "problem": "CPU is at 70% during an incident. Is that the problem?",
-        "reasoning": "Unanswerable without a baseline, and during an incident adrenaline will supply one. If CPU is 70% every weekday at 09:00, it is not the incident and looking at it costs you the first half of the outage. Normal also has shape rather than a value: a memory graph that sawtooths is a healthy collector, and a suddenly flat line there is the anomaly even though every number is lower."
+        "problem": "CPU is at seventy percent during an incident. Is that the problem?",
+        "reasoning": "Unanswerable without a baseline, and during an incident adrenaline will supply one. If CPU is at seventy percent every weekday morning, it is not the incident and looking at it costs you the first half of the outage. Normal also has shape rather than a value: a memory graph that sawtooths is a healthy collector, and a suddenly flat line there is the anomaly even though every number is lower."
       },
       "practice": "On a quiet day, screenshot your main dashboard and annotate what normal looks like, including the weekly shape."
     },
@@ -7233,7 +7233,7 @@
         "answer": "Because the same value means different things at different times. A request rate that is healthy at midday indicates an outage at midday and is normal at three in the morning, so a single threshold either pages falsely overnight or misses a daytime failure. A baseline captures the expected shape, letting you alert on deviation from the pattern instead. That catches failures where every individual number stays inside its limits but the relationship between them is wrong, which fixed thresholds cannot see."
       }
     },
-    "blueprint": "Without a baseline            With one\n  \"CPU is at 70%!\"              \"CPU is at 70%, and it is 70%\n  -> is that bad?                every weekday at 09:00\"\n  -> nobody knows                -> not the incident. move on.\n\nNormal has shape, not a value:\n\n  req/s   .--.      .--.      .--.        <- daily rhythm\n        _/    \\____/    \\____/    \\___\n          Mon       Tue       Wed\n\n  memory  /|  /|  /|  /|                  <- sawtooth = GC\n         / | / | / | / |                     a FLAT line here\n        /  |/  |/  |/  |                     is the anomaly\n\nLearn it on a quiet Tuesday, not at 03:00 during an outage.",
+    "blueprint": "Without a baseline            With one\n  \"CPU is at 70%!\"              \"CPU is at 70%, and it is 70%\n  -> is that bad?                every weekday at 09:00\"\n  -> nobody knows                -> not the incident. move on.\n\nNormal has shape, not a value:\n\n  req/s   .--.      .--.      .--.        <- daily rhythm\n        _/    \\____/    \\____/    \\___\n          Mon       Tue       Wed\n\n  memory  /|  /|  /|  /|                  <- sawtooth = GC\n         / | / | / | / |                     a FLAT line here\n        /  |/  |/  |/  |                     is the anomaly\n\nLearn it on a quiet a weekday, not at 03:00 during an outage.",
     "takeaway": "No measurement is abnormal on its own. Learn the shape of normal while nothing is wrong, because during an incident you will invent one."
   },
   "I.1": {
@@ -7241,7 +7241,7 @@
     "trackId": "I",
     "trackName": "Planning",
     "title": "Write down what this is not, before what it is",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "A description of what something is has no edges. Every reader supplies their own boundary and each one differs, so a group can agree enthusiastically on a paragraph while holding four incompatible pictures of the work. Nothing surfaces the mismatch until the build is underway and someone asks where the part they assumed was included has gone.\n\nNon-goals put the edges in. They are cheap to write and they carry more information per line than the goals do, because a goal like 'a fast search' is agreed by everyone and constrains nothing, while 'this will not handle typos, and will not search inside attachments' is immediately checkable and immediately contentious if someone disagrees. The argument you want is the one that happens at the moment the non-goal is written, not the one that happens in week six.\n\nThey also protect the work afterwards. Scope arrives one reasonable request at a time, each individually small, and without a written boundary there is no principled place to decline. A non-goal converts that refusal from a judgement about someone's request into a reference to a decision already made and agreed.",
     "beats": {
       "broke": "A statement of what something is leaves its boundary to the reader, so several people read the same description and picture different scopes. The disagreement stays invisible until the work is far enough along for it to be expensive.",
@@ -7250,7 +7250,7 @@
       "interview": {
         "q": "Why are non-goals more useful than goals in a design document?",
         "trap": "Answering that they manage expectations. That is a consequence; the mechanism is about which statements can actually be disagreed with.",
-        "answer": "Because goals are usually agreed by everyone and constrain nothing. 'Reliable', 'fast', 'easy to use' — nobody objects, and they rule out no design. A non-goal is specific enough that someone can read it and realise it excludes something they were counting on, so it surfaces the disagreement at the moment it costs nothing to resolve. It also gives you a principled basis for declining scope later, since the refusal refers to a decision already agreed rather than to your judgement of their request."
+        "answer": "Because goals are usually agreed by everyone and constrain nothing. 'reliable', 'fast', 'easy to use' — nobody objects, and they rule out no design. A non-goal is specific enough that someone can read it and realise it excludes something they were counting on, so it surfaces the disagreement at the moment it costs nothing to resolve. It also gives you a principled basis for declining scope later, since the refusal refers to a decision already agreed rather than to your judgement of their request."
       }
     },
     "blueprint": "Goals (everyone agrees, nothing is decided):\n  - fast\n  - reliable\n  - easy to use\n\nNon-goals (someone will object, and that is the value):\n  - will NOT handle typos or fuzzy matching\n  - will NOT search inside PDF attachments\n  - will NOT work offline\n  - will NOT support more than one organisation per account\n\nIf nobody objects to your non-goals, they are too safe.\nThe objection in week 1 is the one you wanted.",
@@ -7261,7 +7261,7 @@
     "trackId": "I",
     "trackName": "Planning",
     "title": "Plan for the version where you have half the time you expected",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "Time disappears in ways that are individually unpredictable and collectively certain. An incident, an illness, a reorganisation, a dependency that arrives late, a thing that turns out to be harder than it looked. Any particular disruption is a surprise; some disruption is not. A plan that only works at full attention is a plan that assumes the exception.\n\nThe exercise is specific rather than general pessimism: take the plan and ask what you would deliver with half the time. The answer forces a ranking that the full plan never demanded, because when everything fits nothing has to be compared. That ranking is the useful artefact, and it is much better made now, calmly, than in week five under pressure.\n\nIt usually reveals two things. Some items are load-bearing and everything depends on them, which means they should be early rather than wherever they landed. Others are genuinely optional and were only in the plan because there appeared to be room, which means they can be dropped without ceremony when the time comes. Having decided that in advance means the eventual cut is a reference to a decision already made rather than an argument held at the worst possible moment.",
     "beats": {
       "broke": "Plans assume uninterrupted availability, which never happens. Any individual disruption is unforeseeable and the existence of some disruption is certain, so planning at full capacity means planning for the rare case.",
@@ -7281,7 +7281,7 @@
     "trackId": "I",
     "trackName": "Planning",
     "title": "Break work into pieces you can finish in one sitting",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "A piece of work too large to finish in one sitting has to be carried between sittings, and what gets carried is not the code. It is the state in your head: what you were part way through, which of three approaches you had settled on, what the half-finished thing was supposed to become. That state evaporates overnight, and rebuilding it is a real cost paid at the start of every session.\n\nSizing to a sitting removes the carry. Each session begins with a decision already made and ends with something whole, which also means it ends somewhere you can stop safely. Work left mid-structure is fragile in a way that finished work is not: it cannot be reviewed, it cannot be tested, and if you are pulled away for a week it may be easier to discard than resume.\n\nThe sizing is also a design check. A task that cannot be reduced to something finishable usually has not been understood yet, and the difficulty in splitting it is information rather than an obstacle. Forcing the split tends to reveal that what looked like one task was three, one of which is the actual problem and the other two of which are straightforward.",
     "beats": {
       "broke": "Work larger than a session has to be resumed, and what must be resumed is the mental state — the approach chosen, the part half-built, the reason for it. That state decays overnight and rebuilding it is paid again every time.",
@@ -7301,7 +7301,7 @@
     "trackId": "I",
     "trackName": "Planning",
     "title": "Estimate, record the estimate, compare afterwards",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "Estimation is treated as a talent people either have or lack, which conveniently excuses never improving at it. It is a skill, and it improves the way skills do: by making predictions, recording them, and comparing them against what happened. Almost nobody does the recording, which is why almost nobody improves.\n\nWithout a record, memory does the comparison and memory is not neutral. Overruns are remembered as exceptional — an unusual dependency, an interruption, a thing nobody could have foreseen — so each one is filed as a special case and the general pattern never forms. Twenty recorded estimates make the pattern impossible to file away, and the useful discovery is usually not that you are wrong but that you are wrong by a consistent ratio, which is directly correctable.\n\nThe record also changes what estimating is for. An estimate with no history behind it is a guess presented as a number, and people plan around it as though it were information. An estimate backed by twenty comparisons can be stated with its own error bar, which is a far more useful thing to hand someone than false precision.",
     "beats": {
       "broke": "Estimates are made and never checked, so memory performs the comparison. Memory files every overrun as an exception caused by something unforeseeable, which prevents the general pattern from ever becoming visible.",
@@ -7321,7 +7321,7 @@
     "trackId": "I",
     "trackName": "Planning",
     "title": "Map dependencies, including ones that depend on other people replying",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "Dependency maps are usually drawn as though every dependency were technical. The ones that actually slip a schedule are the ones that require a human being to respond: access to be granted, a review to happen, a contract to be signed, a question to be answered by the one person who knows.\n\nThey behave differently from technical dependencies in a way that matters for planning. A technical dependency is worked on; a human dependency is waited on, and the waiting time has almost nothing to do with the size of the task. Someone can grant access in ninety seconds and take eleven days to do it, because their queue, their holiday and their priorities are not visible to you and not yours to manage.\n\nWhich gives one clear planning rule: identify every human dependency and start it before you need it. A request made on day one and answered on day twelve costs nothing if you did not need it until day fifteen. The same request made on day fourteen is the reason the work is late, and the work involved was identical.",
     "beats": {
       "broke": "Dependency planning covers the technical chain and omits the human one, so a plan that is sound on paper stalls on an access request, a review or an approval that nobody scheduled because it was not work.",
@@ -7341,7 +7341,7 @@
     "trackId": "I",
     "trackName": "Planning",
     "title": "Identify the riskiest assumption and test it first",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "Work is usually sequenced by what is comfortable or by what appears to come first structurally, which quietly defers the question the whole plan depends on. If the plan assumes an external system can deliver the data you need in the shape you need, that assumption is load-bearing: if it is false, everything built on it is wasted, and the amount wasted grows every week you postpone checking.\n\nSo the ordering rule is to find the assumption whose failure would invalidate the most work, and test it before building anything on top. The test does not have to be elegant. A throwaway script that pulls one record from that system and prints it settles in an hour a question that could otherwise consume a month, and the script being ugly is irrelevant because its output is an answer rather than an artefact.\n\nThis ordering feels wrong while doing it, and that is worth expecting. It front-loads the unpleasant and uncertain parts and defers the satisfying visible progress. The reward is asymmetric and arrives later: either you continue with the assumption confirmed, or you learn in week one what you would otherwise have learned in week six, with five weeks of work still unspent.",
     "beats": {
       "broke": "Work gets sequenced by structure or by comfort, so the assumption the whole plan rests on is tested last. Every week it goes untested increases the amount of work that a negative answer would invalidate.",
@@ -7361,7 +7361,7 @@
     "trackId": "I",
     "trackName": "Planning",
     "title": "Write a one page design doc before anything non trivial: problem, options, choice, why, failure modes",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "Writing exposes thinking that talking does not. A design held in conversation can stay comfortably vague, because each participant fills gaps with their own assumptions and nobody notices the gaps exist. Written down, the gaps become visible sentences that cannot be completed, and that discovery is most of the value — it usually happens to the author, alone, before anyone else reads it.\n\nOne page is the constraint that makes it work. It is short enough that it actually gets written and actually gets read, and short enough that it forces a decision rather than a survey. Five sections carry it: the problem, stated so someone outside the team understands why it matters; the options considered, including the one you rejected, stated fairly; the choice; why, in terms of the trade being accepted; and the failure modes, meaning how this goes wrong and what you would see.\n\nThe failure modes section is the one most often skipped and the one that pays the most later. It is the only part written while you still have a clear head about the design's weaknesses, and six months on, when something goes wrong, it is the document that says whether this was anticipated or genuinely new — which is exactly the question nobody can answer from memory.",
     "beats": {
       "broke": "Designs discussed only in conversation stay vague, because every listener silently fills the gaps with their own assumptions. Everyone leaves agreeing, holding different designs, and the divergence surfaces during implementation.",
@@ -7381,7 +7381,7 @@
     "trackId": "I",
     "trackName": "Planning",
     "title": "Define done, in writing, before starting",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "Without a written definition, done is decided at the end by whoever is most tired or most impatient, and it moves. It moves outward when someone notices the tests are thin, the documentation is missing or an edge case is unhandled. It moves inward when a deadline arrives. Both movements happen under pressure, and neither is a decision anyone would have made calmly.\n\nWriting it beforehand fixes the target while nobody has a stake in where it sits. It is also the only reliable defence against the ninety percent state, where the visible work is finished and the remaining tail — error handling, the empty state, a migration for existing data, telling someone it shipped — turns out to be a third of the effort. Those items are invisible when imagining the work and undeniable when listed.\n\nDone is also different for different work, and saying so is useful. A prototype whose purpose is to answer a question is done when the question is answered, and holding it to production standards is waste. Something going in front of customers is done when it handles the cases customers will actually produce. Deciding which kind of work this is, in writing, prevents the confusion where one person is polishing an experiment and another is shipping a prototype.",
     "beats": {
       "broke": "Completion is judged at the end, by whoever has the strongest opinion or the nearest deadline. The definition moves outward under scrutiny and inward under time pressure, and both moves are made in the worst conditions for judgement.",
@@ -7401,7 +7401,7 @@
     "trackId": "I",
     "trackName": "Planning",
     "title": "Cut scope deliberately rather than slipping deadlines accidentally",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "When work runs late there are only ever three levers: move the date, add people, or reduce what is delivered. Adding people to something already late usually slows it further, since the newcomers have to be taught by the people doing the work. So it comes down to the date or the scope, and the only real question is whether the choice is made or allowed to happen.\n\nAllowed to happen, it is made by omission. The last items in the plan are the ones that get dropped, and those are ordinarily the tests, the error handling and the documentation — not because anyone decided they mattered least, but because they were scheduled last. The team ships something that looks complete and is missing precisely the parts that make it survivable, and nobody chose that.\n\nCutting deliberately means naming what is being dropped, saying so out loud, and recording it. It is a worse conversation and a better outcome: everyone knows what they are getting, the dropped item can be scheduled rather than forgotten, and what remains is coherent. A deliberately reduced release is a smaller thing that works. An accidentally reduced one is the original thing with unpredictable holes in it.",
     "beats": {
       "broke": "Late work reduces itself by omission. Whatever was scheduled last is what gets dropped, which is typically tests, error handling and documentation, so the result is missing the parts that make it survivable and nobody consciously chose that.",
@@ -7421,7 +7421,7 @@
     "trackId": "I",
     "trackName": "Planning",
     "title": "Sequence for learning: do the thing that teaches you most, earliest",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "Plans are written with the knowledge available at the start, which is the least you will ever have. Every task completed changes what you know, so the order in which work is done determines how much of the plan gets made with good information and how much with the initial guess.\n\nThis argues for a different ordering than the usual one. Rather than doing the easiest or most structurally foundational work first, do the work that resolves the most uncertainty, because it improves every decision after it. Building a thin path through the entire system — ugly, incomplete, but touching every layer — teaches you more about where the difficulties are than building one layer properly, and it teaches you before the layer you built properly has to be rebuilt.\n\nIt is closely related to testing the riskiest assumption but not the same thing. Risk-first asks what would waste the most work if false. Learning-first asks what would change the most subsequent decisions if understood. They often point at the same task; when they do not, the distinction is between avoiding a catastrophe and improving a hundred small choices.",
     "beats": {
       "broke": "A plan is authored at the moment of least knowledge, and work sequenced by structure or ease leaves the informative parts until late. Most of the plan is therefore executed on the initial guess rather than on what has since been learned.",
@@ -7461,7 +7461,7 @@
     "trackId": "J",
     "trackName": "Debugging",
     "title": "Debugging across a network: tracing, correlation IDs, timeouts",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "A single-process failure leaves a stack trace covering the whole causal chain. Across services that chain is cut into pieces, one per service, each holding a fragment and none holding the path. Worse, the failure surfaces in whichever service was unlucky enough to be waiting when something upstream went wrong, so the error you receive is frequently the least informative one in the system.\n\nA correlation identifier is the minimum repair. Generate one at the edge, pass it with every downstream call, include it in every log line. That single field lets you reassemble the fragments into the story of one request, and without it you are matching timestamps across services whose clocks do not quite agree. Tracing extends the idea with timing and parent-child relationships, showing not just which services took part but which call was slow and which ones waited on it.\n\nTimeouts deserve particular suspicion, because they convert one failure into a misleading one. A service that times out reports a timeout, which describes its own experience accurately and says nothing about the cause. If the timeouts are configured so a caller gives up before its callee does, the caller reports failure while the work is still running, and the true error appears later in a log nobody is reading by then.",
     "beats": {
       "broke": "The call chain is split across processes, so no single stack trace covers it. The failure is reported by whichever service happened to be waiting, which is usually not the one that failed, and matching events by timestamp fails because clocks disagree.",
@@ -7481,7 +7481,7 @@
     "trackId": "J",
     "trackName": "Debugging",
     "title": "Debugging concurrency: race conditions, deadlocks, ordering",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "Concurrency bugs break the assumption every other debugging technique rests on: that running the same thing again does the same thing. A race depends on an interleaving that occurs under particular timing, so it appears once in ten thousand runs, disappears under a debugger, and vanishes when you add the logging that would have caught it.\n\nBecause reproduction is unreliable, the work shifts from observing the bug to reasoning about it. The question is which state is shared and mutable, and what is supposed to protect it. Shared and immutable is safe. Mutable and confined to one thread is safe. The intersection is where every race lives, and it is a much smaller surface than the whole program — enumerating it is usually feasible where reproducing the bug is not.\n\nDeadlocks are the tractable member of the family, because they are static rather than timing-dependent: two locks acquired in opposite orders by two paths. That is findable by reading, and preventable by a rule rather than by care — establish a global order for lock acquisition and take them only in that order. Ordering bugs, where two operations that appeared sequential are not, are best addressed by removing the assumption rather than by timing them, since anything that depends on one thing finishing before another must say so explicitly.",
     "beats": {
       "broke": "Reproduction is not reliable. A race depends on a specific interleaving, so it occurs rarely, and any observation added to catch it changes the timing enough to prevent it — the technique defeats itself.",
@@ -7501,7 +7501,7 @@
     "trackId": "J",
     "trackName": "Debugging",
     "title": "Debugging data: silent corruption, encoding, timezones, floats",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "Code failures announce themselves. Data failures do not: the program runs to completion, returns a plausible value, and the wrongness is discovered weeks later by someone who noticed a total that looked odd. There is no stack trace because nothing threw, and by then the bad values have propagated into reports, caches and downstream systems.\n\nFour sources account for most of it. Encoding, where text written in one encoding and read in another produces either mangled characters or, worse, characters that look fine until one particular name breaks a comparison. Timezones, where a timestamp without an offset is ambiguous by hours and daylight saving makes some local times occur twice and others not at all. Floats, where accumulated representation error turns an equality check into a coin flip and repeated addition drifts. And silent coercion, where a language converts a type rather than complaining and a string that should have been a number becomes one in a way nobody intended.\n\nThe defence is to check at the boundary rather than to hunt afterwards. Validate at the moment data enters, store timestamps with an explicit offset, be explicit about encoding at every read and write, and use a decimal or integer representation wherever exactness matters. Every one of these is cheap at the boundary and extremely expensive once the values have spread.",
     "beats": {
       "broke": "Bad data does not raise anything. The program completes and produces a plausible wrong answer, so discovery happens weeks later by inspection, with no trace and with the bad values already copied into other systems.",
@@ -7521,7 +7521,7 @@
     "trackId": "J",
     "trackName": "Debugging",
     "title": "Debugging models: is it the data, the label, the metric or the code",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "A model performing badly has four candidate causes and they need separating before anything is changed, because the usual response — adjust the model — addresses the one that is least often responsible.\n\nThe data is the most common. Wrong distribution, missing values encoded in a way the model reads as meaningful, a preprocessing step applied during training and not at inference. The labels are next and are frequently wrong in ways nobody has checked: inconsistent between annotators, systematically biased, or derived from something that already encodes the answer. The metric may not measure what you care about, which is how a classifier achieving high accuracy on a heavily imbalanced dataset can be entirely useless. Only then the code.\n\nThe specific failure worth knowing by name is leakage, and it is dangerous because it looks like success. If a feature contains information that would not exist at prediction time — a field populated after the outcome, an identifier correlated with the target, a duplicate row split across training and test — the model appears excellent in evaluation and fails immediately in production. Suspiciously good results deserve more investigation than poor ones, because poor results get investigated automatically and excellent ones get celebrated and shipped.",
     "beats": {
       "broke": "Poor model performance has four possible causes — data, labels, metric, code — and they are indistinguishable from the score alone. The default response is to change the model, which addresses the least likely one.",
@@ -7541,7 +7541,7 @@
     "trackId": "J",
     "trackName": "Debugging",
     "title": "Root cause versus symptom, and the five whys",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "Fixing a symptom is fast, satisfying and leaves the system in a state where the same class of failure will happen again in a slightly different form. The distinction between symptom and cause is not philosophical: it is the difference between whether this recurs.\n\nAsking why repeatedly is a technique for moving from one to the other. The service crashed — why — it ran out of memory — why — it loaded the whole file into memory — why — the file is normally small and nobody checked the size — why — there is no limit on what may be uploaded — why — the upload endpoint was added without a size constraint and nothing requires one. Restarting the service addresses the first line. Adding a limit and validating uploads addresses the last, and prevents a family of problems rather than this instance.\n\nTwo cautions. The chain usually ends in something process-shaped or organisational, and it is easy to stop early because the technical answer is the comfortable one. But it is also possible to keep going until the conclusion is uselessly broad, and a root cause you cannot act on is not a root cause. The correct stopping point is the last link where a specific change would prevent recurrence.",
     "beats": {
       "broke": "A fix is applied at the point where the problem was observed, which is where it surfaced rather than where it originated. The immediate failure stops, the generating condition remains, and the same class recurs in a different form.",
@@ -7554,14 +7554,14 @@
       }
     },
     "blueprint": "  the service crashed                  <- fix here: restart\n    why? out of memory                    (recurs on Thursday)\n      why? loaded the whole file in RAM\n        why? files are normally small,\n             nobody checked the size\n          why? no size limit on upload\n            why? endpoint shipped without one,\n                 and nothing requires one   <- fix HERE\n\nStop at the last link where you can name:\n  the specific change, and who would make it.\n\nToo far: \"insufficient process\" -- true, unactionable.\nToo shallow: \"human error\" -- keep asking. why was it\npossible for that mistake to have that effect?",
-    "takeaway": "Stop at the last link where you can name a specific change and who makes it. 'Human error' is a place to keep asking, not an answer."
+    "takeaway": "Stop at the last link where you can name a specific change and who makes it. 'human error' is a place to keep asking, not an answer."
   },
   "J.15": {
     "id": "J.15",
     "trackId": "J",
     "trackName": "Debugging",
     "title": "Write the postmortem: what happened, why, what prevents a repeat",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "Everything learned during an incident is held by the people who were there, in a form that degrades within days. Within a fortnight the sequence is uncertain; within a quarter the whole episode compresses to a sentence. Writing it down while it is fresh is the only way any of it survives, and the record is worth far more than the individual incident.\n\nThree parts do the work. What happened, as a timeline of observations with times, separating what was seen from what was inferred at the time — including the wrong inferences, which are the most instructive part because they show where the system misled people. Why, meaning the causal chain down to the last actionable link. And what prevents a repeat, as specific changes with owners, not intentions to be careful.\n\nThe document has to be blameless, and this is an engineering requirement rather than a courtesy. If naming what you did carries a personal cost, the accurate account stops being written, and what you get instead is a sanitised narrative that teaches nothing. A system where one person's mistake causes an outage has a problem beyond that person, and the postmortem exists to find it — which is impossible if people are protecting themselves in the text.",
     "beats": {
       "broke": "Incident knowledge lives only in the memories of those present and decays within days. Without a record, the same failure is investigated from scratch by whoever is on call next time, and organisations relearn the same lesson repeatedly.",
@@ -7581,7 +7581,7 @@
     "trackId": "J",
     "trackName": "Debugging",
     "title": "Add the test that would have caught it, before closing it",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "A bug that reached you got past everything already in place, which is a precise statement about a gap in the tests. Fixing the code without closing that gap leaves the gap open, and the same defect can be reintroduced by anyone, including by you, next month.\n\nThe test to write is the one that fails before the fix and passes after it. That ordering is not a formality: a test written after the fix and never observed failing may not exercise the bug at all, and a test that cannot fail is worse than no test because it is counted as coverage. Running it against the unfixed code, seeing it fail for the right reason, then applying the fix is what establishes that it tests what you believe.\n\nDoing it before closing matters because afterwards it does not happen. The bug is fixed, the pressure is off, and the test becomes a task that is always less urgent than the next thing. The moment when you understand the failure completely — which conditions trigger it, what the wrong behaviour is, what the right one would be — is the moment the test is easiest to write, and that understanding is the first thing to fade.",
     "beats": {
       "broke": "A bug that reached production got past every existing test, so the suite has a demonstrated gap. Fixing only the code leaves the gap, and nothing prevents the same defect being reintroduced later.",
@@ -7601,8 +7601,8 @@
     "trackId": "J",
     "trackName": "Debugging",
     "title": "Reduce it: smallest input that still fails",
-    "status": "unsourced",
-    "story": "A failure arriving on a real input is surrounded by everything that is not the cause. A 4MB request, forty configuration values, a database with a million rows: the trigger is somewhere in there and so is a great deal of noise, and searching it by reading is hopeless.\n\nReduction removes half at a time. Delete half the input, does it still fail. Yes, delete half of what remains; no, restore and delete the other half. Each step halves the search space, so an input with a thousand elements reaches the minimal failing case in about ten steps regardless of where the trigger was hiding. The discipline is to keep checking that it still fails after each cut, because a reduction that stops reproducing has stopped being about your bug.\n\nWhat you end up with is not just smaller, it is an explanation. When the minimal case is one record with an empty string in a field, the cause is frequently obvious on sight, without any of the reading of source you were about to do. Reduction converts an investigation into an observation, and it is mechanical enough to do while tired, which is when most debugging actually happens.",
+    "status": "claimless",
+    "story": "A failure arriving on a real input is surrounded by everything that is not the cause. A four-megabyte request, forty configuration values, a database with a million rows: the trigger is somewhere in there and so is a great deal of noise, and searching it by reading is hopeless.\n\nReduction removes half at a time. Delete half the input, does it still fail. Yes, delete half of what remains; no, restore and delete the other half. Each step halves the search space, so an input with a thousand elements reaches the minimal failing case in about ten steps regardless of where the trigger was hiding. The discipline is to keep checking that it still fails after each cut, because a reduction that stops reproducing has stopped being about your bug.\n\nWhat you end up with is not just smaller, it is an explanation. When the minimal case is one record with an empty string in a field, the cause is frequently obvious on sight, without any of the reading of source you were about to do. Reduction converts an investigation into an observation, and it is mechanical enough to do while tired, which is when most debugging actually happens.",
     "beats": {
       "broke": "A real failing input contains the trigger and a large quantity of irrelevant material, with nothing distinguishing them. Reading through it is unbounded work, and intuition about which part matters is unreliable.",
       "fix": "Halve repeatedly, checking after every cut that the failure still reproduces. Each step halves the search space, so a thousand-element input reaches a minimal case in roughly ten steps regardless of where the cause is.",
@@ -7621,7 +7621,7 @@
     "trackId": "J",
     "trackName": "Debugging",
     "title": "Form one hypothesis at a time, and write it down",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "Under pressure the mind holds several theories at once and tests none of them cleanly. An observation arrives, it is partially compatible with two of the three, and both survive in slightly modified form. Nothing is eliminated, the set of live theories grows, and after an hour you cannot say which have been ruled out.\n\nOne at a time is what makes elimination possible. A single hypothesis, stated precisely enough to predict something specific, produces a test whose outcome is informative either way: it either matches or it does not, and the theory is confirmed or dead. Held alongside two others, the same observation gets absorbed as partial support for whichever theory is currently preferred.\n\nWriting it before the test is what stops the quiet editing. An unwritten hypothesis reshapes itself to accommodate whatever you just saw, and it does so without any conscious decision, so you experience it as the theory having been roughly right all along. Written, it is fixed, and a fixed prediction that fails is a cause genuinely eliminated — which is the only thing that makes a long investigation converge instead of circling.",
     "beats": {
       "broke": "Several theories are held simultaneously and none is tested cleanly. An ambiguous result is absorbed by all of them in slightly altered form, so nothing is ever eliminated and the investigation circles.",
@@ -7641,7 +7641,7 @@
     "trackId": "J",
     "trackName": "Debugging",
     "title": "Change one thing per test",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "Changing three things and observing an improvement gives you no information about which change was responsible, and it is worse than that: it may be that one change fixed it, a second made it worse, and a third fixed it again, leaving two latent problems behind a green result.\n\nThis is the same reasoning as a controlled experiment, and the temptation to abandon it is strongest exactly when it matters most. Under pressure, three plausible fixes are applied together because trying them separately takes three times as long. If it works, nobody goes back to find out why, and the codebase acquires two changes that nobody can justify and nobody will dare remove.\n\nThe discipline is cheap to state and costs patience to keep. Make one change, observe, revert it if it did not help. Reverting is the part that gets skipped, and skipping it is how a file ends up with four attempted fixes layered on top of each other, at which point the behaviour is a function of the combination and reasoning about it is genuinely impossible.",
     "beats": {
       "broke": "Multiple simultaneous changes make the result uninterpretable. Worse, changes can cancel each other, so a working system can contain two faults that happen to offset, and the green result conceals both.",
@@ -7661,8 +7661,8 @@
     "trackId": "J",
     "trackName": "Debugging",
     "title": "Binary search the problem space: git bisect as automated scientific method",
-    "status": "unsourced",
-    "story": "A major software system has 1,200 commits pushed over the last two months. Suddenly, a customer reports that exporting a PDF report with special international characters crashes with an obscure encoding error. The team knows the export feature worked properly in the v2.4 release, but is broken in v2.6.\n\nA junior engineer begins reading recent commits, guessing which PR might be responsible, or trying to understand all 40,000 changed lines of code across two months.\n\nA senior engineer runs git bisect. Git bisect is binary search applied directly to the directed acyclic graph of version control history. You mark the current commit as 'bad' and the old release as 'good'. Git checks out the exact middle commit (600 commits away). You test: does it work? If yes, mark 'good'. If no, mark 'bad'. In log2(1200) = roughly 10 tests, Git pinpoints the exact single commit, author, diff, and date that introduced the regression. If you write an automated test script, git bisect run ./test.sh finds the culprit automatically in thirty seconds.",
+    "status": "claimless",
+    "story": "A major software system has 1,200 commits pushed over the last two months. Suddenly, a customer reports that exporting a formatted report with special international characters crashes with an obscure encoding error. The team knows the export feature worked properly in the v2.4 release, but is broken in v2.6.\n\nA junior engineer begins reading recent commits, guessing which change might be responsible, or trying to understand all 40,000 changed lines of code across two months.\n\nA senior engineer runs git bisect. Git bisect is binary search applied directly to the directed acyclic graph of version control history. You mark the current commit as 'bad' and the old release as 'good'. Git checks out the exact middle commit (600 commits away). You test: does it work? If yes, mark 'good'. If no, mark 'bad'. In log2(1200) = roughly 10 tests, the search pinpoints the exact single commit, author, diff, and date that introduced the regression. If you write an automated test script, git bisect run ./test.sh finds the culprit automatically in thirty seconds.",
     "beats": {
       "broke": "Developers spent days reading source code differences trying to deduce which change among thousands broke an existing feature.",
       "fix": "Git bisect formalized binary search over version control history, turning regression diagnosis into an O(log N) automated test routine.",
@@ -7670,7 +7670,7 @@
       "interview": {
         "q": "How do you automate git bisect with an automated shell script to find a regression without human intervention?",
         "trap": "Thinking git bisect requires manual testing at every step.",
-        "answer": "Write a reproduction script that exits with status code 0 if the commit is good/working, and status code 1 (or any code 1-127 except 125) if the commit is bad/broken. Run: git bisect start HEAD v2.4, followed by git bisect run ./test.sh. Git will automatically execute the binary search loop unattended until printing the exact offending commit."
+        "answer": "Write a reproduction script that exits with status code 0 if the commit is good/working, and status code 1 (or any code 1-127 except 125) if the commit is bad/broken. Run: git bisect start <current> <last-good-release>, followed by git bisect run ./test.sh. Git will automatically execute the binary search loop unattended until printing the exact offending commit."
       }
     },
     "blueprint": "# Automated regression hunting with git bisect:\ngit bisect start\ngit bisect bad HEAD              # Current broken state\ngit bisect good v1.4.0            # Last known working release\n\n# Run automated test script:\ngit bisect run npm test -- test/regression.test.js\n# Output: \"[hash] is the first bad commit\"",
@@ -7681,7 +7681,7 @@
     "trackId": "J",
     "trackName": "Debugging",
     "title": "Use a real debugger, not only print statements",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "A print statement answers one question you thought to ask, at one place you thought to ask it, and each new question costs an edit and a re-run. A debugger inverts that: it stops the program and lets you ask anything about the state that exists at that moment, including the questions you did not know you had.\n\nThe capabilities that change the work are the ones with no print equivalent. Stepping into a call to see what a library actually does with your argument. Inspecting a whole object rather than the field you guessed was interesting. A conditional breakpoint that fires only on the one iteration out of fifty thousand that matters. Walking up the call stack to see the caller's variables at the moment it made the call — which is the state that caused the problem, and by the time a print at the failure site runs, it is gone.\n\nMost people avoid debuggers for one of two reasons: the setup is unfamiliar, or the environment makes it awkward. The setup is a one-time cost per project and pays back the first time a bug takes an hour rather than a day. The environment objection is sometimes real, which is the next lesson.",
     "beats": {
       "broke": "Printing answers only questions decided in advance, at locations decided in advance. Each new question requires editing the source and running again, so investigation proceeds at the speed of the rebuild cycle.",
@@ -7701,8 +7701,8 @@
     "trackId": "J",
     "trackName": "Debugging",
     "title": "Know when print statements are genuinely faster",
-    "status": "unsourced",
-    "story": "Having argued for the debugger, the honest position is that printing wins in several common situations, and knowing which is a real skill rather than a concession.\n\nPrinting wins when the question is about a sequence rather than a moment. A debugger shows you one instant in detail; a log shows you the order things happened in, across thousands of iterations, which is what you need for an ordering bug or an unexpected loop. It wins on anything timing-sensitive, because stopping a process perturbs exactly the race you are chasing. It wins across process and machine boundaries, where a single debugger session cannot follow the work. It wins in environments where attaching is impossible, which includes most production systems and many CI failures. And it wins when the bug is intermittent, because you can add output, leave it running overnight, and read the record of the one failure in the morning.\n\nA useful way to hold it: the debugger is for depth at a point, printing is for breadth over time. Choosing between them is answering whether the question is what is the state here, or what happened in what order.",
+    "status": "claimless",
+    "story": "Having argued for the debugger, the honest position is that printing wins in several common situations, and knowing which is a real skill rather than a concession.\n\nPrinting wins when the question is about a sequence rather than a moment. A debugger shows you one instant in detail; a log shows you the order things happened in, across thousands of iterations, which is what you need for an ordering bug or an unexpected loop. It wins on anything timing-sensitive, because stopping a process perturbs exactly the race you are chasing. It wins across process and machine boundaries, where a single debugger session cannot follow the work. It wins in environments where attaching is impossible, which includes most production systems and many continuous integration failures. And it wins when the bug is intermittent, because you can add output, leave it running overnight, and read the record of the one failure in the morning.\n\nA useful way to hold it: the debugger is for depth at a point, printing is for breadth over time. Choosing between them is answering whether the question is what is the state here, or what happened in what order.",
     "beats": {
       "broke": "Treating one technique as universally correct means using it where it does not fit. A debugger cannot follow work across processes, cannot attach in most production environments, and perturbs the timing of the races it would be used to investigate.",
       "fix": "Choose by the shape of the question. Depth at a single point is a debugger; breadth over time, across processes, or over a run you will not be present for is printed output.",
@@ -7710,7 +7710,7 @@
       "interview": {
         "q": "When is adding print statements the better choice over attaching a debugger?",
         "trap": "Framing it as a concession for simple cases. Several categories of bug cannot be investigated with a debugger at all.",
-        "answer": "When the question is about sequence rather than state at a point: what happened in what order across many iterations, which a debugger shows one instant at a time. When timing matters, since pausing the process changes the interleaving that caused the race. When execution spans processes or machines that one session cannot follow. When the environment does not permit attaching, which covers most production systems and many CI failures. And when the failure is intermittent, because you can instrument, leave it running overnight, and read the record of the one failure afterwards."
+        "answer": "When the question is about sequence rather than state at a point: what happened in what order across many iterations, which a debugger shows one instant at a time. When timing matters, since pausing the process changes the interleaving that caused the race. When execution spans processes or machines that one session cannot follow. When the environment does not permit attaching, which covers most production systems and many continuous integration failures. And when the failure is intermittent, because you can instrument, leave it running overnight, and read the record of the one failure afterwards."
       }
     },
     "blueprint": "Debugger: DEPTH at a point     Printing: BREADTH over time\n  what is the state here?        what happened, in what order?\n\nPrint wins when:\n  ordering across 10k iterations  (debugger = one instant)\n  timing / races                  (pausing hides the race)\n  across processes or machines    (one session cannot follow)\n  production / CI                 (cannot attach at all)\n  intermittent                    (instrument, leave overnight,\n                                   read the one failure)\n\nNot a concession. These are bugs a debugger cannot reach.",
@@ -7721,7 +7721,7 @@
     "trackId": "J",
     "trackName": "Debugging",
     "title": "Read the source of the library you are blaming",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "The suspicion that a library is broken is common and almost always wrong. It is widely used, its behaviour is exercised constantly by people who would have noticed, and your usage is far more likely to be the novel element than its core path.\n\nThe productive move is to read it rather than argue with it. Library source is usually available, usually shorter than expected, and the relevant function is usually findable from the stack trace you already have. What you typically discover is not a bug but a documented behaviour you did not expect: a parameter whose default is not what you assumed, a silent type coercion, a retry that hides the first failure, an error swallowed and converted into a benign-looking return value.\n\nThe habit has a second effect that outlasts the bug. Reading library source is how you stop treating dependencies as opaque, and it is a reliable way to become substantially better at reading code in general, because you are reading code written by people solving a problem you now understand well. The bug that sent you in there is frequently the least valuable thing you leave with.",
     "beats": {
       "broke": "A dependency is treated as opaque, so when behaviour surprises you the only available explanation is that the library is wrong. That explanation is unfalsifiable from outside and usually incorrect, since your usage is the novel part rather than its core path.",

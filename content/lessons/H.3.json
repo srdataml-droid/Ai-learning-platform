@@ -3,7 +3,7 @@
   "trackId": "H",
   "trackName": "Observation",
   "title": "Read logs at volume without drowning",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "A system under real load produces more log lines per minute than anyone can read in a day. Reading them in sequence does not scale and never will, so the skill is not reading faster. It is narrowing before reading.\n\nNarrowing has a natural order. Time first: establish when the problem occurred and discard everything outside a window around it. Identity second: find the one request, user or job that failed, and follow only that. Severity last, and with suspicion, because the line that explains the failure is frequently at info level while the errors are all downstream consequences shouting about a thing that already went wrong.\n\nThis is why structured logging matters more than it appears to. A log line that is a sentence can only be searched as text. A log line that is a record with fields can be filtered by any of them, so the narrowing is a query rather than a guess at a substring. The most useful field is the one that ties every line produced by a single request together, because that is what turns a flat stream of everything into the story of one thing.",
   "problem": {
     "name": "Needle-in-haystack retrieval under volume",

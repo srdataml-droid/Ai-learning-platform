@@ -3,7 +3,7 @@
   "trackId": "G",
   "trackName": "Critical thinking",
   "title": "Read a research paper critically: claim, method, baseline, limitation",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "A paper is an argument, not a report of a fact, and it is written to persuade reviewers that a contribution is real. Reading it as an announcement of truth skips the part where you evaluate the argument.\n\nFour things carry most of the weight. The claim, stated precisely and narrowly — papers usually claim something much more specific than the headline suggests, and the gap between the two is where most misreading happens. The method, particularly whether the evaluation could have distinguished the claim from the alternatives. The baseline, which is where results are most often manufactured: a genuine improvement over a weak or undertuned comparison is not a genuine improvement, and choosing a baseline is a choice the authors made. And the limitations, which in a good paper are stated by the authors themselves and are frequently the most informative paragraph in it.\n\nIn machine learning specifically there is a recurring one worth knowing: an evaluation set that overlaps the training data produces excellent numbers and tells you nothing, and the overlap is often indirect enough that nobody involved was being careless. Before believing a result, it is worth asking exactly what the model was measured on and how confident anyone is that it had not seen it.",
   "beats": {
     "broke": "Results are read as settled facts rather than as arguments, so a claim is adopted without examining whether the evaluation could have distinguished it from the alternatives, or what it was compared against.",

@@ -3,7 +3,7 @@
   "trackId": "J",
   "trackName": "Debugging",
   "title": "Use a real debugger, not only print statements",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "A print statement answers one question you thought to ask, at one place you thought to ask it, and each new question costs an edit and a re-run. A debugger inverts that: it stops the program and lets you ask anything about the state that exists at that moment, including the questions you did not know you had.\n\nThe capabilities that change the work are the ones with no print equivalent. Stepping into a call to see what a library actually does with your argument. Inspecting a whole object rather than the field you guessed was interesting. A conditional breakpoint that fires only on the one iteration out of fifty thousand that matters. Walking up the call stack to see the caller's variables at the moment it made the call — which is the state that caused the problem, and by the time a print at the failure site runs, it is gone.\n\nMost people avoid debuggers for one of two reasons: the setup is unfamiliar, or the environment makes it awkward. The setup is a one-time cost per project and pays back the first time a bug takes an hour rather than a day. The environment objection is sometimes real, which is the next lesson.",
   "beats": {
     "broke": "Printing answers only questions decided in advance, at locations decided in advance. Each new question requires editing the source and running again, so investigation proceeds at the speed of the rebuild cycle.",

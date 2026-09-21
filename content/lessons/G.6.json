@@ -3,7 +3,7 @@
   "trackId": "G",
   "trackName": "Critical thinking",
   "title": "Steelman the option you rejected, out loud, before rejecting it",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "A decision defended only against a weak version of its alternative has not been tested. The usual pattern is unconscious: the option you prefer gets described at its best, the option you do not gets described at its worst, and the comparison that follows is real reasoning applied to an unfair setup.\n\nSteelmanning is stating the rejected option in the strongest form its actual advocates would recognise, out loud, before saying no to it. Out loud matters, because a steelman constructed silently tends to remain conveniently weak. Said to another person it has to survive their reaction, and someone who genuinely prefers that option will correct you immediately if you have softened it.\n\nTwo things come out of this, and the second is the more useful. Sometimes the rejected option turns out to be better and the decision changes, which is the obvious payoff and the rarer one. More often the decision stands but you now know precisely what it costs, which means you know what to watch for, and when the cost arrives six months later nobody is surprised and nobody relitigates.",
   "beats": {
     "broke": "Comparison is done against the weakest form of the alternative, because the weak form is what comes to mind when you already prefer something else. The reasoning may be sound and the inputs are unfair, so the conclusion is unreliable in a way that is invisible from inside it.",

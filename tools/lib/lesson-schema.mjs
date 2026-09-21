@@ -1,4 +1,14 @@
-export const STATUSES = ['unsourced', 'traced', 'verified'];
+/**
+ * `unsourced` means "makes checkable claims that nobody has checked".
+ * `claimless` means "makes no checkable claims, so there is nothing to check".
+ *
+ * Those were the same status until the habit tracks made the conflation
+ * obvious: a lesson on how to read an error message is not waiting on
+ * research. Splitting them stops a permanent state being displayed as a
+ * temporary one. `claimless` is enforced in verify.mjs — the prose must
+ * contain no checkable atom — so the status cannot be claimed falsely.
+ */
+export const STATUSES = ['unsourced', 'claimless', 'traced', 'verified'];
 export const BEATS = ['broke', 'fix', 'cost', 'interview'];
 
 /**

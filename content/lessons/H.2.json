@@ -3,7 +3,7 @@
   "trackId": "H",
   "trackName": "Observation",
   "title": "Read a stack trace: where it started, where it surfaced",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "A stack trace is a record of unfinished business. Each frame is a function that called another and is still waiting for it to return, so the trace is a chain of who asked whom, captured at the instant the chain broke.\n\nTwo positions in it matter and they are rarely the same. The place it surfaced is the innermost frame, where the program finally could not continue. The place it started is the outermost, where execution entered. The cause usually sits at neither end but at the boundary: the last frame belonging to code you control, just before it hands a value to code you do not. Library functions mostly fail because they were given something wrong, so the frames inside the library describe the symptom in detail and say nothing about the cause.\n\nDifferent runtimes print the two ends in different orders, and getting that backwards wastes a great deal of time. Some print the innermost first, some last. Before relying on position, check which convention you are looking at, because a trace read upside down leads you to investigate the entry point of your program as though it were the fault.",
   "problem": {
     "name": "Fault localisation from a call chain",
@@ -25,8 +25,8 @@
       "beats": "reading the whole codebase looking for something that looks wrong"
     },
     "worked": {
-      "problem": "The trace ends at IntegrityError inside an ORM's insert path. Where do you look?",
-      "reasoning": "Not in the ORM. Walk up to the last frame you wrote — save_user — and look at what it handed over. The ORM is accurately reporting that the database rejected a row; the decision that produced that row was made one frame up. Check the value at the handover before suspecting the library."
+      "problem": "The trace ends at IntegrityError inside an object-relational mapper's insert path. Where do you look?",
+      "reasoning": "Not in the mapper. Walk up to the last frame you wrote — save_user — and look at what it handed over. The mapper is accurately reporting that the database rejected a row; the decision that produced that row was made one frame up. Check the value at the handover before suspecting the library."
     },
     "practice": "Take a recent trace and mark the boundary frame. Check whether the fix turned out to be above or below it."
   },

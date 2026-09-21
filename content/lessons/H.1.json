@@ -3,7 +3,7 @@
   "trackId": "H",
   "trackName": "Observation",
   "title": "Read the whole error message, out loud if necessary",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "The instruction sounds insulting until you watch how people actually behave in front of a failure. The message appears, the eye goes to the last line, and a fix is attempted within seconds. The middle of the message, which frequently contains the answer, is never read.\n\nReading aloud works because it defeats the specific failure mode at play. Skimming is pattern matching: you recognise the shape of an error you have seen before and act on the recognition rather than the text. Saying the words forces serial processing, so a path you assumed said one thing turns out to say another, and a number you assumed was a count turns out to be a byte offset. The trick is not about diligence. It is about disabling a shortcut that is usually helpful and is wrong here.\n\nThe habit compounds because error messages are the highest quality evidence you will ever get. They are produced by the program at the moment it stopped, describing its own state, with no reconstruction involved. Every other debugging technique is an attempt to recover information that the error message may already be handing you.",
   "problem": {
     "name": "Evidence-first diagnosis",
@@ -26,7 +26,7 @@
     },
     "worked": {
       "problem": "ConnectionError appears during a deploy. What do you do first?",
-      "reasoning": "Read the whole thing. 'Connection refused to 127.0.0.1 port 5432 after 0.003 seconds' is a completely different problem from a timeout: three milliseconds to a loopback address means nothing is listening on that port. Not the network, not DNS, not a slow database. The three words in the middle eliminated four hypotheses before any were formed."
+      "reasoning": "Read the whole thing. a refusal to a loopback address after three milliseconds is a completely different problem from a timeout: three milliseconds to a loopback address means nothing is listening on that port. Not the network, not name resolution, not a slow database. The three words in the middle eliminated four hypotheses before any were formed."
     },
     "practice": "Next failure you hit, read it aloud before doing anything, and write down what you learn that you would have skipped."
   },

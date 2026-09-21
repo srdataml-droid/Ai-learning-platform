@@ -3,7 +3,7 @@
   "trackId": "J",
   "trackName": "Debugging",
   "title": "Debugging across a network: tracing, correlation IDs, timeouts",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "A single-process failure leaves a stack trace covering the whole causal chain. Across services that chain is cut into pieces, one per service, each holding a fragment and none holding the path. Worse, the failure surfaces in whichever service was unlucky enough to be waiting when something upstream went wrong, so the error you receive is frequently the least informative one in the system.\n\nA correlation identifier is the minimum repair. Generate one at the edge, pass it with every downstream call, include it in every log line. That single field lets you reassemble the fragments into the story of one request, and without it you are matching timestamps across services whose clocks do not quite agree. Tracing extends the idea with timing and parent-child relationships, showing not just which services took part but which call was slow and which ones waited on it.\n\nTimeouts deserve particular suspicion, because they convert one failure into a misleading one. A service that times out reports a timeout, which describes its own experience accurately and says nothing about the cause. If the timeouts are configured so a caller gives up before its callee does, the caller reports failure while the work is still running, and the true error appears later in a log nobody is reading by then.",
   "beats": {
     "broke": "The call chain is split across processes, so no single stack trace covers it. The failure is reported by whichever service happened to be waiting, which is usually not the one that failed, and matching events by timestamp fails because clocks disagree.",

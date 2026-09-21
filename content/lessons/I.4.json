@@ -3,7 +3,7 @@
   "trackId": "I",
   "trackName": "Planning",
   "title": "Map dependencies, including ones that depend on other people replying",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "Dependency maps are usually drawn as though every dependency were technical. The ones that actually slip a schedule are the ones that require a human being to respond: access to be granted, a review to happen, a contract to be signed, a question to be answered by the one person who knows.\n\nThey behave differently from technical dependencies in a way that matters for planning. A technical dependency is worked on; a human dependency is waited on, and the waiting time has almost nothing to do with the size of the task. Someone can grant access in ninety seconds and take eleven days to do it, because their queue, their holiday and their priorities are not visible to you and not yours to manage.\n\nWhich gives one clear planning rule: identify every human dependency and start it before you need it. A request made on day one and answered on day twelve costs nothing if you did not need it until day fifteen. The same request made on day fourteen is the reason the work is late, and the work involved was identical.",
   "beats": {
     "broke": "Dependency planning covers the technical chain and omits the human one, so a plan that is sound on paper stalls on an access request, a review or an approval that nobody scheduled because it was not work.",

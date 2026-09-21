@@ -3,7 +3,7 @@
   "trackId": "I",
   "trackName": "Planning",
   "title": "Plan for the version where you have half the time you expected",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "Time disappears in ways that are individually unpredictable and collectively certain. An incident, an illness, a reorganisation, a dependency that arrives late, a thing that turns out to be harder than it looked. Any particular disruption is a surprise; some disruption is not. A plan that only works at full attention is a plan that assumes the exception.\n\nThe exercise is specific rather than general pessimism: take the plan and ask what you would deliver with half the time. The answer forces a ranking that the full plan never demanded, because when everything fits nothing has to be compared. That ranking is the useful artefact, and it is much better made now, calmly, than in week five under pressure.\n\nIt usually reveals two things. Some items are load-bearing and everything depends on them, which means they should be early rather than wherever they landed. Others are genuinely optional and were only in the plan because there appeared to be room, which means they can be dropped without ceremony when the time comes. Having decided that in advance means the eventual cut is a reference to a decision already made rather than an argument held at the worst possible moment.",
   "beats": {
     "broke": "Plans assume uninterrupted availability, which never happens. Any individual disruption is unforeseeable and the existence of some disruption is certain, so planning at full capacity means planning for the rare case.",

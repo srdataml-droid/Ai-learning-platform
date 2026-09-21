@@ -3,7 +3,7 @@
   "trackId": "J",
   "trackName": "Debugging",
   "title": "Write the postmortem: what happened, why, what prevents a repeat",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "Everything learned during an incident is held by the people who were there, in a form that degrades within days. Within a fortnight the sequence is uncertain; within a quarter the whole episode compresses to a sentence. Writing it down while it is fresh is the only way any of it survives, and the record is worth far more than the individual incident.\n\nThree parts do the work. What happened, as a timeline of observations with times, separating what was seen from what was inferred at the time — including the wrong inferences, which are the most instructive part because they show where the system misled people. Why, meaning the causal chain down to the last actionable link. And what prevents a repeat, as specific changes with owners, not intentions to be careful.\n\nThe document has to be blameless, and this is an engineering requirement rather than a courtesy. If naming what you did carries a personal cost, the accurate account stops being written, and what you get instead is a sanitised narrative that teaches nothing. A system where one person's mistake causes an outage has a problem beyond that person, and the postmortem exists to find it — which is impossible if people are protecting themselves in the text.",
   "beats": {
     "broke": "Incident knowledge lives only in the memories of those present and decays within days. Without a record, the same failure is investigated from scratch by whoever is on call next time, and organisations relearn the same lesson repeatedly.",

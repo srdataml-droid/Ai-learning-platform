@@ -3,7 +3,7 @@
   "trackId": "I",
   "trackName": "Planning",
   "title": "Cut scope deliberately rather than slipping deadlines accidentally",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "When work runs late there are only ever three levers: move the date, add people, or reduce what is delivered. Adding people to something already late usually slows it further, since the newcomers have to be taught by the people doing the work. So it comes down to the date or the scope, and the only real question is whether the choice is made or allowed to happen.\n\nAllowed to happen, it is made by omission. The last items in the plan are the ones that get dropped, and those are ordinarily the tests, the error handling and the documentation — not because anyone decided they mattered least, but because they were scheduled last. The team ships something that looks complete and is missing precisely the parts that make it survivable, and nobody chose that.\n\nCutting deliberately means naming what is being dropped, saying so out loud, and recording it. It is a worse conversation and a better outcome: everyone knows what they are getting, the dropped item can be scheduled rather than forgotten, and what remains is coherent. A deliberately reduced release is a smaller thing that works. An accidentally reduced one is the original thing with unpredictable holes in it.",
   "beats": {
     "broke": "Late work reduces itself by omission. Whatever was scheduled last is what gets dropped, which is typically tests, error handling and documentation, so the result is missing the parts that make it survivable and nobody consciously chose that.",

@@ -411,12 +411,19 @@
       }
 
       /**
-       * Three states, and the reader can tell them apart at a glance:
+       * Four states, and the reader can tell them apart at a glance:
        *
-       *   unsourced  written before sourcing was required, no claims attached
+       *   unsourced  makes checkable claims that nobody has checked yet
+       *   claimless  makes no checkable claims, so there is nothing to
+       *              source — a settled state, not a pending one
        *   traced     every date, figure and name in it is licensed by a
        *              sourced claim, checked mechanically
        *   verified   traced, and then read and accepted by a person
+       *
+       * The first two were one status until the habit tracks made the
+       * conflation obvious: a lesson on how to read an error message is not
+       * waiting on research, and showing it the same banner as an unchecked
+       * history lesson told the reader something untrue about both.
        *
        * There is no state for "failed the check": such a lesson is never
        * written to content/, so it cannot reach this page.
@@ -427,6 +434,11 @@
             label: 'Not yet sourced',
             text: 'This lesson was written before sources were required. Its dates and figures have not been traced, so treat them as a starting point to check rather than a fact to quote.',
             tone: 'warn',
+          },
+          claimless: {
+            label: 'Nothing to source',
+            text: 'This lesson makes no claims about dates, figures or people, so there are no sources to check. It is about how to work rather than about what happened — checked mechanically to contain nothing citable.',
+            tone: 'ok',
           },
           traced: {
             label: 'Sources traced',

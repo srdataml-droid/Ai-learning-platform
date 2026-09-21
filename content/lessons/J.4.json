@@ -3,7 +3,7 @@
   "trackId": "J",
   "trackName": "Debugging",
   "title": "Change one thing per test",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "Changing three things and observing an improvement gives you no information about which change was responsible, and it is worse than that: it may be that one change fixed it, a second made it worse, and a third fixed it again, leaving two latent problems behind a green result.\n\nThis is the same reasoning as a controlled experiment, and the temptation to abandon it is strongest exactly when it matters most. Under pressure, three plausible fixes are applied together because trying them separately takes three times as long. If it works, nobody goes back to find out why, and the codebase acquires two changes that nobody can justify and nobody will dare remove.\n\nThe discipline is cheap to state and costs patience to keep. Make one change, observe, revert it if it did not help. Reverting is the part that gets skipped, and skipping it is how a file ends up with four attempted fixes layered on top of each other, at which point the behaviour is a function of the combination and reasoning about it is genuinely impossible.",
   "beats": {
     "broke": "Multiple simultaneous changes make the result uninterpretable. Worse, changes can cancel each other, so a working system can contain two faults that happen to offset, and the green result conceals both.",

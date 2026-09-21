@@ -3,7 +3,7 @@
   "trackId": "H",
   "trackName": "Observation",
   "title": "Watch a real person use something you built, in silence",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "You cannot un-know your own interface. Every label is obvious because you chose the word, every next step is discoverable because you built the path. The only way to see the thing as it is, rather than as you intended it, is to watch somebody meet it for the first time.\n\nSilence is the method, not the manners. The moment you explain, you have repaired the interface with your voice, and what you learn is that the design plus a person explaining it works. Nobody ships with you attached. The hesitation before a click, the scroll back up to re-read a label, the wrong menu opened first — those are the data, and they only survive if you say nothing. Watching someone struggle without helping is genuinely uncomfortable, which is why so few people manage it.\n\nIt also takes very few people. The same confusions recur almost immediately across users, because they come from the design rather than from the individual. A handful of sessions surfaces most of what a hundred would, which means the excuse that proper testing is too expensive does not hold at the scale most work happens.",
   "problem": {
     "name": "Usability observation",

@@ -3,7 +3,7 @@
   "trackId": "J",
   "trackName": "Debugging",
   "title": "Read the source of the library you are blaming",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "The suspicion that a library is broken is common and almost always wrong. It is widely used, its behaviour is exercised constantly by people who would have noticed, and your usage is far more likely to be the novel element than its core path.\n\nThe productive move is to read it rather than argue with it. Library source is usually available, usually shorter than expected, and the relevant function is usually findable from the stack trace you already have. What you typically discover is not a bug but a documented behaviour you did not expect: a parameter whose default is not what you assumed, a silent type coercion, a retry that hides the first failure, an error swallowed and converted into a benign-looking return value.\n\nThe habit has a second effect that outlasts the bug. Reading library source is how you stop treating dependencies as opaque, and it is a reliable way to become substantially better at reading code in general, because you are reading code written by people solving a problem you now understand well. The bug that sent you in there is frequently the least valuable thing you leave with.",
   "beats": {
     "broke": "A dependency is treated as opaque, so when behaviour surprises you the only available explanation is that the library is wrong. That explanation is unfalsifiable from outside and usually incorrect, since your usage is the novel part rather than its core path.",

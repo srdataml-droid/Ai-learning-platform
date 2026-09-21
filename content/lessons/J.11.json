@@ -3,7 +3,7 @@
   "trackId": "J",
   "trackName": "Debugging",
   "title": "Debugging concurrency: race conditions, deadlocks, ordering",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "Concurrency bugs break the assumption every other debugging technique rests on: that running the same thing again does the same thing. A race depends on an interleaving that occurs under particular timing, so it appears once in ten thousand runs, disappears under a debugger, and vanishes when you add the logging that would have caught it.\n\nBecause reproduction is unreliable, the work shifts from observing the bug to reasoning about it. The question is which state is shared and mutable, and what is supposed to protect it. Shared and immutable is safe. Mutable and confined to one thread is safe. The intersection is where every race lives, and it is a much smaller surface than the whole program — enumerating it is usually feasible where reproducing the bug is not.\n\nDeadlocks are the tractable member of the family, because they are static rather than timing-dependent: two locks acquired in opposite orders by two paths. That is findable by reading, and preventable by a rule rather than by care — establish a global order for lock acquisition and take them only in that order. Ordering bugs, where two operations that appeared sequential are not, are best addressed by removing the assumption rather than by timing them, since anything that depends on one thing finishing before another must say so explicitly.",
   "beats": {
     "broke": "Reproduction is not reliable. A race depends on a specific interleaving, so it occurs rarely, and any observation added to catch it changes the timing enough to prevent it — the technique defeats itself.",

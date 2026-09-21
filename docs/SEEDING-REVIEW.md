@@ -1,13 +1,19 @@
 # Seeding review
 
-Written 2026-09-21, from the state at that date. Derived by running the
-gate's own atom extractor over every lesson, so the numbers are reproducible
-rather than estimated — see "How to regenerate" at the end.
+Written 2026-09-21. Derived by running the gate's own atom extractor over
+every lesson, so the numbers are reproducible rather than estimated — see
+"How to regenerate" at the end.
 
-## The state
+Updated the same day, after the habit tracks were resolved to `claimless`.
+Current: **276 lessons, 175 traced, 44 claimless, 57 unsourced**, and
+**682 checkable atoms** still sitting in unsourced prose. The section below
+records the state *before* that change, because the prioritisation was built
+on it and still holds for everything outside G, H, I and J.
 
-265 lessons exist against 313 tasks. 164 carry a seed and are `traced`.
-**101 carry no seed and are `unsourced`.**
+## The state, as measured before the `claimless` change
+
+265 lessons existed against 313 tasks. 164 carried a seed and were `traced`.
+**101 carried no seed and were `unsourced`.**
 
 | track | lessons | traced | unsourced | |
 |---|---|---|---|---|
@@ -114,6 +120,59 @@ different treatment entirely (see below).
 
 **5. K and L** (7 lessons, 106 atoms between them). Small count, high density,
 fast-moving subject matter.
+
+## RESOLVED 2026-09-21: the habit tracks are now `claimless`
+
+The question below was settled by taking the second option. A fourth status
+exists, and it is machine-checked.
+
+`claimless` means "makes no checkable claims, so there is nothing to source".
+It is not a weaker `traced` and not a politer `unsourced` — it is a settled
+state rather than a pending one. `verify.mjs` enforces it: a `claimless`
+lesson must contain **no checkable atom at all**, so the status cannot be
+claimed falsely. Add a date to one and the suite fails.
+
+Outcome across G, H, I and J: **44 of 46 are now `claimless`.**
+
+- 31 qualified immediately with no edit.
+- 13 needed the prose adjusted, in two categories:
+  - **Artefacts of the extractor**, not claims — a quoted example sentence
+    beginning with a capital (`'The database is slow'`), generic terms of art
+    (`DNS`, `ORM`, `CI`, `PDF`), a numbered-list item starting with a verb.
+    Rephrased. Note a systematic interaction worth knowing: **a quoted string
+    starting with a capital always defeats the sentence-initial exclusion**,
+    because the character before it is a quote mark rather than `[.!?]\s`.
+  - **Hypothetical scenario figures and arithmetic identities.** `p99 latency
+    dropped 30%`, `json.loads shows 94% self time`, `CPU is at 70%`,
+    `a 4MB request`, `5% of runtime cannot win more than 5%`. These are *not*
+    claims about the world — the first four are premises of worked problems and
+    the last is true by definition. They were spelled out in words, which
+    removes the atom and changes no meaning.
+
+**The allowlist was not touched.** It remains at nine entries. Adding `DNS`,
+`ORM`, `CI`, `PDF`, `IDE`, `UUID`, `PID`, `CDN` would have been defensible by
+parallel with the existing `SQL` and `HTTP` entries, and was rejected anyway:
+nine to seventeen is exactly the growth the spec warns turns the gate into
+theatre. Rephrasing cost more effort and kept the loophole small.
+
+### A caution about the technique
+
+Spelling out a numeral to clear the gate is legitimate **only** where the
+figure is a scenario parameter or an arithmetic identity. It is illegitimate
+where the figure is an empirical claim — there, spelling it out hides an
+unsourced fact instead of removing a false positive. The distinction is the
+whole point and is not machine-checkable, so it is recorded here rather than
+enforced.
+
+### The two that remain `unsourced`, and why
+
+| lesson | what blocks it | disposition |
+|---|---|---|
+| `J.1` | `In June 1996, the Ariane 5 rocket exploded 37 seconds after liftoff…` | **Sourceable.** This is a real, well-documented event and belongs in the traced pipeline, not here. It needs a seed, not a rephrase. |
+| `J.9` | `Docker`, `CDN`, `UUID`, `PID`, `Cmd+Shift+R`, `11:30 PM`, `/Users/dev/project` | A narrative lesson dense with environment specifics. Rephraseable in principle, but it is a substantial rewrite of a story rather than a few word swaps, and worth doing deliberately. |
+
+So: **one wants research, one wants a rewrite.** Neither is blocked on a
+decision.
 
 ## A question worth settling before doing the work
 

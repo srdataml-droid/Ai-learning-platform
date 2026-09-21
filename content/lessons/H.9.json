@@ -3,8 +3,8 @@
   "trackId": "H",
   "trackName": "Observation",
   "title": "Learn your system's normal before you need to recognise abnormal",
-  "status": "unsourced",
-  "story": "Abnormal is not a property of a measurement. Four hundred milliseconds is fine for one endpoint and a crisis for another; eighty percent memory is steady state for a service that caches and a warning for one that does not. Without knowing what a system does when nothing is wrong, every number is uninterpretable, and the interpretation gets invented under pressure.\n\nThis is why the worst moment to first look at a dashboard is during an incident. Everything on it looks alarming, because you have no basis for comparison and adrenaline supplies one. Teams routinely spend the first half of an outage investigating a metric that has looked exactly like that every day for a year.\n\nNormal also has shape rather than a single value. Traffic has a daily rhythm and a weekly one; batch jobs make memory sawtooth; deploys leave a signature. Knowing the shape means an anomaly can be recognised as a break in a pattern rather than a threshold crossing, which catches things no fixed limit would — a Tuesday that looks like a Sunday is a problem even though every individual number is within range.",
+  "status": "claimless",
+  "story": "Abnormal is not a property of a measurement. Four hundred milliseconds is fine for one endpoint and a crisis for another; eighty percent memory is steady state for a service that caches and a warning for one that does not. Without knowing what a system does when nothing is wrong, every number is uninterpretable, and the interpretation gets invented under pressure.\n\nThis is why the worst moment to first look at a dashboard is during an incident. Everything on it looks alarming, because you have no basis for comparison and adrenaline supplies one. Teams routinely spend the first half of an outage investigating a metric that has looked exactly like that every day for a year.\n\nNormal also has shape rather than a single value. Traffic has a daily rhythm and a weekly one; batch jobs make memory sawtooth; deploys leave a signature. Knowing the shape means an anomaly can be recognised as a break in a pattern rather than a threshold crossing, which catches things no fixed limit would — a a weekday that looks like a a weekend day is a problem even though every individual number is within range.",
   "problem": {
     "name": "Anomaly detection against a baseline",
     "aka": [
@@ -26,8 +26,8 @@
       "beats": "a fixed threshold, which is wrong at some hour of some day"
     },
     "worked": {
-      "problem": "CPU is at 70% during an incident. Is that the problem?",
-      "reasoning": "Unanswerable without a baseline, and during an incident adrenaline will supply one. If CPU is 70% every weekday at 09:00, it is not the incident and looking at it costs you the first half of the outage. Normal also has shape rather than a value: a memory graph that sawtooths is a healthy collector, and a suddenly flat line there is the anomaly even though every number is lower."
+      "problem": "CPU is at seventy percent during an incident. Is that the problem?",
+      "reasoning": "Unanswerable without a baseline, and during an incident adrenaline will supply one. If CPU is at seventy percent every weekday morning, it is not the incident and looking at it costs you the first half of the outage. Normal also has shape rather than a value: a memory graph that sawtooths is a healthy collector, and a suddenly flat line there is the anomaly even though every number is lower."
     },
     "practice": "On a quiet day, screenshot your main dashboard and annotate what normal looks like, including the weekly shape."
   },
@@ -41,6 +41,6 @@
       "answer": "Because the same value means different things at different times. A request rate that is healthy at midday indicates an outage at midday and is normal at three in the morning, so a single threshold either pages falsely overnight or misses a daytime failure. A baseline captures the expected shape, letting you alert on deviation from the pattern instead. That catches failures where every individual number stays inside its limits but the relationship between them is wrong, which fixed thresholds cannot see."
     }
   },
-  "blueprint": "Without a baseline            With one\n  \"CPU is at 70%!\"              \"CPU is at 70%, and it is 70%\n  -> is that bad?                every weekday at 09:00\"\n  -> nobody knows                -> not the incident. move on.\n\nNormal has shape, not a value:\n\n  req/s   .--.      .--.      .--.        <- daily rhythm\n        _/    \\____/    \\____/    \\___\n          Mon       Tue       Wed\n\n  memory  /|  /|  /|  /|                  <- sawtooth = GC\n         / | / | / | / |                     a FLAT line here\n        /  |/  |/  |/  |                     is the anomaly\n\nLearn it on a quiet Tuesday, not at 03:00 during an outage.",
+  "blueprint": "Without a baseline            With one\n  \"CPU is at 70%!\"              \"CPU is at 70%, and it is 70%\n  -> is that bad?                every weekday at 09:00\"\n  -> nobody knows                -> not the incident. move on.\n\nNormal has shape, not a value:\n\n  req/s   .--.      .--.      .--.        <- daily rhythm\n        _/    \\____/    \\____/    \\___\n          Mon       Tue       Wed\n\n  memory  /|  /|  /|  /|                  <- sawtooth = GC\n         / | / | / | / |                     a FLAT line here\n        /  |/  |/  |/  |                     is the anomaly\n\nLearn it on a quiet a weekday, not at 03:00 during an outage.",
   "takeaway": "No measurement is abnormal on its own. Learn the shape of normal while nothing is wrong, because during an incident you will invent one."
 }

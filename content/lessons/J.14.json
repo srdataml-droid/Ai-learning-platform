@@ -3,7 +3,7 @@
   "trackId": "J",
   "trackName": "Debugging",
   "title": "Root cause versus symptom, and the five whys",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "Fixing a symptom is fast, satisfying and leaves the system in a state where the same class of failure will happen again in a slightly different form. The distinction between symptom and cause is not philosophical: it is the difference between whether this recurs.\n\nAsking why repeatedly is a technique for moving from one to the other. The service crashed — why — it ran out of memory — why — it loaded the whole file into memory — why — the file is normally small and nobody checked the size — why — there is no limit on what may be uploaded — why — the upload endpoint was added without a size constraint and nothing requires one. Restarting the service addresses the first line. Adding a limit and validating uploads addresses the last, and prevents a family of problems rather than this instance.\n\nTwo cautions. The chain usually ends in something process-shaped or organisational, and it is easy to stop early because the technical answer is the comfortable one. But it is also possible to keep going until the conclusion is uselessly broad, and a root cause you cannot act on is not a root cause. The correct stopping point is the last link where a specific change would prevent recurrence.",
   "beats": {
     "broke": "A fix is applied at the point where the problem was observed, which is where it surfaced rather than where it originated. The immediate failure stops, the generating condition remains, and the same class recurs in a different form.",
@@ -16,5 +16,5 @@
     }
   },
   "blueprint": "  the service crashed                  <- fix here: restart\n    why? out of memory                    (recurs on Thursday)\n      why? loaded the whole file in RAM\n        why? files are normally small,\n             nobody checked the size\n          why? no size limit on upload\n            why? endpoint shipped without one,\n                 and nothing requires one   <- fix HERE\n\nStop at the last link where you can name:\n  the specific change, and who would make it.\n\nToo far: \"insufficient process\" -- true, unactionable.\nToo shallow: \"human error\" -- keep asking. why was it\npossible for that mistake to have that effect?",
-  "takeaway": "Stop at the last link where you can name a specific change and who makes it. 'Human error' is a place to keep asking, not an answer."
+  "takeaway": "Stop at the last link where you can name a specific change and who makes it. 'human error' is a place to keep asking, not an answer."
 }

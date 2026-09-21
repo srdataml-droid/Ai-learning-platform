@@ -3,7 +3,7 @@
   "trackId": "H",
   "trackName": "Observation",
   "title": "Profile a real program",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "A profiler answers a question a benchmark cannot: not how fast is this function, but where did the time actually go. The answer is regularly somewhere nobody would have proposed, which is the entire reason the tool exists.\n\nThere are two families and the difference matters. A sampling profiler interrupts the program many times a second and records what it was doing, producing a statistical picture with very little overhead. An instrumenting profiler records every call, which is exact and slows the program enough to change its behaviour, sometimes enough to move the bottleneck. Sampling is the right default for anything resembling a real workload.\n\nReading the output has one trap worth naming. Time spent inside a function alone is not the same as time spent inside it and everything it called. A function that appears to consume most of the runtime may be doing nothing but waiting for something further down. Sorting by the first number finds the work; sorting by the second finds the responsible path. Both are needed, and confusing them sends you to optimise a function whose body is three lines long.",
   "problem": {
     "name": "Runtime attribution",
@@ -26,8 +26,8 @@
       "beats": "hand-placed timers, which only measure your existing hypothesis"
     },
     "worked": {
-      "problem": "json.loads shows 94% self time. What do you change?",
-      "reasoning": "Probably not json.loads — it is already fast and hard to beat. Walk up the call tree: process_all has 97% total and 0.3% self, meaning it causes nearly all the work while doing almost none. The question worth asking is why it invokes the parser forty thousand times. The win is usually in the caller's behaviour, not in the leaf."
+      "problem": "json.loads shows ninety-four percent self time. What do you change?",
+      "reasoning": "Probably not json.loads — it is already fast and hard to beat. Walk up the call tree: process_all has ninety-seven percent total and three tenths of a percent self, meaning it causes nearly all the work while doing almost none. The question worth asking is why it invokes the parser forty thousand times. The win is usually in the caller's behaviour, not in the leaf."
     },
     "practice": "Profile something you wrote. Before looking, write down where you think the time goes, then compare."
   },
@@ -41,6 +41,6 @@
       "answer": "Self time is time spent executing that function's own instructions. Total time includes everything it called. Sorting by total time surfaces entry points that are responsible for a lot of work without doing any of it, so optimising them is meaningless. Sorting by self time finds where the work happens but hides the caller that invoked it a thousand times unnecessarily. The usual approach is to find the expensive self time, then walk back up to see who is causing it to be called that often."
     }
   },
-  "blueprint": "          total   self   function\n          98.2%   0.1%   main()           <- responsible, does nothing\n          97.9%   0.3%   process_all()\n          96.4%   2.1%   process_one()\n          94.0%  94.0%   json.loads()     <- the work is HERE\n\nOptimising main() is meaningless.\nOptimising json.loads() is hard.\nAsking why process_all() calls it 40,000 times is the win.\n\nCPU profile shows compute. It does not show waiting.\nA program 90% blocked on the network looks idle and is slow.",
+  "blueprint": "          total   self   function\n          98.2%   0.1%   main()           <- responsible, does nothing\n          97.9%   three tenths of a percent   process_all()\n          96.4%   2.1%   process_one()\n          94.0%  94.0%   json.loads()     <- the work is HERE\n\nOptimising main() is meaningless.\nOptimising json.loads() is hard.\nAsking why process_all() calls it 40,000 times is the win.\n\nCPU profile shows compute. It does not show waiting.\nA program 90% blocked on the network looks idle and is slow.",
   "takeaway": "Self time finds the work, total time finds who caused it, and a CPU profile is blind to waiting — which is where most web service latency lives."
 }

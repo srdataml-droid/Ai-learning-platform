@@ -12,6 +12,9 @@
  *       — this is the gate; see tools/lib/gate.mjs
  *   a lesson claiming `unsourced` must NOT name a seed
  *       — if it has a seed it should have been gated, so the status is stale
+ *   a lesson claiming `claimless` must contain no checkable atom at all
+ *       — the status asserts the prose has nothing to source, and an
+ *         assertion about the text is one the machine can settle
  *
  * Nothing here reads for meaning. It cannot tell you a lesson is true. It
  * tells you that every statement in it which could be checked has something
@@ -39,6 +42,14 @@ export async function verifyAll(root = new URL('../content/', import.meta.url)) 
     if (!GATED.includes(lesson.status)) {
       if (lesson.seed) {
         problems.push(`${lesson.id}: status is "${lesson.status}" but it names seed ${lesson.seed}; gate it or drop the seed`);
+      }
+      // `claimless` asserts that the prose contains nothing checkable. That is
+      // an assertion about the text, so it is checked rather than trusted.
+      if (lesson.status === 'claimless') {
+        const { ok, unlicensed } = checkTraceable(proseOf(lesson), { claims: [] }, allowlist);
+        if (!ok) {
+          problems.push(`${lesson.id}: status "claimless" but the prose asserts ${unlicensed.length}: ${unlicensed.join(', ')}`);
+        }
       }
       continue;
     }

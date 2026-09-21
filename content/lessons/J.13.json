@@ -3,7 +3,7 @@
   "trackId": "J",
   "trackName": "Debugging",
   "title": "Debugging models: is it the data, the label, the metric or the code",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "A model performing badly has four candidate causes and they need separating before anything is changed, because the usual response — adjust the model — addresses the one that is least often responsible.\n\nThe data is the most common. Wrong distribution, missing values encoded in a way the model reads as meaningful, a preprocessing step applied during training and not at inference. The labels are next and are frequently wrong in ways nobody has checked: inconsistent between annotators, systematically biased, or derived from something that already encodes the answer. The metric may not measure what you care about, which is how a classifier achieving high accuracy on a heavily imbalanced dataset can be entirely useless. Only then the code.\n\nThe specific failure worth knowing by name is leakage, and it is dangerous because it looks like success. If a feature contains information that would not exist at prediction time — a field populated after the outcome, an identifier correlated with the target, a duplicate row split across training and test — the model appears excellent in evaluation and fails immediately in production. Suspiciously good results deserve more investigation than poor ones, because poor results get investigated automatically and excellent ones get celebrated and shipped.",
   "beats": {
     "broke": "Poor model performance has four possible causes — data, labels, metric, code — and they are indistinguishable from the score alone. The default response is to change the model, which addresses the least likely one.",

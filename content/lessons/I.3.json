@@ -3,7 +3,7 @@
   "trackId": "I",
   "trackName": "Planning",
   "title": "Estimate, record the estimate, compare afterwards",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "Estimation is treated as a talent people either have or lack, which conveniently excuses never improving at it. It is a skill, and it improves the way skills do: by making predictions, recording them, and comparing them against what happened. Almost nobody does the recording, which is why almost nobody improves.\n\nWithout a record, memory does the comparison and memory is not neutral. Overruns are remembered as exceptional — an unusual dependency, an interruption, a thing nobody could have foreseen — so each one is filed as a special case and the general pattern never forms. Twenty recorded estimates make the pattern impossible to file away, and the useful discovery is usually not that you are wrong but that you are wrong by a consistent ratio, which is directly correctable.\n\nThe record also changes what estimating is for. An estimate with no history behind it is a guess presented as a number, and people plan around it as though it were information. An estimate backed by twenty comparisons can be stated with its own error bar, which is a far more useful thing to hand someone than false precision.",
   "beats": {
     "broke": "Estimates are made and never checked, so memory performs the comparison. Memory files every overrun as an exception caused by something unforeseeable, which prevents the general pattern from ever becoming visible.",

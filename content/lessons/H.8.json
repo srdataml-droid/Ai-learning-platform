@@ -3,7 +3,7 @@
   "trackId": "H",
   "trackName": "Observation",
   "title": "Keep an engineering notebook: symptom, hypothesis, test, result",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "Debugging held entirely in your head degrades in a predictable way. After an hour you cannot recall whether a particular theory was tested or merely considered, which configurations have already been tried, or what the behaviour was before the last four changes. So theories get retested, changes accumulate unrecorded, and the original symptom becomes unreachable.\n\nFour fields fix most of it. The symptom, stated precisely enough to recognise if it returns. The hypothesis, one at a time, written before the test rather than after. The test that would distinguish it from the alternatives. The result, including the ones that ruled nothing out. Writing the hypothesis first is the part that does the work, because a theory written down can be wrong in a way a theory in your head cannot: it stops quietly reshaping itself to fit whatever you just observed.\n\nThe record keeps paying after the bug is closed. It is the raw material for the postmortem, it is the evidence when someone asks why the fix is what it is, and it is what you consult in eight months when the same symptom reappears and you have entirely forgotten that you have met it before.",
   "problem": {
     "name": "State externalisation during search",

@@ -3,7 +3,7 @@
   "trackId": "I",
   "trackName": "Planning",
   "title": "Sequence for learning: do the thing that teaches you most, earliest",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "Plans are written with the knowledge available at the start, which is the least you will ever have. Every task completed changes what you know, so the order in which work is done determines how much of the plan gets made with good information and how much with the initial guess.\n\nThis argues for a different ordering than the usual one. Rather than doing the easiest or most structurally foundational work first, do the work that resolves the most uncertainty, because it improves every decision after it. Building a thin path through the entire system — ugly, incomplete, but touching every layer — teaches you more about where the difficulties are than building one layer properly, and it teaches you before the layer you built properly has to be rebuilt.\n\nIt is closely related to testing the riskiest assumption but not the same thing. Risk-first asks what would waste the most work if false. Learning-first asks what would change the most subsequent decisions if understood. They often point at the same task; when they do not, the distinction is between avoiding a catastrophe and improving a hundred small choices.",
   "beats": {
     "broke": "A plan is authored at the moment of least knowledge, and work sequenced by structure or ease leaves the informative parts until late. Most of the plan is therefore executed on the initial guess rather than on what has since been learned.",

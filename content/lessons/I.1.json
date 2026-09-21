@@ -3,7 +3,7 @@
   "trackId": "I",
   "trackName": "Planning",
   "title": "Write down what this is not, before what it is",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "A description of what something is has no edges. Every reader supplies their own boundary and each one differs, so a group can agree enthusiastically on a paragraph while holding four incompatible pictures of the work. Nothing surfaces the mismatch until the build is underway and someone asks where the part they assumed was included has gone.\n\nNon-goals put the edges in. They are cheap to write and they carry more information per line than the goals do, because a goal like 'a fast search' is agreed by everyone and constrains nothing, while 'this will not handle typos, and will not search inside attachments' is immediately checkable and immediately contentious if someone disagrees. The argument you want is the one that happens at the moment the non-goal is written, not the one that happens in week six.\n\nThey also protect the work afterwards. Scope arrives one reasonable request at a time, each individually small, and without a written boundary there is no principled place to decline. A non-goal converts that refusal from a judgement about someone's request into a reference to a decision already made and agreed.",
   "beats": {
     "broke": "A statement of what something is leaves its boundary to the reader, so several people read the same description and picture different scopes. The disagreement stays invisible until the work is far enough along for it to be expensive.",
@@ -12,7 +12,7 @@
     "interview": {
       "q": "Why are non-goals more useful than goals in a design document?",
       "trap": "Answering that they manage expectations. That is a consequence; the mechanism is about which statements can actually be disagreed with.",
-      "answer": "Because goals are usually agreed by everyone and constrain nothing. 'Reliable', 'fast', 'easy to use' — nobody objects, and they rule out no design. A non-goal is specific enough that someone can read it and realise it excludes something they were counting on, so it surfaces the disagreement at the moment it costs nothing to resolve. It also gives you a principled basis for declining scope later, since the refusal refers to a decision already agreed rather than to your judgement of their request."
+      "answer": "Because goals are usually agreed by everyone and constrain nothing. 'reliable', 'fast', 'easy to use' — nobody objects, and they rule out no design. A non-goal is specific enough that someone can read it and realise it excludes something they were counting on, so it surfaces the disagreement at the moment it costs nothing to resolve. It also gives you a principled basis for declining scope later, since the refusal refers to a decision already agreed rather than to your judgement of their request."
     }
   },
   "blueprint": "Goals (everyone agrees, nothing is decided):\n  - fast\n  - reliable\n  - easy to use\n\nNon-goals (someone will object, and that is the value):\n  - will NOT handle typos or fuzzy matching\n  - will NOT search inside PDF attachments\n  - will NOT work offline\n  - will NOT support more than one organisation per account\n\nIf nobody objects to your non-goals, they are too safe.\nThe objection in week 1 is the one you wanted.",

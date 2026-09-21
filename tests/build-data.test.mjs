@@ -143,7 +143,10 @@ test('every gated lesson in the shipped bundle resolves to its sources', async (
   for (const track of CURRICULUM.tracks) {
     for (const task of track.tasks) {
       const lesson = CurriculumLessons.getLesson(task.id);
-      if (!lesson || lesson.status === 'unsourced') continue;
+      // Gated means traced or verified. `claimless` ships without sources by
+      // definition — it asserts there is nothing to source — and `unsourced`
+      // has not been through the gate at all.
+      if (!lesson || !['traced', 'verified'].includes(lesson.status)) continue;
       const sources = CurriculumLessons.getSources(task.id);
       if (!sources || sources.length === 0) missing.push(task.id);
     }

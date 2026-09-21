@@ -3,7 +3,7 @@
   "trackId": "G",
   "trackName": "Critical thinking",
   "title": "Read a benchmark critically: what was measured, on what hardware, by whom",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "A benchmark is a measurement of one specific thing, on one specific machine, under one specific workload, by someone with a specific interest in the result. Reported as a single number it loses all four qualifications, and the number then travels much further than the conditions it was true under.\n\nFour questions recover most of what was lost. What exactly was measured — throughput and latency answer different questions, and an average hides the tail where users actually live. On what hardware, with what data volume, and was anything warmed up first. What was it compared against, and was the comparison configured by someone who knew how to configure it, because a default configuration against a tuned one is not a comparison. And who ran it, since a benchmark published by a vendor is not fraudulent but has been through a selection process where unflattering configurations were quietly not published.\n\nThe most common distortion is not dishonesty but workload mismatch. A system measured on a benchmark that resembles nothing you do can be entirely accurate and completely irrelevant, and the only defence is to measure on your own workload before believing anything about your own situation.",
   "beats": {
     "broke": "Results get compressed into a single comparative number, and the conditions that made it true — hardware, workload, data volume, configuration, who ran it — do not travel with it. The number then gets applied to situations resembling none of that.",

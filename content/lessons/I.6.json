@@ -3,7 +3,7 @@
   "trackId": "I",
   "trackName": "Planning",
   "title": "Write a one page design doc before anything non trivial: problem, options, choice, why, failure modes",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "Writing exposes thinking that talking does not. A design held in conversation can stay comfortably vague, because each participant fills gaps with their own assumptions and nobody notices the gaps exist. Written down, the gaps become visible sentences that cannot be completed, and that discovery is most of the value — it usually happens to the author, alone, before anyone else reads it.\n\nOne page is the constraint that makes it work. It is short enough that it actually gets written and actually gets read, and short enough that it forces a decision rather than a survey. Five sections carry it: the problem, stated so someone outside the team understands why it matters; the options considered, including the one you rejected, stated fairly; the choice; why, in terms of the trade being accepted; and the failure modes, meaning how this goes wrong and what you would see.\n\nThe failure modes section is the one most often skipped and the one that pays the most later. It is the only part written while you still have a clear head about the design's weaknesses, and six months on, when something goes wrong, it is the document that says whether this was anticipated or genuinely new — which is exactly the question nobody can answer from memory.",
   "beats": {
     "broke": "Designs discussed only in conversation stay vague, because every listener silently fills the gaps with their own assumptions. Everyone leaves agreeing, holding different designs, and the divergence surfaces during implementation.",

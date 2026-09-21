@@ -3,7 +3,7 @@
   "trackId": "G",
   "trackName": "Critical thinking",
   "title": "Survivorship bias",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "The literature on technology decisions is written almost entirely by survivors. A team rewrites a service in a new language, it goes well, they write it up, it circulates. The team whose rewrite consumed a year and was quietly abandoned writes nothing, because there is no satisfying conclusion and describing it publicly is professionally unpleasant. The record you can read is therefore not a sample of what happens. It is a sample of what happens when it works.\n\nThis bends judgment in a consistent direction. Migrations look more successful than they are, rewrites look more tractable, ambitious architectural moves look like the sort of thing that generally pays off. Every individual account may be entirely honest and the aggregate still misleads, because the failures are not lying — they are absent.\n\nThe correction is to ask where the missing accounts are before updating on the ones you have. Who tried this and did not write about it, and how would I find out. A sentence in a postmortem, an abandoned branch, someone's offhand remark about the year they do not talk about. That evidence is much harder to gather, which is precisely why the bias is so durable.",
   "beats": {
     "broke": "Accounts of outcomes are produced voluntarily, and success is far more likely to be written up than failure. The visible record is a filtered sample, so reasoning from it estimates the success rate of a population that excludes everyone who failed.",
