@@ -1,0 +1,62 @@
+{
+  "taskId": "O.9",
+  "title": "k nearest neighbours",
+  "researchedAt": "2026-09-21",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The rule was defined by Fix and Hodges in a technical report for the USAF School of Aviation Medicine at Randolph Field in 1951, on nonparametric discrimination and its consistency properties.",
+      "type": "event",
+      "tokens": [
+        "Fix",
+        "Hodges",
+        "Randolph Field",
+        "1951"
+      ],
+      "source": {
+        "title": "Evelyn Fix and J. L. Hodges, Discriminatory analysis - nonparametric discrimination: consistency properties, Technical Report 4, Project Number 21-49-004, USAF School of Aviation Medicine, Randolph Field, Texas, February 1951",
+        "url": "https://apps.dtic.mil/sti/citations/ADA800276",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Cover and Hart analysed it in the IEEE Transactions on Information Theory in 1967, volume 13, pages 21 to 27. The nearest neighbour decision rule assigns to an unclassified sample point the classification of the nearest of a set of previously classified points, and this rule is independent of the underlying joint distribution on the sample points and their classifications.",
+      "type": "quote",
+      "tokens": [
+        "Cover",
+        "Hart",
+        "IEEE Transactions on Information Theory",
+        "IEEE",
+        "1967"
+      ],
+      "source": {
+        "title": "T. M. Cover and P. E. Hart, Nearest neighbor pattern classification, IEEE Transactions on Information Theory 13(1):21-27, January 1967, doi 10.1109/TIT.1967.1053964",
+        "url": "https://isl.stanford.edu/~cover/papers/transIT/0021cove.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Their large-sample result bounds the error between the Bayes probability of error and a function of it, and they state the consequence: for any number of categories, the probability of error of the nearest neighbour rule is bounded above by twice the Bayes probability of error. In this sense, they write, it may be said that half the classification information in an infinite sample set is contained in the nearest neighbour.",
+      "type": "quote",
+      "tokens": [
+        "Cover",
+        "Hart",
+        "Bayes",
+        "Their"
+      ],
+      "source": {
+        "title": "T. M. Cover and P. E. Hart, Nearest neighbor pattern classification, IEEE Transactions on Information Theory 13(1):21-27, January 1967, doi 10.1109/TIT.1967.1053964",
+        "url": "https://isl.stanford.edu/~cover/papers/transIT/0021cove.pdf",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "fitting a model means committing in advance to a form the relationship must take, and sometimes there is no reason to believe any particular form",
+    "fix": "do not fit anything — keep the examples, and classify a new point by what the nearest recorded points were, which requires no assumption about the shape of the boundary",
+    "cost": "the training cost moves to prediction time and the whole dataset has to be retained, and the notion of nearest depends entirely on a distance you chose, which makes scaling and dimensionality decisive",
+    "interview": "what the bound of twice the Bayes error actually promises"
+  }
+}

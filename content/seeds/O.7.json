@@ -1,0 +1,44 @@
+{
+  "taskId": "O.7",
+  "title": "Random forests",
+  "researchedAt": "2026-09-21",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Breiman defined random forests in Machine Learning in 2001, volume 45, pages 5 to 32, as a combination of tree predictors in which each tree depends on the values of a random vector sampled independently and with the same distribution for all trees in the forest.",
+      "type": "event",
+      "tokens": [
+        "Breiman",
+        "Machine Learning",
+        "2001"
+      ],
+      "source": {
+        "title": "Leo Breiman, Random Forests, Machine Learning 45(1):5-32, October 2001, doi 10.1023/A:1010933404324",
+        "url": "https://link.springer.com/article/10.1023/A:1010933404324",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The central result is that the generalisation error converges almost surely to a limit as the number of trees in the forest becomes large. That limit depends on two quantities: the strength of the individual trees and the correlation between them. Using a random selection of features to split each node yields favourable error rates.",
+      "type": "event",
+      "tokens": [
+        "Breiman",
+        "The",
+        "That",
+        "Using"
+      ],
+      "source": {
+        "title": "Leo Breiman, Random Forests, Machine Learning 45(1):5-32, October 2001, doi 10.1023/A:1010933404324",
+        "url": "https://link.springer.com/article/10.1023/A:1010933404324",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a single deep tree fits its training data almost exactly and a small change to that data produces a completely different tree, so the method is accurate in sample and unstable out of it",
+    "fix": "grow many trees, each on a resample and each choosing its splits from a random subset of the features, and average them — the randomisation is there to make the trees disagree with one another",
+    "cost": "the averaged model is no longer a rule anyone can read, and the remaining error is governed by a trade between how strong the individual trees are and how correlated they remain",
+    "interview": "why adding more trees to a forest does not make it overfit"
+  }
+}

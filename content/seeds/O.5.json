@@ -1,0 +1,59 @@
+{
+  "taskId": "O.5",
+  "title": "Logistic regression",
+  "researchedAt": "2026-09-21",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The curve itself is much older than its use in classification. Verhulst introduced the logistic equation in 1838, in a note on the law that population follows in its growth, as a generalisation of exponential growth carrying a maximum value, and estimated its parameters from the populations of several countries. He named the solution the logistic curve in a later paper, and the work was rediscovered only in the 1920s.",
+      "type": "event",
+      "tokens": [
+        "Verhulst",
+        "1838"
+      ],
+      "source": {
+        "title": "Nicolas Bacaer, Verhulst and the logistic equation (1838), in A Short History of Mathematical Population Dynamics, Springer, 2011, on Verhulst's Notice sur la loi que la population suit dans son accroissement",
+        "url": "https://link.springer.com/chapter/10.1007/978-0-85729-115-8_6",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Berkson proposed applying the logistic function to bio-assay in the Journal of the American Statistical Association in 1944, volume 39, pages 357 to 365, and coined the term logit — from logistic unit — advocating it as a simpler and more computationally efficient alternative to the probit model then prevalent. The function describes the log-odds, mapping the open interval from zero to one onto the whole real line so that regression techniques can be applied to probabilities.",
+      "type": "event",
+      "tokens": [
+        "Berkson",
+        "Journal of the American Statistical Association",
+        "1944"
+      ],
+      "source": {
+        "title": "Joseph Berkson, Application of the Logistic Function to Bio-Assay, Journal of the American Statistical Association 39(227):357-365, September 1944, doi 10.2307/2280041",
+        "url": "https://www.jstor.org/stable/2280041",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Cox set out the regression analysis of binary sequences in the Journal of the Royal Statistical Society Series B in 1958, volume 20, pages 215 to 232, read before the Research Section on 5 March 1958. A sequence of zeros and ones is observed where the chance that a trial is a one may depend on one or more independent variables, and he considers tests and estimates first for preassigned independent variables and then for variables that are functions of the sequence.",
+      "type": "event",
+      "tokens": [
+        "Cox",
+        "Journal of the Royal Statistical Society",
+        "Royal Statistical Society",
+        "Research Section",
+        "1958"
+      ],
+      "source": {
+        "title": "D. R. Cox, The Regression Analysis of Binary Sequences, Journal of the Royal Statistical Society Series B 20(2):215-232, 1958, read before the Research Section on 5 March 1958, doi 10.1111/j.2517-6161.1958.tb00292.x",
+        "url": "https://academic.oup.com/jrsssb/article/20/2/215/7027376",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a linear function of the inputs returns any real number, and the thing you want it to return is a probability, which lives only between zero and one",
+    "fix": "model the log-odds instead: the logit maps that interval onto the whole real line, so a linear model can be fitted there and mapped back through the logistic curve",
+    "cost": "the coefficients now describe additive changes in log-odds rather than in probability, so the same coefficient corresponds to a large effect in the middle of the range and almost none at the extremes",
+    "interview": "what goes wrong if you simply fit a straight line to labels that are zeros and ones"
+  }
+}

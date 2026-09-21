@@ -84,16 +84,8 @@ Study order: the sequence first, then the five habits running underneath.
 
 ## Track O — Classical ML
 
-15 of 20 still missing.
+7 of 20 still missing.
 
-- [ ] `O.5` Logistic regression
-- [ ] `O.6` Decision trees
-- [ ] `O.7` Random forests
-- [ ] `O.8` Gradient boosting
-- [ ] `O.9` k nearest neighbours
-- [ ] `O.10` k means clustering
-- [ ] `O.11` PCA
-- [ ] `O.12` Train, validation, test
 - [ ] `O.13` Cross validation
 - [ ] `O.14` Overfitting and underfitting
 - [ ] `O.15` Bias variance tradeoff
@@ -173,7 +165,7 @@ Study order: the sequence first, then the five habits running underneath.
 
 ---
 
-**Total remaining: 89 of 313.**
+**Total remaining: 81 of 313.**
 
 Regenerate: `node tools/missing-lessons.mjs > docs/MISSING-LESSONS.md`
 

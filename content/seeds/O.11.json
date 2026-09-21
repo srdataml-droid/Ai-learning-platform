@@ -1,0 +1,44 @@
+{
+  "taskId": "O.11",
+  "title": "PCA",
+  "researchedAt": "2026-09-21",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Pearson gave the first formal description in the Philosophical Magazine in 1901, volume 2 of the sixth series, pages 559 to 572, under the title on lines and planes of closest fit to systems of points in space. His approach was purely geometric: he proposed choosing the line that minimises the squared perpendicular distances from each point to that line.",
+      "type": "event",
+      "tokens": [
+        "Pearson",
+        "Philosophical Magazine",
+        "His",
+        "1901"
+      ],
+      "source": {
+        "title": "Karl Pearson, On lines and planes of closest fit to systems of points in space, The London, Edinburgh, and Dublin Philosophical Magazine and Journal of Science, Series 6, 2(11):559-572, 1901, doi 10.1080/14786440109462720",
+        "url": "https://www.tandfonline.com/doi/abs/10.1080/14786440109462720",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Hotelling developed the modern mathematical formulation in the Journal of Educational Psychology in 1933, volume 24, in two parts at pages 417 to 441 and 498 to 520, analysing a complex of statistical variables into principal components.",
+      "type": "event",
+      "tokens": [
+        "Hotelling",
+        "Journal of Educational Psychology",
+        "1933"
+      ],
+      "source": {
+        "title": "Harold Hotelling, Analysis of a complex of statistical variables into principal components, Journal of Educational Psychology 24:417-441 and 498-520, 1933, doi 10.1037/h0071325",
+        "url": "https://psycnet.apa.org/record/1934-00645-001",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "many measured variables describe the same few underlying quantities, so the coordinates you were given are more numerous than the structure they carry and are correlated with one another",
+    "fix": "find the directions along which the points vary most, which are the same directions that minimise the squared perpendicular distances to them, and keep the first few",
+    "cost": "the directions are chosen by variance, which is a property of the units you happened to measure in, and the resulting axes are combinations of every original variable and so usually mean nothing anybody can name",
+    "interview": "how this differs from fitting a line by regression"
+  }
+}

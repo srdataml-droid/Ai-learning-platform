@@ -1,0 +1,47 @@
+{
+  "taskId": "O.10",
+  "title": "k means clustering",
+  "researchedAt": "2026-09-21",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "A correction to the naming as it is usually given: the term and the algorithm come from different people. MacQueen coined the term k-means in the Proceedings of the Fifth Berkeley Symposium in 1967, pages 281 to 297, proposing a procedure that updates the centres incrementally as each observation is assigned, which requires access to only a single data point at each stage.",
+      "type": "event",
+      "tokens": [
+        "MacQueen",
+        "Berkeley",
+        "1967"
+      ],
+      "source": {
+        "title": "J. MacQueen, Some methods for classification and analysis of multivariate observations, Proceedings of the Fifth Berkeley Symposium on Mathematical Statistics and Probability, pages 281-297, 1967",
+        "url": "https://projecteuclid.org/proceedings/berkeley-symposium-on-mathematical-statistics-and-probability/proceedings-of-the-fifth-berkeley-symposium-on-mathematical-statistics-and/Chapter/Some-methods-for-classification-and-analysis-of-multivariate-observations/bsmsp/1200512992",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The algorithm almost everyone actually runs — alternating between assigning every point to its nearest centre and recomputing the centres — was written by Lloyd at Bell Telephone Laboratories in 1957 as a technique for pulse-code modulation, and was not published as a journal article until 1982, twenty-five years later. Forgy published essentially the same method in 1965, which is why it is sometimes named for both of them.",
+      "type": "event",
+      "tokens": [
+        "Lloyd",
+        "Bell Telephone Laboratories",
+        "Bell",
+        "Forgy",
+        "1957",
+        "1965",
+        "1982"
+      ],
+      "source": {
+        "title": "Stuart P. Lloyd, Least squares quantization in PCM, IEEE Transactions on Information Theory 28(2):129-137, March 1982; written as a Bell Telephone Laboratories technical report in 1957",
+        "url": "https://ieeexplore.ieee.org/document/1056489",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "you want to know which observations belong together, and there is no target to check an answer against, so the question has to be turned into an objective before it can be answered at all",
+    "fix": "fix the number of groups in advance and minimise the total squared distance from each point to its group's centre, by alternately assigning points to the nearest centre and recomputing the centres",
+    "cost": "the objective is not convex, so the procedure reaches a local minimum that depends on where it started, and the criterion assumes the structure you want is compact and roughly spherical in whatever space your preprocessing produced",
+    "interview": "whether it is a problem that the method returns a different answer on each run"
+  }
+}

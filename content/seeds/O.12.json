@@ -1,0 +1,47 @@
+{
+  "taskId": "O.12",
+  "title": "Train, validation, test",
+  "researchedAt": "2026-09-21",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The scikit-learn guidance states the general rule as never calling the fitting method on the test data, and warns that test data should never be used to make choices about the model. It notes that this is easy to miss when applying certain pre-processing steps, and that the risk is relevant with almost all transformations rather than a special case.",
+      "type": "quote",
+      "tokens": [
+        "The",
+        "It"
+      ],
+      "source": {
+        "title": "Common pitfalls and recommended practices - scikit-learn user guide, sections on data leakage and controlling randomness",
+        "url": "https://scikit-learn.org/stable/common_pitfalls.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Dwork, Feldman, Hardt, Pitassi, Reingold and Roth observe that existing approaches to ensuring validity of inferences assume a fixed procedure selected before the data are examined, whereas in practice data analysis is intrinsically adaptive, with new analyses generated based on data exploration and on the results of previous analyses on the same data.",
+      "type": "quote",
+      "tokens": [
+        "Dwork",
+        "Feldman",
+        "Hardt",
+        "Pitassi",
+        "Reingold",
+        "Roth",
+        "Science",
+        "2015"
+      ],
+      "source": {
+        "title": "Cynthia Dwork, Vitaly Feldman, Moritz Hardt, Toniann Pitassi, Omer Reingold and Aaron Roth, The reusable holdout: preserving validity in adaptive data analysis, Science 349(6248):636-638, 2015, doi 10.1126/science.aaa9375",
+        "url": "https://www.science.org/doi/10.1126/science.aaa9375",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "the same data cannot both choose a model and measure it, because once a number has been used to select among options it is a property of the selection rather than an estimate of anything",
+    "fix": "give the three jobs three separate portions — one to fit the parameters, one to choose between models, and one that is looked at once, at the end, to estimate performance",
+    "cost": "three portions means less data for each, and the discipline is procedural rather than technical: nothing in the code stops you consulting the third portion, and every consultation spends a little of what it was reserved for",
+    "interview": "why three sets are needed rather than two"
+  }
+}

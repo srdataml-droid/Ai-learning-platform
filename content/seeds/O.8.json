@@ -1,0 +1,46 @@
+{
+  "taskId": "O.8",
+  "title": "Gradient boosting",
+  "researchedAt": "2026-09-21",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Friedman set out the method in The Annals of Statistics in 2001, volume 29, pages 1189 to 1232, viewing function estimation from the perspective of numerical optimisation in function space rather than parameter space, and connecting stagewise additive expansions with steepest-descent minimisation. A general gradient descent boosting paradigm is developed for additive expansions based on any fitting criterion, with specific algorithms given for least-squares, least absolute deviation and Huber loss in regression and for the multiclass logistic likelihood in classification.",
+      "type": "event",
+      "tokens": [
+        "Friedman",
+        "The Annals of Statistics",
+        "Annals of Statistics",
+        "Huber",
+        "2001"
+      ],
+      "source": {
+        "title": "Jerome H. Friedman, Greedy function approximation: a gradient boosting machine, The Annals of Statistics 29(5):1189-1232, October 2001, doi 10.1214/aos/1013203451",
+        "url": "https://projecteuclid.org/journals/annals-of-statistics/volume-29/issue-5/Greedy-function-approximation-A-gradient-boosting-machine/10.1214/aos/1013203451.full",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Chen and Guestrin described a scalable end-to-end tree boosting system at the twenty-second conference on knowledge discovery and data mining in 2016, pages 785 to 794. They propose a sparsity-aware algorithm for sparse data and a weighted quantile sketch for approximate tree learning, and give results on cache access patterns, data compression and sharding that let the system scale beyond billions of examples using far fewer resources than existing systems.",
+      "type": "event",
+      "tokens": [
+        "Chen",
+        "Guestrin",
+        "They",
+        "2016"
+      ],
+      "source": {
+        "title": "Tianqi Chen and Carlos Guestrin, XGBoost: A Scalable Tree Boosting System, Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining, pages 785-794, 2016, doi 10.1145/2939672.2939785",
+        "url": "https://dl.acm.org/doi/10.1145/2939672.2939785",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "averaging many independently grown models reduces their instability but cannot reduce the error they all make in the same direction, because every one of them is fitted to the same target",
+    "fix": "fit the models in sequence, each one to the gradient of the loss left by those before it, which is steepest descent performed in the space of functions rather than in the space of parameters",
+    "cost": "the models are no longer independent, so the ensemble can be driven past the point of usefulness by adding more of them, and the number of stages becomes a parameter that has to be chosen rather than simply increased",
+    "interview": "what actually differs between averaging many trees and boosting them"
+  }
+}

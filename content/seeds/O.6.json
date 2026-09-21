@@ -1,0 +1,44 @@
+{
+  "taskId": "O.6",
+  "title": "Decision trees",
+  "researchedAt": "2026-09-21",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The standard treatment is the 1984 monograph by Breiman, Friedman, Olshen and Stone, which sets out methodology for constructing tree-structured rules and observes that this use of trees was unthinkable before computers. It covers trees both as a method of data analysis and as a mathematical object whose fundamental properties can be proved.",
+      "type": "event",
+      "tokens": [
+        "Breiman",
+        "Friedman",
+        "Olshen",
+        "Stone",
+        "1984"
+      ],
+      "source": {
+        "title": "Leo Breiman, Jerome H. Friedman, Richard A. Olshen and Charles J. Stone, Classification and Regression Trees, Wadsworth, Belmont, California, 1984",
+        "url": "https://www.routledge.com/Classification-and-Regression-Trees/Breiman-Friedman-Stone-Olshen/p/book/9780412048418",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The procedure is recursive partitioning: at each node a single variable and a threshold are chosen to best separate the observations by some impurity criterion, the data is split, and the procedure is applied again to each part. Because each test involves one variable at a time, the resulting regions are axis-aligned, and the rule depends only on the order of values within a variable rather than on their scale.",
+      "type": "event",
+      "tokens": [
+        "The",
+        "Because"
+      ],
+      "source": {
+        "title": "Leo Breiman, Jerome H. Friedman, Richard A. Olshen and Charles J. Stone, Classification and Regression Trees, Wadsworth, Belmont, California, 1984",
+        "url": "https://www.routledge.com/Classification-and-Regression-Trees/Breiman-Friedman-Stone-Olshen/p/book/9780412048418",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a single global formula has to describe the whole input space at once, which forces one functional form onto regions that may behave completely differently",
+    "fix": "cut the space instead of fitting it — choose one variable and one threshold at a time, split, and recurse, so that each region gets its own constant prediction",
+    "cost": "the choice at each node is locally best rather than globally best, because finding the optimal tree is intractable, so a split that only pays off in combination with a later one will not be found",
+    "interview": "why the splits are chosen greedily and what that costs"
+  }
+}
