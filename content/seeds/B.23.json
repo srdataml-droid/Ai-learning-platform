@@ -1,0 +1,57 @@
+{
+  "taskId": "B.23",
+  "title": "Authentication versus authorisation",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The specification names the 401 status code Unauthorized and defines it as indicating that the request has not been applied because it lacks valid authentication credentials for the target resource, and requires that a server generating such a response MUST send a WWW-Authenticate header field containing at least one challenge applicable to the target resource.",
+      "type": "quote",
+      "tokens": [
+        "WWW",
+        "Unauthorized"
+      ],
+      "source": {
+        "title": "RFC 9110, HTTP Semantics, STD 97, R. Fielding, M. Nottingham and J. Reschke eds., June 2022",
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "It names the 403 status code Forbidden and defines it as indicating that the server understood the request but refuses to fulfill it. If authentication credentials were provided, the server considers them insufficient to grant access, and the client SHOULD NOT automatically repeat the request with the same credentials — though a request might be forbidden for reasons unrelated to the credentials.",
+      "type": "quote",
+      "tokens": [
+        "It",
+        "SHOULD",
+        "Forbidden"
+      ],
+      "source": {
+        "title": "RFC 9110, HTTP Semantics, STD 97, R. Fielding, M. Nottingham and J. Reschke eds., June 2022",
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "A wrinkle the specification permits explicitly: an origin server that wishes to hide the current existence of a forbidden target resource MAY instead respond with a status code of 404. It also notes that where credentials were included, a 401 response indicates that authorization has been refused for those credentials, so the two codes overlap rather than partitioning cleanly.",
+      "type": "quote",
+      "tokens": [
+        "A",
+        "It",
+        "MAY"
+      ],
+      "source": {
+        "title": "RFC 9110, HTTP Semantics, STD 97, R. Fielding, M. Nottingham and J. Reschke eds., June 2022",
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "two different questions get asked at the same moment and answered by the same code path — who is this, and may they do this — and conflating them produces systems where knowing a name is sufficient to act",
+    "fix": "separate establishing identity from deciding permission, so that identity is proven once and permission is evaluated per action against what that identity is allowed to do",
+    "cost": "permission has to be evaluated everywhere an action can be reached rather than once at the door, and a check that exists on one path and not another is the shape most access-control bugs take",
+    "interview": "what the two status codes in this area actually distinguish, given that their names suggest the opposite"
+  },
+  "researchedAt": "2026-09-21"
+}

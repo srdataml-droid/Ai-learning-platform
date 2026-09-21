@@ -1,0 +1,56 @@
+{
+  "taskId": "B.27",
+  "title": "Rate limiting and backpressure",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The 429 status code indicates that the user has sent too many requests in a given amount of time, which the specification glosses as rate limiting. Response representations SHOULD include details explaining the condition, and MAY include a Retry-After header indicating how long to wait before making a new request.",
+      "type": "quote",
+      "tokens": [
+        "Retry",
+        "SHOULD",
+        "MAY"
+      ],
+      "source": {
+        "title": "RFC 6585, Additional HTTP Status Codes, M. Nottingham and R. Fielding, April 2012",
+        "url": "https://www.rfc-editor.org/rfc/rfc6585.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The specification is explicit about what it does not standardise: it does not define how the origin server identifies the user, nor how it counts requests. An origin server limiting request rates can do so based upon counts of requests on a per-resource basis, across the entire server, or even among a set of servers.",
+      "type": "quote",
+      "tokens": [
+        "The",
+        "An"
+      ],
+      "source": {
+        "title": "RFC 6585, Additional HTTP Status Codes, M. Nottingham and R. Fielding, April 2012",
+        "url": "https://www.rfc-editor.org/rfc/rfc6585.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The mechanism for telling a client when to come back is defined separately: servers send the Retry-After header field to indicate how long the user agent ought to wait before making a follow-up request, and its value can be either a date or a number of seconds.",
+      "type": "quote",
+      "tokens": [
+        "Retry",
+        "The"
+      ],
+      "source": {
+        "title": "RFC 9110, HTTP Semantics, STD 97, R. Fielding, M. Nottingham and J. Reschke eds., June 2022",
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "demand arrives faster than a system can serve it, and a system with no way to refuse work accepts everything, queues without bound, and fails for everybody rather than for the excess",
+    "fix": "refuse deliberately above a stated rate, telling the caller that it was refused for that reason and when to return, so that the load which cannot be served is shed rather than absorbed",
+    "cost": "the status code is standardised and the policy is not — who counts as a user, what is counted, and over what window are all yours to define, and every choice is a way of being unfair to somebody",
+    "interview": "why a system under too much load should reject work rather than queue it"
+  },
+  "researchedAt": "2026-09-21"
+}

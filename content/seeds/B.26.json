@@ -1,0 +1,69 @@
+{
+  "taskId": "B.26",
+  "title": "Idempotency and retries",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The specification defines a request method as idempotent if the intended effect on the server of multiple identical requests with that method is the same as the effect for a single such request, and lists PUT, DELETE and the safe request methods as idempotent among those it defines.",
+      "type": "quote",
+      "tokens": [
+        "PUT",
+        "DELETE"
+      ],
+      "source": {
+        "title": "RFC 9110, HTTP Semantics, STD 97, R. Fielding, M. Nottingham and J. Reschke eds., June 2022",
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "It gives the reason the property matters: idempotent methods are distinguished because the request can be repeated automatically if a communication failure occurs before the client is able to read the server's response. If a client sends such a request and the connection closes before any response is received, it can establish a new connection and retry, knowing that repeating the request will have the same intended effect even if the original succeeded, though the response might differ.",
+      "type": "quote",
+      "tokens": [
+        "It",
+        "If"
+      ],
+      "source": {
+        "title": "RFC 9110, HTTP Semantics, STD 97, R. Fielding, M. Nottingham and J. Reschke eds., June 2022",
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The corresponding prohibition is explicit: a client SHOULD NOT automatically retry a request with a non-idempotent method unless it has some means to know that the request semantics are actually idempotent regardless of the method, or some means to detect that the original request was never applied. The specification notes that some clients take a riskier approach and attempt to guess when an automatic retry is possible.",
+      "type": "quote",
+      "tokens": [
+        "The",
+        "SHOULD"
+      ],
+      "source": {
+        "title": "RFC 9110, HTTP Semantics, STD 97, R. Fielding, M. Nottingham and J. Reschke eds., June 2022",
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "The property is defined over intent rather than over side effects. Like the definition of safe, the idempotent property only applies to what has been requested by the user; a server is free to log each request separately, retain a revision control history, or implement other non-idempotent side effects for each idempotent request.",
+      "type": "quote",
+      "tokens": [
+        "The",
+        "Like"
+      ],
+      "source": {
+        "title": "RFC 9110, HTTP Semantics, STD 97, R. Fielding, M. Nottingham and J. Reschke eds., June 2022",
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a call across a network can fail after the work was done but before the answer arrives, so the caller cannot distinguish work that did not happen from work whose confirmation was lost",
+    "fix": "make the operation produce the same intended effect whether performed once or many times, so that retrying an unanswered request is safe without knowing which of the two cases occurred",
+    "cost": "the property has to be designed in — usually by having the caller supply a key identifying the attempt — because most operations that matter are not naturally repeatable, and the server must then remember keys it has seen",
+    "interview": "whether it is safe to retry a request that received no response"
+  },
+  "researchedAt": "2026-09-21"
+}

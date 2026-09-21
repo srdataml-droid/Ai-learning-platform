@@ -1,0 +1,42 @@
+{
+  "taskId": "B.25",
+  "title": "Queues: moving slow work out of the request",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Little proved the queuing formula in Operations Research in 1961, volume 9, pages 383 to 387: in a queuing process, where one over lambda is the mean time between arrivals of two consecutive units, L is the mean number of units in the system and W is the mean time spent by a unit in the system, then if the three means are finite and the corresponding stochastic processes strictly stationary, and if the arrival process is metrically transitive with nonzero mean, L equals lambda times W.",
+      "type": "event",
+      "tokens": [
+        "Little",
+        "Operations Research",
+        "1961"
+      ],
+      "source": {
+        "title": "John D. C. Little, A Proof for the Queuing Formula: L = lambda W, Operations Research 9(3):383-387, June 1961, doi 10.1287/opre.9.3.383",
+        "url": "https://pubsonline.informs.org/doi/10.1287/opre.9.3.383",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The relationship is not influenced by the arrival process distribution, the service distribution, the service order, or practically anything else; it applies to any such system, and particularly to systems within systems. Little revisited it fifty years later and reported its use across operations management and computer architecture.",
+      "type": "event",
+      "tokens": [
+        "Little",
+        "The"
+      ],
+      "source": {
+        "title": "John D. C. Little, OR FORUM - Little's Law as Viewed on Its 50th Anniversary, Operations Research 59(3):536-549, June 2011, doi 10.1287/opre.1110.0940",
+        "url": "https://pubsonline.informs.org/doi/10.1287/opre.1110.0940",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a request arrives needing work that takes far longer than the caller is willing to wait, and doing it inline holds a connection, a thread and the caller's attention for the whole duration",
+    "fix": "accept the request, record the work as a message, answer immediately, and let a separate worker perform it — which decouples the rate at which work arrives from the rate at which it is done",
+    "cost": "the queue converts a slow response into a pending one, so the caller now needs a way to learn the outcome, and any sustained mismatch between arrival rate and service rate shows up as an unbounded backlog rather than as an error",
+    "interview": "what a growing queue is actually telling you"
+  },
+  "researchedAt": "2026-09-21"
+}
