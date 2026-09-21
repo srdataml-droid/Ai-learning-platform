@@ -1,0 +1,57 @@
+{
+  "taskId": "B.35",
+  "title": "Observability: logs, metrics, traces, and what deserves an alert",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Sigelman and colleagues describe a production tracing infrastructure in a Google technical report of April 2010, stating its design goals as low overhead, application-level transparency, and ubiquitous deployment on a very large scale system.",
+      "type": "event",
+      "tokens": [
+        "Sigelman",
+        "Google",
+        "2010"
+      ],
+      "source": {
+        "title": "Benjamin H. Sigelman, Luiz Andre Barroso, Mike Burrows, Pat Stephenson, Manoj Plakal, Donald Beaver, Saul Jaspan and Chandan Shanbhag, Dapper, a Large-Scale Distributed Systems Tracing Infrastructure, Google Technical Report dapper-2010-1, April 2010",
+        "url": "https://research.google/pubs/dapper-a-large-scale-distributed-systems-tracing-infrastructure/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Two design choices are identified as central to its success rather than incidental: the use of sampling, and restricting instrumentation. Because a common set of building blocks is used across the organisation's software, instrumenting those blocks lets the system generate trace information without application involvement, carrying a trace context associated with a thread and tracking it across asynchronous callbacks and remote calls.",
+      "type": "event",
+      "tokens": [
+        "Two",
+        "Because"
+      ],
+      "source": {
+        "title": "Benjamin H. Sigelman, Luiz Andre Barroso, Mike Burrows, Pat Stephenson, Manoj Plakal, Donald Beaver, Saul Jaspan and Chandan Shanbhag, Dapper, a Large-Scale Distributed Systems Tracing Infrastructure, Google Technical Report dapper-2010-1, April 2010",
+        "url": "https://research.google/pubs/dapper-a-large-scale-distributed-systems-tracing-infrastructure/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "On sampling the finding is specific: a sample of just one out of thousands of requests provides sufficient information for many common uses of the tracing data. Traces are formally modelled as trees, and the data model is not restricted to one remote call framework — it also traces mail sessions, external web requests and outbound database queries. Collection is out of band, because an in-band scheme returning trace data within response headers can affect application network dynamics.",
+      "type": "event",
+      "tokens": [
+        "On",
+        "Traces",
+        "Collection"
+      ],
+      "source": {
+        "title": "Benjamin H. Sigelman, Luiz Andre Barroso, Mike Burrows, Pat Stephenson, Manoj Plakal, Donald Beaver, Saul Jaspan and Chandan Shanbhag, Dapper, a Large-Scale Distributed Systems Tracing Infrastructure, Google Technical Report dapper-2010-1, April 2010",
+        "url": "https://research.google/pubs/dapper-a-large-scale-distributed-systems-tracing-infrastructure/",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a request now crosses many services, so no single machine holds the story of what happened to it, and the logs that would explain a failure are scattered across hosts that do not know about each other",
+    "fix": "emit three different shapes of evidence — aggregated numbers over time, individual records of events, and a causal tree following one request across every service it touched — and make the third possible by carrying a context through every call",
+    "cost": "full capture is unaffordable at volume, so tracing is sampled, which means the specific request you are asked about is probably not in the data",
+    "interview": "what a trace shows you that logs and metrics cannot"
+  },
+  "researchedAt": "2026-09-21"
+}

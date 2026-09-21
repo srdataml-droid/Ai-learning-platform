@@ -1,0 +1,68 @@
+{
+  "taskId": "B.45",
+  "title": "Distributed inference: replicas, batching, autoscaling expensive hardware",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Kwon and colleagues set out the problem at the 29th Symposium on Operating Systems Principles in 2023: high throughput serving of large language models requires batching many requests at a time, but existing systems struggle because the key-value cache memory for each request is huge and grows and shrinks dynamically. When managed inefficiently, that memory is significantly wasted by fragmentation and redundant duplication, limiting the batch size.",
+      "type": "quote",
+      "tokens": [
+        "Kwon",
+        "Symposium on Operating Systems Principles",
+        "2023"
+      ],
+      "source": {
+        "title": "Woosuk Kwon, Zhuohan Li, Siyuan Zhuang, Ying Sheng, Lianmin Zheng, Cody Hao Yu, Joseph E. Gonzalez, Hao Zhang and Ion Stoica, Efficient Memory Management for Large Language Model Serving with PagedAttention, Proceedings of the 29th Symposium on Operating Systems Principles, 2023, doi 10.1145/3600006.3613165 (arXiv:2309.06180)",
+        "url": "https://arxiv.org/abs/2309.06180",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The specific waste they identify is that prior systems allocated a contiguous memory chunk sized to the request's maximum possible length, causing severe internal fragmentation when actual lengths are shorter, with the chunk remaining reserved for the request's lifetime.",
+      "type": "event",
+      "tokens": [
+        "The"
+      ],
+      "source": {
+        "title": "Woosuk Kwon, Zhuohan Li, Siyuan Zhuang, Ying Sheng, Lianmin Zheng, Cody Hao Yu, Joseph E. Gonzalez, Hao Zhang and Ion Stoica, Efficient Memory Management for Large Language Model Serving with PagedAttention, Proceedings of the 29th Symposium on Operating Systems Principles, 2023, doi 10.1145/3600006.3613165 (arXiv:2309.06180)",
+        "url": "https://arxiv.org/abs/2309.06180",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Their answer borrows from operating systems: an attention algorithm inspired by classical virtual memory and paging, storing the cache in fixed-size blocks that can be mapped to non-contiguous physical memory, so that contiguous logical pages may correspond to non-contiguous physical pages and physical memory need not be reserved in advance. The result is described as near-zero waste in cache memory with flexible sharing within and across requests.",
+      "type": "event",
+      "tokens": [
+        "Their"
+      ],
+      "source": {
+        "title": "Woosuk Kwon, Zhuohan Li, Siyuan Zhuang, Ying Sheng, Lianmin Zheng, Cody Hao Yu, Joseph E. Gonzalez, Hao Zhang and Ion Stoica, Efficient Memory Management for Large Language Model Serving with PagedAttention, Proceedings of the 29th Symposium on Operating Systems Principles, 2023, doi 10.1145/3600006.3613165 (arXiv:2309.06180)",
+        "url": "https://arxiv.org/abs/2309.06180",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "They describe their work and continuous batching as complementary rather than competing: the earlier approach increases utilisation by scheduling and interleaving requests so more can be processed in parallel, while theirs increases memory utilisation so more working sets fit in memory — yielding a two to four times speedup over it.",
+      "type": "number",
+      "tokens": [
+        "They",
+        "4x"
+      ],
+      "source": {
+        "title": "Woosuk Kwon, Zhuohan Li, Siyuan Zhuang, Ying Sheng, Lianmin Zheng, Cody Hao Yu, Joseph E. Gonzalez, Hao Zhang and Ion Stoica, Efficient Memory Management for Large Language Model Serving with PagedAttention, Proceedings of the 29th Symposium on Operating Systems Principles, 2023, doi 10.1145/3600006.3613165 (arXiv:2309.06180)",
+        "url": "https://arxiv.org/abs/2309.06180",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "the hardware that serves a model is expensive enough that idle capacity is the dominant cost, and a request-per-replica arrangement leaves most of it idle most of the time",
+    "fix": "batch requests together so one pass over the weights serves many callers at once, and manage the per-request memory so that batch size is limited by real usage rather than by worst-case reservation",
+    "cost": "batching buys throughput by making requests wait for one another, so the tuning knob trades the cost per request against the latency of each one, and autoscaling this hardware is slow enough that the scale-up arrives after the traffic that needed it",
+    "interview": "why memory rather than arithmetic is usually what limits how many requests you can serve at once"
+  },
+  "researchedAt": "2026-09-21"
+}

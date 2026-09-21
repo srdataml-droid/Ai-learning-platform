@@ -26,9 +26,8 @@ Study order: the sequence first, then the five habits running underneath.
 
 ## Track B — System design
 
-13 of 48 still missing.
+11 of 48 still missing.
 
-- [ ] `B.35` Observability: logs, metrics, traces, and what deserves an alert
 - [ ] `B.36` Deploying: containers, orchestration, canary releases
 - [ ] `B.37` Cost and capacity estimation
 - [ ] `B.38` Serving a model: batch versus real time, cold starts, GPU versus CPU
@@ -37,7 +36,6 @@ Study order: the sequence first, then the five habits running underneath.
 - [ ] `B.42` Evaluation pipelines: offline, online, golden sets, regressions
 - [ ] `B.43` AI observability: tracing a chain, logging prompts, drift
 - [ ] `B.44` Event driven AI: queues in front of models
-- [ ] `B.45` Distributed inference: replicas, batching, autoscaling expensive hardware
 - [ ] `B.46` Back of envelope estimation drills
 - [ ] `B.47` How to open, scope and drive a design round
 - [ ] `B.48` Practice designs in order: link shortener, rate limiter, chat, feed, retrieval service, agent platform
@@ -129,7 +127,7 @@ Study order: the sequence first, then the five habits running underneath.
 
 ---
 
-**Total remaining: 50 of 313.**
+**Total remaining: 48 of 313.**
 
 Regenerate: `node tools/missing-lessons.mjs > docs/MISSING-LESSONS.md`
 
