@@ -3,7 +3,7 @@
   "trackId": "E",
   "trackName": "Data structures and algorithms",
   "title": "Greedy algorithms, and when greedy is provably wrong",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "A greedy algorithm takes the best-looking option at each step and never reconsiders. It is the first thing anyone tries, it is often right, and when it is wrong it is wrong silently — producing a valid, plausible, suboptimal answer with no indication that a better one existed.\n\nCoin change is the standard demonstration. With coins of 1, 5, 10 and 25, taking the largest coin that fits at each step is optimal, and the habit of trusting it forms. Introduce coins of 1, 3 and 4 and ask for 6: greedy takes 4, then 1, then 1, giving three coins, while two threes do it in two. Nothing detected the error. The algorithm ran correctly and returned a worse answer.\n\nSo greedy demands justification rather than testing, which is the uncomfortable part. Passing examples establish nothing, because a counterexample can be arbitrarily rare. What is needed is an argument that a locally best choice is always compatible with some optimal solution — typically an exchange argument, showing that any optimal solution not containing your choice can be rewritten to contain it without getting worse. Where you can construct that argument, greedy is correct and fast. Where you cannot, the honest conclusion is usually dynamic programming, which considers the combinations greedy discards.",
   "problem": {
     "name": "Greedy choice and the exchange argument",

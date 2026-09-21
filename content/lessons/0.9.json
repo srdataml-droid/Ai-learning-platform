@@ -3,7 +3,7 @@
   "trackId": "0",
   "trackName": "Before any code",
   "title": "Input and output",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "A program with no input and no output is unobservable. It can be perfectly correct and there is no way to tell. Input and output are how a computation touches the world, and the way that is arranged has consequences that show up long before you are writing anything sophisticated.\n\nUnix made the arrangement uniform: reading from a keyboard, a file, a network socket or another program all look the same to your code, because they are all reached through a small integer called a file descriptor. Three of them are already open when your program starts. Zero is standard input, one is standard output, two is standard error. Because they are interchangeable, output can be redirected to a file or piped into another program without your code knowing or caring, and that single decision is why command line tools compose at all.\n\nThe part that catches people is buffering. Writing to a device one character at a time is slow, so output is collected and written in batches. Standard output is usually buffered when it is going to a file or a pipe, and standard error usually is not. So a program that prints progress and then crashes may show the crash and none of the progress: the progress was sitting in a buffer that was never flushed. The print you added did run. It just never left the building.",
   "beats": {
     "broke": "Every device spoke its own language, so reading from a tape, a terminal and a card reader required different code, and a program written for one source could not be pointed at another.",

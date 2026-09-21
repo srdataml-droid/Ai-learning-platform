@@ -3,7 +3,7 @@
   "trackId": "0",
   "trackName": "Before any code",
   "title": "Running your first program, and reading the error when it fails",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "The first program fails. It is supposed to. What matters is that the failure is a message written for you, and that it can be read rather than merely endured.\n\nA modern error message has a shape. It names the kind of failure, it names where the program was when it noticed, and it usually shows the chain of calls that led there. That chain is printed with the place the program started nearest one end and the place it actually broke nearest the other, and reading only the last line is the single most common way to look straight past the answer. The last line tells you where the problem surfaced. Somewhere above it is the line you wrote, and that is nearly always where the problem is.\n\nThere is a habit worth forming immediately, because it never stops paying: read the message completely, out loud if necessary, before changing anything. The message is evidence produced by the only witness. Most of the time spent debugging early on is spent guessing at a cause while a precise statement of the cause sits unread on the screen.",
   "beats": {
     "broke": "Early failures reported a number, or nothing at all. The program stopped and the reason lived in a manual, if it was written down anywhere, so diagnosing a fault meant knowing the system rather than reading the output.",

@@ -3,7 +3,7 @@
   "trackId": "E",
   "trackName": "Data structures and algorithms",
   "title": "Two pointers",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "A large family of array problems have an obvious solution that checks every pair, costing quadratic time, and a non-obvious one that walks two indices through the data once. The gap between them is not cleverness; it is one piece of information the naive version throws away.\n\nTake finding two numbers in a sorted array that sum to a target. Nested loops try every pair. But with the array sorted, comparing the sum at the two ends tells you something about all the pairs you have not examined: if the sum is too large, the largest element cannot participate in any solution, because even paired with the smallest element it overshoots. So it is eliminated — not tested and rejected, eliminated by argument. That is what collapses the work from quadratic to linear.\n\nThe prerequisite is therefore not 'the array is sorted' but the thing sortedness provides: a comparison at the current position must tell you which side to discard. Where that reasoning is unavailable, the two pointers still move, they just eliminate nothing, and you have written a confusing linear scan that happens to miss answers.",
   "problem": {
     "name": "Pair-finding on ordered data",

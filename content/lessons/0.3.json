@@ -3,7 +3,7 @@
   "trackId": "0",
   "trackName": "Before any code",
   "title": "Why code is plain text, not a document",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "Open a document in a word processor and most of what the file contains is not what you typed. It carries fonts, styles, revision history, a schema describing its own structure, and a good deal of state you cannot see. That is the right design for something a person reads. It is the wrong design for something dozens of programs have to read.\n\nSource code is plain text because text is the one format every tool already agrees on. A compiler reads it. So does a diff tool, a version control system, a search, a linter, a formatter, a code review interface, and a script somebody wrote this morning. None of them had to coordinate. They agree on a sequence of bytes and an encoding, and nothing else. Add invisible structure to that file and every one of those tools needs teaching about it.\n\nThe consequence people meet first is diffing. Version control shows you what changed by comparing lines. That only works because a line is a real thing in the file, delimited by a byte. In a rich document, moving one paragraph can rewrite the whole underlying file, and the tool that compares them has nothing stable to hold on to. Plain text is not a limitation the industry never escaped. It is the thing that makes the rest of the toolchain possible.",
   "beats": {
     "broke": "Formats that carry hidden structure can only be read by programs that understand that structure. Every new tool would have to be taught the format, and a file written by one version of a program could be unreadable to another.",

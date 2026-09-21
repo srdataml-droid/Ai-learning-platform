@@ -3,7 +3,7 @@
   "trackId": "0",
   "trackName": "Before any code",
   "title": "Variables, values, types",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "Three things get collapsed into one word in conversation and they are not the same. A value is a thing: the number seven, the text hello. A variable is a name you can use to reach a value. A type is the agreement about how the underlying bits are to be read and what may be done with them.\n\nThe separation matters most when a variable does not hold a value but a reference to one. Assigning such a variable to another does not copy the thing; it makes a second name for the same thing. Change it through one name and the other name sees the change, because there was only ever one object. Nearly every surprising bug about a list that changed when nobody touched it is this, and no amount of staring at the line that appeared to do nothing will reveal it, because the line that did the damage is elsewhere and looks innocent.\n\nLanguages then differ on when the type agreement is checked. Checking while compiling means whole categories of mistake cannot reach a running program, at the price of having to convince the compiler about things you already know. Checking while running means the code is quicker to write and the mistake arrives later, in front of a user, on the one branch nobody exercised. That is the entire trade, and it is a trade rather than a matter of one approach being better.",
   "beats": {
     "broke": "Memory is undifferentiated: a location holds a pattern of bits with no record of what those bits are meant to represent, and no name. Without names and interpretations, a program can only be written in terms of addresses and raw patterns.",

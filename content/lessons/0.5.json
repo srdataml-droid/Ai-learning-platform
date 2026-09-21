@@ -3,7 +3,7 @@
   "trackId": "0",
   "trackName": "Before any code",
   "title": "Bits, bytes, binary, hex",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "The hardware can distinguish two states. That is the whole of what it offers. Everything above that is agreement about what patterns of those states are taken to mean.\n\nGroup eight of them and you have a byte, which can hold one of 256 patterns. What that pattern means is not a property of the byte. The same eight bits are the number 65, the letter A, or part of a machine instruction, depending entirely on what is reading them. Hexadecimal exists because writing bytes in binary is unreadable and writing them in decimal hides the structure: one hex digit is exactly four bits, so two hex digits are exactly one byte, and the notation lines up with the thing it is describing.\n\nFixed width is where the abstraction starts to leak. A counter that has run out of room does not grow; it wraps, quietly, to a number on the other side of zero. Fractions are worse. Binary fractions can represent halves, quarters and eighths exactly, and cannot represent a tenth at all, for the same reason decimal cannot write a third exactly. So a tenth is stored as the nearest representable value, and adding three of those does not land on the value you would write down. This is not a bug in any particular language, and every language that uses the hardware's floating point inherits it.",
   "beats": {
     "broke": "Physical hardware distinguishes two states and nothing else, so every number, character, colour and instruction has to be encoded into patterns of those states before a machine can hold it.",

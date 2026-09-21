@@ -3,7 +3,7 @@
   "trackId": "E",
   "trackName": "Data structures and algorithms",
   "title": "Sliding window",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "Questions about contiguous stretches of an array — the longest substring without repeats, the smallest subarray summing to at least a target — have an obvious solution that generates every stretch and checks it, which is quadratic before you have even looked at the contents.\n\nThe window is the observation that consecutive stretches overlap almost entirely. Moving from one to the next changes two elements, so recomputing the whole thing discards nearly all the work you just did. Instead keep a running answer, add what enters on the right, subtract what leaves on the left, and each element is handled a constant number of times.\n\nThe correctness argument is more delicate than the mechanics, and it is where the technique is usually misapplied. Growing the window must move the tracked quantity in one direction and shrinking must move it in the other. That is what lets you decide, from the current state alone, whether to extend or contract. Introduce negative numbers into a sum-based window and this collapses immediately: extending can now reduce the sum, so a window that is too large is no longer evidence that you should shrink, and a shrinking rule based on that evidence starts skipping valid answers while continuing to produce plausible output.",
   "problem": {
     "name": "Contiguous subarray optimisation",

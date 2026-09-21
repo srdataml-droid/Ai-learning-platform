@@ -3,7 +3,7 @@
   "trackId": "E",
   "trackName": "Data structures and algorithms",
   "title": "Binary search, including on the answer rather than the array",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "Binary search over a sorted array is the familiar half. The part that changes what you can do is that the array is incidental. What the technique actually needs is a yes/no question whose answer flips exactly once across a range, and then it finds the flip in logarithmic time.\n\nThat reframing unlocks problems with no array in them at all. Asked for the minimum ship capacity that delivers all packages within d days, you are not searching a list; you are searching the space of capacities. The question 'does capacity c suffice' is monotone — if c works then c+1 works — so the space has exactly one boundary between failing and succeeding, and binary search finds it while a feasibility check does the actual work. This is usually called binary search on the answer, and recognising when a problem has this shape is worth more than any implementation detail.\n\nIt is also famously easy to get wrong in ways that pass casual testing. Off-by-one errors in the boundary update produce infinite loops or answers one position out, and the midpoint computed as (low + high) / 2 can overflow in fixed-width integer types — a defect that survived in widely used library code for years. Writing it from the invariant rather than from memory is the reliable defence: state what the range means, and make every update preserve that meaning.",
   "problem": {
     "name": "Searching a monotone predicate",

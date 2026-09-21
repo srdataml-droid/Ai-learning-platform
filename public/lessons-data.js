@@ -35,7 +35,7 @@
     "trackId": "0",
     "trackName": "Before any code",
     "title": "Running your first program, and reading the error when it fails",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "The first program fails. It is supposed to. What matters is that the failure is a message written for you, and that it can be read rather than merely endured.\n\nA modern error message has a shape. It names the kind of failure, it names where the program was when it noticed, and it usually shows the chain of calls that led there. That chain is printed with the place the program started nearest one end and the place it actually broke nearest the other, and reading only the last line is the single most common way to look straight past the answer. The last line tells you where the problem surfaced. Somewhere above it is the line you wrote, and that is nearly always where the problem is.\n\nThere is a habit worth forming immediately, because it never stops paying: read the message completely, out loud if necessary, before changing anything. The message is evidence produced by the only witness. Most of the time spent debugging early on is spent guessing at a cause while a precise statement of the cause sits unread on the screen.",
     "beats": {
       "broke": "Early failures reported a number, or nothing at all. The program stopped and the reason lived in a manual, if it was written down anywhere, so diagnosing a fault meant knowing the system rather than reading the output.",
@@ -55,7 +55,7 @@
     "trackId": "0",
     "trackName": "Before any code",
     "title": "Installing things: package managers, versions, virtual environments",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "Reusing other people's code is the whole economics of software, and the awkwardness of installing it is the bill for that. Two programs on one machine will eventually need two different versions of the same library, and if there is a single shared place where libraries live, one of them is going to lose.\n\nPackage managers solved finding and fetching. You name a package, it resolves what that package itself depends on, and installs the lot. Version numbers became a promise about compatibility, so that a range could be requested rather than an exact release. That promise is a convention rather than a guarantee, and it is broken regularly, which is why lockfiles exist: a lockfile records the exact versions that were actually installed, so the next person gets the same set rather than whatever satisfies the range today.\n\nIsolation solved the conflict. Instead of one shared location, each project gets its own, and the tooling looks there first. The mechanism differs by ecosystem but the idea does not. What this does not solve is the size of what you are agreeing to: asking for one package can bring in dozens you never named, each written by someone you will never meet, and all of them running with your permissions. Reading what a dependency actually pulls in, before adding it, is a habit worth having early.",
     "beats": {
       "broke": "A single shared location for installed libraries means two projects needing different versions of the same library cannot both work. Installing for one silently breaks the other, and the breakage appears in the project nobody touched.",
@@ -146,7 +146,7 @@
     "trackId": "0",
     "trackName": "Before any code",
     "title": "Why code is plain text, not a document",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "Open a document in a word processor and most of what the file contains is not what you typed. It carries fonts, styles, revision history, a schema describing its own structure, and a good deal of state you cannot see. That is the right design for something a person reads. It is the wrong design for something dozens of programs have to read.\n\nSource code is plain text because text is the one format every tool already agrees on. A compiler reads it. So does a diff tool, a version control system, a search, a linter, a formatter, a code review interface, and a script somebody wrote this morning. None of them had to coordinate. They agree on a sequence of bytes and an encoding, and nothing else. Add invisible structure to that file and every one of those tools needs teaching about it.\n\nThe consequence people meet first is diffing. Version control shows you what changed by comparing lines. That only works because a line is a real thing in the file, delimited by a byte. In a rich document, moving one paragraph can rewrite the whole underlying file, and the tool that compares them has nothing stable to hold on to. Plain text is not a limitation the industry never escaped. It is the thing that makes the rest of the toolchain possible.",
     "beats": {
       "broke": "Formats that carry hidden structure can only be read by programs that understand that structure. Every new tool would have to be taught the format, and a file written by one version of a program could be unreadable to another.",
@@ -166,7 +166,7 @@
     "trackId": "0",
     "trackName": "Before any code",
     "title": "What a program is: text, then interpreter or compiler, then a running process",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "A source file does nothing. It is bytes on a disk, no more active than a shopping list. Something has to turn it into instructions a processor will execute, and there are two ways to do that, which differ mainly in when the translating happens.\n\nA compiler translates the whole thing ahead of time and hands you a file of machine instructions. The translation cost is paid once, by you, before anyone runs it. An interpreter translates as it goes, reading your source and acting on it line by line while the program runs. The translation cost is paid every time, by the user, during execution. Neither is more correct. They are the same work, scheduled differently, and almost everything people say about the speed of a language is really a statement about that schedule.\n\nWhat comes out the far end is a process, and a process is an operating system construct rather than a language one. When your program starts, the kernel gives it a private view of memory so it cannot see or corrupt other programs, a stack for the local variables of functions currently running, a heap for memory it asks for as it goes, and a small table of open files, of which the first three are already filled in. Your code is a guest inside that arrangement. Most confusing runtime behaviour, from stack overflows to why a variable vanished when a function returned, is the arrangement showing through.",
     "beats": {
       "broke": "Written instructions and executed instructions are not the same thing, and early on the gap was crossed by hand: people translated their intentions into numeric machine codes themselves, then entered them directly.",
@@ -186,7 +186,7 @@
     "trackId": "0",
     "trackName": "Before any code",
     "title": "Bits, bytes, binary, hex",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "The hardware can distinguish two states. That is the whole of what it offers. Everything above that is agreement about what patterns of those states are taken to mean.\n\nGroup eight of them and you have a byte, which can hold one of 256 patterns. What that pattern means is not a property of the byte. The same eight bits are the number 65, the letter A, or part of a machine instruction, depending entirely on what is reading them. Hexadecimal exists because writing bytes in binary is unreadable and writing them in decimal hides the structure: one hex digit is exactly four bits, so two hex digits are exactly one byte, and the notation lines up with the thing it is describing.\n\nFixed width is where the abstraction starts to leak. A counter that has run out of room does not grow; it wraps, quietly, to a number on the other side of zero. Fractions are worse. Binary fractions can represent halves, quarters and eighths exactly, and cannot represent a tenth at all, for the same reason decimal cannot write a third exactly. So a tenth is stored as the nearest representable value, and adding three of those does not land on the value you would write down. This is not a bug in any particular language, and every language that uses the hardware's floating point inherits it.",
     "beats": {
       "broke": "Physical hardware distinguishes two states and nothing else, so every number, character, colour and instruction has to be encoded into patterns of those states before a machine can hold it.",
@@ -278,7 +278,7 @@
     "trackId": "0",
     "trackName": "Before any code",
     "title": "Variables, values, types",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "Three things get collapsed into one word in conversation and they are not the same. A value is a thing: the number seven, the text hello. A variable is a name you can use to reach a value. A type is the agreement about how the underlying bits are to be read and what may be done with them.\n\nThe separation matters most when a variable does not hold a value but a reference to one. Assigning such a variable to another does not copy the thing; it makes a second name for the same thing. Change it through one name and the other name sees the change, because there was only ever one object. Nearly every surprising bug about a list that changed when nobody touched it is this, and no amount of staring at the line that appeared to do nothing will reveal it, because the line that did the damage is elsewhere and looks innocent.\n\nLanguages then differ on when the type agreement is checked. Checking while compiling means whole categories of mistake cannot reach a running program, at the price of having to convince the compiler about things you already know. Checking while running means the code is quicker to write and the mistake arrives later, in front of a user, on the one branch nobody exercised. That is the entire trade, and it is a trade rather than a matter of one approach being better.",
     "beats": {
       "broke": "Memory is undifferentiated: a location holds a pattern of bits with no record of what those bits are meant to represent, and no name. Without names and interpretations, a program can only be written in terms of addresses and raw patterns.",
@@ -298,7 +298,7 @@
     "trackId": "0",
     "trackName": "Before any code",
     "title": "Input and output",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "A program with no input and no output is unobservable. It can be perfectly correct and there is no way to tell. Input and output are how a computation touches the world, and the way that is arranged has consequences that show up long before you are writing anything sophisticated.\n\nUnix made the arrangement uniform: reading from a keyboard, a file, a network socket or another program all look the same to your code, because they are all reached through a small integer called a file descriptor. Three of them are already open when your program starts. Zero is standard input, one is standard output, two is standard error. Because they are interchangeable, output can be redirected to a file or piped into another program without your code knowing or caring, and that single decision is why command line tools compose at all.\n\nThe part that catches people is buffering. Writing to a device one character at a time is slow, so output is collected and written in batches. Standard output is usually buffered when it is going to a file or a pipe, and standard error usually is not. So a program that prints progress and then crashes may show the crash and none of the progress: the progress was sitting in a buffer that was never flushed. The print you added did run. It just never left the building.",
     "beats": {
       "broke": "Every device spoke its own language, so reading from a tape, a terminal and a card reader required different code, and a program written for one source could not be pointed at another.",
@@ -5701,7 +5701,7 @@
     "trackId": "E",
     "trackName": "Data structures and algorithms",
     "title": "Greedy algorithms, and when greedy is provably wrong",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "A greedy algorithm takes the best-looking option at each step and never reconsiders. It is the first thing anyone tries, it is often right, and when it is wrong it is wrong silently — producing a valid, plausible, suboptimal answer with no indication that a better one existed.\n\nCoin change is the standard demonstration. With coins of 1, 5, 10 and 25, taking the largest coin that fits at each step is optimal, and the habit of trusting it forms. Introduce coins of 1, 3 and 4 and ask for 6: greedy takes 4, then 1, then 1, giving three coins, while two threes do it in two. Nothing detected the error. The algorithm ran correctly and returned a worse answer.\n\nSo greedy demands justification rather than testing, which is the uncomfortable part. Passing examples establish nothing, because a counterexample can be arbitrarily rare. What is needed is an argument that a locally best choice is always compatible with some optimal solution — typically an exchange argument, showing that any optimal solution not containing your choice can be rewritten to contain it without getting worse. Where you can construct that argument, greedy is correct and fast. Where you cannot, the honest conclusion is usually dynamic programming, which considers the combinations greedy discards.",
     "problem": {
       "name": "Greedy choice and the exchange argument",
@@ -5797,7 +5797,7 @@
     "trackId": "E",
     "trackName": "Data structures and algorithms",
     "title": "Binary search, including on the answer rather than the array",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "Binary search over a sorted array is the familiar half. The part that changes what you can do is that the array is incidental. What the technique actually needs is a yes/no question whose answer flips exactly once across a range, and then it finds the flip in logarithmic time.\n\nThat reframing unlocks problems with no array in them at all. Asked for the minimum ship capacity that delivers all packages within d days, you are not searching a list; you are searching the space of capacities. The question 'does capacity c suffice' is monotone — if c works then c+1 works — so the space has exactly one boundary between failing and succeeding, and binary search finds it while a feasibility check does the actual work. This is usually called binary search on the answer, and recognising when a problem has this shape is worth more than any implementation detail.\n\nIt is also famously easy to get wrong in ways that pass casual testing. Off-by-one errors in the boundary update produce infinite loops or answers one position out, and the midpoint computed as (low + high) / 2 can overflow in fixed-width integer types — a defect that survived in widely used library code for years. Writing it from the invariant rather than from memory is the reliable defence: state what the range means, and make every update preserve that meaning.",
     "problem": {
       "name": "Searching a monotone predicate",
@@ -6156,7 +6156,7 @@
     "trackId": "E",
     "trackName": "Data structures and algorithms",
     "title": "Two pointers",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "A large family of array problems have an obvious solution that checks every pair, costing quadratic time, and a non-obvious one that walks two indices through the data once. The gap between them is not cleverness; it is one piece of information the naive version throws away.\n\nTake finding two numbers in a sorted array that sum to a target. Nested loops try every pair. But with the array sorted, comparing the sum at the two ends tells you something about all the pairs you have not examined: if the sum is too large, the largest element cannot participate in any solution, because even paired with the smallest element it overshoots. So it is eliminated — not tested and rejected, eliminated by argument. That is what collapses the work from quadratic to linear.\n\nThe prerequisite is therefore not 'the array is sorted' but the thing sortedness provides: a comparison at the current position must tell you which side to discard. Where that reasoning is unavailable, the two pointers still move, they just eliminate nothing, and you have written a confusing linear scan that happens to miss answers.",
     "problem": {
       "name": "Pair-finding on ordered data",
@@ -6203,7 +6203,7 @@
     "trackId": "E",
     "trackName": "Data structures and algorithms",
     "title": "Sliding window",
-    "status": "unsourced",
+    "status": "claimless",
     "story": "Questions about contiguous stretches of an array — the longest substring without repeats, the smallest subarray summing to at least a target — have an obvious solution that generates every stretch and checks it, which is quadratic before you have even looked at the contents.\n\nThe window is the observation that consecutive stretches overlap almost entirely. Moving from one to the next changes two elements, so recomputing the whole thing discards nearly all the work you just did. Instead keep a running answer, add what enters on the right, subtract what leaves on the left, and each element is handled a constant number of times.\n\nThe correctness argument is more delicate than the mechanics, and it is where the technique is usually misapplied. Growing the window must move the tracked quantity in one direction and shrinking must move it in the other. That is what lets you decide, from the current state alone, whether to extend or contract. Introduce negative numbers into a sum-based window and this collapses immediately: extending can now reduce the sum, so a window that is too large is no longer evidence that you should shrink, and a shrinking rule based on that evidence starts skipping valid answers while continuing to produce plausible output.",
     "problem": {
       "name": "Contiguous subarray optimisation",
