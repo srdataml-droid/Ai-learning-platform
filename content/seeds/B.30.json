@@ -1,0 +1,40 @@
+{
+  "taskId": "B.30",
+  "title": "Replication: copies, leaders, and lag",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The 2007 design replicates data across nodes and maintains consistency among replicas during updates by a quorum-like technique together with a decentralised replica synchronisation protocol, using object versioning so that divergent copies can be detected, and pushing conflict resolution to the application where the system cannot decide.",
+      "type": "event",
+      "tokens": [
+        "The",
+        "2007"
+      ],
+      "source": {
+        "title": "Giuseppe DeCandia, Deniz Hastorun, Madan Jampani, Gunavardhan Kakulapati, Avinash Lakshman, Alex Pilchin, Swaminathan Sivasubramanian, Peter Vosshall and Werner Vogels, Dynamo: Amazon's Highly Available Key-value Store, Proceedings of the 21st ACM Symposium on Operating Systems Principles, 2007, pages 205-220, doi 10.1145/1294261.1294281",
+        "url": "https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The motivation given is availability rather than performance: the system exists to provide an always-on experience for core services, and it sacrifices consistency under certain failure scenarios to get it. The stated consequence is that reads may return divergent versions, which the application is expected to reconcile.",
+      "type": "event",
+      "tokens": [
+        "The"
+      ],
+      "source": {
+        "title": "Giuseppe DeCandia, Deniz Hastorun, Madan Jampani, Gunavardhan Kakulapati, Avinash Lakshman, Alex Pilchin, Swaminathan Sivasubramanian, Peter Vosshall and Werner Vogels, Dynamo: Amazon's Highly Available Key-value Store, Proceedings of the 21st ACM Symposium on Operating Systems Principles, 2007, pages 205-220, doi 10.1145/1294261.1294281",
+        "url": "https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "one copy of the data is one machine's worth of reads, one machine's worth of failure, and one location's worth of distance from everybody who is not near it",
+    "fix": "keep several copies — a leader taking writes and followers serving reads, or several peers any of which accepts a write — so that reads scale, failure is survivable and data can sit close to its readers",
+    "cost": "copies diverge between the moment of a write and the moment it arrives everywhere, so a reader can be served an older state than one already acknowledged, and no amount of engineering removes that window, only shortens it",
+    "interview": "why a value that was just written can read back stale, and whether that is a bug"
+  },
+  "researchedAt": "2026-09-21"
+}

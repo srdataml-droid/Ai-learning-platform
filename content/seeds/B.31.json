@@ -1,0 +1,40 @@
+{
+  "taskId": "B.31",
+  "title": "Partitioning and the hot key problem",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The 2007 system partitions and replicates data using consistent hashing, which is chosen so that the arrival or departure of a node redistributes only the keys adjacent to it rather than remapping the whole space. The design is completely decentralised with minimal need for manual administration, and uses a gossip-based protocol for membership and failure detection.",
+      "type": "event",
+      "tokens": [
+        "The",
+        "2007"
+      ],
+      "source": {
+        "title": "Giuseppe DeCandia, Deniz Hastorun, Madan Jampani, Gunavardhan Kakulapati, Avinash Lakshman, Alex Pilchin, Swaminathan Sivasubramanian, Peter Vosshall and Werner Vogels, Dynamo: Amazon's Highly Available Key-value Store, Proceedings of the 21st ACM Symposium on Operating Systems Principles, 2007, pages 205-220, doi 10.1145/1294261.1294281",
+        "url": "https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The interface constraint that follows from partitioning is stated plainly: the system has no isolation and allows only single-key updates. Operations that would span partitions are not offered rather than being offered slowly.",
+      "type": "event",
+      "tokens": [
+        "The"
+      ],
+      "source": {
+        "title": "Giuseppe DeCandia, Deniz Hastorun, Madan Jampani, Gunavardhan Kakulapati, Avinash Lakshman, Alex Pilchin, Swaminathan Sivasubramanian, Peter Vosshall and Werner Vogels, Dynamo: Amazon's Highly Available Key-value Store, Proceedings of the 21st ACM Symposium on Operating Systems Principles, 2007, pages 205-220, doi 10.1145/1294261.1294281",
+        "url": "https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "the data no longer fits on one machine, or the writes to it no longer fit, and replication does not help because every copy still holds everything",
+    "fix": "split the data by a key so each machine holds a disjoint share, choosing the mapping so that adding or removing a machine moves as little as possible rather than remapping everything",
+    "cost": "the split is only as even as the key's distribution, so a single popular value concentrates load on one partition regardless of how many machines exist — and operations spanning partitions become expensive or simply unavailable",
+    "interview": "what happens when one key is far more popular than the others"
+  },
+  "researchedAt": "2026-09-21"
+}

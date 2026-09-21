@@ -1,0 +1,58 @@
+{
+  "taskId": "B.33",
+  "title": "Failure modes: timeouts, partial failure, cascades, thundering herd",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Dean and Barroso argue that software techniques tolerating latency variability are vital to building responsive large-scale services, drawing an analogy to fault-tolerant computing: just as fault tolerance creates a reliable whole from less-reliable parts, large online services need to create a predictably responsive whole out of less-predictable parts, which they call latency tail-tolerant.",
+      "type": "quote",
+      "tokens": [
+        "Dean",
+        "Barroso",
+        "Communications of the ACM",
+        "ACM",
+        "2013"
+      ],
+      "source": {
+        "title": "Jeffrey Dean and Luiz Andre Barroso, The tail at scale, Communications of the ACM 56(2):74-80, February 2013, doi 10.1145/2408776.2408794",
+        "url": "https://cacm.acm.org/research/the-tail-at-scale/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Their arithmetic of fan-out is the central point. If a single server has a 99th percentile latency of one second — a one in a hundred chance of being slow — then a request that fans out to 100 servers will see that slow response more often than not. With fan-out to 2,000 servers, even a one in ten thousand chance of a slow response means 18% of requests exceed one second.",
+      "type": "number",
+      "tokens": [
+        "Their",
+        "18%"
+      ],
+      "source": {
+        "title": "Jeffrey Dean and Luiz Andre Barroso, The tail at scale, Communications of the ACM 56(2):74-80, February 2013, doi 10.1145/2408776.2408794",
+        "url": "https://cacm.acm.org/research/the-tail-at-scale/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Their conclusion is that simply stamping out all sources of performance variability will not achieve responsiveness as systems scale up. Among the mitigations described are hedged requests — sending the same request to several replicas, taking the first response and cancelling the rest — with the refinement of adding a delay before issuing the second request, because cancellation messages often arrive after processing has begun and the naive form adds significant surplus load.",
+      "type": "quote",
+      "tokens": [
+        "Their",
+        "Among"
+      ],
+      "source": {
+        "title": "Jeffrey Dean and Luiz Andre Barroso, The tail at scale, Communications of the ACM 56(2):74-80, February 2013, doi 10.1145/2408776.2408794",
+        "url": "https://cacm.acm.org/research/the-tail-at-scale/",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a component that is nearly always fast is not nearly always fast enough, because a request that depends on many components is exposed to the worst of them rather than the average",
+    "fix": "treat variability as a permanent property to be tolerated rather than a defect to be removed — bound every wait, degrade rather than fail, and where latency matters more than load, ask more than one replica and take the first answer",
+    "cost": "the tolerations cost work: a bounded wait abandons responses that would have arrived, and duplicate requests buy latency with load, which is exactly the resource that was scarce when things were slow",
+    "interview": "why a service whose slow responses are rare can still be slow almost every time"
+  },
+  "researchedAt": "2026-09-21"
+}

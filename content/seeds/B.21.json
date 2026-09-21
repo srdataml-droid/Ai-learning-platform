@@ -1,0 +1,42 @@
+{
+  "taskId": "B.21",
+  "title": "APIs and REST as a contract",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Fielding derives the style in chapter 5 of his 2000 dissertation by starting from a system with no constraints and adding them one at a time — client-server separating the user interface from data storage so components can evolve independently, then statelessness with session state kept entirely on the client, then cacheability requiring responses to declare whether they may be stored, then a layered system in which a client cannot ordinarily tell whether it is connected to the end server or to an intermediary, with code on demand as an optional constraint.",
+      "type": "event",
+      "tokens": [
+        "Fielding",
+        "2000"
+      ],
+      "source": {
+        "title": "Roy Thomas Fielding, Architectural Styles and the Design of Network-based Software Architectures, doctoral dissertation, University of California, Irvine, 2000, chapter 5: Representational State Transfer",
+        "url": "https://ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The remaining constraint, described as fundamental to the design of any such system, is the uniform interface, and it is defined by four sub-constraints: identification of resources, which on the web means each is addressable by a URL; manipulation of resources through representations; self-descriptive messages; and hypermedia as the engine of application state. Fielding's stated purpose for the uniform interface is that it simplifies and decouples the architecture, enabling each part to evolve independently.",
+      "type": "quote",
+      "tokens": [
+        "Fielding",
+        "The",
+        "URL"
+      ],
+      "source": {
+        "title": "Roy Thomas Fielding, Architectural Styles and the Design of Network-based Software Architectures, doctoral dissertation, University of California, Irvine, 2000, chapter 5: Representational State Transfer",
+        "url": "https://ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "two organisations need to integrate across a network and every bespoke arrangement between them becomes a permanent obligation, because the party on the other side cannot be upgraded on your schedule",
+    "fix": "agree on a small set of constraints instead of a bespoke protocol — addressable resources, a uniform set of operations, self-describing messages, and state held by the caller — so that intermediaries work and both sides can change independently",
+    "cost": "the constraints are what deliver the benefits, so an interface that keeps the vocabulary and drops the constraints keeps the label and loses the properties it was named for",
+    "interview": "which constraint of that architectural style almost nobody implements"
+  },
+  "researchedAt": "2026-09-21"
+}

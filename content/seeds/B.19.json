@@ -1,0 +1,40 @@
+{
+  "taskId": "B.19",
+  "title": "The NoSQL families and when each wins",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The 2007 paper describes a highly available key-value storage system used by core services to provide an always-on experience, and is explicit about the trade: to achieve that level of availability it sacrifices consistency under certain failure scenarios, making extensive use of object versioning and application-assisted conflict resolution. It prioritises availability and performance over consistency while allowing application-specific control of the trade-offs.",
+      "type": "quote",
+      "tokens": [
+        "Dynamo",
+        "2007"
+      ],
+      "source": {
+        "title": "Giuseppe DeCandia, Deniz Hastorun, Madan Jampani, Gunavardhan Kakulapati, Avinash Lakshman, Alex Pilchin, Swaminathan Sivasubramanian, Peter Vosshall and Werner Vogels, Dynamo: Amazon's Highly Available Key-value Store, Proceedings of the 21st ACM Symposium on Operating Systems Principles, 2007, pages 205-220, doi 10.1145/1294261.1294281",
+        "url": "https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Its techniques are named as a synthesis of well-known ones rather than as inventions: data is partitioned and replicated using consistent hashing, consistency among replicas is facilitated by object versioning and maintained during updates by a quorum-like technique and a decentralised replica synchronisation protocol, and membership and failure detection use a gossip-based protocol. The system has no isolation and allows only single-key updates.",
+      "type": "event",
+      "tokens": [
+        "Its"
+      ],
+      "source": {
+        "title": "Giuseppe DeCandia, Deniz Hastorun, Madan Jampani, Gunavardhan Kakulapati, Avinash Lakshman, Alex Pilchin, Swaminathan Sivasubramanian, Peter Vosshall and Werner Vogels, Dynamo: Amazon's Highly Available Key-value Store, Proceedings of the 21st ACM Symposium on Operating Systems Principles, 2007, pages 205-220, doi 10.1145/1294261.1294281",
+        "url": "https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "the relational guarantees are a package — a single consistent view, transactions across rows, joins at read time — and a system that must stay writeable during a partition cannot have all of them",
+    "fix": "unbundle the package and keep only what the workload needs, which produces families rather than one alternative: a key-value store, a document store, a wide-column store, a graph store, each dropping different guarantees for different gains",
+    "cost": "what is dropped is dropped for the whole system rather than per query, so a workload that later needs the discarded guarantee has to reimplement it in application code, usually worse",
+    "interview": "what the well-known alternative to the relational model actually gave up, and what it got"
+  },
+  "researchedAt": "2026-09-21"
+}

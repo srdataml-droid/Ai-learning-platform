@@ -1,0 +1,56 @@
+{
+  "taskId": "B.29",
+  "title": "Scaling up versus scaling out",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Amdahl argued in 1967 that the fraction of work which must be performed serially bounds the speedup available from any number of processors, so that for a program with a serial fraction the maximum speedup is the reciprocal of that fraction. He framed it against a decade of claims that significant advances could come only through interconnecting many computers for cooperative solution, and noted that a highly parallel machine has more difficulty delivering a fair fraction of peak performance because of the sequential component plus coordination overhead between processors.",
+      "type": "event",
+      "tokens": [
+        "Amdahl",
+        "1967"
+      ],
+      "source": {
+        "title": "Gene M. Amdahl, Validity of the single processor approach to achieving large scale computing capabilities, AFIPS Spring Joint Computer Conference, 1967, pages 483-485, doi 10.1145/1465482.1465560",
+        "url": "https://dl.acm.org/doi/10.1145/1465482.1465560",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Gustafson's reply in Communications of the ACM in 1988 addresses what he calls the mental block against massive parallelism imposed by a misuse of that law, and rests on relaxing its fixed-size assumption: in practice the problem size scales with the number of processors, so the question is not how fast a fixed problem can be solved but how large a problem can be solved in fixed time.",
+      "type": "event",
+      "tokens": [
+        "Gustafson",
+        "Communications of the ACM",
+        "ACM",
+        "1988"
+      ],
+      "source": {
+        "title": "John L. Gustafson, Reevaluating Amdahl's law, Communications of the ACM 31(5):532-533, May 1988, doi 10.1145/42411.42415",
+        "url": "https://dl.acm.org/doi/10.1145/42411.42415",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "A correction to the way the pair is usually presented as opposing camps: later analysis argues the two laws are in fact identical, with the publicised disagreement resulting from misunderstandings, and highlights an often-neglected prerequisite for applying the first — that the serial and parallel programs must compute the same total number of steps for the same input, a condition hard to satisfy for a class of commonly used algorithms.",
+      "type": "event",
+      "tokens": [
+        "A"
+      ],
+      "source": {
+        "title": "John L. Gustafson, Reevaluating Amdahl's law, Communications of the ACM 31(5):532-533, May 1988, doi 10.1145/42411.42415",
+        "url": "https://dl.acm.org/doi/10.1145/42411.42415",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "demand grows past what one machine can serve, and the two ways of responding — a bigger machine, or more machines — fail differently and are usually chosen by habit",
+    "fix": "decide by what limits you: a bigger machine keeps the programming model and hits a ceiling of availability and price, while more machines remove the ceiling and introduce coordination, which is the thing that does not divide",
+    "cost": "the serial and coordinating fraction bounds what extra machines can buy, so speedup is limited by the part that cannot be split rather than by the number of parts you add",
+    "interview": "why adding machines stops helping, and what the bound actually depends on"
+  },
+  "researchedAt": "2026-09-21"
+}

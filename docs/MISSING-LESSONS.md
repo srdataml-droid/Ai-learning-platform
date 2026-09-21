@@ -26,20 +26,13 @@ Study order: the sequence first, then the five habits running underneath.
 
 ## Track B — System design
 
-25 of 48 still missing.
+19 of 48 still missing.
 
-- [ ] `B.19` The NoSQL families and when each wins
-      <br>_note: Dynamo paper 2007, Cassandra open sourced 2008_
 - [ ] `B.20` Connection pooling, the thing that quietly kills serverless apps
-- [ ] `B.21` APIs and REST as a contract
 - [ ] `B.23` Authentication versus authorisation
 - [ ] `B.25` Queues: moving slow work out of the request
 - [ ] `B.26` Idempotency and retries
 - [ ] `B.27` Rate limiting and backpressure
-- [ ] `B.29` Scaling up versus scaling out
-- [ ] `B.30` Replication: copies, leaders, and lag
-- [ ] `B.31` Partitioning and the hot key problem
-- [ ] `B.33` Failure modes: timeouts, partial failure, cascades, thundering herd
 - [ ] `B.34` Reliability patterns: circuit breakers, graceful degradation, health checks
       <br>_note: Chaos Monkey 2011_
 - [ ] `B.35` Observability: logs, metrics, traces, and what deserves an alert
@@ -143,7 +136,7 @@ Study order: the sequence first, then the five habits running underneath.
 
 ---
 
-**Total remaining: 62 of 313.**
+**Total remaining: 56 of 313.**
 
 Regenerate: `node tools/missing-lessons.mjs > docs/MISSING-LESSONS.md`
 
