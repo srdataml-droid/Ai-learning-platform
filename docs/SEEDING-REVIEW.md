@@ -4,12 +4,12 @@ Written 2026-09-21. Derived by running the gate's own atom extractor over
 every lesson, so the numbers are reproducible rather than estimated — see
 "How to regenerate" at the end.
 
-Updated 2026-09-22, after the habit tracks were resolved to `claimless` and
-Track A was closed. Current: **276 lessons, 179 traced, 53 claimless, 44
-unsourced**, and **612 checkable atoms** still sitting in unsourced prose. The
-section below records the state *before* those changes, because the
-prioritisation was built on it and still holds for everything outside A, G, H,
-I and J.
+Updated 2026-09-22, after the habit tracks were resolved to `claimless`,
+Track A was closed, and the whole of priority band 1 was sourced. Current:
+**276 lessons, 186 traced, 53 claimless, 37 unsourced**, and **399 checkable
+atoms** still sitting in unsourced prose — down from 707 at the time of
+writing. The section below records the state *before* those changes, because
+the prioritisation was built on it and still holds for what remains.
 
 ## The state, as measured before the `claimless` change
 
@@ -100,7 +100,7 @@ are cleaner than those two were; they were generated the same way.
 Ordered by risk rather than by track order.
 
 **1. Numeric claims in AI/system lessons.** `B.39`, `B.32`, `B.1`, `K.11`,
-`B.14`, `0.7`, `0.12`. These assert money, percentages, latencies and hardware
+`B.14`, `0.7`, `0.12` — *all seven now done, see below*. These assert money, percentages, latencies and hardware
 specs — the claims most likely to be quoted, most likely to be wrong, and most
 likely to age badly. `B.39` in particular prices hardware, which is stale
 within a year by construction.
@@ -197,6 +197,51 @@ worked example and blueprint the pre-pipeline lessons lack.
 
 **Tracks G, H, I and J are now fully resolved: 45 claimless, 1 traced, 0
 unsourced.**
+
+## RESOLVED 2026-09-22: priority band 1 is sourced
+
+All seven of the densest lessons are now `traced`. They carried 208 unchecked
+atoms between them; unsourced prose falls from 612 to 399.
+
+The headline finding is that **every one of the seven contained at least one
+error**, and the errors were not typos. Listed because the pattern is the
+argument for the pipeline:
+
+| lesson | what was wrong |
+|---|---|
+| `B.39` | `$30,000 NVIDIA H100` — unsourced, stale by construction, and structurally wrong: the datasheet is clear the SXM part is not sold as a standalone card at all, only on an HGX baseboard of four or eight. `$20/month` VM likewise unsourced. `30 tokens/second` invented. `wasting 95% of GPU cycles` invented. **And the blueprint's own arithmetic was off by exactly 2x** — it gave the KV cache formula with batch 16 and concluded ≈10.7 GB, which is the batch-of-8 answer (correct: 327,680 B/token = 320 KiB, x 4,096 = 1.25 GiB/sequence, x 16 = 20 GiB). |
+| `B.32` | Almost entirely correct — the first pre-pipeline lesson that was. Only the `99.999%` needed removing, and it was a hypothetical provider promise inside an interview trap rather than a claim. |
+| `B.1` | Four errors, compounding. `L1 ... 1 nanosecond (the speed of light through a few millimeters of silicon)`: the canonical figure is 0.5 ns and the parenthetical is wrong by ~2 orders of magnitude, since signal propagation covers centimetres per nanosecond. `RAM ~100 ns — 100 times slower`: the table itself says 200x, and the lesson's factor only works if L1 is 1 ns, so the first error propagated. `spinning disk OR a local network ~10 ms` conflates two entries 20x apart, erasing the single most useful ratio in the table. And the human-scale analogy disagreed with itself between story and blueprint, with `12 years` matching nothing at all. |
+| `K.11` | Listed **dropout** among ingredients that "had all existed for years". It had not: submitted 3 July 2012, months before the December conference paper, sharing three of five authors. The lesson's own thesis needed narrowing. Also: the winning submission was an ensemble, not one network, so the margin is not a property of one architecture. |
+| `B.14` | Accurate but arguing from invented material — IMS/CODASYL prose and made-up COBOL-ish traversal syntax. Replaced with Codd's own taxonomy of ordering, indexing and access path dependence, which is primary and sharper. `Chamberlin and Boyce built System R and SQL` overstated a large team's work. |
+| `0.7` | `In 1988, Xerox and Apple engineers formed the Unicode Consortium` — wrong. 1988 is the *Unicode 88* draft report (29 August). The Consortium was formed **3 January 1991**. |
+| `0.12` | No hard factual error, but the whole lesson was shaped as a list of stages, which cannot rank anything. Restructured around round-trip counting with every step cited to its RFC. |
+
+Two of these are worth more than the corrections, because reading the source
+produced a better lesson rather than a fixed one:
+
+- `0.7` — Becker's *Unicode 88* argues that **16 bits per character are more
+  than sufficient**, that 65,536 code points will be enough for every
+  character needed for modern communication. Unicode 2.0 withdrew that in 1996
+  for 1,114,112 code points across 17 planes. That retraction *is* the reason
+  an emoji has a length of two: platforms built between 1991 and 1996 made a
+  sixteen-bit unit their native character type and could not change it, so the
+  surrogate pair is permanent scar tissue from a withdrawn promise. The lesson
+  previously presented the length-of-two as a quirk; it is now a consequence,
+  and the whole lesson hangs off it.
+- `B.39` — the lesson's throwaway mention of a stampede is now the spine.
+  Kwon et al. measured 60%-80% of memory wasted to fragmentation and
+  over-reservation, with only 20.4%-38.2% of allocated KV memory holding real
+  token states, and got 2-4x throughput at the same latency by applying OS
+  virtual memory to the cache. The punchline the lesson was missing: the
+  largest published win in LLM serving is an *allocation* result, not a
+  mathematical one.
+
+One mechanism note. `proseOf()` excludes `blueprint` and `worked.code`, so
+arithmetic can be shown in numerals there while gated prose spells derived
+figures out. That is how `B.39` and `B.1` show their working.
+
+Allowlist untouched at nine entries throughout.
 
 ## RESOLVED 2026-09-22: Track A is closed
 

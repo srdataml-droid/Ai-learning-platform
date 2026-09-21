@@ -1,0 +1,113 @@
+{
+  "taskId": "0.7",
+  "title": "Why text is hard: the 16-bit assumption, its failure, and the surrogate pairs left behind",
+  "researchedAt": "2026-09-22",
+  "claims": [
+    {
+      "id": "c1",
+      "type": "event",
+      "tokens": [
+        "ASCII",
+        "American Standards Association",
+        "X3.4-1963",
+        "1963",
+        "7-bit",
+        "128",
+        "English"
+      ],
+      "text": "The American Standards Association published ASCII as X3.4-1963 in 1963: a 7-bit code with 128 positions, covering the Latin letters used to write English, digits, punctuation and teletype control codes.",
+      "source": {
+        "title": "ASCII — American Standard Code for Information Interchange, ASA X3.4-1963, American Standards Association, 1963: a 7-bit code of 128 positions",
+        "url": "https://en.wikipedia.org/wiki/ASCII",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c2",
+      "type": "quote",
+      "tokens": [
+        "Becker",
+        "Joe Becker",
+        "Xerox",
+        "Unicode 88",
+        "XCCS",
+        "1988",
+        "29 August 1988",
+        "16",
+        "65,536"
+      ],
+      "text": "The Unicode project began in 1987 when Joe Becker, an engineer at Xerox, drafted a proposal for a universal 16-bit character set, and his report Unicode 88 was issued on 29 August 1988. It described Unicode as addressing the need for a reliable world text encoding, roughly a wide-body ASCII stretched to 16 bits to encompass the characters of the world's living languages, and argued that 16 bits per character were more than sufficient — that 65,536 code points would be enough for every character needed for modern communication. The work grew out of eight years of experience with Xerox's internal Character Code Standard, XCCS.",
+      "source": {
+        "title": "Joseph D. Becker, Unicode 88, 29 August 1988 — the draft proposal for a 16-bit universal character set",
+        "url": "https://www.unicode.org/history/unicode88.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "type": "date",
+      "tokens": [
+        "Becker",
+        "Collins",
+        "Davis",
+        "Lee Collins",
+        "Mark Davis",
+        "Apple",
+        "Xerox",
+        "IBM",
+        "Microsoft",
+        "3 January 1991",
+        "1991",
+        "1992"
+      ],
+      "text": "The Unicode Consortium itself was formed on 3 January 1991 in California by Becker, Collins and Davis, with founding members including Apple, IBM, Microsoft, Xerox and Sun Microsystems. The first volume of The Unicode Standard was published in October 1991 and a second volume adding Han ideographs followed in June 1992.",
+      "source": {
+        "title": "Unicode Consortium — formed 3 January 1991 in California by Joe Becker, Lee Collins and Mark Davis; first volume of The Unicode Standard published October 1991, second volume adding Han ideographs June 1992",
+        "url": "https://en.wikipedia.org/wiki/Unicode_Consortium",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c4",
+      "type": "number",
+      "tokens": [
+        "Unicode",
+        "1996",
+        "1,114,112",
+        "17",
+        "16"
+      ],
+      "text": "The 16-bit assumption did not survive. Unicode 2.0, in 1996, expanded the space to 1,114,112 code points across 17 planes, so the sufficiency argument at the centre of the original proposal was abandoned within eight years of the standard's first volume.",
+      "source": {
+        "title": "Unicode — the 16-bit assumption abandoned in Unicode 2.0, 1996, expanding the space to 1,114,112 code points across 17 planes",
+        "url": "https://en.wikipedia.org/wiki/Unicode",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c5",
+      "type": "event",
+      "tokens": [
+        "Thompson",
+        "Pike",
+        "Ken Thompson",
+        "Rob Pike",
+        "UTF-8",
+        "1992",
+        "September 1992"
+      ],
+      "text": "UTF-8 was designed by Ken Thompson and Rob Pike in September 1992, with Thompson working the encoding out on a placemat in a New Jersey diner. It is backward compatible with ASCII — every ASCII position keeps its single-byte representation — and encodes the rest of the space in sequences of two to four bytes.",
+      "source": {
+        "title": "Rob Pike, UTF-8 history — first-hand account of the design of UTF-8 by Ken Thompson and Rob Pike in September 1992",
+        "url": "https://www.cl.cam.ac.uk/~mgk25/ucs/utf-8-history.txt",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a character was assumed to be a byte, then assumed to be sixteen bits, and each assumption was built into languages and file formats before it turned out to be false",
+    "fix": "separate the three layers that got conflated — the abstract character, the code point that identifies it, and the bytes that encode it — because no two of them are in fixed correspondence",
+    "cost": "the failed 16-bit assumption is permanent in the systems built on it, which is why counting length gives one answer in bytes, another in code units, another in code points and another in what a reader would call characters",
+    "interview": "why a single emoji has a length of two in several major languages"
+  }
+}

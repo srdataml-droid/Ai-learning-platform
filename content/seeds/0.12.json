@@ -1,0 +1,130 @@
+{
+  "taskId": "0.12",
+  "title": "URL to page, counted in round trips: which steps cost a journey and which are free",
+  "researchedAt": "2026-09-22",
+  "claims": [
+    {
+      "id": "c1",
+      "type": "event",
+      "tokens": [
+        "Cerf",
+        "Kahn",
+        "Vinton Cerf",
+        "Robert Kahn",
+        "IEEE",
+        "1974"
+      ],
+      "text": "Cerf and Kahn published A Protocol for Packet Network Intercommunication in IEEE Transactions on Communications in May 1974, setting out the protocol for interconnecting separate packet networks that became the basis of the internet's transport and addressing layers.",
+      "source": {
+        "title": "Vinton G. Cerf and Robert E. Kahn, A Protocol for Packet Network Intercommunication, IEEE Transactions on Communications volume 22 number 5, May 1974, pages 637-648",
+        "url": "https://ieeexplore.ieee.org/document/1092259",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "type": "event",
+      "tokens": [
+        "DNS",
+        "RFC",
+        "1987"
+      ],
+      "text": "The domain name system was specified in RFC 1034 in November 1987 as a distributed, hierarchical database with caching at every level, so a name resolution costs a round trip only when no cache along the path already holds the answer.",
+      "source": {
+        "title": "RFC 1034, Domain Names — Concepts and Facilities, November 1987",
+        "url": "https://www.rfc-editor.org/rfc/rfc1034",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "type": "event",
+      "tokens": [
+        "TCP",
+        "SYN",
+        "ACK",
+        "RFC",
+        "1981"
+      ],
+      "text": "RFC 793, of September 1981, specifies the three-way handshake that establishes a TCP connection: the initiator sends a segment with the synchronise flag set, the responder answers with synchronise and acknowledge, and the initiator acknowledges. Data may accompany the third message, so connection establishment costs one full round trip before the first byte of application data can be sent.",
+      "source": {
+        "title": "RFC 793, Transmission Control Protocol, DARPA Internet Program Protocol Specification, September 1981 — the three-way handshake",
+        "url": "https://www.rfc-editor.org/rfc/rfc793",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "type": "number",
+      "tokens": [
+        "TLS",
+        "RFC",
+        "2018",
+        "1-RTT",
+        "0-RTT"
+      ],
+      "text": "RFC 8446, of August 2018, specifies TLS 1.3, whose full handshake completes in one round trip before application data flows, against two for the previous version. It also defines a zero round trip mode for resumption with a pre-shared key, in which the client sends application data with its first message, and the specification is explicit that such early data has weaker guarantees: it is not forward secret against compromise of the pre-shared key and is not protected against replay between connections.",
+      "source": {
+        "title": "RFC 8446, The Transport Layer Security (TLS) Protocol Version 1.3, August 2018",
+        "url": "https://www.rfc-editor.org/rfc/rfc8446",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c5",
+      "type": "event",
+      "tokens": [
+        "QUIC",
+        "UDP",
+        "RFC",
+        "2021",
+        "TLS"
+      ],
+      "text": "RFC 9000, of May 2021, specifies QUIC, a multiplexed and secure transport over UDP which integrates the cryptographic handshake with transport establishment rather than layering one on the other, so a connection and its encryption are set up together instead of in sequence.",
+      "source": {
+        "title": "RFC 9000, QUIC: A UDP-Based Multiplexed and Secure Transport, May 2021",
+        "url": "https://www.rfc-editor.org/rfc/rfc9000",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c6",
+      "type": "event",
+      "tokens": [
+        "HTTP",
+        "RFC",
+        "2022"
+      ],
+      "text": "RFC 9114, of June 2022, specifies HTTP/3, which maps HTTP semantics onto QUIC. Because each stream is delivered independently, the loss of a packet belonging to one response does not stall the others, which was a property the earlier multiplexed version could not provide over a single ordered byte stream.",
+      "source": {
+        "title": "RFC 9114, HTTP/3, June 2022",
+        "url": "https://www.rfc-editor.org/rfc/rfc9114",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c7",
+      "type": "event",
+      "tokens": [
+        "HSTS",
+        "HTTP",
+        "RFC",
+        "2012",
+        "Strict Transport Security",
+        "Transport Security"
+      ],
+      "text": "RFC 6797, of November 2012, specifies HTTP Strict Transport Security, by which a site declares that user agents must interact with it only over secure transport. A user agent holding such a declaration rewrites an insecure request locally before it is sent, which removes a round trip and, more importantly, removes the request that an attacker on the path could intercept.",
+      "source": {
+        "title": "RFC 6797, HTTP Strict Transport Security (HSTS), November 2012",
+        "url": "https://www.rfc-editor.org/rfc/rfc6797",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "the pipeline was described as a list of steps, which gives no way to tell which steps cost anything, so diagnosis proceeded by guessing at the component the engineer happened to know best",
+    "fix": "count round trips rather than steps, because every stage either costs at least one journey to the other side of the world or costs effectively nothing, and only the former can explain a latency figure",
+    "cost": "the count is hardware- and distance-dependent and changes with protocol version, so it has to be re-derived rather than memorised, and the eliminations available are mostly purchased with weaker security guarantees",
+    "interview": "which steps between a URL and a page require round trips, and how the newer transport removes them"
+  }
+}
