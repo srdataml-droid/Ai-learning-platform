@@ -1,0 +1,43 @@
+{
+  "taskId": "B.42",
+  "title": "Evaluation pipelines: offline, online, golden sets, regressions",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "A survey of fields that adopted these methods found 17 fields where leakage has been found, collectively affecting 294 papers and in some cases leading to wildly overoptimistic conclusions, together with a taxonomy of eight types ranging from textbook errors to open research problems.",
+      "type": "number",
+      "tokens": [
+        "Kapoor",
+        "Narayanan",
+        "2023"
+      ],
+      "source": {
+        "title": "Sayash Kapoor and Arvind Narayanan, Leakage and the reproducibility crisis in machine-learning-based science, Patterns 4(9):100804, September 2023, doi 10.1016/j.patter.2023.100804",
+        "url": "https://www.cell.com/patterns/fulltext/S2666-3899(23)00159-9",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Dwork and colleagues observe that existing approaches to ensuring validity of inferences assume a fixed procedure selected before the data are examined, whereas in practice data analysis is intrinsically adaptive, with new analyses generated based on data exploration and on the results of previous analyses on the same data.",
+      "type": "quote",
+      "tokens": [
+        "Dwork",
+        "Science",
+        "2015"
+      ],
+      "source": {
+        "title": "Cynthia Dwork, Vitaly Feldman, Moritz Hardt, Toniann Pitassi, Omer Reingold and Aaron Roth, The reusable holdout: preserving validity in adaptive data analysis, Science 349(6248):636-638, 2015, doi 10.1126/science.aaa9375",
+        "url": "https://www.science.org/doi/10.1126/science.aaa9375",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a change to a system that produces language cannot be judged by running it once, because the output differs every time and the thing you are measuring is a distribution rather than a value",
+    "fix": "build a fixed set of cases with known-good answers and score every change against it automatically, then confirm offline improvements on live traffic, because the two measure different things",
+    "cost": "the fixed set is selected against on every change, so it stops being an unbiased estimate and becomes a description of what you tuned toward — and it must be refreshed by somebody deciding what belongs in it",
+    "interview": "why an improvement on your evaluation set may not be an improvement"
+  },
+  "researchedAt": "2026-09-21"
+}

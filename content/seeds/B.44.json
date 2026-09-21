@@ -1,0 +1,40 @@
+{
+  "taskId": "B.44",
+  "title": "Event driven AI: queues in front of models",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "In a queuing process, where one over lambda is the mean time between arrivals, L the mean number of units in the system and W the mean time a unit spends in it, then under finiteness and stationarity conditions L equals lambda times W — a relationship not influenced by the arrival distribution, the service distribution, the service order, or practically anything else.",
+      "type": "event",
+      "tokens": [
+        "Little",
+        "1961"
+      ],
+      "source": {
+        "title": "John D. C. Little, A Proof for the Queuing Formula: L = lambda W, Operations Research 9(3):383-387, June 1961, doi 10.1287/opre.9.3.383",
+        "url": "https://pubsonline.informs.org/doi/10.1287/opre.9.3.383",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "High throughput serving of large models requires batching many requests at a time, and the batch size is limited by the per-request cache memory, which is huge and grows and shrinks dynamically and is significantly wasted by fragmentation when managed inefficiently.",
+      "type": "quote",
+      "tokens": [
+        "High"
+      ],
+      "source": {
+        "title": "Woosuk Kwon et al., Efficient Memory Management for Large Language Model Serving with PagedAttention, Proceedings of the 29th Symposium on Operating Systems Principles, 2023 (arXiv:2309.06180)",
+        "url": "https://arxiv.org/abs/2309.06180",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "the work is slow, expensive and served by hardware that cannot be scaled up quickly, while the traffic that wants it arrives in bursts that bear no relation to the capacity you have",
+    "fix": "put a queue in front, so arrival rate is decoupled from service rate, bursts are absorbed rather than refused, and the expensive hardware stays saturated instead of alternating between overwhelmed and idle",
+    "cost": "the caller now receives an acknowledgement rather than an answer, and any sustained mismatch between arrival and service becomes a backlog whose depth is the arrival rate multiplied by the waiting time",
+    "interview": "what a queue in front of a model buys that more replicas do not"
+  },
+  "researchedAt": "2026-09-21"
+}

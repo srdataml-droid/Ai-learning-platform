@@ -1,0 +1,52 @@
+{
+  "taskId": "B.38",
+  "title": "Serving a model: batch versus real time, cold starts, GPU versus CPU",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Serving large models at high throughput requires batching many requests at a time, and existing systems struggled because the key-value cache memory for each request is huge and grows and shrinks dynamically, being significantly wasted by fragmentation and redundant duplication when managed inefficiently, which limits the batch size.",
+      "type": "quote",
+      "tokens": [
+        "Serving"
+      ],
+      "source": {
+        "title": "Woosuk Kwon et al., Efficient Memory Management for Large Language Model Serving with PagedAttention, Proceedings of the 29th Symposium on Operating Systems Principles, 2023 (arXiv:2309.06180)",
+        "url": "https://arxiv.org/abs/2309.06180",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Prior systems allocated a contiguous memory chunk sized to a request's maximum possible length, causing severe internal fragmentation when actual lengths are shorter, with the chunk remaining reserved for the request's lifetime.",
+      "type": "event",
+      "tokens": [
+        "Prior"
+      ],
+      "source": {
+        "title": "Woosuk Kwon et al., Efficient Memory Management for Large Language Model Serving with PagedAttention, Proceedings of the 29th Symposium on Operating Systems Principles, 2023 (arXiv:2309.06180)",
+        "url": "https://arxiv.org/abs/2309.06180",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The order-of-magnitude figures that decide placement: a main memory reference is around 100 nanoseconds, a round trip within the same datacenter around 500,000, a disk seek around 10,000,000. Moving work to another machine costs a datacenter round trip; loading state from disk costs a seek.",
+      "type": "number",
+      "tokens": [
+        "The"
+      ],
+      "source": {
+        "title": "Jeffrey Dean, Large-Scale Distributed Systems at Google: Current Systems and Future Directions, keynote at LADIS 2009, October 2009 — the slide deck carrying Numbers Everyone Should Know",
+        "url": "https://research.cs.cornell.edu/ladis2009/program.htm",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a model has to answer requests, and the hardware that runs it is expensive, slow to acquire and useless while idle — so the arrangement that gives the fastest single answer is rarely the one you can afford",
+    "fix": "decide by the shape of the demand rather than by the model: predictable bulk work runs as batches on saturated hardware, unpredictable interactive work needs capacity held ready, and the two have different economics",
+    "cost": "holding capacity ready is paying for idleness, and not holding it means the first request after a quiet period pays for loading everything — there is no arrangement that avoids both",
+    "interview": "when it is correct to serve a model on ordinary processors rather than accelerators"
+  },
+  "researchedAt": "2026-09-21"
+}

@@ -1,0 +1,53 @@
+{
+  "taskId": "B.48",
+  "title": "Practice designs in order: link shortener, rate limiter, chat, feed, retrieval service, agent platform",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The estimation figures that make each of these arguable are order-of-magnitude: a main memory reference around 100 nanoseconds, a datacenter round trip around 500,000, a disk seek around 10,000,000, and 1 megabyte read sequentially from disk around 30,000,000.",
+      "type": "number",
+      "tokens": [
+        "Dean",
+        "1 megabyte"
+      ],
+      "source": {
+        "title": "Jeffrey Dean, Large-Scale Distributed Systems at Google: Current Systems and Future Directions, keynote at LADIS 2009, October 2009 — the slide deck carrying Numbers Everyone Should Know",
+        "url": "https://research.cs.cornell.edu/ladis2009/program.htm",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Fan-out inherits the worst case: a server whose 99th percentile is one second, queried across 2,000 servers at even a one in ten thousand chance of slowness, leaves 18% of requests exceeding one second — which is why a design that queries many things needs an answer for the tail rather than for the average.",
+      "type": "number",
+      "tokens": [
+        "18%"
+      ],
+      "source": {
+        "title": "Jeffrey Dean and Luiz Andre Barroso, The tail at scale, Communications of the ACM 56(2):74-80, February 2013, doi 10.1145/2408776.2408794",
+        "url": "https://cacm.acm.org/research/the-tail-at-scale/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Serving a large model at high throughput requires batching, and batch size is limited by per-request cache memory that is huge and grows and shrinks dynamically — so the final design in this sequence is constrained by memory rather than by arithmetic.",
+      "type": "event",
+      "tokens": [
+        "Serving"
+      ],
+      "source": {
+        "title": "Woosuk Kwon et al., Efficient Memory Management for Large Language Model Serving with PagedAttention, Proceedings of the 29th Symposium on Operating Systems Principles, 2023 (arXiv:2309.06180)",
+        "url": "https://arxiv.org/abs/2309.06180",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "the track has covered every component separately, and knowing them separately is not the same as being able to assemble one under questioning",
+    "fix": "work a fixed sequence of designs in increasing order of difficulty, each adding exactly one new constraint over the last, so that what is being practised is assembly rather than recall",
+    "cost": "practising a sequence produces fluency in that sequence, so the value comes from being interrupted and pushed off the path rather than from completing it",
+    "interview": "which constraint each design in the sequence introduces"
+  },
+  "researchedAt": "2026-09-21"
+}

@@ -1,0 +1,56 @@
+{
+  "taskId": "B.41",
+  "title": "Agentic systems: tool loops, state, cost explosion, compounding failure",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Yao and colleagues describe generating reasoning traces and task-specific actions in an interleaved manner, so that reasoning helps induce, track and update action plans and handle exceptions, while actions let the model interface with external sources to gather additional information. They report that this overcomes prevalent issues of hallucination and error propagation present in reasoning without grounding.",
+      "type": "quote",
+      "tokens": [
+        "Yao",
+        "They",
+        "2023"
+      ],
+      "source": {
+        "title": "Shunyu Yao, Jeffrey Zhao, Dian Yu, Nan Du, Izhak Shafran, Karthik Narasimhan and Yuan Cao, ReAct: Synergizing Reasoning and Acting in Language Models, International Conference on Learning Representations, 2023 (arXiv:2210.03629)",
+        "url": "https://arxiv.org/abs/2210.03629",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "They characterise the two failure modes they are combining against. Reasoning without acting is not grounded in the external world and uses the model's own internal representations, limiting its ability to reactively explore and update its knowledge. Prior action-only work did not reason abstractly about high-level goals or maintain working memory to support acting over long horizons.",
+      "type": "quote",
+      "tokens": [
+        "They",
+        "Reasoning",
+        "Prior"
+      ],
+      "source": {
+        "title": "Shunyu Yao, Jeffrey Zhao, Dian Yu, Nan Du, Izhak Shafran, Karthik Narasimhan and Yuan Cao, ReAct: Synergizing Reasoning and Acting in Language Models, International Conference on Learning Representations, 2023 (arXiv:2210.03629)",
+        "url": "https://arxiv.org/abs/2210.03629",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The arithmetic of many dependent steps is unforgiving in the same way fan-out is: a component that is nearly always correct is not nearly always correct enough once a result depends on many of its outputs in sequence, which is why tolerating variability is treated as a permanent requirement rather than a defect to remove.",
+      "type": "event",
+      "tokens": [
+        "The"
+      ],
+      "source": {
+        "title": "Jeffrey Dean and Luiz Andre Barroso, The tail at scale, Communications of the ACM 56(2):74-80, February 2013, doi 10.1145/2408776.2408794",
+        "url": "https://cacm.acm.org/research/the-tail-at-scale/",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a single call answers a single question, and work that requires several dependent steps — look something up, decide, act, check — cannot be expressed as one call",
+    "fix": "put the model in a loop with tools, so it chooses an action, observes a result, and decides again, with reasoning interleaved so the plan can be tracked and revised",
+    "cost": "every step multiplies rather than adds — cost, latency and the probability of a mistake all compound with loop length, and a mistake early is reasoned upon rather than detected",
+    "interview": "why a loop of reliable steps produces an unreliable system"
+  },
+  "researchedAt": "2026-09-21"
+}

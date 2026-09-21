@@ -1,0 +1,56 @@
+{
+  "taskId": "B.47",
+  "title": "How to open, scope and drive a design round",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Order-of-magnitude figures make a design arguable without measurement: a main memory reference at around 100 nanoseconds, a round trip within the same datacenter at around 500,000, a disk seek at around 10,000,000, and reading 1 megabyte sequentially from disk at around 30,000,000.",
+      "type": "number",
+      "tokens": [
+        "Dean",
+        "1 megabyte"
+      ],
+      "source": {
+        "title": "Jeffrey Dean, Large-Scale Distributed Systems at Google: Current Systems and Future Directions, keynote at LADIS 2009, October 2009 — the slide deck carrying Numbers Everyone Should Know",
+        "url": "https://research.cs.cornell.edu/ladis2009/program.htm",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "A request that depends on many components inherits their worst case rather than their average: with a single server at a 99th percentile of one second, a fan-out to 100 servers sees a slow response more often than not, and at 2,000 servers even a one in ten thousand chance means 18% of requests exceed one second.",
+      "type": "number",
+      "tokens": [
+        "Dean",
+        "Barroso",
+        "18%",
+        "2013"
+      ],
+      "source": {
+        "title": "Jeffrey Dean and Luiz Andre Barroso, The tail at scale, Communications of the ACM 56(2):74-80, February 2013, doi 10.1145/2408776.2408794",
+        "url": "https://cacm.acm.org/research/the-tail-at-scale/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The relationship between items in a system, arrival rate and time in system holds independently of the arrival distribution, the service distribution and the service order, so a capacity claim can be checked without knowing any of them.",
+      "type": "event",
+      "tokens": [
+        "The"
+      ],
+      "source": {
+        "title": "John D. C. Little, A Proof for the Queuing Formula: L = lambda W, Operations Research 9(3):383-387, June 1961, doi 10.1287/opre.9.3.383",
+        "url": "https://pubsonline.informs.org/doi/10.1287/opre.9.3.383",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "an open-ended design question has no correct answer and the failure is almost never ignorance of a component — it is answering a question nobody asked, at a level of detail nobody wanted, having never established what the thing has to do",
+    "fix": "spend the first minutes establishing scale, traffic shape and what must not fail, then state the simplest design that meets it, then break it deliberately and repair what broke",
+    "cost": "establishing scope costs time that feels like not answering, and the numbers you commit to early constrain everything afterwards — which is the point, and is uncomfortable",
+    "interview": "how to open when the question is deliberately vague"
+  },
+  "researchedAt": "2026-09-21"
+}

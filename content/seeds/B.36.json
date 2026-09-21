@@ -1,0 +1,46 @@
+{
+  "taskId": "B.36",
+  "title": "Deploying: containers, orchestration, canary releases",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Burns, Grant, Oppenheimer, Brewer and Wilkes wrote up the lessons in Communications of the ACM in 2016, volume 59, pages 50 to 57, under the subtitle lessons learned from three container-management systems over a decade. They note that although widespread interest in software containers was relatively recent, their organisation had been managing containers at scale for more than ten years and built three different container-management systems in that time, each heavily influenced by its predecessors even though developed for different reasons.",
+      "type": "event",
+      "tokens": [
+        "Burns",
+        "Grant",
+        "Oppenheimer",
+        "Brewer",
+        "Wilkes",
+        "Communications of the ACM",
+        "ACM",
+        "2016"
+      ],
+      "source": {
+        "title": "Brendan Burns, Brian Grant, David Oppenheimer, Eric Brewer and John Wilkes, Borg, Omega, and Kubernetes: Lessons learned from three container-management systems over a decade, Communications of the ACM 59(5):50-57, May 2016, doi 10.1145/2890784",
+        "url": "https://cacm.acm.org/magazines/2016/5/201605-borg-omega-and-kubernetes/fulltext",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The first unified system was built to manage both long-running services and batch jobs, which had previously been handled by two separate systems. The earlier of those focused on batch jobs and strongly influenced the design, and both predated the kernel control groups that containers are usually said to be built on.",
+      "type": "event",
+      "tokens": [
+        "The"
+      ],
+      "source": {
+        "title": "Brendan Burns, Brian Grant, David Oppenheimer, Eric Brewer and John Wilkes, Borg, Omega, and Kubernetes: Lessons learned from three container-management systems over a decade, Communications of the ACM 59(5):50-57, May 2016, doi 10.1145/2890784",
+        "url": "https://cacm.acm.org/magazines/2016/5/201605-borg-omega-and-kubernetes/fulltext",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "software that runs on one machine does not run on another, because what a program depends on is not only its own code but every library, binary and setting the machine happened to have",
+    "fix": "package the process together with its dependencies so the unit that moves between machines is self-contained, then hand a scheduler a declaration of what should be running and let it place, restart and replace instances",
+    "cost": "you have replaced a machine you understood with a control loop that decides where things run, so the question during an incident changes from what is this box doing to why does the system believe this is correct",
+    "interview": "what a container actually isolates, and what it does not"
+  },
+  "researchedAt": "2026-09-21"
+}

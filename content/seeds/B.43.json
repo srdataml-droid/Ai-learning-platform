@@ -1,0 +1,52 @@
+{
+  "taskId": "B.43",
+  "title": "AI observability: tracing a chain, logging prompts, drift",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The tracing design states its goals as low overhead, application-level transparency, and ubiquitous deployment on a very large scale system, and carries a trace context associated with a thread that is tracked across asynchronous callbacks and remote calls, with traces formally modelled as trees.",
+      "type": "quote",
+      "tokens": [
+        "The"
+      ],
+      "source": {
+        "title": "Benjamin H. Sigelman et al., Dapper, a Large-Scale Distributed Systems Tracing Infrastructure, Google Technical Report dapper-2010-1, April 2010",
+        "url": "https://research.google/pubs/dapper-a-large-scale-distributed-systems-tracing-infrastructure/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Two choices are named as central to its success: restricting instrumentation, and sampling — with the finding that a sample of just one out of thousands of requests provides sufficient information for many common uses of the tracing data.",
+      "type": "event",
+      "tokens": [
+        "Two"
+      ],
+      "source": {
+        "title": "Benjamin H. Sigelman et al., Dapper, a Large-Scale Distributed Systems Tracing Infrastructure, Google Technical Report dapper-2010-1, April 2010",
+        "url": "https://research.google/pubs/dapper-a-large-scale-distributed-systems-tracing-infrastructure/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The inputs to a model-serving step include the key-value cache for each request, which is huge and grows and shrinks dynamically over the life of that request, so the state associated with one call is neither small nor fixed.",
+      "type": "event",
+      "tokens": [
+        "The"
+      ],
+      "source": {
+        "title": "Woosuk Kwon et al., Efficient Memory Management for Large Language Model Serving with PagedAttention, Proceedings of the 29th Symposium on Operating Systems Principles, 2023 (arXiv:2309.06180)",
+        "url": "https://arxiv.org/abs/2309.06180",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a request now passes through several model calls, retrievals and tool invocations, and when the final answer is wrong there is no stack trace — every step returned something plausible",
+    "fix": "trace the chain as a tree the way any distributed request is traced, and record the actual inputs and outputs at every step, because the intermediate text is the only evidence of where the reasoning went wrong",
+    "cost": "those intermediate records are the user's content and the model's raw output, so the thing that makes debugging possible is also a retention, privacy and cost problem that ordinary request logging does not have",
+    "interview": "what you need to record to debug a wrong answer from a chain of model calls"
+  },
+  "researchedAt": "2026-09-21"
+}

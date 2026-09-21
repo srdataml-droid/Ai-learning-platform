@@ -1,0 +1,54 @@
+{
+  "taskId": "B.40",
+  "title": "RAG architecture: chunking, embedding, retrieval, reranking, grounding",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Lewis and colleagues set out the framing at the 2020 conference on neural information processing systems: large pre-trained models store factual knowledge in their parameters, but their ability to access and precisely manipulate knowledge is limited, so on knowledge-intensive tasks they lag behind task-specific architectures, and providing provenance for decisions and updating world knowledge remain open problems.",
+      "type": "quote",
+      "tokens": [
+        "Lewis",
+        "2020"
+      ],
+      "source": {
+        "title": "Patrick Lewis et al., Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks, Advances in Neural Information Processing Systems 33, pages 9459-9474, 2020 (arXiv:2005.11401)",
+        "url": "https://arxiv.org/abs/2005.11401",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Their construction combines two memories: a parametric memory, which is a pre-trained sequence-to-sequence model, and a non-parametric memory, which is a dense vector index accessed with a pre-trained neural retriever, combined in a probabilistic model trained end to end. For a query, a maximum inner product search finds the top documents, which are treated as a latent variable and marginalised over.",
+      "type": "event",
+      "tokens": [
+        "Their"
+      ],
+      "source": {
+        "title": "Patrick Lewis et al., Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks, Advances in Neural Information Processing Systems 33, pages 9459-9474, 2020 (arXiv:2005.11401)",
+        "url": "https://arxiv.org/abs/2005.11401",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Two results matter for design. On language generation the models produce more specific, diverse and factual language than a parametric-only baseline. And the world knowledge can be updated by simply replacing the non-parametric memory, which addresses the staleness that contributes to outdated-fact errors.",
+      "type": "event",
+      "tokens": [
+        "Two",
+        "On"
+      ],
+      "source": {
+        "title": "Patrick Lewis et al., Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks, Advances in Neural Information Processing Systems 33, pages 9459-9474, 2020 (arXiv:2005.11401)",
+        "url": "https://arxiv.org/abs/2005.11401",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a model knows what was in its training data, cannot tell you where an answer came from, and cannot be corrected without retraining",
+    "fix": "split knowledge in two — leave language ability in the parameters and put facts in an external index that is searched at question time, so answers are grounded in retrieved text that can be cited",
+    "cost": "the answer is now only as good as what retrieval returned, so every failure of the retriever becomes a failure of the system, and the retriever fails silently by returning plausible but irrelevant passages",
+    "interview": "where a retrieval-augmented system actually fails"
+  },
+  "researchedAt": "2026-09-21"
+}
