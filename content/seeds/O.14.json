@@ -1,0 +1,44 @@
+{
+  "taskId": "O.14",
+  "title": "Overfitting and underfitting",
+  "researchedAt": "2026-09-21",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Geman, Bienenstock and Doursat set out the decomposition in Neural Computation in 1992, volume 4, pages 1 to 58, treating feedforward networks trained by error backpropagation as nonparametric regression estimators. They show that estimation error decomposes into two distinct components, bias and variance, where large numbers of parameter estimates raise the variance whereas incorrect statistical models increase the bias.",
+      "type": "event",
+      "tokens": [
+        "Geman",
+        "Bienenstock",
+        "Doursat",
+        "Neural Computation",
+        "They",
+        "1992"
+      ],
+      "source": {
+        "title": "Stuart Geman, Elie Bienenstock and Rene Doursat, Neural Networks and the Bias/Variance Dilemma, Neural Computation 4(1):1-58, January 1992, doi 10.1162/neco.1992.4.1.1",
+        "url": "https://direct.mit.edu/neco/article/4/1/1/5624/Neural-Networks-and-the-Bias-Variance-Dilemma",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Their characterisation of the two regimes is explicit: model-free approaches assume no particular geometric structure, use many parameters and exhibit high estimation variance, while controlling that variance requires model-based architectures that may increase modelling bias.",
+      "type": "quote",
+      "tokens": [
+        "Their"
+      ],
+      "source": {
+        "title": "Stuart Geman, Elie Bienenstock and Rene Doursat, Neural Networks and the Bias/Variance Dilemma, Neural Computation 4(1):1-58, January 1992, doi 10.1162/neco.1992.4.1.1",
+        "url": "https://direct.mit.edu/neco/article/4/1/1/5624/Neural-Networks-and-the-Bias-Variance-Dilemma",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "the only error you can measure directly is the error on data you already have, and that quantity falls monotonically as the model gains capacity, so it cannot tell you when to stop",
+    "fix": "watch the two errors separately — training error and held-out error move together while capacity is too low and apart once it is too high, and the point where they separate is the thing you were looking for",
+    "cost": "the diagnosis requires held-out data and therefore costs data, and the two failures need opposite remedies, so misreading which one you have makes things actively worse",
+    "interview": "what training error alone can and cannot tell you"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "taskId": "O.18",
+  "title": "Feature importance",
+  "researchedAt": "2026-09-21",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The scikit-learn documentation states that impurity-based feature importance for trees is strongly biased and favours high cardinality features, typically numerical features, over low cardinality features such as binary features or categorical variables with a small number of possible categories. It adds that the method can give high importance to features that may not be predictive on unseen data when the model is overfitting.",
+      "type": "quote",
+      "tokens": [
+        "The",
+        "It"
+      ],
+      "source": {
+        "title": "Permutation feature importance - scikit-learn user guide, on the limitations of impurity-based importance and on what permutation importance measures",
+        "url": "https://scikit-learn.org/stable/modules/permutation_importance.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "On correlated inputs the same documentation warns that when two features are correlated and one of the features is permuted, the model still has access to the latter through its correlated feature, which results in a lower reported importance value for both features, though they might actually be important. Its suggested handling is to cluster features that are correlated and keep only one from each cluster.",
+      "type": "quote",
+      "tokens": [
+        "On",
+        "Its"
+      ],
+      "source": {
+        "title": "Permutation feature importance - scikit-learn user guide, on the limitations of impurity-based importance and on what permutation importance measures",
+        "url": "https://scikit-learn.org/stable/modules/permutation_importance.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The documentation is explicit that the quantity is not a property of the data: features that are deemed of low importance for a bad model could be very important for a good model, and permutation importance does not reflect the intrinsic predictive value of a feature by itself but how important this feature is for a particular model.",
+      "type": "quote",
+      "tokens": [
+        "The"
+      ],
+      "source": {
+        "title": "Permutation feature importance - scikit-learn user guide, on the limitations of impurity-based importance and on what permutation importance measures",
+        "url": "https://scikit-learn.org/stable/modules/permutation_importance.html",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "an ensemble of hundreds of trees makes decisions nobody can read, and the obvious question — which inputs is it actually using — has no answer inside the model",
+    "fix": "measure importance by intervention rather than by inspection: shuffle one column, score the model again, and take the degradation as that column's contribution",
+    "cost": "the number describes a particular fitted model rather than the data, it collapses toward zero for correlated inputs because the model can route around a shuffled column, and the built-in impurity measure is biased toward columns with many distinct values",
+    "interview": "what a feature importance score is a property of"
+  }
+}

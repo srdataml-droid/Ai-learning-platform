@@ -1,0 +1,43 @@
+{
+  "taskId": "O.19",
+  "title": "When classical ML beats a neural network, which is often",
+  "researchedAt": "2026-09-21",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Grinsztajn, Oyallon and Varoquaux benchmarked standard and novel deep learning methods against tree-based models across 45 datasets with clear tabular characteristics, with a methodology accounting for both fitting models and finding good hyperparameters, and published the result in the datasets and benchmarks track in 2022.",
+      "type": "event",
+      "tokens": [
+        "Grinsztajn",
+        "Oyallon",
+        "Varoquaux",
+        "2022"
+      ],
+      "source": {
+        "title": "Leo Grinsztajn, Edouard Oyallon and Gael Varoquaux, Why do tree-based models still outperform deep learning on typical tabular data?, Advances in Neural Information Processing Systems 35, Datasets and Benchmarks track, pages 507-520, 2022",
+        "url": "https://proceedings.neurips.cc/paper_files/paper/2022/hash/0378c7692da36807bdec87ab043cdadc-Abstract-Datasets_and_Benchmarks.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Their findings were that tree-based models remain state of the art on medium-sized data, of the order of ten thousand samples, even without accounting for their superior speed; that the performance gap is not mostly due to categorical features; and that it does not disappear after tuning hyperparameters. They identify robustness to uninformative features as a desirable inductive bias for tabular data.",
+      "type": "event",
+      "tokens": [
+        "Their",
+        "They"
+      ],
+      "source": {
+        "title": "Leo Grinsztajn, Edouard Oyallon and Gael Varoquaux, Why do tree-based models still outperform deep learning on typical tabular data?, Advances in Neural Information Processing Systems 35, Datasets and Benchmarks track, pages 507-520, 2022",
+        "url": "https://proceedings.neurips.cc/paper_files/paper/2022/hash/0378c7692da36807bdec87ab043cdadc-Abstract-Datasets_and_Benchmarks.html",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "the methods that transformed perception problems are assumed to be the strongest option everywhere, so they get reached for on problems whose structure is nothing like an image or a sentence",
+    "fix": "match the method to the structure of the data — tabular columns are heterogeneous, individually meaningful and often uninformative, which suits models that select among features rather than compose them",
+    "cost": "the conclusion is empirical and bounded by the regime it was measured in, so it holds for datasets of the size and shape that were benchmarked rather than as a universal rule",
+    "interview": "why the newer method is not the default choice on tabular data"
+  }
+}

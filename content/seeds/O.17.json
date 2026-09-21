@@ -1,0 +1,70 @@
+{
+  "taskId": "O.17",
+  "title": "Why accuracy lies on imbalanced data",
+  "researchedAt": "2026-09-21",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Saito and Rehmsmeier examined this in PLOS ONE in 2015, noting that many studies evaluate classifiers applied to strongly imbalanced datasets in which negatives significantly outweigh positives. They show that the visual interpretability of the first kind of plot on imbalanced datasets can be deceptive with respect to conclusions about the reliability of classification performance, owing to an intuitive but wrong interpretation of specificity.",
+      "type": "quote",
+      "tokens": [
+        "Saito",
+        "Rehmsmeier",
+        "They",
+        "2015"
+      ],
+      "source": {
+        "title": "Takaya Saito and Marc Rehmsmeier, The Precision-Recall Plot Is More Informative than the ROC Plot When Evaluating Binary Classifiers on Imbalanced Datasets, PLOS ONE 10(3):e0118432, 2015, doi 10.1371/journal.pone.0118432",
+        "url": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0118432",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Their argument for the alternative is that precision-recall plots can give an accurate prediction of future classification performance because they evaluate the fraction of true positives among positive predictions — a quantity that depends on the prevalence of the positive class, which is precisely why it does not flatter a classifier on skewed data.",
+      "type": "quote",
+      "tokens": [
+        "Their"
+      ],
+      "source": {
+        "title": "Takaya Saito and Marc Rehmsmeier, The Precision-Recall Plot Is More Informative than the ROC Plot When Evaluating Binary Classifiers on Imbalanced Datasets, PLOS ONE 10(3):e0118432, 2015, doi 10.1371/journal.pone.0118432",
+        "url": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0118432",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The relationship between the two spaces is exact: a curve dominates in one if and only if it dominates in the other, but the areas under them are not interchangeable, and an algorithm optimising one is not guaranteed to optimise the other.",
+      "type": "event",
+      "tokens": [
+        "The"
+      ],
+      "source": {
+        "title": "Jesse Davis and Mark Goadrich, The relationship between Precision-Recall and ROC curves, Proceedings of the 23rd International Conference on Machine Learning, pages 233-240, 2006, doi 10.1145/1143844.1143874",
+        "url": "https://www.biostat.wisc.edu/~page/rocpr.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "type": "number",
+      "text": "The arithmetic of the base rate is the demonstration. Where one case in a thousand is positive, the constant rule that answers negative for every input is correct on 999 of every 1000 cases, an accuracy of 99.9%, while never identifying a single positive case. The score is therefore attainable with no data, no features and no fitting.",
+      "tokens": [
+        "99.9%",
+        "The",
+        "Where"
+      ],
+      "source": {
+        "title": "The Precision-Recall Plot Is More Informative than the ROC Plot When Evaluating Binary Classifiers on Imbalanced Datasets, PLOS ONE 10(3):e0118432, 2015 — on classifiers applied to strongly imbalanced datasets where negatives significantly outweigh positives",
+        "url": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0118432",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "when almost every case is negative, a rule that never predicts the positive class at all is correct almost every time, so the proportion of correct answers is high and the classifier is useless",
+    "fix": "report measures that condition on the thing that is rare — what fraction of flagged cases were real, and what fraction of real cases were flagged — and always state the base rate beside any score",
+    "cost": "measures that condition on prevalence move when the prevalence moves, so a score from one population does not transfer to another with a different mix",
+    "interview": "what a very high accuracy on a rare-event problem is actually telling you"
+  }
+}

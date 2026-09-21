@@ -1,0 +1,44 @@
+{
+  "taskId": "O.13",
+  "title": "Cross validation",
+  "researchedAt": "2026-09-21",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Stone set out the general form in the Journal of the Royal Statistical Society Series B in 1974, volume 36, applying a generalised cross-validation criterion to both the choice and the assessment of prediction, with examples from univariate estimation, linear regression and analysis of variance. The paper distinguishes the two uses, choice and assessment, which is the distinction that governs how the technique may be applied.",
+      "type": "event",
+      "tokens": [
+        "Stone",
+        "Journal of the Royal Statistical Society",
+        "Royal Statistical Society",
+        "1974"
+      ],
+      "source": {
+        "title": "M. Stone, Cross-Validatory Choice and Assessment of Statistical Predictions, Journal of the Royal Statistical Society Series B 36(2):111-147, 1974, doi 10.1111/j.2517-6161.1974.tb00994.x",
+        "url": "https://academic.oup.com/jrsssb/article/36/2/111/7027414",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Kohavi reported a large-scale experiment of over half a million runs, comparing cross-validation and bootstrap on real-world datasets while varying the number of folds and whether the folds were stratified. His conclusion was that for real-world datasets similar to his, the best method for model selection is ten-fold stratified cross-validation, even when computation power allows using more folds.",
+      "type": "event",
+      "tokens": [
+        "Kohavi",
+        "His",
+        "1995"
+      ],
+      "source": {
+        "title": "Ron Kohavi, A Study of Cross-Validation and Bootstrap for Accuracy Estimation and Model Selection, Proceedings of the 14th International Joint Conference on Artificial Intelligence, volume 2, pages 1137-1143, 1995",
+        "url": "https://www.ijcai.org/Proceedings/95-2/Papers/016.pdf",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a single held-out portion gives one estimate from one arbitrary partition, so the number you get depends on which rows happened to be set aside and carries no indication of how much it would have moved under a different draw",
+    "fix": "rotate the held-out portion through the data, fit and score once per fold, and take the average — every row is used for testing exactly once and for training every other time",
+    "cost": "the model is fitted as many times as there are folds, the estimates share training data and so are not independent, and the procedure estimates the performance of a recipe rather than of any one fitted model",
+    "interview": "why ten folds rather than as many folds as there are rows"
+  }
+}

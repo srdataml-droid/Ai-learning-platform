@@ -1,0 +1,44 @@
+{
+  "taskId": "O.15",
+  "title": "Bias variance tradeoff",
+  "researchedAt": "2026-09-21",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Geman, Bienenstock and Doursat's 1992 analysis examines dual sources of estimation error and shows it decomposes into bias and variance: large numbers of parameter estimates raise the variance, whereas incorrect statistical models increase the bias. The authors frame this as a dilemma rather than a choice, because the two cannot be reduced independently by the same means.",
+      "type": "event",
+      "tokens": [
+        "Geman",
+        "Bienenstock",
+        "Doursat",
+        "The",
+        "1992"
+      ],
+      "source": {
+        "title": "Stuart Geman, Elie Bienenstock and Rene Doursat, Neural Networks and the Bias/Variance Dilemma, Neural Computation 4(1):1-58, January 1992, doi 10.1162/neco.1992.4.1.1",
+        "url": "https://direct.mit.edu/neco/article/4/1/1/5624/Neural-Networks-and-the-Bias-Variance-Dilemma",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The tension is stated directly: model-free approaches assume no particular geometric structure, use many parameters and exhibit high estimation variance, while controlling that variance requires model-based architectures that may increase modelling bias. Their conclusion, on the networks of that period, was that the fundamental challenges in neural modelling concern representation rather than learning as such.",
+      "type": "quote",
+      "tokens": [
+        "The",
+        "Their"
+      ],
+      "source": {
+        "title": "Stuart Geman, Elie Bienenstock and Rene Doursat, Neural Networks and the Bias/Variance Dilemma, Neural Computation 4(1):1-58, January 1992, doi 10.1162/neco.1992.4.1.1",
+        "url": "https://direct.mit.edu/neco/article/4/1/1/5624/Neural-Networks-and-the-Bias-Variance-Dilemma",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "two quite different things both show up as error on unseen data — being systematically wrong, and being unstable — and a single error number adds them together without saying which you have",
+    "fix": "decompose the estimation error into a bias component, from the model's form being wrong, and a variance component, from the estimate moving with the sample, and treat them as separate quantities with separate remedies",
+    "cost": "they cannot both be reduced by the same means, since assuming less raises variance and assuming more raises bias, so past a point every reduction in one is paid for in the other",
+    "interview": "why more data fixes one of the two components and not the other"
+  }
+}

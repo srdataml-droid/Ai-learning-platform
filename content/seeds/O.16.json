@@ -1,0 +1,43 @@
+{
+  "taskId": "O.16",
+  "title": "Accuracy, precision, recall, F1, ROC AUC",
+  "researchedAt": "2026-09-21",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Davis and Goadrich showed a deep connection between the two curve spaces at the 23rd International Conference on Machine Learning in 2006, pages 233 to 240: a curve dominates in one space if and only if it dominates in the other. They also establish practical consequences — that linear interpolation between points is incorrect in the precision-recall space, and that algorithms optimising the area under one curve are not guaranteed to optimise the area under the other.",
+      "type": "event",
+      "tokens": [
+        "Davis",
+        "Goadrich",
+        "International Conference on Machine Learning",
+        "They",
+        "2006"
+      ],
+      "source": {
+        "title": "Jesse Davis and Mark Goadrich, The relationship between Precision-Recall and ROC curves, Proceedings of the 23rd International Conference on Machine Learning, pages 233-240, 2006, doi 10.1145/1143844.1143874",
+        "url": "https://www.biostat.wisc.edu/~page/rocpr.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Their summary of when each applies: when the class distribution is close to uniform the first kind of curve has many desirable properties, but with a highly skewed dataset the second gives a more accurate picture of an algorithm's performance.",
+      "type": "quote",
+      "tokens": [
+        "Their"
+      ],
+      "source": {
+        "title": "Jesse Davis and Mark Goadrich, The relationship between Precision-Recall and ROC curves, Proceedings of the 23rd International Conference on Machine Learning, pages 233-240, 2006, doi 10.1145/1143844.1143874",
+        "url": "https://www.biostat.wisc.edu/~page/rocpr.pdf",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a classifier makes two kinds of mistake, they have different consequences, and a single proportion of correct answers adds them together and reports the sum",
+    "fix": "count the four cells of the confusion matrix separately and build the measures that answer specific questions — how many flagged items were right, how many real cases were caught — then choose by which error is costly",
+    "cost": "each measure answers one question and ignores the others, the threshold-free summaries hide the threshold you will actually have to pick, and improving the area under one curve does not guarantee improving the area under another",
+    "interview": "which measure to report, and what fixes the answer"
+  }
+}

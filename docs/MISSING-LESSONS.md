@@ -84,15 +84,7 @@ Study order: the sequence first, then the five habits running underneath.
 
 ## Track O — Classical ML
 
-7 of 20 still missing.
-
-- [ ] `O.13` Cross validation
-- [ ] `O.14` Overfitting and underfitting
-- [ ] `O.15` Bias variance tradeoff
-- [ ] `O.16` Accuracy, precision, recall, F1, ROC AUC
-- [ ] `O.18` Feature importance
-- [ ] `O.19` When classical ML beats a neural network, which is often
-- [ ] `O.20` Always build the dumb baseline first
+**Complete.** All 20 written.
 
 ## Track K — Neural networks
 
@@ -165,7 +157,7 @@ Study order: the sequence first, then the five habits running underneath.
 
 ---
 
-**Total remaining: 81 of 313.**
+**Total remaining: 74 of 313.**
 
 Regenerate: `node tools/missing-lessons.mjs > docs/MISSING-LESSONS.md`
 

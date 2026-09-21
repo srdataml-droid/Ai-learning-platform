@@ -1,0 +1,54 @@
+{
+  "taskId": "O.20",
+  "title": "Always build the dumb baseline first",
+  "researchedAt": "2026-09-21",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "On skewed data a headline score can be deceptive with respect to conclusions about the reliability of classification performance, because a measure that does not condition on the rarity of the positive class rewards a classifier for the prevalence of the negative one rather than for anything it learned. Where one case in a thousand is positive, the constant rule answering negative is correct on 999 of every 1000, an accuracy of 99.9%, while identifying no positive case at all.",
+      "type": "number",
+      "tokens": [
+        "On",
+        "Where",
+        "99.9%"
+      ],
+      "source": {
+        "title": "Takaya Saito and Marc Rehmsmeier, The Precision-Recall Plot Is More Informative than the ROC Plot When Evaluating Binary Classifiers on Imbalanced Datasets, PLOS ONE 10(3):e0118432, 2015, doi 10.1371/journal.pone.0118432",
+        "url": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0118432",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Tree-based models remained state of the art against standard and novel deep learning methods across 45 tabular datasets, even without accounting for their superior speed, and the gap did not disappear after tuning hyperparameters — a result obtained by benchmarking the simpler option rather than assuming it had been superseded.",
+      "type": "event",
+      "tokens": [
+        "Tree"
+      ],
+      "source": {
+        "title": "Leo Grinsztajn, Edouard Oyallon and Gael Varoquaux, Why do tree-based models still outperform deep learning on typical tabular data?, Advances in Neural Information Processing Systems 35, Datasets and Benchmarks track, pages 507-520, 2022",
+        "url": "https://proceedings.neurips.cc/paper_files/paper/2022/hash/0378c7692da36807bdec87ab043cdadc-Abstract-Datasets_and_Benchmarks.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The best method for model selection on real-world datasets, in an experiment of over half a million runs, was ten-fold stratified cross-validation — which is a statement about how to compare candidates, and presupposes that there are candidates to compare against.",
+      "type": "event",
+      "tokens": [
+        "The"
+      ],
+      "source": {
+        "title": "Ron Kohavi, A Study of Cross-Validation and Bootstrap for Accuracy Estimation and Model Selection, Proceedings of the 14th International Joint Conference on Artificial Intelligence, volume 2, pages 1137-1143, 1995",
+        "url": "https://www.ijcai.org/Proceedings/95-2/Papers/016.pdf",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a score has no meaning on its own, and the number a model reports is routinely accepted as evidence of skill without anything to compare it against",
+    "fix": "build the trivial alternative first — predict the majority class, the overall mean, the last observed value, or a single rule — and treat its score as the zero point that everything else is measured from",
+    "cost": "it takes time that feels wasted on a model nobody intends to ship, and it regularly produces the unwelcome result that the trivial alternative is close enough to make the project's premise questionable",
+    "interview": "what a reported score means without a baseline beside it"
+  }
+}
