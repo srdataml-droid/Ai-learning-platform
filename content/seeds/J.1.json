@@ -1,0 +1,102 @@
+{
+  "taskId": "J.1",
+  "title": "Reproduce it reliably before touching anything",
+  "researchedAt": "2026-09-21",
+  "claims": [
+    {
+      "id": "c1",
+      "type": "event",
+      "tokens": [
+        "Ariane",
+        "Inquiry Board",
+        "Jacques-Louis Lions",
+        "Lions",
+        "1996"
+      ],
+      "text": "On 4 June 1996 the maiden flight of the Ariane 5 launcher ended in failure. About 40 seconds after initiation of the flight sequence, at an altitude of about 3700 metres, the launcher veered off its flight path, broke up and exploded. An independent Inquiry Board chaired by Professor Jacques-Louis Lions reported on 19 July 1996.",
+      "source": {
+        "title": "ARIANE 5 Flight 501 Failure — Report by the Inquiry Board, chaired by Prof. Jacques-Louis Lions, Paris, 19 July 1996",
+        "url": "https://www-users.cse.umn.edu/~arnold/disasters/ariane5rep.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "type": "quote",
+      "tokens": [
+        "Operand Error",
+        "Ariane",
+        "The"
+      ],
+      "text": "The Board identifies the primary technical causes as the Operand Error when converting the horizontal bias variable, and the lack of protection of that conversion, which caused the computer of the inertial reference system to stop. The alignment function that produced the value was a legacy of Ariane 4: its results are meaningful only before liftoff, and after liftoff the function serves no purpose, yet it remained operative for 50 seconds after the flight mode began.",
+      "source": {
+        "title": "ARIANE 5 Flight 501 Failure — Report by the Inquiry Board, chaired by Prof. Jacques-Louis Lions, Paris, 19 July 1996",
+        "url": "https://www-users.cse.umn.edu/~arnold/disasters/ariane5rep.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "type": "event",
+      "tokens": [
+        "Ariane",
+        "The",
+        "It"
+      ],
+      "text": "The value was much higher than expected because the early part of the trajectory of Ariane 5 differs from that of Ariane 4 and results in considerably higher horizontal velocity values. The analysis showing that the conversion could not overflow was correct for the Ariane 4 trajectory and did not hold for Ariane 5. It was jointly agreed not to include Ariane 5 trajectory data in the requirements and specifications for the inertial reference system.",
+      "source": {
+        "title": "ARIANE 5 Flight 501 Failure — Report by the Inquiry Board, chaired by Prof. Jacques-Louis Lions, Paris, 19 July 1996",
+        "url": "https://www-users.cse.umn.edu/~arnold/disasters/ariane5rep.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "type": "number",
+      "tokens": [
+        "80%",
+        "Not",
+        "Seven"
+      ],
+      "text": "Not all conversions were protected, because a maximum workload target of 80% had been set for the computer of the inertial reference system. Seven variables were found to be at risk of an Operand Error; protection was added to four of them, and three, including the horizontal bias, were left unprotected on the judgement that they were physically limited or had a large safety margin.",
+      "source": {
+        "title": "ARIANE 5 Flight 501 Failure — Report by the Inquiry Board, chaired by Prof. Jacques-Louis Lions, Paris, 19 July 1996",
+        "url": "https://www-users.cse.umn.edu/~arnold/disasters/ariane5rep.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c5",
+      "type": "quote",
+      "tokens": [
+        "The"
+      ],
+      "text": "The exception handling contributed. The specification required that on any exception the failure be indicated on the databus, the failure context be stored, and the processor be shut down. The Board records that this decision to cease processor operation proved fatal, since restart is infeasible: attitude is too difficult to recalculate after shutdown. Both modules failed, so the redundancy did not help.",
+      "source": {
+        "title": "ARIANE 5 Flight 501 Failure — Report by the Inquiry Board, chaired by Prof. Jacques-Louis Lions, Paris, 19 July 1996",
+        "url": "https://www-users.cse.umn.edu/~arnold/disasters/ariane5rep.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c6",
+      "type": "quote",
+      "tokens": [
+        "It",
+        "The"
+      ],
+      "text": "It would have been technically feasible to include almost the entire inertial reference system in the overall system simulations, but the simulated output of the system was used instead of the system itself; had the system been included, the failure could have been detected. The internal events were later reproduced by simulation, and the recovered memory allowed the failure context to be determined precisely.",
+      "source": {
+        "title": "ARIANE 5 Flight 501 Failure — Report by the Inquiry Board, chaired by Prof. Jacques-Louis Lions, Paris, 19 July 1996",
+        "url": "https://www-users.cse.umn.edu/~arnold/disasters/ariane5rep.html",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a failure is reported and the pressure is to act, so code gets edited before anyone can make the failure happen on demand — after which nothing distinguishes a fix from a coincidence",
+    "fix": "establish a reproduction first: the exact inputs, environment and state that trigger the failure whenever you ask, so that any later change has something to be judged against",
+    "cost": "reproduction is the slowest part and feels like not fixing, and the failures that most need it — the intermittent ones — are exactly the ones that resist it",
+    "interview": "what it means to say a failure was reproducible after the fact, and why that is not the same as having been caught"
+  }
+}

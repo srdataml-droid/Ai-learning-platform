@@ -5,8 +5,8 @@ every lesson, so the numbers are reproducible rather than estimated — see
 "How to regenerate" at the end.
 
 Updated the same day, after the habit tracks were resolved to `claimless`.
-Current: **276 lessons, 175 traced, 44 claimless, 57 unsourced**, and
-**682 checkable atoms** still sitting in unsourced prose. The section below
+Current: **276 lessons, 176 traced, 45 claimless, 55 unsourced**, and
+**657 checkable atoms** still sitting in unsourced prose. The section below
 records the state *before* that change, because the prioritisation was built
 on it and still holds for everything outside G, H, I and J.
 
@@ -164,15 +164,37 @@ unsourced fact instead of removing a false positive. The distinction is the
 whole point and is not machine-checkable, so it is recorded here rather than
 enforced.
 
-### The two that remain `unsourced`, and why
+### Both of the remaining two are now done
 
-| lesson | what blocks it | disposition |
-|---|---|---|
-| `J.1` | `In June 1996, the Ariane 5 rocket exploded 37 seconds after liftoff…` | **Sourceable.** This is a real, well-documented event and belongs in the traced pipeline, not here. It needs a seed, not a rephrase. |
-| `J.9` | `Docker`, `CDN`, `UUID`, `PID`, `Cmd+Shift+R`, `11:30 PM`, `/Users/dev/project` | A narrative lesson dense with environment specifics. Rephraseable in principle, but it is a substantial rewrite of a story rather than a few word swaps, and worth doing deliberately. |
+`J.1` was **sourceable and has been sourced.** The Inquiry Board report on the
+Ariane 5 Flight 501 failure (chaired by Jacques-Louis Lions, Paris, 19 July
+1996) is a primary source, and the lesson is now `traced` against a six-claim
+seed. Reading the report against the existing prose turned up three errors in
+it, which is the clearest justification for this whole pipeline that the repo
+has produced so far:
 
-So: **one wants research, one wants a rewrite.** Neither is blocked on a
-decision.
+| the lesson said | the report says |
+|---|---|
+| exploded **37 seconds after liftoff** | about **40 seconds after initiation of the flight sequence** — a different quantity measured from a different instant |
+| the rocket **sheared itself in half** | it **veered off its flight path, broke up and exploded**, following an angle of attack of more than 20 degrees |
+| had the simulation been run, **the explosion would never have occurred** | had the system been included, **the failure could have been detected** — a materially weaker claim |
+
+The third is the one worth dwelling on. The lesson was using Ariane as
+evidence for its own thesis and overstated what the evidence supports, which
+is exactly the failure mode a curriculum about checking claims should not
+exhibit.
+
+`J.9` has been **rewritten** and is now `claimless`. It was a narrative dense
+with environment specifics — a container runtime, a content delivery network,
+process identifiers, a browser shortcut, a wall-clock time, a filesystem path
+— none of which were claims about the world, all of which were brand and
+setting detail that dated the lesson and tripped the extractor. The rewrite
+keeps the argument (unchanged behaviour is evidence about the delivery path,
+not the logic) and drops the set dressing, and it gained the problem block,
+worked example and blueprint the pre-pipeline lessons lack.
+
+**Tracks G, H, I and J are now fully resolved: 45 claimless, 1 traced, 0
+unsourced.**
 
 ## A question worth settling before doing the work
 
