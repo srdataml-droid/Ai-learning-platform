@@ -26,15 +26,8 @@ Study order: the sequence first, then the five habits running underneath.
 
 ## Track B — System design
 
-31 of 48 still missing.
+25 of 48 still missing.
 
-- [ ] `B.10` HTTP: requests, methods, status codes
-      <br>_note: proposed 1989, first site 1991, designed for documents_
-- [ ] `B.11` Client and server: what lives where
-- [ ] `B.12` HTTPS and what encryption costs you
-- [ ] `B.13` Latency, bandwidth, throughput: the three everyone confuses
-- [ ] `B.15` Tables, keys, relationships
-- [ ] `B.17` Indexes: why your query is slow
 - [ ] `B.19` The NoSQL families and when each wins
       <br>_note: Dynamo paper 2007, Cassandra open sourced 2008_
 - [ ] `B.20` Connection pooling, the thing that quietly kills serverless apps
@@ -150,7 +143,7 @@ Study order: the sequence first, then the five habits running underneath.
 
 ---
 
-**Total remaining: 68 of 313.**
+**Total remaining: 62 of 313.**
 
 Regenerate: `node tools/missing-lessons.mjs > docs/MISSING-LESSONS.md`
 

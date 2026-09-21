@@ -10,9 +10,9 @@ A batch is one writing session and never spans two tracks.
 |---|---|---|---|---|
 | 1–2 | **K** Neural networks | 14 | 2 | Neural networks. Dates and papers throughout, so these want seeds, not just prose. |
 | 3–4 | **L** AI engineering | 23 | 2 | AI engineering. Fastest-moving material, so the most likely to date badly. |
-| 5–7 | **B** System design | 31 | 3 | System design. The largest single track and the heaviest research load. |
+| 5–7 | **B** System design | 25 | 3 | System design. The largest single track and the heaviest research load. |
 
-**68 lessons across 7 batches.**
+**62 lessons across 7 batches.**
 
 ---
 
@@ -79,13 +79,6 @@ A batch is one writing session and never spans two tracks.
 
 12 lessons.
 
-- [ ] `B.10` HTTP: requests, methods, status codes
-      <br>_note: proposed 1989, first site 1991, designed for documents_
-- [ ] `B.11` Client and server: what lives where
-- [ ] `B.12` HTTPS and what encryption costs you
-- [ ] `B.13` Latency, bandwidth, throughput: the three everyone confuses
-- [ ] `B.15` Tables, keys, relationships
-- [ ] `B.17` Indexes: why your query is slow
 - [ ] `B.19` The NoSQL families and when each wins
       <br>_note: Dynamo paper 2007, Cassandra open sourced 2008_
 - [ ] `B.20` Connection pooling, the thing that quietly kills serverless apps
@@ -93,11 +86,6 @@ A batch is one writing session and never spans two tracks.
 - [ ] `B.23` Authentication versus authorisation
 - [ ] `B.25` Queues: moving slow work out of the request
 - [ ] `B.26` Idempotency and retries
-
-### Batch 6 — Track B: System design (part 2 of 3)
-
-12 lessons.
-
 - [ ] `B.27` Rate limiting and backpressure
 - [ ] `B.29` Scaling up versus scaling out
 - [ ] `B.30` Replication: copies, leaders, and lag
@@ -105,23 +93,28 @@ A batch is one writing session and never spans two tracks.
 - [ ] `B.33` Failure modes: timeouts, partial failure, cascades, thundering herd
 - [ ] `B.34` Reliability patterns: circuit breakers, graceful degradation, health checks
       <br>_note: Chaos Monkey 2011_
+
+### Batch 6 — Track B: System design (part 2 of 3)
+
+12 lessons.
+
 - [ ] `B.35` Observability: logs, metrics, traces, and what deserves an alert
 - [ ] `B.36` Deploying: containers, orchestration, canary releases
 - [ ] `B.37` Cost and capacity estimation
 - [ ] `B.38` Serving a model: batch versus real time, cold starts, GPU versus CPU
 - [ ] `B.40` RAG architecture: chunking, embedding, retrieval, reranking, grounding
 - [ ] `B.41` Agentic systems: tool loops, state, cost explosion, compounding failure
-
-### Batch 7 — Track B: System design (part 3 of 3)
-
-7 lessons.
-
 - [ ] `B.42` Evaluation pipelines: offline, online, golden sets, regressions
 - [ ] `B.43` AI observability: tracing a chain, logging prompts, drift
 - [ ] `B.44` Event driven AI: queues in front of models
 - [ ] `B.45` Distributed inference: replicas, batching, autoscaling expensive hardware
 - [ ] `B.46` Back of envelope estimation drills
 - [ ] `B.47` How to open, scope and drive a design round
+
+### Batch 7 — Track B: System design (part 3 of 3)
+
+1 lessons.
+
 - [ ] `B.48` Practice designs in order: link shortener, rate limiter, chat, feed, retrieval service, agent platform
 
 ---
@@ -133,7 +126,7 @@ A batch is one writing session and never spans two tracks.
 - **Track D — Software development craft: complete (13).**
 - **Track E — Data structures and algorithms: complete (28).**
 - **Track F — Logic: complete (13).**
-- Track B — System design: 17 of 48.
+- Track B — System design: 23 of 48.
 - **Track P — Security: complete (13).**
 - **Track M — Math for machines: complete (16).**
 - **Track N — Data work: complete (15).**
