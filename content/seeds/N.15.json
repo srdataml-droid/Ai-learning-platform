@@ -1,0 +1,61 @@
+{
+  "taskId": "N.15",
+  "title": "A reusable pipeline",
+  "researchedAt": "2026-09-21",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The scikit-learn documentation presents the pipeline as a way to prevent data leakage, because it ensures that the appropriate method is performed on the correct data subset, and describes it as ideal for use in cross-validation and hyper-parameter tuning functions. On consistency it states that if these data transforms are used when training a model, they also must be used on subsequent datasets, whether it is test data or data in a production system, because otherwise the feature space will change and the model will not be able to perform effectively. Its worked example scores a mean squared error of 62.80 when the transform is skipped at prediction time against 0.90 when it is applied.",
+      "type": "number",
+      "tokens": [
+        "The",
+        "On",
+        "Its"
+      ],
+      "source": {
+        "title": "Common pitfalls and recommended practices — scikit-learn user guide, sections on data leakage, inconsistent preprocessing and controlling randomness",
+        "url": "https://scikit-learn.org/stable/common_pitfalls.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "On reproducibility the same guidance is that for reproducible results across executions you must remove any use of a null random state, the recommended way being to declare a generator variable at the top of the program and pass it down to any object that accepts a random state parameter. It explicitly does not recommend setting the global seed of the array library instead.",
+      "type": "quote",
+      "tokens": [
+        "On",
+        "It"
+      ],
+      "source": {
+        "title": "Common pitfalls and recommended practices — scikit-learn user guide, sections on data leakage, inconsistent preprocessing and controlling randomness",
+        "url": "https://scikit-learn.org/stable/common_pitfalls.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Sculley and colleagues describe machine learning models as machines for creating entanglement, which makes the isolation of improvements effectively impossible. Given a system using a set of features, changing the input distribution of one of them may alter the importance, weights or use of all the remaining features, and adding or removing a feature causes similar changes; no inputs are ever really independent. They name this the CACE principle: Changing Anything Changes Everything. It applies not only to input signals but to hyper-parameters, learning settings, sampling methods, convergence thresholds and data selection.",
+      "type": "quote",
+      "tokens": [
+        "Sculley",
+        "CACE",
+        "Changing Anything Changes Everything",
+        "Given",
+        "They",
+        "It",
+        "2015"
+      ],
+      "source": {
+        "title": "D. Sculley, Gary Holt, Daniel Golovin, Eugene Davydov, Todd Phillips, Dietmar Ebner, Vinay Chaudhary, Michael Young, Jean-Francois Crespo and Dan Dennison, Hidden Technical Debt in Machine Learning Systems, Advances in Neural Information Processing Systems 28, 2015",
+        "url": "https://papers.neurips.cc/paper/5656-hidden-technical-debt-in-machine-learning-systems.pdf",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "what gets shipped is not a model but a route from raw input to prediction, and every step along that route which learned anything from data is part of the model and has to travel with it",
+    "fix": "make the whole route one fitted object, so that the boundary between learning and applying is structural rather than remembered, and the same code runs at training time and at serving time",
+    "cost": "the components stop being independently testable, because changing any one of them changes the behaviour of all the others, so the unit of evaluation becomes the whole route rather than any part of it",
+    "interview": "how improving one preprocessing step in isolation can make overall accuracy fall"
+  }
+}

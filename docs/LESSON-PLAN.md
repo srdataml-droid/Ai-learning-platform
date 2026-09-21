@@ -1,6 +1,6 @@
 # Lesson writing plan
 
-Generated 2026-09-20 by `tools/lesson-plan.mjs`. Regenerate after each batch; completed items disappear from it because it is derived from `content/lessons/`, not ticked by hand.
+Generated 2026-09-21 by `tools/lesson-plan.mjs`. Regenerate after each batch; completed items disappear from it because it is derived from `content/lessons/`, not ticked by hand.
 
 A batch is one writing session and never spans two tracks.
 
@@ -8,24 +8,16 @@ A batch is one writing session and never spans two tracks.
 
 | # | Track | Missing | Batches | Why here |
 |---|---|---|---|---|
-| 1 | **N** Data work | 2 | 1 | Data work. Practical; much of it is about failure modes rather than history. |
-| 2–3 | **O** Classical ML | 19 | 2 | Classical ML. Large, and needs real sourcing for every named method. |
-| 4–5 | **K** Neural networks | 14 | 2 | Neural networks. Dates and papers throughout, so these want seeds, not just prose. |
-| 6–7 | **L** AI engineering | 23 | 2 | AI engineering. Fastest-moving material, so the most likely to date badly. |
-| 8–11 | **B** System design | 37 | 4 | System design. The largest single track and the heaviest research load. |
+| 1–2 | **O** Classical ML | 19 | 2 | Classical ML. Large, and needs real sourcing for every named method. |
+| 3–4 | **K** Neural networks | 14 | 2 | Neural networks. Dates and papers throughout, so these want seeds, not just prose. |
+| 5–6 | **L** AI engineering | 23 | 2 | AI engineering. Fastest-moving material, so the most likely to date badly. |
+| 7–10 | **B** System design | 37 | 4 | System design. The largest single track and the heaviest research load. |
 
-**95 lessons across 11 batches.**
+**93 lessons across 10 batches.**
 
 ---
 
-### Batch 1 — Track N: Data work
-
-2 lessons.
-
-- [ ] `N.14` Splitting data honestly
-- [ ] `N.15` A reusable pipeline
-
-### Batch 2 — Track O: Classical ML (part 1 of 2)
+### Batch 1 — Track O: Classical ML (part 1 of 2)
 
 12 lessons.
 
@@ -42,7 +34,7 @@ A batch is one writing session and never spans two tracks.
 - [ ] `O.11` PCA
 - [ ] `O.12` Train, validation, test
 
-### Batch 3 — Track O: Classical ML (part 2 of 2)
+### Batch 2 — Track O: Classical ML (part 2 of 2)
 
 7 lessons.
 
@@ -54,7 +46,7 @@ A batch is one writing session and never spans two tracks.
 - [ ] `O.19` When classical ML beats a neural network, which is often
 - [ ] `O.20` Always build the dumb baseline first
 
-### Batch 4 — Track K: Neural networks (part 1 of 2)
+### Batch 3 — Track K: Neural networks (part 1 of 2)
 
 12 lessons.
 
@@ -73,14 +65,14 @@ A batch is one writing session and never spans two tracks.
 - [ ] `K.16` Instruction tuning and RLHF
       <br>_note: why ChatGPT in 2022 felt different from GPT-3 in 2020. The base model was not the change, the alignment step was_
 
-### Batch 5 — Track K: Neural networks (part 2 of 2)
+### Batch 4 — Track K: Neural networks (part 2 of 2)
 
 2 lessons.
 
 - [ ] `K.17` Tokenisation, context windows, and why cost grows the way it does
 - [ ] `K.18` Inference versus training: completely different engineering problems
 
-### Batch 6 — Track L: AI engineering (part 1 of 2)
+### Batch 5 — Track L: AI engineering (part 1 of 2)
 
 12 lessons.
 
@@ -97,7 +89,7 @@ A batch is one writing session and never spans two tracks.
 - [ ] `L.14` Guardrails: input filtering, output checking, prompt injection
 - [ ] `L.15` Cost control: caching, model routing, batching, token accounting
 
-### Batch 7 — Track L: AI engineering (part 2 of 2)
+### Batch 6 — Track L: AI engineering (part 2 of 2)
 
 11 lessons.
 
@@ -113,7 +105,7 @@ A batch is one writing session and never spans two tracks.
 - [ ] `L.25` Feedback loops into evaluation
 - [ ] `L.26` Safety: bias, red teaming, failure disclosure
 
-### Batch 8 — Track B: System design (part 1 of 4)
+### Batch 7 — Track B: System design (part 1 of 4)
 
 12 lessons.
 
@@ -132,7 +124,7 @@ A batch is one writing session and never spans two tracks.
 - [ ] `B.15` Tables, keys, relationships
 - [ ] `B.17` Indexes: why your query is slow
 
-### Batch 9 — Track B: System design (part 2 of 4)
+### Batch 8 — Track B: System design (part 2 of 4)
 
 12 lessons.
 
@@ -151,7 +143,7 @@ A batch is one writing session and never spans two tracks.
 - [ ] `B.34` Reliability patterns: circuit breakers, graceful degradation, health checks
       <br>_note: Chaos Monkey 2011_
 
-### Batch 10 — Track B: System design (part 3 of 4)
+### Batch 9 — Track B: System design (part 3 of 4)
 
 12 lessons.
 
@@ -168,7 +160,7 @@ A batch is one writing session and never spans two tracks.
 - [ ] `B.46` Back of envelope estimation drills
 - [ ] `B.47` How to open, scope and drive a design round
 
-### Batch 11 — Track B: System design (part 4 of 4)
+### Batch 10 — Track B: System design (part 4 of 4)
 
 1 lessons.
 
@@ -186,7 +178,7 @@ A batch is one writing session and never spans two tracks.
 - Track B — System design: 11 of 48.
 - **Track P — Security: complete (13).**
 - **Track M — Math for machines: complete (16).**
-- Track N — Data work: 13 of 15.
+- **Track N — Data work: complete (15).**
 - Track O — Classical ML: 1 of 20.
 - Track K — Neural networks: 4 of 18.
 - Track L — AI engineering: 3 of 26.

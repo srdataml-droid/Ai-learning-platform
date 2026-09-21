@@ -1,6 +1,6 @@
 # Tasks with no lesson
 
-Regenerated 2026-09-20. Derived from content/lessons/ against the curriculum — not maintained by hand, so it cannot drift.
+Regenerated 2026-09-21. Derived from content/lessons/ against the curriculum — not maintained by hand, so it cannot drift.
 
 Study order: the sequence first, then the five habits running underneath.
 
@@ -80,10 +80,7 @@ Study order: the sequence first, then the five habits running underneath.
 
 ## Track N — Data work
 
-2 of 15 still missing.
-
-- [ ] `N.14` Splitting data honestly
-- [ ] `N.15` A reusable pipeline
+**Complete.** All 15 written.
 
 ## Track O — Classical ML
 
@@ -180,7 +177,7 @@ Study order: the sequence first, then the five habits running underneath.
 
 ---
 
-**Total remaining: 95 of 313.**
+**Total remaining: 93 of 313.**
 
 Regenerate: `node tools/missing-lessons.mjs > docs/MISSING-LESSONS.md`
 

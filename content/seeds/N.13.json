@@ -1,0 +1,76 @@
+{
+  "taskId": "N.13",
+  "title": "Leakage, the bug that makes you look brilliant",
+  "researchedAt": "2026-09-21",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Kaufman, Rosset, Perlich and Stitelman define leakage as the introduction of information about the data mining target that should not be legitimately available to mine from, and record it as one of the top ten data mining mistakes. They stress that the introduction of illegitimate information is usually unintentional, and is facilitated by the data collection, aggregation and preparation process, which is what makes it subtle and hard to detect and eliminate. Their remedy is a specific approach to data management followed by what they call a learn-predict separation.",
+      "type": "quote",
+      "tokens": [
+        "Kaufman",
+        "Rosset",
+        "Perlich",
+        "Stitelman",
+        "Their"
+      ],
+      "source": {
+        "title": "Shachar Kaufman, Saharon Rosset, Claudia Perlich and Ori Stitelman, Leakage in data mining: formulation, detection, and avoidance, ACM Transactions on Knowledge Discovery from Data 6(4), article 15, December 2012, doi 10.1145/2382577.2382579",
+        "url": "https://dl.acm.org/doi/10.1145/2382577.2382579",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Their worked example is the 2008 KDD Cup, on breast cancer detection from mammography. The Patient ID field, dismissed as irrelevant by most competitors, turned out to have tremendous and unexpected predictive power: the identifiers traced the various medical sources that had been joined together to build the data, and some of those sources, such as clinical studies, contributed mostly patients who have cancer. The identifier therefore predicted the diagnosis while carrying no medical meaning at all.",
+      "type": "event",
+      "tokens": [
+        "KDD",
+        "Patient ID",
+        "Patient",
+        "2008"
+      ],
+      "source": {
+        "title": "Shachar Kaufman, Saharon Rosset, Claudia Perlich and Ori Stitelman, Leakage in data mining: formulation, detection, and avoidance, ACM Transactions on Knowledge Discovery from Data 6(4), article 15, December 2012, doi 10.1145/2382577.2382579",
+        "url": "https://dl.acm.org/doi/10.1145/2382577.2382579",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "A survey of literature in fields that have adopted these methods found 17 fields where leakage has been found, collectively affecting 294 papers and in some cases leading to wildly overoptimistic conclusions. The same work sets out a taxonomy of eight types of leakage, ranging from textbook errors to open research problems, and proposes model info sheets as a first step toward catching it before publication.",
+      "type": "number",
+      "tokens": [
+        "Kapoor",
+        "Narayanan",
+        "Patterns",
+        "2023"
+      ],
+      "source": {
+        "title": "Sayash Kapoor and Arvind Narayanan, Leakage and the reproducibility crisis in machine-learning-based science, Patterns 4(9):100804, September 2023, doi 10.1016/j.patter.2023.100804",
+        "url": "https://www.cell.com/patterns/fulltext/S2666-3899(23)00159-9",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "The scikit-learn documentation gives a reproducible demonstration on pure noise: 200 samples, 10,000 random features and random labels, so that the true accuracy is chance. Selecting the best 25 features using all the data before splitting yields a test accuracy of 0.76, while splitting first and fitting the selector on the training portion alone yields 0.5. Its stated general rule is to never call fit on the test data, and it notes that the risk is relevant with almost all transformations, not only feature selection.",
+      "type": "number",
+      "tokens": [
+        "Selecting",
+        "Its"
+      ],
+      "source": {
+        "title": "Common pitfalls and recommended practices — scikit-learn user guide, sections on data leakage, inconsistent preprocessing and controlling randomness",
+        "url": "https://scikit-learn.org/stable/common_pitfalls.html",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a model is scored by showing it data it has not seen, and information about the answer reaches that data through routes nobody designed — how the rows were gathered, joined, ordered and prepared",
+    "fix": "separate what is known at prediction time from what is known afterwards, and enforce that separation structurally rather than by inspection, because the leaking column usually has no semantic relationship to the target",
+    "cost": "the separation has to be decided per field from knowledge of how the data was produced, which is information outside the dataset, and the symptom of getting it wrong is a good score rather than a bad one",
+    "interview": "what to do when a model scores far better than anyone expected"
+  }
+}

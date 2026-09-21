@@ -1,0 +1,82 @@
+{
+  "taskId": "N.14",
+  "title": "Splitting data honestly",
+  "researchedAt": "2026-09-21",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The scikit-learn guidance is to always split the data into train and test subsets first, particularly before any preprocessing steps, and never to include test data when using the fitting methods. It gives the concrete case: if you have a normalisation step where you divide by the average value, the average should be the average of the train subset, not the average of all the data, because if the test subset is included in the average calculation, information from the test subset is influencing the model.",
+      "type": "quote",
+      "tokens": [
+        "The",
+        "It"
+      ],
+      "source": {
+        "title": "Common pitfalls and recommended practices — scikit-learn user guide, sections on data leakage, inconsistent preprocessing and controlling randomness",
+        "url": "https://scikit-learn.org/stable/common_pitfalls.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Recht, Roelofs, Schmidt and Shankar built entirely new test sets for two long-standing benchmarks by closely following the original dataset creation processes, because both had been the focus of intense research for almost a decade, raising the danger of overfitting to excessively re-used test sets. Accuracy dropped by 3% to 15% on the smaller benchmark and by 11% to 14% on the larger one, a loss amounting to roughly five years of progress.",
+      "type": "number",
+      "tokens": [
+        "Recht",
+        "Roelofs",
+        "Schmidt",
+        "Shankar",
+        "3%",
+        "15%",
+        "11%",
+        "14%",
+        "2019"
+      ],
+      "source": {
+        "title": "Benjamin Recht, Rebecca Roelofs, Ludwig Schmidt and Vaishaal Shankar, Do ImageNet Classifiers Generalize to ImageNet?, Proceedings of the 36th International Conference on Machine Learning, PMLR 97, 2019, arXiv:1902.10811",
+        "url": "https://proceedings.mlr.press/v97/recht19a/recht19a.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "A correction to the way that experiment is usually cited: its authors concluded that the accuracy drops were not caused by adaptivity. Model accuracies on the new sets followed a linear function of their accuracies on the old ones with slope greater than one, so the relative ordering of models was essentially maintained, and the authors attributed the drop to the models' inability to generalise to slightly harder images rather than to adaptive overfitting from test set reuse.",
+      "type": "event",
+      "tokens": [
+        "Model"
+      ],
+      "source": {
+        "title": "Benjamin Recht, Rebecca Roelofs, Ludwig Schmidt and Vaishaal Shankar, Do ImageNet Classifiers Generalize to ImageNet?, Proceedings of the 36th International Conference on Machine Learning, PMLR 97, 2019, arXiv:1902.10811",
+        "url": "https://proceedings.mlr.press/v97/recht19a/recht19a.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "Dwork, Feldman, Hardt, Pitassi, Reingold and Roth observe that existing approaches to ensuring validity of inferences assume a fixed procedure selected before the data are examined, whereas in practice data analysis is intrinsically adaptive, with new analyses generated based on data exploration and on the results of previous analyses on the same data. They show how a holdout set can be safely reused many times to validate adaptively chosen analyses, using insights from privacy-preserving data analysis.",
+      "type": "event",
+      "tokens": [
+        "Dwork",
+        "Feldman",
+        "Hardt",
+        "Pitassi",
+        "Reingold",
+        "Roth",
+        "Science",
+        "They",
+        "2015"
+      ],
+      "source": {
+        "title": "Cynthia Dwork, Vitaly Feldman, Moritz Hardt, Toniann Pitassi, Omer Reingold and Aaron Roth, The reusable holdout: preserving validity in adaptive data analysis, Science 349(6248):636-638, 2015, doi 10.1126/science.aaa9375",
+        "url": "https://www.science.org/doi/10.1126/science.aaa9375",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a held-out score is a simulation of deployment, and the default way of producing one simulates a world in which the rows are interchangeable and the future is drawn from the same urn as the past",
+    "fix": "build the split to match how the model will actually be used — split along time when predictions run forward, along the entity when the same subject appears many times, and before any step that learns from the data",
+    "cost": "an honest split gives a lower number and less of it, since holding out whole groups or whole periods costs more data than holding out random rows, and the estimate it produces is the one you can defend",
+    "interview": "why a cross-validated score can be far above the score the same model achieves in production with no bug anywhere in the code"
+  }
+}
