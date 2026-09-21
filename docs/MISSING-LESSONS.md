@@ -26,15 +26,8 @@ Study order: the sequence first, then the five habits running underneath.
 
 ## Track B — System design
 
-37 of 48 still missing.
+31 of 48 still missing.
 
-- [ ] `B.3` Memory: fast, small, forgetful
-- [ ] `B.4` Storage: why disk is slow and why files exist
-- [ ] `B.5` The operating system as traffic warden
-      <br>_note: Unix 1969, rewritten in C 1973_
-- [ ] `B.6` Concurrency: why "at the same time" is usually a lie
-- [ ] `B.7` Networking: packets, addresses, ports
-- [ ] `B.9` DNS: names into numbers
 - [ ] `B.10` HTTP: requests, methods, status codes
       <br>_note: proposed 1989, first site 1991, designed for documents_
 - [ ] `B.11` Client and server: what lives where
@@ -157,7 +150,7 @@ Study order: the sequence first, then the five habits running underneath.
 
 ---
 
-**Total remaining: 74 of 313.**
+**Total remaining: 68 of 313.**
 
 Regenerate: `node tools/missing-lessons.mjs > docs/MISSING-LESSONS.md`
 

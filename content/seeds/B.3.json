@@ -1,0 +1,42 @@
+{
+  "taskId": "B.3",
+  "title": "Memory: fast, small, forgetful",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Wulf and McKee named the problem in 1995: processor speed and memory speed both improve exponentially, but the exponent for microprocessors is substantially larger than that for DRAMs. Because the difference between diverging exponentials also grows exponentially, they argued the already-existing disparity would become a much bigger problem over time. The paper is the origin of the term memory wall.",
+      "type": "event",
+      "tokens": [
+        "Wulf",
+        "McKee",
+        "1995"
+      ],
+      "source": {
+        "title": "Wm. A. Wulf and Sally A. McKee, Hitting the memory wall: implications of the obvious, ACM SIGARCH Computer Architecture News 23(1):20-24, March 1995, doi 10.1145/216585.216588",
+        "url": "https://dl.acm.org/doi/10.1145/216585.216588",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The same divergence appears as a general pattern across technologies. Patterson observed that bandwidth improves much more quickly than latency for four different technologies — disks, networks, memories and processors — and offered the rule of thumb that bandwidth improves by more than the square of the improvement in latency.",
+      "type": "event",
+      "tokens": [
+        "Patterson",
+        "2004"
+      ],
+      "source": {
+        "title": "David A. Patterson, Latency lags bandwidth, Communications of the ACM 47(10):71-75, October 2004",
+        "url": "https://dl.acm.org/doi/10.1145/1022594.1022596",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "the processor can consume data far faster than the store holding that data can supply it, and the gap has widened every year rather than closing",
+    "fix": "arrange storage as a hierarchy, with a small fast level close to the processor holding whatever was used recently or lies next to it, and progressively larger slower levels behind",
+    "cost": "the hierarchy only pays when access has locality, so a program that touches memory in an unpredictable order gets the speed of the slow level while paying for all the machinery of the fast one",
+    "interview": "why the same loop over the same amount of data can run an order of magnitude slower depending on the order of access"
+  },
+  "researchedAt": "2026-09-21"
+}

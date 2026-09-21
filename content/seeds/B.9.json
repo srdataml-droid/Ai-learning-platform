@@ -1,0 +1,41 @@
+{
+  "taskId": "B.9",
+  "title": "DNS: names into numbers",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Mockapetris published the design as RFC 1034 in November 1987, obsoleting the earlier RFCs 882, 883 and 973 from 1983 on the basis of experience with several implementations. The stated goal of domain names is to provide a mechanism for naming resources such that the names are usable across different hosts, networks, protocol families, internets and administrative organisations.",
+      "type": "event",
+      "tokens": [
+        "Mockapetris",
+        "1983",
+        "1987"
+      ],
+      "source": {
+        "title": "RFC 1034, Domain names - concepts and facilities, P. Mockapetris, November 1987, obsoleting RFCs 882, 883 and 973",
+        "url": "https://www.rfc-editor.org/rfc/rfc1034.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The scheme replaced a flat naming convention, and the shared idea across the competing proposals that preceded it was a hierarchical name space roughly corresponding to organisational structure, with the full stop marking the boundaries between levels. The system was made deliberately extensible, on the argument that future developments could not be predicted.",
+      "type": "event",
+      "tokens": [
+        "The"
+      ],
+      "source": {
+        "title": "RFC 1034, Domain names - concepts and facilities, P. Mockapetris, November 1987, obsoleting RFCs 882, 883 and 973",
+        "url": "https://www.rfc-editor.org/rfc/rfc1034.html",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "machines are reachable by number and people cannot remember numbers, and the first solution — one shared file listing every host — cannot be maintained once the network outgrows a single administrator",
+    "fix": "give the name space a hierarchy that mirrors organisational structure, delegate each level to whoever owns it, and distribute the database so that no one party has to know or approve the whole thing",
+    "cost": "a lookup is now a multi-step distributed query, so answers are cached, and a cached answer is a stale answer until it expires — which is why changes take time to become universally visible",
+    "interview": "why a change can be live for you and not yet live for somebody else"
+  },
+  "researchedAt": "2026-09-21"
+}

@@ -1,0 +1,43 @@
+{
+  "taskId": "B.6",
+  "title": "Concurrency: why \"at the same time\" is usually a lie",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Lamport examined the concept of one event happening before another in a distributed system and showed it defines a partial ordering of the events, in Communications of the ACM in 1978, volume 21, pages 558 to 565. He gives a distributed algorithm for synchronising a system of logical clocks which can be used to totally order the events, and then specialises it for physical clocks, deriving a bound on how far out of synchrony they can become.",
+      "type": "event",
+      "tokens": [
+        "Lamport",
+        "Communications of the ACM",
+        "ACM",
+        "1978"
+      ],
+      "source": {
+        "title": "Leslie Lamport, Time, clocks, and the ordering of events in a distributed system, Communications of the ACM 21(7):558-565, July 1978, doi 10.1145/359545.359563",
+        "url": "https://dl.acm.org/doi/10.1145/359545.359563",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The ordering is partial rather than total, and that is the substantive claim. Events can be compared when a causal path connects them, through program order or through message passing, and cannot be compared otherwise. A total order can be recovered only by breaking ties with an arbitrary ordering of the processes, so the partial order is unique while the total order is a convention.",
+      "type": "event",
+      "tokens": [
+        "The",
+        "A"
+      ],
+      "source": {
+        "title": "Leslie Lamport, Time, clocks, and the ordering of events in a distributed system, Communications of the ACM 21(7):558-565, July 1978, doi 10.1145/359545.359563",
+        "url": "https://dl.acm.org/doi/10.1145/359545.359563",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "two things appear to happen at once, and the phrase at the same time presumes a shared clock that no collection of independent machines actually has",
+    "fix": "order events by causality rather than by time — one event precedes another only if information could have flowed from the first to the second, which gives a partial order that is genuinely defined",
+    "cost": "a partial order leaves genuinely unrelated events incomparable, so any total ordering you need must be manufactured by an arbitrary tie-break rather than discovered",
+    "interview": "what it means for two events to happen at the same time on two machines"
+  },
+  "researchedAt": "2026-09-21"
+}

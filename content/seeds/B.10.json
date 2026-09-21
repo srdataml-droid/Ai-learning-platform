@@ -1,0 +1,55 @@
+{
+  "taskId": "B.10",
+  "title": "HTTP: requests, methods, status codes",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The current specification of the semantics is RFC 9110, published in June 2022 as Standard 97, which describes the protocol as a stateless application-level protocol for distributed, collaborative, hypertext information systems and defines the request methods, response status codes and header fields.",
+      "type": "quote",
+      "tokens": [
+        "June",
+        "2022"
+      ],
+      "source": {
+        "title": "RFC 9110, HTTP Semantics, STD 97, R. Fielding, M. Nottingham and J. Reschke eds., June 2022",
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "That document obsoletes RFCs 2818, 7231, 7232, 7233, 7235, 7538, 7615 and 7694 along with portions of 7230. The older RFC 2616 from 1999 was superseded first by a six-document series in 2014 and then reorganised again in 2022, so specifications still citing 2616 or 7231 are citing documents that have been obsolete for years.",
+      "type": "event",
+      "tokens": [
+        "1999",
+        "2014",
+        "2022"
+      ],
+      "source": {
+        "title": "RFC 9110, HTTP Semantics, STD 97, R. Fielding, M. Nottingham and J. Reschke eds., June 2022",
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The reorganisation separated the semantics from the wire format deliberately, so that each major protocol version progresses independently while referring to the same core semantics. All three major versions rely on the semantics defined in that document, and none has obsoleted the others, because each has specific benefits and limitations depending on the context of use.",
+      "type": "quote",
+      "tokens": [
+        "All"
+      ],
+      "source": {
+        "title": "RFC 9110, HTTP Semantics, STD 97, R. Fielding, M. Nottingham and J. Reschke eds., June 2022",
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "two programs that were never built together need a shared vocabulary for asking and answering, one general enough that neither has to know anything about the other's internals",
+    "fix": "fix a small set of verbs saying what kind of action is intended, a numeric space of replies saying what happened, and a header area for everything else — and define all of it independently of how the bytes are laid out on the wire",
+    "cost": "the vocabulary is only as meaningful as the agreement to use it honestly, and because the semantics are version-independent while the wire format is not, the performance characteristics change underneath code that is unaware of the difference",
+    "interview": "what actually changed between the major versions of this protocol"
+  },
+  "researchedAt": "2026-09-21"
+}

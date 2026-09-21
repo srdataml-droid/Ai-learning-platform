@@ -1,0 +1,47 @@
+{
+  "taskId": "B.5",
+  "title": "The operating system as traffic warden",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Ritchie and Thompson described the system in Communications of the ACM in 1974, volume 17, pages 365 to 375, listing among its distinguishing features a hierarchical file system incorporating demountable volumes; compatible file, device and inter-process input and output; the ability to initiate asynchronous processes; a system command language selectable on a per-user basis; and over one hundred subsystems including a dozen languages.",
+      "type": "event",
+      "tokens": [
+        "Ritchie",
+        "Thompson",
+        "Communications of the ACM",
+        "ACM",
+        "1974"
+      ],
+      "source": {
+        "title": "D. M. Ritchie and K. Thompson, The UNIX Time-Sharing System, Communications of the ACM 17(7):365-375, July 1974, doi 10.1145/361011.361061",
+        "url": "https://dl.acm.org/doi/10.1145/361011.361061",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "A correction to the phrase everybody uses: the slogan that everything is a file does not appear in that paper. The feature it names is compatible file, device and inter-process input and output, which is the design decision the slogan compresses. The paper was itself a revised version of one presented at the Fourth Symposium on Operating Systems Principles in October 1973, and was revised again for a later journal printing, so the widely circulated copy is often not the 1974 text.",
+      "type": "event",
+      "tokens": [
+        "Ritchie",
+        "Thompson",
+        "Fourth Symposium on Operating Systems Principles",
+        "1973",
+        "1974"
+      ],
+      "source": {
+        "title": "D. M. Ritchie and K. Thompson, The UNIX Time-Sharing System, Communications of the ACM 17(7):365-375, July 1974, doi 10.1145/361011.361061",
+        "url": "https://dl.acm.org/doi/10.1145/361011.361061",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "many programs want the same processor, the same memory and the same devices at once, and none of them can be trusted to take only their share or to stay inside their own memory",
+    "fix": "interpose one program that owns the hardware and hands out access — scheduling the processor, mapping memory per process, and presenting devices through a single uniform interface",
+    "cost": "every interaction with the hardware now crosses a boundary that must be checked, so the protection is paid for on every call, and the uniform interface hides differences that sometimes matter enormously",
+    "interview": "what the system is actually protecting, and from whom"
+  },
+  "researchedAt": "2026-09-21"
+}

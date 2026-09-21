@@ -1,0 +1,46 @@
+{
+  "taskId": "B.4",
+  "title": "Storage: why disk is slow and why files exist",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Patterson's measurements make the asymmetry concrete. Comparing a disk of 1983 with one of 2003, bandwidth improved from 0.6 to 86 megabytes per second, a factor of about 140, while latency improved only from 48.3 to 5.7 milliseconds, a factor of about 8. He quotes David Clark on why: bandwidth problems can be cured with money, latency problems are harder because the speed of light is fixed and you cannot bribe God.",
+      "type": "number",
+      "tokens": [
+        "Patterson",
+        "David Clark",
+        "Clark",
+        "God",
+        "1983",
+        "2003"
+      ],
+      "source": {
+        "title": "David A. Patterson, Latency lags bandwidth, Communications of the ACM 47(10):71-75, October 2004",
+        "url": "https://dl.acm.org/doi/10.1145/1022594.1022596",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The abstraction that hides the device is the file. Among the features Ritchie and Thompson listed for their system in 1974 were a hierarchical file system incorporating demountable volumes, and compatible file, device and inter-process input and output — the second of which is the design decision that lets a program read from a device, a pipe or a stored file without knowing which it has.",
+      "type": "event",
+      "tokens": [
+        "Ritchie",
+        "Thompson",
+        "1974"
+      ],
+      "source": {
+        "title": "D. M. Ritchie and K. Thompson, The UNIX Time-Sharing System, Communications of the ACM 17(7):365-375, July 1974, doi 10.1145/361011.361061",
+        "url": "https://dl.acm.org/doi/10.1145/361011.361061",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "the persistent store is physically far away in time terms, and it is addressed in blocks rather than in the bytes and structures a program actually holds",
+    "fix": "put a uniform abstraction over it — a named sequence of bytes that can be opened, read, written and closed — so that programs address data by name and the system handles blocks, devices and placement",
+    "cost": "the uniformity hides the access cost, so code that would be reasonable in memory becomes pathological against a device where one access costs millions of instructions",
+    "interview": "why reading the same total number of bytes can take vastly different amounts of time"
+  },
+  "researchedAt": "2026-09-21"
+}

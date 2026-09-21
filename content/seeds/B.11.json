@@ -1,0 +1,40 @@
+{
+  "taskId": "B.11",
+  "title": "Client and server: what lives where",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The protocol is defined as a stateless application-level protocol for distributed, collaborative, hypertext information systems, and its specification defines the overall architecture, common terminology and the aspects shared by all versions. Statelessness is a property of the protocol rather than of any application built on it.",
+      "type": "quote",
+      "tokens": [
+        "Statelessness"
+      ],
+      "source": {
+        "title": "RFC 9110, HTTP Semantics, STD 97, R. Fielding, M. Nottingham and J. Reschke eds., June 2022",
+        "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The cost of moving work across the boundary is dominated by the property that improves least. Bandwidth improves much more quickly than latency across disks, networks, memories and processors, with bandwidth improving by more than the square of the improvement in latency — so a design that adds round trips is spending the resource that is not getting cheaper.",
+      "type": "event",
+      "tokens": [
+        "Patterson",
+        "2004"
+      ],
+      "source": {
+        "title": "David A. Patterson, Latency lags bandwidth, Communications of the ACM 47(10):71-75, October 2004",
+        "url": "https://dl.acm.org/doi/10.1145/1022594.1022596",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "the work of an application has to be divided between a machine the user controls and one you control, and the two are separated by a link whose cost is paid per exchange rather than per byte",
+    "fix": "place each piece of work according to what it needs — trust and durable data on your side, responsiveness and interaction on theirs — and treat every crossing of the boundary as the expensive operation it is",
+    "cost": "anything placed on the client is running on hardware you do not control and cannot trust, so every client-side check has to be repeated on the server, and the duplication is not waste but the security model",
+    "interview": "why validation performed in the browser has to be performed again on the server"
+  },
+  "researchedAt": "2026-09-21"
+}

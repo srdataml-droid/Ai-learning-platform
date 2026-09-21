@@ -1,0 +1,43 @@
+{
+  "taskId": "B.15",
+  "title": "Tables, keys, relationships",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Codd's relational model, published in Communications of the ACM in 1970, volume 13, pages 377 to 387, is based on n-ary relations and a normal form for database relations, together with the concept of a universal data sublanguage, and discusses operations on relations applied to the problems of redundancy and consistency in the user's model.",
+      "type": "event",
+      "tokens": [
+        "Codd",
+        "Communications of the ACM",
+        "ACM",
+        "1970"
+      ],
+      "source": {
+        "title": "E. F. Codd, A Relational Model of Data for Large Shared Data Banks, Communications of the ACM 13(6):377-387, June 1970, doi 10.1145/362384.362685",
+        "url": "https://dl.acm.org/doi/10.1145/362384.362685",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Its opening argument is data independence: future users of large data banks must be protected from having to know how the data is organised in the machine, and the activities of users at terminals and most application programs should remain unaffected when the internal representation of data is changed and even when some aspects of the external representation are changed. Codd notes that changes in representation will often be needed as query, update and report traffic changes and as the types of stored information grow.",
+      "type": "quote",
+      "tokens": [
+        "Codd",
+        "Its"
+      ],
+      "source": {
+        "title": "E. F. Codd, A Relational Model of Data for Large Shared Data Banks, Communications of the ACM 13(6):377-387, June 1970, doi 10.1145/362384.362685",
+        "url": "https://dl.acm.org/doi/10.1145/362384.362685",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "data stored in the shape one program wants becomes unusable to the next program that wants a different shape, and every application ends up knowing how the bytes are laid out",
+    "fix": "store facts as relations with a declared key identifying the thing each row is about, and let queries assemble whatever shape is needed at read time rather than at write time",
+    "cost": "assembling shapes at read time means joining, which is work performed per query, and the normalisation that removes redundancy is exactly what creates the need for those joins",
+    "interview": "what the relational model was actually protecting its users from"
+  },
+  "researchedAt": "2026-09-21"
+}

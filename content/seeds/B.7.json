@@ -1,0 +1,40 @@
+{
+  "taskId": "B.7",
+  "title": "Networking: packets, addresses, ports",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The transport specification published as RFC 793 in September 1981, edited by Postel, states that very few assumptions are made about the reliability of the layers below it: it assumes only a simple, potentially unreliable datagram service, and should in principle operate above a wide spectrum of communication systems ranging from hard-wired connections to packet-switched or circuit-switched networks.",
+      "type": "quote",
+      "tokens": [
+        "Postel",
+        "1981"
+      ],
+      "source": {
+        "title": "RFC 793, Transmission Control Protocol, J. Postel ed., September 1981; obsoleted by RFC 9293 in 2022",
+        "url": "https://www.rfc-editor.org/rfc/rfc793.txt",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "That document was the ninth edition of the specification and has itself been obsoleted, replaced by RFC 9293 in 2022 — so the number most engineers cite for this protocol has not been the current specification for several years.",
+      "type": "event",
+      "tokens": [
+        "2022"
+      ],
+      "source": {
+        "title": "RFC 793, Transmission Control Protocol, J. Postel ed., September 1981; obsoleted by RFC 9293 in 2022",
+        "url": "https://www.rfc-editor.org/rfc/rfc793.txt",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a message has to cross machines and networks that were not built together, may drop it, may reorder it, and have no common notion of who anything is",
+    "fix": "cut the message into independently addressed packets, give every interface a number so packets can be routed, and give every conversation on a machine a second number so arriving packets can be handed to the right program",
+    "cost": "the layer beneath guarantees nothing, so ordering, retransmission and duplicate detection are built above it — and every such guarantee is paid for in round trips",
+    "interview": "what an address identifies and what a port identifies"
+  },
+  "researchedAt": "2026-09-21"
+}

@@ -1,0 +1,57 @@
+{
+  "taskId": "B.13",
+  "title": "Latency, bandwidth, throughput: the three everyone confuses",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Patterson documented a consistent theme across many technologies over many years: bandwidth improves much more quickly than latency for four different technologies — disks, networks, memories and processors — and proposed as a rule of thumb that bandwidth improves by more than the square of the improvement in latency.",
+      "type": "event",
+      "tokens": [
+        "Patterson",
+        "2004"
+      ],
+      "source": {
+        "title": "David A. Patterson, Latency lags bandwidth, Communications of the ACM 47(10):71-75, October 2004",
+        "url": "https://dl.acm.org/doi/10.1145/1022594.1022596",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The magnitudes are large. Over roughly twenty to twenty-five years across those four technologies, bandwidth improved by factors between 120 and 2200 while latency improved only by factors between 4 and 20. For disks specifically, comparing 1983 with 2003, bandwidth went from 0.6 to 86 megabytes per second while latency went from 48.3 to 5.7 milliseconds.",
+      "type": "number",
+      "tokens": [
+        "Patterson",
+        "1983",
+        "2003"
+      ],
+      "source": {
+        "title": "David A. Patterson, Latency lags bandwidth, Communications of the ACM 47(10):71-75, October 2004",
+        "url": "https://dl.acm.org/doi/10.1145/1022594.1022596",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "His explanations are structural rather than incidental: the transistor improvements that help bandwidth do not help latency in the same way, distance limits latency because the speed of light is fixed, and bandwidth is easier to sell. He quotes David Clark: bandwidth problems can be cured with money, latency problems are harder because the speed of light is fixed — you cannot bribe God.",
+      "type": "quote",
+      "tokens": [
+        "David Clark",
+        "Clark",
+        "His"
+      ],
+      "source": {
+        "title": "David A. Patterson, Latency lags bandwidth, Communications of the ACM 47(10):71-75, October 2004",
+        "url": "https://dl.acm.org/doi/10.1145/1022594.1022596",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "three different quantities get called speed, and a system can be excellent at one of them while being unusable because of another",
+    "fix": "separate them — the delay before the first result, the width of the pipe, and the completed work per unit time — and identify which one the user actually experiences",
+    "cost": "they are not independent and they are not equally improvable: the one users notice most is the one that has improved least and is bounded by physics rather than by engineering effort",
+    "interview": "which of the three a faster connection actually improves"
+  },
+  "researchedAt": "2026-09-21"
+}
