@@ -1,0 +1,111 @@
+{
+  "taskId": "K.11",
+  "title": "AlexNet in 2012: the margin, the hardware, and which ingredients were actually old",
+  "researchedAt": "2026-09-22",
+  "claims": [
+    {
+      "id": "c1",
+      "type": "number",
+      "tokens": [
+        "Krizhevsky",
+        "Sutskever",
+        "Hinton",
+        "Alex Krizhevsky",
+        "Ilya Sutskever",
+        "Geoffrey Hinton",
+        "AlexNet",
+        "ImageNet",
+        "ILSVRC",
+        "15.3%",
+        "26.2%",
+        "2012"
+      ],
+      "text": "At the 2012 ImageNet Large Scale Visual Recognition Challenge, the network designed by Alex Krizhevsky with Ilya Sutskever and Geoffrey Hinton, his doctoral advisor, reached a top-five error rate of 15.3% against 26.2% for the second-best entry, which used a conventional pipeline of hand-crafted features and a linear classifier. The task was classifying 1.2 million high-resolution images into 1,000 classes.",
+      "source": {
+        "title": "Alex Krizhevsky, Ilya Sutskever and Geoffrey E. Hinton, ImageNet Classification with Deep Convolutional Neural Networks, Advances in Neural Information Processing Systems 25 (NIPS), 2012",
+        "url": "https://papers.nips.cc/paper_files/paper/2012/file/c399862d3b9d6b76c8436e924a68c45b-Paper.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "type": "number",
+      "tokens": [
+        "GTX",
+        "NVIDIA",
+        "GeForce GTX 580",
+        "3GB",
+        "60 million"
+      ],
+      "text": "The network has five convolutional layers and 60 million parameters, and one forward pass takes roughly 1.1 billion multiply-accumulate operations. It was trained for five to six days on two NVIDIA GeForce GTX 580 3GB cards, with the layers divided between them because the model did not fit on one. The winning submission was not a single network: it averaged the predictions of several similar networks together with a variant pre-trained on the larger autumn 2011 release of the data.",
+      "source": {
+        "title": "Alex Krizhevsky, Ilya Sutskever and Geoffrey E. Hinton, ImageNet Classification with Deep Convolutional Neural Networks, Advances in Neural Information Processing Systems 25 (NIPS), 2012",
+        "url": "https://papers.nips.cc/paper_files/paper/2012/file/c399862d3b9d6b76c8436e924a68c45b-Paper.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "type": "date",
+      "tokens": [
+        "Hinton",
+        "Srivastava",
+        "Krizhevsky",
+        "Sutskever",
+        "Salakhutdinov",
+        "3 July 2012",
+        "2012"
+      ],
+      "text": "Dropout was not an established technique the network reached for. It was introduced in Improving neural networks by preventing co-adaptation of feature detectors, submitted on 3 July 2012 by Hinton, Srivastava, Krizhevsky, Sutskever and Salakhutdinov, months before the December conference paper and sharing three of its five authors. The idea is that overfitting in a large network trained on a small set is greatly reduced by randomly omitting half of the feature detectors on each training case, which prevents co-adaptations in which a detector is only useful alongside several specific others, so each neuron learns a generally useful feature instead.",
+      "source": {
+        "title": "Geoffrey E. Hinton, Nitish Srivastava, Alex Krizhevsky, Ilya Sutskever and Ruslan Salakhutdinov, Improving neural networks by preventing co-adaptation of feature detectors, arXiv 1207.0580, submitted 3 July 2012",
+        "url": "https://arxiv.org/abs/1207.0580",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "type": "event",
+      "tokens": [
+        "LeCun",
+        "Yann LeCun",
+        "Bottou",
+        "Bengio",
+        "Haffner",
+        "IEEE",
+        "1998"
+      ],
+      "text": "Convolutional networks were demonstrated and deployed long before. LeCun, Bottou, Bengio and Haffner published Gradient-based learning applied to document recognition in the Proceedings of the IEEE in November 1998, describing convolutional networks trained by gradient descent and applied to reading handwritten documents in commercial use.",
+      "source": {
+        "title": "Yann LeCun, Leon Bottou, Yoshua Bengio and Patrick Haffner, Gradient-based learning applied to document recognition, Proceedings of the IEEE volume 86 number 11, November 1998, pages 2278-2324",
+        "url": "https://ieeexplore.ieee.org/document/726791",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c5",
+      "type": "event",
+      "tokens": [
+        "Deng",
+        "Fei-Fei Li",
+        "Li Fei-Fei",
+        "Socher",
+        "CVPR",
+        "ImageNet",
+        "2009"
+      ],
+      "text": "The dataset came first and separately. Deng, Dong, Socher, Li, Li and Fei-Fei presented ImageNet, a large-scale hierarchical image database, at CVPR in 2009, three years before the network that made it famous.",
+      "source": {
+        "title": "Jia Deng, Wei Dong, Richard Socher, Li-Jia Li, Kai Li and Li Fei-Fei, ImageNet: A Large-Scale Hierarchical Image Database, IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2009",
+        "url": "https://www.image-net.org/static_files/papers/imagenet_cvpr09.pdf",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "the architecture had been published and deployed more than a decade earlier and was not competitive, so the field concluded the approach was a dead end rather than an approach waiting on inputs it did not have",
+    "fix": "the inputs arrived — a labelled dataset of a size nobody had had, and consumer graphics cards programmable enough to train on it — and the same family of architecture won by a margin that ended the argument",
+    "cost": "the winning result was an ensemble trained for days on hardware split by hand because the model did not fit, and the guarantees of the methods it displaced were traded for empirical tuning",
+    "interview": "why the 2012 result landed when the architecture was already fourteen years old"
+  }
+}

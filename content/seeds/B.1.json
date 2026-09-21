@@ -1,0 +1,95 @@
+{
+  "taskId": "B.1",
+  "title": "The memory hierarchy: the stored-program idea, and the latency numbers that follow from it",
+  "researchedAt": "2026-09-22",
+  "claims": [
+    {
+      "id": "c1",
+      "type": "event",
+      "tokens": [
+        "von Neumann",
+        "John von Neumann",
+        "EDVAC",
+        "First Draft",
+        "Moore School",
+        "Pennsylvania",
+        "1945",
+        "30 June 1945"
+      ],
+      "text": "John von Neumann circulated the First Draft of a Report on the EDVAC from the Moore School of Electrical Engineering at the University of Pennsylvania on 30 June 1945. It described a machine holding both its instructions and its data in the same addressable memory, from which a control unit fetches and decodes them in sequence.",
+      "source": {
+        "title": "John von Neumann, First Draft of a Report on the EDVAC, Moore School of Electrical Engineering, University of Pennsylvania, 30 June 1945",
+        "url": "https://web.mit.edu/STS.035/www/PDFs/edvac.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "type": "event",
+      "tokens": [
+        "ENIAC"
+      ],
+      "text": "ENIAC, built at the same school, was programmed by setting switches and plugging cable connections between its units, so changing the computation it performed was a physical rewiring task rather than the loading of a new set of stored instructions.",
+      "source": {
+        "title": "ENIAC — programming by setting switches and plugging cable connections, Moore School of Electrical Engineering, University of Pennsylvania",
+        "url": "https://en.wikipedia.org/wiki/ENIAC",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c3",
+      "type": "number",
+      "tokens": [
+        "Jeff Dean",
+        "Peter Norvig",
+        "0.5 ns",
+        "5 ns",
+        "7 ns",
+        "25 ns",
+        "100 ns",
+        "150,000 ns",
+        "250,000 ns",
+        "500,000 ns",
+        "10,000,000 ns",
+        "20,000,000 ns",
+        "150,000,000 ns",
+        "1 MB",
+        "4K",
+        "1 Gbps"
+      ],
+      "text": "The widely circulated latency table compiled by Jeff Dean, originally by Peter Norvig, gives: L1 cache reference 0.5 ns; branch mispredict 5 ns; L2 cache reference 7 ns; mutex lock and unlock 25 ns; main memory reference 100 ns, described in the table itself as 200x L1; read 4K randomly from SSD 150,000 ns; read 1 MB sequentially from memory 250,000 ns; round trip within the same datacenter 500,000 ns; disk seek 10,000,000 ns, described as 20x a datacenter round trip; read 1 MB sequentially from disk 20,000,000 ns; and send a packet from California to the Netherlands and back 150,000,000 ns.",
+      "source": {
+        "title": "Latency Numbers Every Programmer Should Know — compiled by Jeff Dean, originally by Peter Norvig; the widely circulated gist, whose values date from around 2012 and whose forks and comments record later revisions",
+        "url": "https://gist.github.com/jboner/2841832",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c4",
+      "type": "number",
+      "tokens": [
+        "0.3 ns",
+        "1 ns",
+        "3 ns",
+        "4 ns",
+        "15 ns",
+        "80 ns",
+        "L1",
+        "L2",
+        "L3"
+      ],
+      "text": "The table's figures date from around 2012 and drift with hardware generation, which its forks and comment thread record: later revisions give register access about 0.3 ns, L1 about 1 ns, branch mispredict about 3 ns, L2 about 4 ns, L3 about 15 ns and main memory about 80 ns, and readers note that current solid-state drives are faster than the listed figure. The durable content is therefore the ratios rather than the values.",
+      "source": {
+        "title": "Latency Numbers Every Programmer Should Know — compiled by Jeff Dean, originally by Peter Norvig; the widely circulated gist, whose values date from around 2012 and whose forks and comments record later revisions",
+        "url": "https://gist.github.com/jboner/2841832",
+        "kind": "secondary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "storage was reasoned about as a single thing called memory, so code was written as though reaching any of it cost the same, and the arithmetic units spent their time waiting",
+    "fix": "treat the hierarchy as the design input: each level is orders of magnitude slower than the one above it, so the question for any operation is which level it touches and how often",
+    "cost": "the ratios are what matter and the absolute figures go stale, so the table has to be re-derived for the hardware in front of you rather than quoted",
+    "interview": "the latency numbers, and what they dictate about indexing and caching"
+  }
+}

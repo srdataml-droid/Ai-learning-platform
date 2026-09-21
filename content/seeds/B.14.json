@@ -1,0 +1,66 @@
+{
+  "taskId": "B.14",
+  "title": "Codd 1970: physical data independence, and the three dependencies it was written to remove",
+  "researchedAt": "2026-09-22",
+  "claims": [
+    {
+      "id": "c1",
+      "type": "quote",
+      "tokens": [
+        "Codd",
+        "IBM",
+        "ACM",
+        "Communications",
+        "1970",
+        "June 1970"
+      ],
+      "text": "Codd's A Relational Model of Data for Large Shared Data Banks appeared in Communications of the ACM in June 1970. It opens by stating that future users of large data banks must be protected from having to know how the data is organized in the machine, its internal representation, and argues that activities of users at terminals and most application programs should remain unaffected when the internal representation of data is changed.",
+      "source": {
+        "title": "E. F. Codd, A Relational Model of Data for Large Shared Data Banks, Communications of the ACM volume 13 number 6, June 1970, pages 377-387",
+        "url": "https://dl.acm.org/doi/10.1145/362384.362685",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "type": "event",
+      "tokens": [
+        "Codd",
+        "Ordering",
+        "Indexing",
+        "Access"
+      ],
+      "text": "Codd names three specific dependencies of the systems of the time that the relational model was written to remove. Ordering dependence: programs relying on the stored order of records break when that order changes. Indexing dependence: programs written against the indices that exist must change when indices are created or dropped, even though indices are a performance device with no bearing on meaning. Access path dependence: programs that navigate a particular path through the data break when the structure of that path changes.",
+      "source": {
+        "title": "E. F. Codd, A Relational Model of Data for Large Shared Data Banks, Communications of the ACM volume 13 number 6, June 1970, pages 377-387",
+        "url": "https://dl.acm.org/doi/10.1145/362384.362685",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "type": "event",
+      "tokens": [
+        "Chamberlin",
+        "Boyce",
+        "Donald Chamberlin",
+        "Raymond Boyce",
+        "SEQUEL",
+        "IBM",
+        "1974"
+      ],
+      "text": "Chamberlin and Boyce published SEQUEL: A Structured English Query Language at the 1974 ACM SIGFIDET workshop. Its stated aim was a language for a relational system usable by people without training in mathematics or computer programming, so that the relational model could be reached without its algebra or calculus notation. It was later renamed SQL.",
+      "source": {
+        "title": "Donald D. Chamberlin and Raymond F. Boyce, SEQUEL: A Structured English Query Language, Proceedings of the 1974 ACM SIGFIDET Workshop on Data Description, Access and Control, pages 249-264",
+        "url": "https://dl.acm.org/doi/10.1145/800296.811515",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "programs encoded how the data was physically arranged, so any change to stored order, to which indices existed, or to the route through the data broke every program that had assumed the old arrangement",
+    "fix": "separate what is wanted from how it is fetched, so a program states the result it needs and the engine chooses the access path, leaving the physical arrangement free to change",
+    "cost": "the engine now has to choose the path, which means a query planner, cost estimates and statistics, and the failure mode changes from a program that breaks visibly to a plan that quietly becomes the wrong one",
+    "interview": "what physical data independence is, and why it outlasted the systems it replaced"
+  }
+}
