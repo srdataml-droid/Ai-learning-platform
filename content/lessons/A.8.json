@@ -3,7 +3,7 @@
   "trackId": "A",
   "trackName": "Systems thinking",
   "title": "Draw five systems you use daily, from memory, on paper",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "The exercise sounds like busywork and is a diagnostic. Drawing something you use constantly, without looking anything up, reveals exactly where your understanding stops — and it stops much earlier than it feels like it does.\n\nFamiliarity is easily mistaken for comprehension. You use a version control system a hundred times a week; draw what happens when you push, and it becomes apparent whether you know what is transferred, what is computed locally, what the remote decides, and what happens if two people push at once. The gap is the point. A diagram you cannot complete is a precise statement about what you have been taking on faith, and it is far more useful than a feeling of vagueness because you can see the shape of the hole.\n\nFrom memory matters because the moment you look it up, you are copying rather than recalling, and copying feels like learning while producing nothing durable. On paper matters for a smaller reason: no autocomplete, no structure imposed by a tool, and no temptation to make it tidy. The version with arrows crossing each other and a box labelled with a question mark is the one that did its job.",
   "beats": {
     "broke": "Frequent use is mistaken for understanding. The gaps stay invisible because nothing ever requires the model to be made explicit, and a vague sense of not quite knowing gives you no idea what specifically is missing.",

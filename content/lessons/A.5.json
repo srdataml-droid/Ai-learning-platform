@@ -3,7 +3,7 @@
   "trackId": "A",
   "trackName": "Systems thinking",
   "title": "Constraints as the real design input, not the requirements",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "Requirements describe what something should do, and almost every design satisfies them. They are rarely what determines the shape of a solution, which is why two teams given identical requirements produce entirely different systems.\n\nConstraints do the determining. How much latency is acceptable, what it may cost to run, how many people will maintain it, what must not be lost under any circumstances, what regulation applies, what the team already knows, what the network between the components is actually like. These narrow the space of possible designs sharply, and frequently to one or two candidates. A requirement to store user documents is satisfied by a hundred designs; a constraint that documents must survive a region failure and be retrievable within seconds eliminates most of them immediately.\n\nWhich is why asking about constraints early is the highest-leverage move in a design discussion. They are usually unstated because whoever holds them considers them obvious or has never articulated them, and they surface late as objections to a design that is already built. The question to ask is not what do you want it to do — everyone can answer that — but what must never happen, what does it have to survive, and who is going to run it at three in the morning.",
   "beats": {
     "broke": "Design is driven by requirements, which nearly every candidate design satisfies. The genuinely determining factors go unstated because whoever holds them assumes they are obvious, and they emerge late as objections to something already built.",

@@ -1,0 +1,59 @@
+{
+  "taskId": "A.3",
+  "title": "The bottleneck rule: a system moves at the speed of its slowest part",
+  "researchedAt": "2026-09-21",
+  "claims": [
+    {
+      "id": "c1",
+      "type": "event",
+      "tokens": [
+        "Goldratt",
+        "Eliyahu Goldratt",
+        "Jeff Cox",
+        "The Goal",
+        "Theory of Constraints",
+        "1984"
+      ],
+      "text": "Eliyahu Goldratt introduced the Theory of Constraints in The Goal: A Process of Ongoing Improvement, written with Jeff Cox and first published in 1984. Its premise is that every system has at least one constraint limiting its performance, and that a constraint is anything preventing the system from achieving its goal.",
+      "source": {
+        "title": "Eliyahu M. Goldratt and Jeff Cox, The Goal: A Process of Ongoing Improvement, first published 1984 — the book introducing the Theory of Constraints",
+        "url": "https://www.goodreads.com/book/show/113934.The_Goal",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "type": "event",
+      "tokens": [
+        "The",
+        "Goldratt"
+      ],
+      "text": "The method is a cycle of five focusing steps: identify the constraint, exploit it, subordinate the other processes to it, elevate it, and then repeat. The approach inherently prioritises improvement work, because the top priority is always the current constraint, and focus moves to the next one only once the current one no longer limits throughput. Asked to summarise the theory in one sentence, Goldratt is reported to have offered one word: focus.",
+      "source": {
+        "title": "Theory of Constraints — the five focusing steps and the process of ongoing improvement",
+        "url": "https://en.wikipedia.org/wiki/Theory_of_constraints",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c3",
+      "type": "event",
+      "tokens": [
+        "Amdahl",
+        "1967"
+      ],
+      "text": "The same result appears in computing as Amdahl's argument of 1967: the fraction of work which must be performed serially bounds the speedup available from any number of processors, so the maximum speedup is the reciprocal of that fraction.",
+      "source": {
+        "title": "Gene M. Amdahl, Validity of the single processor approach to achieving large scale computing capabilities, AFIPS Spring Joint Computer Conference, 1967, pages 483-485, doi 10.1145/1465482.1465560",
+        "url": "https://dl.acm.org/doi/10.1145/1465482.1465560",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "effort goes to whatever is most visible, most interesting or most familiar, and the system's speed is set by none of those — it is set by one part, and improving any other part changes nothing",
+    "fix": "find the constraint before optimising anything, then work only on it, and expect the constraint to move somewhere else once it is relieved",
+    "cost": "identifying the constraint requires measurement rather than reasoning, and the answer is frequently the part nobody on the team owns or enjoys working on",
+    "interview": "why a three-month rewrite can produce no measurable improvement"
+  }
+}

@@ -3,7 +3,7 @@
   "trackId": "A",
   "trackName": "Systems thinking",
   "title": "Local versus global optimum",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "Every part of a system improved as far as it can go does not produce the best system, and the gap between those two statements accounts for a large share of organisational dysfunction in engineering.\n\nThe mechanism is that improving a component usually means shifting a cost onto something else. A service that caches aggressively is faster and is now serving stale data that another team has to reconcile. A team that ships quickly by skipping integration tests is faster and the breakages land on whoever owns the downstream system. A batch job made efficient by processing everything at once is optimal in isolation and saturates the database that four other services depend on. Each decision is correct from where it was made, and each is visible as an improvement locally and as a cost somewhere nobody is measuring.\n\nThis is why measurement boundaries matter so much. A team measured only on its own latency will optimise its own latency, including in ways that damage the whole, and they will be right to by the metric they were given. Detecting it requires looking at flows across boundaries rather than at components, and fixing it usually means changing what is measured rather than persuading anyone to behave differently.",
   "beats": {
     "broke": "Optimising each component independently does not optimise the system, because local improvements are frequently achieved by shifting cost across a boundary to something nobody is measuring.",

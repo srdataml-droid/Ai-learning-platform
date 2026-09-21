@@ -3,7 +3,7 @@
   "trackId": "A",
   "trackName": "Systems thinking",
   "title": "Ask what happens if this doubles, of every component",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "Doubling is the cheapest scaling question because it can be asked of anything in about a minute, and the answers sort components into three groups that behave completely differently.\n\nSome are linear: twice the load, twice the resource, nothing interesting. Some have a cliff: fine until a limit is reached and then a step change in behaviour, which is where connection pools, file descriptor limits, memory that no longer fits a cache, and anything with a fixed-size queue live. And some are superlinear, where doubling the input more than doubles the cost — an operation quadratic in the number of items, a join whose intermediate result grows with the product of both sides, a coordination protocol whose message count grows with the square of participants.\n\nThe cliffs are what makes the question worth asking routinely, because they are invisible in normal operation and undetectable by extrapolating from current metrics. A system at forty percent of a connection pool looks identical to one at four percent on every graph you have, right up until it is at a hundred percent and everything queues at once. Asking what doubles finds those before they are found for you, and asking it of every component rather than the one you suspect is what stops you finding nine and missing the tenth.",
   "beats": {
     "broke": "Scaling limits are discovered when they are reached, and they are invisible beforehand because current metrics extrapolate smoothly right up to a cliff edge that does not appear on any graph.",
@@ -16,5 +16,5 @@
     }
   },
   "blueprint": "Ask of EVERY component. Three answers:\n\n  LINEAR       2x load -> 2x resource. boring. fine.\n\n  CLIFF        fine, fine, fine, ... then everything at once\n               connection pools, fd limits, fixed queues,\n               a working set that stops fitting in cache\n               <- invisible on every graph until it is not\n\n  SUPERLINEAR  2x input -> 4x or worse cost\n               an O(n^2) loop, a join whose intermediate\n               result is the product of both sides,\n               coordination with O(n^2) messages\n\nYou cannot extrapolate a cliff from pre-cliff data. The\ncliff is a property of the CONFIG, not of the trend.",
-  "takeaway": "Extrapolation assumes continuity, and the dangerous limits are cliffs. A pool at 40% looks like one at 4% on every graph you have."
+  "takeaway": "Extrapolation assumes continuity, and the dangerous limits are cliffs. A pool at forty percent looks like one at four percent on every graph you have."
 }

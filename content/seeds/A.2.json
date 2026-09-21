@@ -1,0 +1,65 @@
+{
+  "taskId": "A.2",
+  "title": "Reinforcing versus balancing feedback loops: why retries without backoff take down systems",
+  "researchedAt": "2026-09-21",
+  "claims": [
+    {
+      "id": "c1",
+      "type": "event",
+      "tokens": [
+        "Jay",
+        "Forrester",
+        "Jay W. Forrester",
+        "MIT",
+        "Industrial Dynamics",
+        "General Electric",
+        "Harvard Business Review",
+        "1958",
+        "1961"
+      ],
+      "text": "System dynamics was created in the mid-1950s by Jay W. Forrester at MIT. He published the first results as a 1958 Harvard Business Review article and expanded them into the first book in the field, Industrial Dynamics, in 1961. He developed the approach while studying a General Electric appliance factory, building a simulation which showed that management practices rather than market forces were causing its boom-and-bust cycle.",
+      "source": {
+        "title": "Origin of System Dynamics — System Dynamics Society, on Jay W. Forrester's creation of the field at MIT and the 1961 book Industrial Dynamics",
+        "url": "https://systemdynamics.org/origin-of-system-dynamics/",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c2",
+      "type": "quote",
+      "tokens": [
+        "Meadows",
+        "Donella Meadows",
+        "Balancing",
+        "Reinforcing",
+        "Thinking in Systems"
+      ],
+      "text": "Donella Meadows, in Thinking in Systems, distinguishes two kinds of loop. Balancing loops are stabilising, goal-seeking and regulating, opposing or reversing whatever direction of change is imposed on the system, and are sources both of stability and of resistance to change. Reinforcing loops are self-enhancing, leading to exponential growth or to runaway collapse, and a system with an unchecked reinforcing loop ultimately will destroy itself.",
+      "source": {
+        "title": "Donella H. Meadows, Thinking in Systems: A Primer, Chelsea Green Publishing, 2008, on balancing and reinforcing feedback loops",
+        "url": "https://www.goodreads.com/book/show/3828902-thinking-in-systems",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "type": "event",
+      "tokens": [
+        "A",
+        "In"
+      ],
+      "text": "A delay in a balancing loop makes a system likely to oscillate. In physical, exponentially growing systems there must be at least one reinforcing loop driving the growth and at least one balancing loop constraining it, because no system can grow forever in a finite environment.",
+      "source": {
+        "title": "Donella H. Meadows, Thinking in Systems: A Primer, Chelsea Green Publishing, 2008, on balancing and reinforcing feedback loops",
+        "url": "https://www.goodreads.com/book/show/3828902-thinking-in-systems",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a component under strain is helped by the obvious response, and the obvious response feeds the strain, so the thing meant to recover the system is the thing that finishes it",
+    "fix": "identify which kind of loop you are in before acting — one that opposes change and settles, or one that amplifies it — because the same action is correct in one and catastrophic in the other",
+    "cost": "the amplifying case is invisible while load is low, since a loop that multiplies a small number stays small until it does not, and by then the growth is the fastest thing in the system",
+    "interview": "why retrying a failed request can be the thing that takes the system down"
+  }
+}

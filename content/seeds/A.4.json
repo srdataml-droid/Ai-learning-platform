@@ -1,0 +1,45 @@
+{
+  "taskId": "A.4",
+  "title": "Second order effects of putting Redis in front of a database: the cache stampede",
+  "researchedAt": "2026-09-22",
+  "claims": [
+    {
+      "id": "c1",
+      "type": "event",
+      "tokens": [
+        "Vattani",
+        "Chierichetti",
+        "Lowenstein",
+        "Andrea Vattani",
+        "VLDB",
+        "2015"
+      ],
+      "text": "Vattani, Chierichetti and Lowenstein define a cache stampede as what happens when a frequently accessed cache item expires: multiple requests miss simultaneously and all begin regenerating the same item at once, which severely limits database and web server performance. They note it is often called a cascading failure, because the concurrent recomputations lengthen each individual recomputation by bogging down the system, which in turn pulls even more requests into the stampede.",
+      "source": {
+        "title": "Andrea Vattani, Flavio Chierichetti and Keegan Lowenstein, Optimal probabilistic cache stampede prevention, Proceedings of the VLDB Endowment, volume 8 issue 8, 2015, pages 886-897, doi 10.14778/2757807.2757813",
+        "url": "https://cseweb.ucsd.edu/~avattani/papers/cache_stampede.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "type": "event",
+      "tokens": [
+        "The",
+        "XFetch"
+      ],
+      "text": "The countermeasure they study is letting each process randomly request regeneration before the item's expiration time, with the probability of volunteering rising as the entry approaches expiry. They give algorithms for such probabilistic early expirations which they show to be optimal, and which they report outperform the solutions used in real-world applications. The scheme requires no coordination or locks between processes, because every worker decides independently.",
+      "source": {
+        "title": "Andrea Vattani, Flavio Chierichetti and Keegan Lowenstein, Optimal probabilistic cache stampede prevention, Proceedings of the VLDB Endowment, volume 8 issue 8, 2015, pages 886-897, doi 10.14778/2757807.2757813",
+        "url": "https://cseweb.ucsd.edu/~avattani/papers/cache_stampede.pdf",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a fix is evaluated by whether it solves the problem it was chosen for, and the problems it creates arrive later, are of a different kind, and are owned by different people",
+    "fix": "ask what happens next, of the fix itself — a cache does not remove complexity, it exchanges read latency for invalidation, memory management and a cold-start failure mode",
+    "cost": "the second-order effects are speculative at the moment of the decision and the first-order benefit is measurable, so the argument is always asymmetric and always sounds like obstruction",
+    "interview": "a common architecture fix whose second-order effect was worse than the original problem"
+  }
+}

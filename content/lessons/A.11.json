@@ -3,7 +3,7 @@
   "trackId": "A",
   "trackName": "Systems thinking",
   "title": "Spot what is missing, not just what is wrong",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "Reviewing anything — a design, a pull request, an incident, a plan — attention goes to what is present, because what is present is what there is to react to. Errors of omission produce nothing to react to, and they are consistently the more serious kind.\n\nA design document describes a system and the absence worth noticing is that it never says what happens when the third-party service is down. A code review examines the logic as written and the question nobody asks is what happens on the empty list, since no line raises the thought. An incident timeline covers what people did and omits what nobody noticed at the time, which is where the missing alert lives. In each case there is no sentence to object to, which is exactly why it survives review.\n\nMaking omissions visible needs a deliberate method, because attention will not find them unaided. A checklist works: the same questions asked every time regardless of content — what happens on failure, on empty, at limit, on retry, on partial completion, who is told. So does describing the thing as a set of cases and checking each is addressed, rather than reading through and reacting. Both amount to bringing your own structure, since the artefact in front of you cannot suggest what it left out.",
   "beats": {
     "broke": "Review is reactive: attention goes to what is written, and something absent generates no reaction. Errors of omission therefore pass review reliably, and they tend to be the more consequential kind.",

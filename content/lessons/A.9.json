@@ -3,7 +3,7 @@
   "trackId": "A",
   "trackName": "Systems thinking",
   "title": "Trace one request end to end through something you built",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "Most understanding of a system you built is local: you know the parts you worked on recently and hold an assumption about the rest. Following one request the whole way through replaces the assumptions with observations, and it is usually uncomfortable.\n\nWhat tends to surface is the accumulated stuff nobody chose. The same data serialised and deserialised four times between the edge and the database. A validation performed at three different layers, each slightly differently, so that one of them is now the real one and nobody knows which. A synchronous call to a service that does not need to be waited for. A retry wrapping another retry. None of it was decided; it accreted, one reasonable change at a time, and it is invisible unless you follow a single request and refuse to skip anything.\n\nIt is also the fastest way to find the difference between the system as documented and the system as running. Diagrams describe intent and drift from the code within weeks. A traced request describes what actually happens today, including the path added in a hurry last quarter that appears in nobody's mental model and is now load-bearing.",
   "beats": {
     "broke": "Knowledge of a system is local to the parts each person worked on, with assumptions filling the rest. Nothing forces the assumptions to be checked, and the diagram that would correct them describes intent rather than current behaviour.",

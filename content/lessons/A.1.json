@@ -3,7 +3,7 @@
   "trackId": "A",
   "trackName": "Systems thinking",
   "title": "Name the parts, flows and boundaries of any system",
-  "status": "unsourced",
+  "status": "claimless",
   "story": "Before a system can be reasoned about it has to be described, and most people skip straight to opinions about it. Three questions produce a usable description and they work on anything: what are the parts, what flows between them, and where are the boundaries.\n\nParts are the things with their own state and their own lifecycle. Flows are what moves between them — requests, records, events, money, messages — and naming a flow forces you to say what is actually being transferred, which is frequently vaguer than anyone assumed. Boundaries are where responsibility, trust or ownership changes, and they are the most informative of the three because almost everything interesting happens at one. A boundary is where data must be validated, where a failure must be handled rather than propagated, where a contract exists whether or not anyone wrote it down.\n\nThe description is also what makes the rest of this track possible. You cannot ask what happens if this doubles, or where the global optimum differs from the local one, until you can say what this is and what it is connected to. Doing it from memory, on paper, is the version that exposes what you do not know, because a diagram you cannot complete is showing you precisely where your understanding stops.",
   "beats": {
     "broke": "Systems get discussed before they are described, so people argue from incompatible mental models without discovering it. Nothing forces the vague parts to become explicit, and the vaguest parts are usually the important ones.",
