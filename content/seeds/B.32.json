@@ -1,0 +1,102 @@
+{
+  "taskId": "B.32",
+  "title": "Consistency and the CAP result: conjecture in 2000, theorem in 2002, reframed by its author in 2012",
+  "researchedAt": "2026-09-22",
+  "claims": [
+    {
+      "id": "c1",
+      "type": "event",
+      "tokens": [
+        "Fox",
+        "Brewer",
+        "Armando Fox",
+        "Eric Brewer",
+        "HotOS",
+        "1999"
+      ],
+      "text": "The idea's first publication was Fox and Brewer's 1999 HotOS paper, Harvest, yield, and scalable tolerant systems. It introduced harvest, the fraction of the data reflected in a response, and yield, the fraction of requests answered successfully, as metrics for graceful degradation.",
+      "source": {
+        "title": "Armando Fox and Eric A. Brewer, Harvest, yield, and scalable tolerant systems, Proceedings of the 7th Workshop on Hot Topics in Operating Systems (HotOS), 1999, pages 174-178",
+        "url": "https://ieeexplore.ieee.org/document/798396",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "type": "event",
+      "tokens": [
+        "Brewer",
+        "PODC",
+        "ACM",
+        "Inktomi",
+        "Berkeley",
+        "Towards Robust Distributed Systems",
+        "2000",
+        "19 July 2000"
+      ],
+      "text": "Brewer delivered the keynote Towards Robust Distributed Systems at the 19th Annual ACM Symposium on Principles of Distributed Computing on Wednesday 19 July 2000. It proposed that only two of three properties can be obtained simultaneously: consistency, meaning distributed components agree on the value of shared state; availability, meaning the ability to respond to user requests; and tolerance to network partitions, meaning the ability to keep operating when communication fails. The talk drew on his theoretical work at Berkeley together with observations from running Inktomi, and is widely credited with opening the field to designs offering different tradeoffs between the three.",
+      "source": {
+        "title": "Eric A. Brewer, Towards Robust Distributed Systems, keynote at the 19th Annual ACM Symposium on Principles of Distributed Computing, Wednesday 19 July 2000",
+        "url": "https://people.eecs.berkeley.edu/~brewer/cs262b-2004/PODC-keynote.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "type": "event",
+      "tokens": [
+        "Gilbert",
+        "Lynch",
+        "Seth Gilbert",
+        "Nancy Lynch",
+        "MIT",
+        "SIGACT",
+        "2002"
+      ],
+      "text": "Brewer posed it as a conjecture. Seth Gilbert and Nancy Lynch of MIT published a formal proof in 2002 in ACM SIGACT News, establishing two results: a strong impossibility result for asynchronous networks, which have no clocks, and a weaker one for partially synchronous networks, which have unsynchronised clocks measuring time at the same rate and in which a practical compromise between consistency and availability is achievable. Their proof uses the word atomic rather than consistent, which is more precise, since consistency is also the C in the transactional sense.",
+      "source": {
+        "title": "Seth Gilbert and Nancy Lynch, Brewer's conjecture and the feasibility of consistent, available, partition-tolerant web services, ACM SIGACT News volume 33 number 2, 2002, pages 51-59, doi 10.1145/564585.564601",
+        "url": "https://dl.acm.org/doi/10.1145/564585.564601",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "type": "quote",
+      "tokens": [
+        "Brewer",
+        "2012",
+        "CAP"
+      ],
+      "text": "In 2012 Brewer published a retrospective, CAP twelve years later: how the rules have changed, observing that the tradeoff is more subtle than the slogan. Partition tolerance is not really a property that can be traded away, because a designer cannot choose whether the network has partitions. He reframed the design problem as how to trade consistency against availability when a partition occurs.",
+      "source": {
+        "title": "Eric Brewer, CAP twelve years later: how the rules have changed, Computer volume 45 number 2, 2012, pages 23-29",
+        "url": "https://ieeexplore.ieee.org/document/6133253",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c5",
+      "type": "event",
+      "tokens": [
+        "Amazon",
+        "Dynamo",
+        "DeCandia",
+        "SOSP",
+        "2007"
+      ],
+      "text": "Amazon's 2007 Dynamo paper is the canonical worked example of choosing availability. It targets the design space of an always writeable data store by pushing conflict resolution to read time, so that writes are never rejected, on the grounds that a customer must be able to add an item to a shopping cart even during partial network failures or data centre outages. Versions are tracked with vector clocks, each a list of node and counter pairs, and when branches cannot be reconciled automatically the store returns all of the leaves for the application to merge. For the shopping cart the merge is the union of the conflicting versions, which means a deleted item can reappear, but nothing is lost.",
+      "source": {
+        "title": "Giuseppe DeCandia et al., Dynamo: Amazon's highly available key-value store, Proceedings of the 21st ACM Symposium on Operating Systems Principles (SOSP), Stevenson, Washington, October 2007, also ACM SIGOPS Operating Systems Review volume 41 number 6, pages 205-220",
+        "url": "https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "systems were sold as delivering immediate agreement, continuous availability and survival of a severed link at the same time, which is three guarantees where at most two are available",
+    "fix": "partition tolerance is not a choice, so the real decision is what to do during a partition — refuse the write and stay consistent, or accept it and reconcile later",
+    "cost": "consistency costs a round trip between nodes on every write; availability costs version tracking and application-level merge logic, and merges have semantics a user can see",
+    "interview": "why choosing consistency and availability while declining partition tolerance is not an option"
+  }
+}

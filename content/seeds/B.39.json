@@ -1,0 +1,74 @@
+{
+  "taskId": "B.39",
+  "title": "Why LLM decoding is memory-bandwidth bound, and what the KV cache costs",
+  "researchedAt": "2026-09-22",
+  "claims": [
+    {
+      "id": "c1",
+      "type": "number",
+      "tokens": [
+        "NVIDIA",
+        "H100",
+        "SXM",
+        "HBM3",
+        "NVLink",
+        "HGX",
+        "80GB",
+        "3.35TB/s",
+        "700W",
+        "900GB/s"
+      ],
+      "text": "The NVIDIA H100 in its SXM form factor carries 80GB of HBM3 with 3.35TB/s of memory bandwidth, draws up to 700W of configurable thermal design power, and connects over NVLink at 900GB/s. It is not sold as a standalone card: the SXM part ships only as a component of an HGX baseboard carrying four or eight of them inside a partner or vendor system.",
+      "source": {
+        "title": "NVIDIA H100 Tensor Core GPU datasheet — SXM form factor: 80GB HBM3, 3.35TB/s memory bandwidth, up to 700W configurable TDP, NVLink 900GB/s",
+        "url": "https://resources.nvidia.com/en-us-gpu-resources/h100-datasheet-24306",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "type": "number",
+      "tokens": [
+        "Kwon",
+        "Woosuk Kwon",
+        "SOSP",
+        "PagedAttention",
+        "vLLM",
+        "FasterTransformer",
+        "Orca",
+        "2023",
+        "60%",
+        "80%",
+        "20.4%",
+        "38.2%"
+      ],
+      "text": "Kwon and colleagues reported at SOSP 2023 that existing serving systems waste 60% to 80% of memory to fragmentation and over-reservation, with only 20.4% to 38.2% of allocated key-value memory holding actual token states in the layouts and workloads they profiled. Their system, vLLM, improves throughput by two to four times at the same level of latency against FasterTransformer and Orca, with the improvement more pronounced for longer sequences, larger models and more complex decoding algorithms.",
+      "source": {
+        "title": "Woosuk Kwon, Zhuohan Li, Siyuan Zhuang et al., Efficient Memory Management for Large Language Model Serving with PagedAttention, Proceedings of the 29th ACM Symposium on Operating Systems Principles (SOSP), 2023, doi 10.1145/3600006.3613165, arXiv 2309.06180",
+        "url": "https://arxiv.org/pdf/2309.06180",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "type": "event",
+      "tokens": [
+        "PagedAttention",
+        "The",
+        "It"
+      ],
+      "text": "PagedAttention applies the idea of operating-system virtual memory to key-value cache management. It stores logically contiguous keys and values in non-contiguous physical memory by partitioning each sequence's cache into blocks, each holding the keys and values for a fixed number of tokens, sixteen by default. A larger block lets the kernel process more positions in parallel, raising hardware utilisation, at the price of more fragmentation.",
+      "source": {
+        "title": "Woosuk Kwon, Zhuohan Li, Siyuan Zhuang et al., Efficient Memory Management for Large Language Model Serving with PagedAttention, Proceedings of the 29th ACM Symposium on Operating Systems Principles (SOSP), 2023, doi 10.1145/3600006.3613165, arXiv 2309.06180",
+        "url": "https://arxiv.org/pdf/2309.06180",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "serving was reasoned about as computation, so the hardware was sized by arithmetic throughput, and decoding turned out to be limited by how fast weights can be moved rather than by how fast they can be multiplied",
+    "fix": "read the bound off the bandwidth: one token of a dense model requires every parameter to cross the memory bus once, so time per token is model bytes divided by bandwidth, and the fix is to amortise that crossing over a batch",
+    "cost": "batching to amortise the weights needs the key-value cache of every concurrent sequence resident at once, so memory rather than arithmetic sets the concurrency limit, and running out of it means refusing traffic",
+    "interview": "why prefill is compute-bound and decode is memory-bandwidth bound"
+  }
+}
