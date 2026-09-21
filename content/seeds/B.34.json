@@ -1,0 +1,57 @@
+{
+  "taskId": "B.34",
+  "title": "Reliability patterns: circuit breakers, graceful degradation, health checks",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Basiri and colleagues set out the discipline in IEEE Software in 2016, volume 33, pages 35 to 41, arguing that modern software-based services are distributed systems with complex behaviour and failure modes, and that verifying reliability requires experimentation rather than reasoning alone.",
+      "type": "event",
+      "tokens": [
+        "Basiri",
+        "IEEE Software",
+        "IEEE",
+        "2016"
+      ],
+      "source": {
+        "title": "Ali Basiri, Niosha Behnam, Ruud de Rooij, Lorin Hochstein, Luke Kosewski, Justin Reynolds and Casey Rosenthal, Chaos Engineering, IEEE Software 33(3):35-41, May 2016, doi 10.1109/MS.2016.60 (preprint arXiv:1702.05843)",
+        "url": "https://arxiv.org/abs/1702.05843",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Their experimental method has four steps: define the steady state of the system to set a baseline for normal behaviour; hypothesise that this steady state will continue in both the control and the experimental groups; introduce variables reflecting real-world events such as server crashes, disk malfunctions or severed network connections; then try to disprove the hypothesis by looking for a difference between the groups. If the steady state is hard to disrupt the system is robust, and if there is a weakness you have something to fix.",
+      "type": "quote",
+      "tokens": [
+        "Their",
+        "If"
+      ],
+      "source": {
+        "title": "Ali Basiri, Niosha Behnam, Ruud de Rooij, Lorin Hochstein, Luke Kosewski, Justin Reynolds and Casey Rosenthal, Chaos Engineering, IEEE Software 33(3):35-41, May 2016, doi 10.1109/MS.2016.60 (preprint arXiv:1702.05843)",
+        "url": "https://arxiv.org/abs/1702.05843",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Their canonical steady-state measure is a business metric rather than a technical one: the rate at which customers press play on a streaming device, called streams per second. The paper notes that business metrics are often better suited to measuring customer experience than technical ones are.",
+      "type": "event",
+      "tokens": [
+        "Their",
+        "The"
+      ],
+      "source": {
+        "title": "Ali Basiri, Niosha Behnam, Ruud de Rooij, Lorin Hochstein, Luke Kosewski, Justin Reynolds and Casey Rosenthal, Chaos Engineering, IEEE Software 33(3):35-41, May 2016, doi 10.1109/MS.2016.60 (preprint arXiv:1702.05843)",
+        "url": "https://arxiv.org/abs/1702.05843",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a system made of many parts has failure modes nobody enumerated, and the ones that matter are discovered during incidents rather than during design",
+    "fix": "stop reasoning about failure and start inducing it — define what normal looks like as a measurable quantity, hypothesise it survives a specific injected fault, and look for a difference",
+    "cost": "the experiment has to run where the behaviour is real, so the practice is only as safe as the blast radius you can bound, and defining normal as a number is harder than it sounds",
+    "interview": "what you would measure to know whether a reliability mechanism actually works"
+  },
+  "researchedAt": "2026-09-21"
+}

@@ -26,11 +26,8 @@ Study order: the sequence first, then the five habits running underneath.
 
 ## Track B — System design
 
-15 of 48 still missing.
+13 of 48 still missing.
 
-- [ ] `B.20` Connection pooling, the thing that quietly kills serverless apps
-- [ ] `B.34` Reliability patterns: circuit breakers, graceful degradation, health checks
-      <br>_note: Chaos Monkey 2011_
 - [ ] `B.35` Observability: logs, metrics, traces, and what deserves an alert
 - [ ] `B.36` Deploying: containers, orchestration, canary releases
 - [ ] `B.37` Cost and capacity estimation
@@ -132,7 +129,7 @@ Study order: the sequence first, then the five habits running underneath.
 
 ---
 
-**Total remaining: 52 of 313.**
+**Total remaining: 50 of 313.**
 
 Regenerate: `node tools/missing-lessons.mjs > docs/MISSING-LESSONS.md`
 

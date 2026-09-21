@@ -1,0 +1,39 @@
+{
+  "taskId": "B.20",
+  "title": "Connection pooling, the thing that quietly kills serverless apps",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "The documentation describes the architecture as a process per user client-server model, in which every client process connects to exactly one backend process. Because it is not known ahead of time how many connections will be made, a supervisor process, called the postmaster, listens on a port and spawns a new backend process every time a connection is requested. Those backend processes communicate using semaphores and shared memory.",
+      "type": "quote",
+      "tokens": [
+        "Because"
+      ],
+      "source": {
+        "title": "PostgreSQL documentation, How Connections Are Established (Overview of PostgreSQL Internals)",
+        "url": "https://www.postgresql.org/docs/current/connect-estab.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "The max_connections parameter determines the maximum number of concurrent connections to the database server. The default is typically 100 connections, but might be less if kernel settings will not support it. The parameter can only be set at server start, and the server sizes certain resources based directly on its value, so increasing it leads to higher allocation of those resources, including shared memory.",
+      "type": "quote",
+      "tokens": [
+        "The"
+      ],
+      "source": {
+        "title": "PostgreSQL documentation, Connections and Authentication — max_connections",
+        "url": "https://www.postgresql.org/docs/current/runtime-config-connection.html",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "opening a connection is expensive and holding one is expensive in a different way, so a system that opens one per unit of work pays both costs on every request",
+    "fix": "keep a small set of established connections and lend them out, so the cost of establishing is paid once per connection rather than once per request and the number held is bounded by the pool rather than by the traffic",
+    "cost": "the pool is per process, so the total held is the pool size multiplied by however many processes exist — a number that is fixed in a long-running deployment and unbounded in one that creates a process per request",
+    "interview": "why a database refuses connections while its processor sits nearly idle"
+  },
+  "researchedAt": "2026-09-21"
+}

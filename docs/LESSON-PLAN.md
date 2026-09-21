@@ -10,9 +10,9 @@ A batch is one writing session and never spans two tracks.
 |---|---|---|---|---|
 | 1–2 | **K** Neural networks | 14 | 2 | Neural networks. Dates and papers throughout, so these want seeds, not just prose. |
 | 3–4 | **L** AI engineering | 23 | 2 | AI engineering. Fastest-moving material, so the most likely to date badly. |
-| 5–6 | **B** System design | 15 | 2 | System design. The largest single track and the heaviest research load. |
+| 5–6 | **B** System design | 13 | 2 | System design. The largest single track and the heaviest research load. |
 
-**52 lessons across 6 batches.**
+**50 lessons across 6 batches.**
 
 ---
 
@@ -79,9 +79,6 @@ A batch is one writing session and never spans two tracks.
 
 12 lessons.
 
-- [ ] `B.20` Connection pooling, the thing that quietly kills serverless apps
-- [ ] `B.34` Reliability patterns: circuit breakers, graceful degradation, health checks
-      <br>_note: Chaos Monkey 2011_
 - [ ] `B.35` Observability: logs, metrics, traces, and what deserves an alert
 - [ ] `B.36` Deploying: containers, orchestration, canary releases
 - [ ] `B.37` Cost and capacity estimation
@@ -92,13 +89,13 @@ A batch is one writing session and never spans two tracks.
 - [ ] `B.43` AI observability: tracing a chain, logging prompts, drift
 - [ ] `B.44` Event driven AI: queues in front of models
 - [ ] `B.45` Distributed inference: replicas, batching, autoscaling expensive hardware
+- [ ] `B.46` Back of envelope estimation drills
+- [ ] `B.47` How to open, scope and drive a design round
 
 ### Batch 6 — Track B: System design (part 2 of 2)
 
-3 lessons.
+1 lessons.
 
-- [ ] `B.46` Back of envelope estimation drills
-- [ ] `B.47` How to open, scope and drive a design round
 - [ ] `B.48` Practice designs in order: link shortener, rate limiter, chat, feed, retrieval service, agent platform
 
 ---
@@ -110,7 +107,7 @@ A batch is one writing session and never spans two tracks.
 - **Track D — Software development craft: complete (13).**
 - **Track E — Data structures and algorithms: complete (28).**
 - **Track F — Logic: complete (13).**
-- Track B — System design: 33 of 48.
+- Track B — System design: 35 of 48.
 - **Track P — Security: complete (13).**
 - **Track M — Math for machines: complete (16).**
 - **Track N — Data work: complete (15).**
