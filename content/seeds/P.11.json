@@ -1,0 +1,85 @@
+{
+  "taskId": "P.11",
+  "title": "Prompt injection: who found it, who named it, and who described the indirect form",
+  "researchedAt": "2026-09-22",
+  "claims": [
+    {
+      "id": "c1",
+      "type": "date",
+      "tokens": [
+        "Preamble",
+        "OpenAI",
+        "3 May 2022",
+        "2022",
+        "22 September 2022"
+      ],
+      "text": "Researchers at Preamble discovered on 3 May 2022 that the model was susceptible to prompt injection and reported it confidentially to OpenAI. Because the report was private the vulnerability remained largely unknown, and Preamble declassified it on 22 September 2022.",
+      "source": {
+        "title": "Prompt injection — the disclosure timeline: Preamble's private report to OpenAI on 3 May 2022, Riley Goodside's public demonstration of 11-12 September 2022, and Preamble's declassification on 22 September 2022",
+        "url": "https://en.wikipedia.org/wiki/Prompt_injection",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c2",
+      "type": "date",
+      "tokens": [
+        "Goodside",
+        "Riley Goodside",
+        "GPT",
+        "September 2022",
+        "2022"
+      ],
+      "text": "Riley Goodside independently discovered the vulnerability and posted a Twitter thread about it on 11 to 12 September 2022, bringing it to public attention for the first time. He showed that appending an instruction such as ignore the above directions to a translation prompt redirects the model's behaviour, and users then found other tools susceptible to the same thing.",
+      "source": {
+        "title": "Prompt injection — the disclosure timeline: Preamble's private report to OpenAI on 3 May 2022, Riley Goodside's public demonstration of 11-12 September 2022, and Preamble's declassification on 22 September 2022",
+        "url": "https://en.wikipedia.org/wiki/Prompt_injection",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c3",
+      "type": "quote",
+      "tokens": [
+        "Willison",
+        "Simon Willison",
+        "SQL",
+        "12 September 2022",
+        "2022"
+      ],
+      "text": "Simon Willison named and formally defined the vulnerability on 12 September 2022 in the post Prompt injection attacks against GPT-3, drawing the analogy with SQL injection. He has been explicit about the distinction between naming and finding it, saying that he did not discover it, he coined it — Goodside was already talking about it, and the logic for the name was that it is like SQL injection.",
+      "source": {
+        "title": "Simon Willison, Prompt injection attacks against GPT-3, 12 September 2022 — the post that named the vulnerability, by analogy with SQL injection",
+        "url": "https://simonwillison.net/2022/Sep/12/prompt-injection/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "type": "date",
+      "tokens": [
+        "Greshake",
+        "Abdelnabi",
+        "Mishra",
+        "Endres",
+        "Holz",
+        "Fritz",
+        "Kai Greshake",
+        "23 February 2023",
+        "2023"
+      ],
+      "text": "The indirect form has its own authorship. Greshake, Abdelnabi, Mishra, Endres, Holz and Fritz published the first description of indirect prompt injection on 23 February 2023, covering the compromise of real-world applications that integrate a model with external content.",
+      "source": {
+        "title": "Kai Greshake, Sahar Abdelnabi, Shailesh Mishra, Christoph Endres, Thorsten Holz and Mario Fritz, Not what you've signed up for: Compromising Real-World LLM-Integrated Applications with Indirect Prompt Injection, arXiv 2302.12173, 23 February 2023",
+        "url": "https://arxiv.org/abs/2302.12173",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a model was integrated with tools on the assumption that the developer's instructions and the user's content occupy different categories, when the model receives one undifferentiated sequence",
+    "fix": "treat instruction and data as inseparable and put the boundary somewhere the model is not — restricted tool scope, separation of untrusted parsing from privileged action, and human confirmation before anything irreversible",
+    "cost": "there is no patch, so the mitigations are architectural and permanent, and each one removes capability that was the reason for building the thing",
+    "interview": "what indirect prompt injection is, and why instructing the model cannot eliminate it"
+  }
+}

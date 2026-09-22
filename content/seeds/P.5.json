@@ -1,0 +1,65 @@
+{
+  "taskId": "P.5",
+  "title": "Password hashing: adaptability as the design requirement, from bcrypt to Argon2",
+  "researchedAt": "2026-09-22",
+  "claims": [
+    {
+      "id": "c1",
+      "type": "event",
+      "tokens": [
+        "Provos",
+        "Mazières",
+        "Niels Provos",
+        "David Mazières",
+        "USENIX",
+        "Blowfish",
+        "1999",
+        "Mazieres"
+      ],
+      "text": "Niels Provos and David Mazières presented A Future-Adaptable Password Scheme at the 1999 USENIX Annual Technical Conference. The scheme, based on the Blowfish cipher, takes a cost parameter which sets how much work hashing a password requires, so that the cost can be raised over time as hardware becomes faster without changing the algorithm or invalidating existing stored hashes. The adaptability is the contribution the title names.",
+      "source": {
+        "title": "Niels Provos and David Mazières, A Future-Adaptable Password Scheme, Proceedings of the 1999 USENIX Annual Technical Conference, Monterey California, June 1999",
+        "url": "https://www.usenix.org/legacy/event/usenix99/provos/provos.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "type": "event",
+      "tokens": [
+        "Password Hashing Competition",
+        "2013",
+        "2015"
+      ],
+      "text": "The Password Hashing Competition was an open competition run from 2013 to 2015 to select a new password hashing function, in the manner of the earlier open competitions for block ciphers and hash functions.",
+      "source": {
+        "title": "Password Hashing Competition — the open competition run from 2013 to 2015 which selected Argon2",
+        "url": "https://www.password-hashing.net/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "type": "event",
+      "tokens": [
+        "Argon2",
+        "Argon2d",
+        "Argon2i",
+        "Argon2id",
+        "2015"
+      ],
+      "text": "Argon2 was selected as the winner in 2015. It is a memory-hard function: its cost is tunable in memory as well as in time, so an attacker cannot reduce the cost of a guess by adding parallel arithmetic units alone, since each guess in flight must also hold its own memory. It is defined in three variants, Argon2d, Argon2i and Argon2id, which differ in how they access memory and therefore in their resistance to side-channel observation.",
+      "source": {
+        "title": "Argon2 — winner of the 2015 Password Hashing Competition; a memory-hard function with the variants Argon2d, Argon2i and Argon2id",
+        "url": "https://en.wikipedia.org/wiki/Argon2",
+        "kind": "secondary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a general-purpose hash was used to store passwords, and general-purpose hashes are designed to be fast, so the defender's stored hash and the attacker's guess cost the same and the attacker makes many more of them",
+    "fix": "use a function whose cost is a parameter the defender chooses, and raise it as hardware improves, which is what makes the scheme survive its own hardware assumptions",
+    "cost": "every login now costs the server the work the attacker was meant to be charged, so an unauthenticated login endpoint becomes a way to spend the server's processor time",
+    "interview": "what a salt is and which attack it removes"
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "taskId": "K.13",
+  "title": "Attention and the transformer: two conjectures the field turned into facts",
+  "researchedAt": "2026-09-22",
+  "claims": [
+    {
+      "id": "c1",
+      "type": "quote",
+      "tokens": [
+        "Bahdanau",
+        "Cho",
+        "Bengio",
+        "Dzmitry Bahdanau",
+        "Kyunghyun Cho",
+        "Yoshua Bengio",
+        "ICLR",
+        "2014",
+        "2015"
+      ],
+      "text": "Bahdanau, Cho and Bengio state their motivation as a conjecture rather than a finding: in this paper, we conjecture that the use of a fixed-length vector is a bottleneck in improving the performance of this basic encoder-decoder architecture, and propose to extend this by allowing a model to automatically soft-search for parts of a source sentence that are relevant to predicting a target word, without having to form these parts as a hard segment explicitly.",
+      "source": {
+        "title": "Dzmitry Bahdanau, Kyunghyun Cho and Yoshua Bengio, Neural Machine Translation by Jointly Learning to Align and Translate, arXiv 1409.0473, September 2014; published at ICLR 2015",
+        "url": "https://arxiv.org/pdf/1409.0473",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "type": "event",
+      "tokens": [
+        "Cho",
+        "Merrienboer",
+        "Bahdanau",
+        "Bengio"
+      ],
+      "text": "The conjecture had prior empirical support. Cho and colleagues had shown that the performance of the basic encoder-decoder deteriorated rapidly as input sentence length increased, with sharp degradation beyond twenty to thirty tokens.",
+      "source": {
+        "title": "Kyunghyun Cho, Bart van Merrienboer, Dzmitry Bahdanau and Yoshua Bengio, On the Properties of Neural Machine Translation: Encoder-Decoder Approaches, 2014",
+        "url": "https://arxiv.org/abs/1409.1259",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "type": "quote",
+      "tokens": [
+        "Vaswani",
+        "Shazeer",
+        "Parmar",
+        "Uszkoreit",
+        "Jones",
+        "Gomez",
+        "Kaiser",
+        "Polosukhin",
+        "Ashish Vaswani",
+        "NIPS",
+        "2017"
+      ],
+      "text": "Vaswani and seven co-authors published Attention Is All You Need in 2017. On the scaling factor the paper is explicitly hedged: while for small values of the key dimension the two mechanisms perform similarly, additive attention outperforms dot product attention without scaling for larger values, and the authors write that they suspect that for large values of the key dimension, the dot products grow large in magnitude, pushing the softmax function into regions where it has extremely small gradients, and that to counteract this effect they scale the dot products. The supporting argument is a variance calculation given in a footnote: if the components of the queries and keys are independent random variables with mean zero and variance one, their dot product has mean zero and variance equal to the key dimension.",
+      "source": {
+        "title": "Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, Lukasz Kaiser and Illia Polosukhin, Attention Is All You Need, Advances in Neural Information Processing Systems 30 (NIPS), 2017, arXiv 1706.03762",
+        "url": "https://arxiv.org/pdf/1706.03762",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a sequence was compressed into one fixed-length vector before any of it could be used, so everything the decoder needed had to survive a bottleneck whose size did not depend on the length of the input",
+    "fix": "let the decoder look back over all the encoder's states and weight them per output step, which removes the fixed-size bottleneck and makes the alignment a learned quantity rather than an assumed one",
+    "cost": "attending to every position from every position is quadratic in sequence length, so the bottleneck was traded for a cost that grows with the square of the context",
+    "interview": "the scaled dot-product formula, and what the scaling factor is actually justified by"
+  }
+}

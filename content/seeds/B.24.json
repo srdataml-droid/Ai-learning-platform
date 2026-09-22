@@ -1,0 +1,78 @@
+{
+  "taskId": "B.24",
+  "title": "Caching: the systems, the invalidation problem, and the stampede",
+  "researchedAt": "2026-09-22",
+  "claims": [
+    {
+      "id": "c1",
+      "type": "event",
+      "tokens": [
+        "Brad Fitzpatrick",
+        "Fitzpatrick",
+        "Memcached",
+        "LiveJournal",
+        "2003"
+      ],
+      "text": "Memcached, a general-purpose distributed memory caching system, was originally developed by Brad Fitzpatrick for LiveJournal in 2003, letting a set of web servers pool their spare memory into a shared lookup layer in front of the database.",
+      "source": {
+        "title": "Memcached — a general-purpose distributed memory caching system, originally developed by Brad Fitzpatrick for LiveJournal in 2003",
+        "url": "https://en.wikipedia.org/wiki/Memcached",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c2",
+      "type": "event",
+      "tokens": [
+        "Salvatore Sanfilippo",
+        "Sanfilippo",
+        "Redis",
+        "2009"
+      ],
+      "text": "Redis, an in-memory data structure store, was first released by Salvatore Sanfilippo in 2009. It differs from a plain key-value cache in holding structured values such as lists, sets and sorted sets, and in offering optional persistence.",
+      "source": {
+        "title": "Redis — an in-memory data structure store, first released by Salvatore Sanfilippo in 2009",
+        "url": "https://en.wikipedia.org/wiki/Redis",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c3",
+      "type": "quote",
+      "tokens": [
+        "Phil Karlton",
+        "Karlton",
+        "Computer Science"
+      ],
+      "text": "The observation that there are only two hard things in computer science, cache invalidation and naming things, is commonly attributed to Phil Karlton. The attribution is not firmly documented to an original source, and the many numbered variants of the joke are later additions.",
+      "source": {
+        "title": "Phil Karlton — the two hard things quotation, commonly attributed to him, with no firmly documented original source",
+        "url": "https://www.karlton.org/2017/12/naming-things-hard/",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c4",
+      "type": "event",
+      "tokens": [
+        "Vattani",
+        "Chierichetti",
+        "Lowenstein",
+        "VLDB",
+        "2015"
+      ],
+      "text": "Vattani, Chierichetti and Lowenstein define a cache stampede as what happens when a frequently accessed cache item expires: multiple requests miss simultaneously and all begin regenerating the same item at once, which severely limits database and web server performance. They note it is often called a cascading failure, because the concurrent recomputations lengthen each individual recomputation by bogging down the system, which in turn pulls even more requests into the stampede. Their countermeasure is to let each process randomly request regeneration before the item expires, with the probability rising as expiry approaches; they give algorithms for such probabilistic early expirations which they show to be optimal, and which require no coordination or locks because every worker decides independently.",
+      "source": {
+        "title": "Andrea Vattani, Flavio Chierichetti and Keegan Lowenstein, Optimal probabilistic cache stampede prevention, Proceedings of the VLDB Endowment, volume 8 issue 8, 2015, pages 886-897, doi 10.14778/2757807.2757813",
+        "url": "https://cseweb.ucsd.edu/~avattani/papers/cache_stampede.pdf",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a database served the same expensive answer repeatedly because nothing remembered it, so read traffic that was almost entirely redundant arrived at the slowest component in the system",
+    "fix": "keep the computed answer in memory in front of the database, so the repeated reads are answered by a lookup rather than by the work that produced the answer",
+    "cost": "a second copy of the truth exists, so every write now has a correctness question attached, and the copy expiring under load is its own failure mode",
+    "interview": "what a cache stampede is, and how to protect a system when a hot key expires"
+  }
+}

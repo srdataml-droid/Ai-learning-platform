@@ -4,8 +4,8 @@ Written 2026-09-21. Derived by running the gate's own atom extractor over
 every lesson, so the numbers are reproducible rather than estimated — see
 "How to regenerate" at the end.
 
-Updated 2026-09-22. Current: **276 lessons, 186 traced, 69 claimless, 21
-unsourced**, and **399 checkable atoms** still sitting in unsourced prose —
+Updated 2026-09-22. Current: **276 lessons, 190 traced, 69 claimless, 17
+unsourced**, and **271 checkable atoms** still sitting in unsourced prose —
 down from 707 at the time of writing. The section below records the state
 *before* those changes, because the prioritisation was built on it and still
 holds for what remains. See "Where this stands" at the end for the resume
@@ -364,7 +364,7 @@ a factual claim, which is the one direction that should never happen.
   lesson. That is worse than an unsourced figure, because a reader cannot tell
   there is anything to check.
 
-### The 21 lessons still `unsourced`
+### The 17 lessons still `unsourced`
 
 **Correction to an earlier version of this section**, which claimed all 23
 remaining lessons made real historical claims and that `claimless` was
@@ -385,27 +385,63 @@ unresolved rather than assumed either way.
 | track | lessons | the subject, and what it will need |
 |---|---|---|
 | 0 | `0.2`, `0.6` | shell and Unix lineage; floating point and IEEE 754 |
-| B | `B.8`, `B.16`, `B.18`, `B.22`, `B.24`, `B.28` | TCP/IP; transactions and write-ahead logging (Jim Gray); Dynamo; caching systems; idempotency |
+| B | `B.8`, `B.16`, `B.18`, `B.22`, `B.28` | TCP/IP; transactions and write-ahead logging (Jim Gray); Dynamo; idempotency |
 | D | `D.1`, `D.13` | git's origin; YAGNI and Gall's law |
 | E | `E.1`, `E.4` | Dijkstra 1956 and Knuth; hashing and Luhn 1953 |
 | F | `F.1`, `F.8` | Boole 1854 and Shannon 1937; three-valued logic and `NULL` |
-| K | `K.2`, `K.6`, `K.13` | the perceptron and its winter; backpropagation 1986; attention and transformers |
+| K | `K.2`, `K.6` | the perceptron and its winter; backpropagation 1986 |
 | L | `L.6` | retrieval and ranking |
-| P | `P.3`, `P.5`, `P.11` | injection; password hashing; prompt injection |
+| P | `P.3` | injection |
 
 **Two of these already have their sources in the repo.** `B.8` needs Cerf and
 Kahn 1974, which is claim `c1` of `content/seeds/0.12.json`. `B.22` needs the
 Dynamo paper, which is claim `c5` of `content/seeds/B.32.json`. Reuse the
 source rather than duplicating it, as `A.3` does with `B.29`'s Amdahl citation.
 
-**Highest risk of the 21**, on the same reasoning as the original
-prioritisation: `P.5` (asserts hardware cracking rates, which are stale by
-construction the way `B.39`'s pricing was), `P.11` (attributes prompt
-injection work to a named individual and a year), `B.24` (attributes two
-caching systems to two named authors with dates), `K.13` (attributes
-attention to named authors and two years). Do those four first — all are
-attributions, which are the claims a reader is least able to check from
-inside the lesson and the ones a wrong answer damages most.
+### RESOLVED: the four attribution lessons
+
+`P.5`, `P.11`, `B.24` and `K.13` are done. All four were attributions — the
+claim type a reader is least able to check from inside a lesson — and three
+of the four were wrong or incomplete:
+
+- **`P.11` misattributed the discovery.** It credited "Security researchers
+  (Simon Willison, 2022)" with identifying prompt injection. Willison has
+  said publicly and repeatedly: *"I didn't discover it, I coined it."* The
+  credit divides three ways — Preamble found it on 3 May 2022 and reported it
+  privately to OpenAI; Riley Goodside independently found it and made it
+  public on 11-12 September 2022; Willison named it on 12 September by
+  analogy with SQL injection. And the *indirect* form, which is what the
+  lesson is actually about, has separate authorship again: Greshake,
+  Abdelnabi, Mishra, Endres, Holz and Fritz, 23 February 2023.
+- **`K.13` stated a conjecture as a fact**, and it is the most on-the-nose
+  finding of this whole review. The lesson said the scaling factor is
+  "mandatory because" large dot products saturate the softmax. The paper says
+  *"We suspect that for large values of dk, the dot products grow large in
+  magnitude…"* — a hypothesis with a footnote variance argument, not a
+  demonstration. The same pattern sits one paper earlier: Bahdanau, Cho and
+  Bengio write *"we conjecture that the use of a fixed-length vector is a
+  bottleneck"*. **Both papers defining this lineage hedge their central
+  causal claim, and both hedges vanished in retelling.** The remedies are
+  beyond doubt; the diagnoses were never established. A curriculum about
+  checking claims should not be where the hedge goes missing, so the lesson
+  now carries both the result and its status.
+- **`P.5` had the `B.39` problem.** Its cracking rate was tied to one named
+  consumer graphics card, unsourceable at the figure quoted and stale by
+  construction. Replaced with the structural argument and with what the 1999
+  paper's *title* actually claims — *A Future-Adaptable Password Scheme*. The
+  adaptability is the contribution, and the lesson had reduced it to "an
+  adjustable work factor (cost)" in passing. Also added the limitation nobody
+  states: a stored hash keeps its old parameter until the user next logs in,
+  so raising the work factor protects new passwords at once and old ones only
+  gradually — and a dormant account never upgrades.
+- **`B.24` was accurate.** Memcached/Fitzpatrick/2003 and Redis/Sanfilippo/
+  2009 both check out. One thing added: the Karlton quotation is *commonly
+  attributed* and not firmly documented to an original source, which the
+  lesson asserted flatly. Its stampede material reuses `A.4`'s Vattani source.
+
+**Next four**, by the same risk ordering: `K.2` and `K.6` (both attribute
+foundational AI results to named authors and years), `F.1` (attributes to
+Boole 1854 and Shannon 1937), `E.1` (Dijkstra 1956 and Knuth).
 
 ### The 37 tasks with no lesson at all
 
