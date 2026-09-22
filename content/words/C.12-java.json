@@ -4,7 +4,8 @@
   "lang": "Java",
   "category": "Backend & Enterprise",
   "summary": "Type-safe, object-oriented platform powering enterprise backends, Android runtimes, and large distributed data pipelines.",
-  "status": "unsourced",
+  "status": "traced",
+  "seed": "C.12",
   "rows": [
     {
       "code": "public class Name { ... }",
@@ -13,8 +14,8 @@
     },
     {
       "code": "public static void main(String[] args)",
-      "means": "standard program entry point executed by the JVM",
-      "consequence": "public allows JVM access; static means it runs without instantiating the class; void means it returns no exit code."
+      "means": "the entry point the runtime looks for",
+      "consequence": "public so the runtime may call it, static so it runs without an instance of the class existing, and returning nothing because the exit status is set separately."
     },
     {
       "code": "System.out.println(data)",
@@ -23,8 +24,8 @@
     },
     {
       "code": "new ClassName()",
-      "means": "instantiates an object on the JVM heap and invokes its constructor",
-      "consequence": "All objects in Java live on the garbage-collected heap; references to objects live on the thread execution stack."
+      "means": "allocates an object on the managed heap and runs its constructor",
+      "consequence": "Objects live on the collected heap; the references to them live on the stack of the thread using them, which is the distinction that makes the collector possible."
     },
     {
       "code": "extends vs implements",
@@ -37,9 +38,9 @@
       "consequence": "Interfaces define behavior contracts (can also have default methods); abstract classes can hold instance state and constructors."
     },
     {
-      "code": "final (variable / method / class)",
+      "code": "final (variable / method / class)\npublic final class java.lang.String",
       "means": "constant value / cannot be overridden / cannot be subclassed",
-      "consequence": "Declaring classes final (like java.lang.String) guarantees immutability, thread safety, and compiler inlining optimizations."
+      "consequence": "A final class cannot be subclassed, which is what lets the standard string type promise that an instance never changes after it is made \u2014 and that promise is what makes sharing one between threads safe."
     },
     {
       "code": "record User(String id, String name) {}",
@@ -99,7 +100,7 @@
     {
       "code": "volatile boolean running = true;",
       "means": "ensures reads and writes are visible immediately across all CPU threads",
-      "consequence": "Prevents the JVM and CPU from caching the variable in hardware thread registers, enforcing memory visibility."
+      "consequence": "Prevents the compiler and the processor from keeping the variable in a register or a cache, so a write by one thread is visible to the next thread that reads it."
     },
     {
       "code": "var count = 42; (local variable type inference)",
@@ -107,14 +108,14 @@
       "consequence": "Available in Java 10+ for local variables. Keeps code concise without sacrificing static compile-time type safety."
     },
     {
-      "code": "Lambda expression: (x, y) -> x + y",
-      "means": "compact implementation of a Single Abstract Method (SAM) interface",
-      "consequence": "Passed directly into methods expecting functional interfaces like Predicate, Function, or Consumer."
+      "code": "(x, y) -> x + y",
+      "means": "compact implementation of an interface with a single abstract method",
+      "consequence": "Passed directly wherever such an interface is expected, which is what lets a method take behaviour as an argument without a named class existing for it."
     },
     {
-      "code": "Generics: <T extends Comparable<T>>",
+      "code": "<T extends Comparable<T>>\n// erased to Object in the bytecode",
       "means": "compile-time type parameters with bounded constraints",
-      "consequence": "Implemented via type erasure: the compiler checks types at build time and erases them to Object in JVM bytecode."
+      "consequence": "Implemented by erasure: the compiler checks the types and then removes them, so the runtime sees the unparameterised type. That is why you cannot ask, at run time, what a collection was parameterised with."
     }
   ]
 }

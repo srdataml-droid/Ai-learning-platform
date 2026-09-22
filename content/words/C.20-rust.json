@@ -4,7 +4,8 @@
   "lang": "Rust",
   "category": "Systems & Hardware",
   "summary": "Zero-cost abstractions, compile-time memory ownership, fearless concurrency, and bare-metal performance without a garbage collector.",
-  "status": "unsourced",
+  "status": "traced",
+  "seed": "C.20",
   "rows": [
     {
       "code": "let vs let mut",
@@ -24,7 +25,7 @@
     {
       "code": "&T (immutable borrow) vs &mut T (mutable borrow)",
       "means": "references allowing reading / reference allowing writing",
-      "consequence": "The Borrow Checker rule: you may have any number of immutable references (&T), OR exactly one mutable reference (&mut T), never both."
+      "consequence": "The borrow checker's rule: any number of immutable references, or exactly one mutable reference, and never both at once. That single constraint is what makes a dangling reference and a data race both impossible to express."
     },
     {
       "code": "Lifetimes: 'a in &'a str",
@@ -34,7 +35,7 @@
     {
       "code": "Option<T>: Some(val) and None",
       "means": "type representing a value that may or may not exist",
-      "consequence": "Rust has no NULL pointer. The compiler forces developers to handle the None case explicitly before unwrapping the value."
+      "consequence": "There is no null pointer in the language. Absence is a value of the type, so the compiler can require that the absent case is handled before the value inside is used."
     },
     {
       "code": "Result<T, E>: Ok(val) and Err(err)",
@@ -42,9 +43,9 @@
       "consequence": "All recoverable errors in Rust return Result. Combined with the ? operator for ergonomic error propagation."
     },
     {
-      "code": "? operator (e.g. let file = File::open(path)?)",
+      "code": "let file = File::open(path)?;   // returns Err to the caller",
       "means": "unwraps Ok value or immediately returns Err upward to caller",
-      "consequence": "Replaces verbose match statements with concise error bubbling while preserving the original error type."
+      "consequence": "Replaces a match at every call with one character, while keeping the error type, so the short path and the careful path are the same path."
     },
     {
       "code": "match expr { PatternA => ..., PatternB => ... }",
@@ -62,9 +63,9 @@
       "consequence": "Functions without &self are associated functions (constructors like Type::new()); functions taking &self are instance methods."
     },
     {
-      "code": "trait TraitName { fn method(&self); }",
+      "code": "trait TraitName { fn method(&self); }\nimpl TraitName for MyType { ... }",
       "means": "defines a shared interface of behavior across types",
-      "consequence": "Types implement traits via impl TraitName for Type. Enables static dispatch with zero runtime performance cost."
+      "consequence": "Behaviour is attached to a type after the fact rather than at its definition, and the call is resolved at compile time, so the abstraction costs nothing at run time."
     },
     {
       "code": "#[derive(Debug, Clone, PartialEq)]",
@@ -78,8 +79,8 @@
     },
     {
       "code": "Rc<T> and Arc<T>",
-      "means": "reference counting pointer for single-thread / multi-thread shared ownership",
-      "consequence": "Arc<T> (Atomic Reference Counting) allows multiple threads to safely share read-only ownership of the same heap data."
+      "means": "reference counting pointer for shared ownership, single-threaded and thread-safe",
+      "consequence": "The thread-safe version counts atomically, which is why it is the one that may cross threads and why it costs slightly more than the single-threaded one. Shared ownership is opt-in rather than the default."
     },
     {
       "code": "Mutex<T>",
@@ -99,12 +100,12 @@
     {
       "code": "String vs &str",
       "means": "heap-allocated owned string / borrowed read-only string slice",
-      "consequence": "String can grow and mutate; &str is an immutable view pointing into existing UTF-8 memory."
+      "consequence": "The owned form can grow and change; the borrowed form is an immutable view into text that already exists somewhere else, which is why passing one costs nothing and returning one needs care about what it points into."
     },
     {
       "code": "unsafe { ... }",
-      "means": "tells compiler to permit raw pointer dereferencing and FFI",
-      "consequence": "Used internally by standard libraries to implement low-level hardware access and high-performance primitives."
+      "means": "permits raw pointer dereferencing and calls into other languages",
+      "consequence": "Used inside the standard library to implement the low-level primitives that the safe interfaces are built from. The block does not switch the checks off everywhere; it widens what is permitted inside it, and marks the region a reviewer has to read."
     }
   ]
 }

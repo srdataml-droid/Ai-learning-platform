@@ -4,7 +4,8 @@
   "lang": "Elixir & Erlang",
   "category": "Backend & Enterprise",
   "summary": "Built on the BEAM virtual machine: millions of isolated processes, supervision trees, and nine-nines uptime fault tolerance.",
-  "status": "unsourced",
+  "status": "traced",
+  "seed": "C.16",
   "rows": [
     {
       "code": "defmodule ModuleName do ... end",
@@ -38,8 +39,8 @@
     },
     {
       "code": "spawn(fn -> ... end)",
-      "means": "spawns a lightweight BEAM actor process in microseconds",
-      "consequence": "BEAM processes are not OS threads; they consume only ~300 words of memory and are isolated from other processes."
+      "means": "starts a lightweight process belonging to the runtime",
+      "consequence": "These are not operating system threads: they are created and scheduled by the runtime, start with a very small amount of memory, and are isolated from one another, which is why a program can hold hundreds of thousands of them and why one dying harms nothing else."
     },
     {
       "code": "send(pid, msg) and receive do msg -> ... end",
@@ -48,8 +49,8 @@
     },
     {
       "code": "GenServer (Generic Server)",
-      "means": "OTP abstraction for stateful client-server worker processes",
-      "consequence": "Standardizes callbacks (init, handle_call, handle_cast, handle_info) for managing concurrent state."
+      "means": "a standard behaviour for a stateful server process",
+      "consequence": "Standardises the callbacks \u2014 init, handle_call, handle_cast, handle_info \u2014 so that every stateful process in a system is started, called and supervised the same way."
     },
     {
       "code": "Supervisor: 'let it crash' philosophy",
@@ -57,9 +58,9 @@
       "consequence": "Instead of defensive code trying to handle every rare corrupt state, crashed processes are simply restarted from clean initial state."
     },
     {
-      "code": "Enum.map / Enum.filter / Enum.reduce",
+      "code": "Enum.map / Enum.filter / Enum.reduce\nStream.map(...) |> Enum.to_list()",
       "means": "functional transformations over collections and streams",
-      "consequence": "Eagerly evaluates collections; for lazy streaming over huge data sources, use the Stream module."
+      "consequence": "The eager versions build the whole collection at each step; the lazy module defers the work so a large source is walked once rather than copied repeatedly."
     }
   ]
 }

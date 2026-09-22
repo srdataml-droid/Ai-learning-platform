@@ -4,7 +4,8 @@
   "lang": "C#",
   "category": "Backend & Enterprise",
   "summary": "Modern, type-safe, multi-paradigm language driving the cross-platform .NET runtime, cloud microservices, and enterprise systems.",
-  "status": "unsourced",
+  "status": "traced",
+  "seed": "C.17",
   "rows": [
     {
       "code": "namespace Company.App; and using System.Text.Json;",
@@ -14,7 +15,7 @@
     {
       "code": "public class / record / struct",
       "means": "reference type / immutable data-carrier / lightweight value type",
-      "consequence": "records provide value-based equality out-of-the-box; structs are allocated on the stack to minimize GC memory pressure."
+      "consequence": "records give value-based equality without writing it; structs are values rather than references, which keeps them off the managed heap and out of the collector's work."
     },
     {
       "code": "public string Name { get; set; }",
@@ -27,9 +28,9 @@
       "consequence": "Releases the operating system thread back to the thread pool while awaiting I/O operations, maximizing server throughput."
     },
     {
-      "code": "LINQ: items.Where(x => x.Active).Select(x => x.Name).ToList()",
-      "means": "Language Integrated Query for querying collections and databases",
-      "consequence": "Executes seamlessly in memory or translates directly into optimized SQL queries when using Entity Framework Core."
+      "code": "items.Where(x => x.Active).Select(x => x.Name).ToList()",
+      "means": "language-integrated query over collections and databases",
+      "consequence": "The same expression runs in memory over a collection, or is translated into a query the database executes, depending on what it is applied to \u2014 which is convenient and is also how a query nobody meant to send ends up being sent."
     },
     {
       "code": "Null-conditional: user?.Profile?.AvatarUrl",
@@ -37,9 +38,9 @@
       "consequence": "Returns null safely if any reference in the chain is null, eliminating deeply nested if (obj != null) checks."
     },
     {
-      "code": "Null-coalescing: val ?? fallback and val ??= fallback",
+      "code": "val ?? fallback\nval ??= fallback\nstring display = username ?? \"Guest\";",
       "means": "provides fallback value / assigns fallback only if currently null",
-      "consequence": "string display = username ?? \"Guest\"; assigns \"Guest\" if username is null."
+      "consequence": "The second form assigns only when the target is currently null, which removes the read-test-write that people write by hand and get subtly wrong."
     },
     {
       "code": "Nullable reference types: string? vs string",
@@ -47,9 +48,9 @@
       "consequence": "When enabled, the compiler treats all standard types as non-null by default, catching NullReferenceException before deployment."
     },
     {
-      "code": "using var stream = new FileStream(...);",
+      "code": "using var stream = new FileStream(...);\n// stream.Dispose() at end of scope",
       "means": "disposes IDisposable resources automatically when scope ends",
-      "consequence": "Modern using declaration automatically invokes stream.Dispose() at the end of the enclosing block, preventing leaks."
+      "consequence": "The declaration form releases the resource when the enclosing block ends, on every path out of it, so a release cannot be skipped by an early return or an exception."
     },
     {
       "code": "Pattern matching: switch (obj) { case Circle c => ... }",
@@ -77,9 +78,9 @@
       "consequence": "Creates a shallow copy of the record with specified properties updated, preserving immutability."
     },
     {
-      "code": "Dependency Injection: services.AddScoped<IOrderService, OrderService>()",
-      "means": "built-in IoC container lifecycle management in ASP.NET Core",
-      "consequence": "Transient creates new instance each time; Scoped creates one per HTTP request; Singleton creates one for the entire application."
+      "code": "services.AddScoped<IOrderService, OrderService>()\n// AddTransient / AddScoped / AddSingleton",
+      "means": "built-in container managing how long a dependency lives",
+      "consequence": "Transient creates a new instance per request for it; scoped creates one per incoming web request; singleton creates one for the life of the application. Choosing wrongly is how shared state appears where nobody intended it."
     }
   ]
 }
