@@ -1,0 +1,29 @@
+{
+  "taskId": "D.13",
+  "title": "Gall's law and the test for whether complexity was earned",
+  "researchedAt": "2026-09-22",
+  "claims": [
+    {
+      "id": "c1",
+      "type": "quote",
+      "tokens": [
+        "Gall",
+        "John Gall",
+        "Systemantics",
+        "1975"
+      ],
+      "text": "John Gall, in Systemantics: How Systems Work and Especially How They Fail, published in 1975, states what is now known as Gall's law: a complex system that works is invariably found to have evolved from a simple system that worked; a complex system designed from scratch never works and cannot be patched up to make it work, so one has to start over with a working simple system.",
+      "source": {
+        "title": "John Gall, Systemantics: How Systems Work and Especially How They Fail, Quadrangle/The New York Times Book Co., 1975",
+        "url": "https://en.wikipedia.org/wiki/John_Gall_(author)",
+        "kind": "secondary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "complexity is added for a future that is described rather than observed, and it is indistinguishable at the time from competence, because both look like thinking ahead",
+    "fix": "require a specific event as the justification for each piece of complexity, since a real constraint can be named and an imagined one can only be described",
+    "cost": "the test is conservative by construction and will refuse some complexity that turns out to be needed, at the price of paying for it later when the evidence exists",
+    "interview": "how to tell a design that anticipates from one that speculates"
+  }
+}
