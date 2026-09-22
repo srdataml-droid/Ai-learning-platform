@@ -1,0 +1,35 @@
+{
+  "taskId": "L.3",
+  "title": "How position within a long input affects whether a model uses the information in it",
+  "researchedAt": "2026-09-22",
+  "claims": [
+    {
+      "id": "c1",
+      "type": "event",
+      "tokens": [
+        "Liu",
+        "Lin",
+        "Hewitt",
+        "Paranjape",
+        "Bevilacqua",
+        "Petroni",
+        "Liang",
+        "Nelson Liu",
+        "2023",
+        "2024"
+      ],
+      "text": "Liu, Lin, Hewitt, Paranjape, Bevilacqua, Petroni and Liang published Lost in the Middle: How Language Models Use Long Contexts, as a preprint in 2023 and in the Transactions of the Association for Computational Linguistics in 2024, volume 12, pages 157 to 173. Analysing performance on two tasks that require identifying relevant information in the input context, multi-document question answering and key-value retrieval, they find that performance is often highest when relevant information occurs at the beginning or end of the input context, and significantly degrades when models must access relevant information in the middle of long contexts, even for explicitly long-context models. They conclude that current language models do not robustly make use of information in long input contexts.",
+      "source": {
+        "title": "Nelson Liu, Kevin Lin, John Hewitt, Ashwin Paranjape, Michele Bevilacqua, Fabio Petroni and Percy Liang, Lost in the Middle: How Language Models Use Long Contexts, TACL volume 12, 2024, pages 157-173",
+        "url": "https://aclanthology.org/2024.tacl-1.9/",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a context window was treated as a container, so anything that might help was added to it and nobody asked what the additions cost or where they landed",
+    "fix": "treat the window as a budget in which everything competes, put what matters where the model actually uses it, and justify every item that stays",
+    "cost": "position is not free and neither is volume, so adding more evidence can push the evidence that mattered into the place it is least likely to be used",
+    "interview": "what the window actually is, and why adding a relevant document can make an answer worse"
+  }
+}

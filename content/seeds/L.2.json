@@ -1,0 +1,43 @@
+{
+  "taskId": "L.2",
+  "title": "Guaranteeing the structure of generated text by constraining the decoder",
+  "researchedAt": "2026-09-22",
+  "claims": [
+    {
+      "id": "c1",
+      "type": "event",
+      "tokens": [
+        "Willard",
+        "Louf",
+        "Brandon Willard",
+        "2023"
+      ],
+      "text": "Willard and Louf published Efficient Guided Generation for Large Language Models in 2023. They reformulate neural text generation in terms of transitions between the states of a finite-state machine, which leads to an approach for guiding generation with regular expressions and context-free grammars by constructing an index over the language model's vocabulary. The index maps each state to the set of vocabulary tokens that are valid continuations, and at sampling time the disallowed tokens are masked before a token is chosen, so no rescanning of the sequence is needed. Using a hash map for the index makes the relevant step cost constant on average, and the index is constructed outside the token sampling procedure. The method is described as model agnostic, able to enforce domain-specific constraints, able to guarantee the structure of generated text, and adding little overhead to token generation.",
+      "source": {
+        "title": "Brandon T. Willard and Remi Louf, Efficient Guided Generation for Large Language Models, 2023",
+        "url": "https://arxiv.org/abs/2307.09702",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "type": "quote",
+      "tokens": [
+        "JSON",
+        "RFC"
+      ],
+      "text": "The JavaScript Object Notation data interchange format, commonly abbreviated JSON, is specified by RFC 8259, which defines it as a lightweight, text-based, language-independent syntax for interchanging structured data, derived from the object literals of a programming language.",
+      "source": {
+        "title": "T. Bray, editor, The JavaScript Object Notation (JSON) Data Interchange Format, RFC 8259, December 2017",
+        "url": "https://www.rfc-editor.org/rfc/rfc8259",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "asking for a particular output format in the instructions is a request, and a request is honoured most of the time, which forces every consumer of the output to handle the times it is not",
+    "fix": "constrain the decoder itself, masking the tokens that would make the output impossible to parse, so a valid structure is produced by construction rather than by cooperation",
+    "cost": "the guarantee is about shape and not about content, and forcing a structure to be completed can turn a missing answer into an invented one",
+    "interview": "the difference between asking for a format and enforcing one, and what enforcement does not give you"
+  }
+}

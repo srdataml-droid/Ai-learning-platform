@@ -50,14 +50,9 @@ Study order: the sequence first, then the five habits running underneath.
 
 ## Track L — AI engineering
 
-19 of 26 still missing.
+14 of 26 still missing.
 
-- [ ] `L.1` Prompting as an engineering discipline, not a trick
-- [ ] `L.2` Structured output, and why JSON mode changed what was buildable
-- [ ] `L.3` Context engineering: what goes in the window and in what order
 - [ ] `L.10` Evaluation: golden sets, offline scoring, human review, regression gates
-- [ ] `L.11` Tool calling: schemas, validation, failure handling
-- [ ] `L.13` Memory and state across turns
 - [ ] `L.14` Guardrails: input filtering, output checking, prompt injection
 - [ ] `L.15` Cost control: caching, model routing, batching, token accounting
 - [ ] `L.16` Latency: streaming, parallel calls, speculative work
@@ -94,7 +89,7 @@ Study order: the sequence first, then the five habits running underneath.
 
 ---
 
-**Total remaining: 19 of 313.**
+**Total remaining: 14 of 313.**
 
 Regenerate: `node tools/missing-lessons.mjs > docs/MISSING-LESSONS.md`
 
