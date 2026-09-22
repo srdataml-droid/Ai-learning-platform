@@ -10,7 +10,8 @@
     "lang": "Assembly",
     "category": "Systems & Hardware",
     "summary": "Direct x86_64 machine instructions, hardware CPU registers, stack pointers, and system call execution.",
-    "status": "unsourced",
+    "status": "traced",
+    "seed": "C.1",
     "rows": [
       {
         "code": "MOV dst, src",
@@ -18,9 +19,9 @@
         "consequence": "x86_64 cannot move directly from memory to memory in a single instruction; data must load into a register first."
       },
       {
-        "code": "ADD dst, src and SUB dst, src",
+        "code": "ADD dst, src\nSUB dst, src   -- sets ZF CF SF OF",
         "means": "performs arithmetic addition and subtraction on registers",
-        "consequence": "Updates CPU condition flags (Zero Flag ZF, Carry Flag CF, Sign Flag SF, Overflow Flag OF)."
+        "consequence": "Arithmetic also writes the condition flags — zero, carry, sign and overflow — which is how the next instruction knows what happened without being told."
       },
       {
         "code": "CMP op1, op2",
@@ -28,24 +29,24 @@
         "consequence": "Sets CPU flags based on the subtraction result, immediately followed by conditional jump instructions."
       },
       {
-        "code": "JMP label",
-        "means": "unconditional jump: changes instruction pointer (RIP) to target address",
-        "consequence": "Direct hardware jump instruction, the assembly equivalent of goto."
+        "code": "JMP label   -- writes the instruction pointer",
+        "means": "unconditional jump: replaces the instruction pointer with the target address",
+        "consequence": "A direct jump: the address of the next instruction is replaced, which is what every loop, branch and function return is made of underneath."
       },
       {
-        "code": "JE / JZ and JNE / JNZ",
-        "means": "jump if equal (Zero Flag = 1) / jump if not equal",
-        "consequence": "Conditional branch instructions used to implement if/else statements and loop termination checks."
+        "code": "JE / JZ   (jump if equal / zero)\nJNE / JNZ (jump if not equal / not zero)",
+        "means": "jump if the previous comparison was equal, or if it was not",
+        "consequence": "Conditional branches read the flag the previous arithmetic set, which is why a comparison and the branch that uses it must not be separated by anything that also writes flags."
       },
       {
-        "code": "CALL label and RET",
+        "code": "CALL label\nRET   -- pushes and pops the return address",
         "means": "calls subroutine / returns to caller address",
-        "consequence": "CALL pushes the next instruction address onto the stack; RET pops that address off the stack back into RIP."
+        "consequence": "CALL puts the address of the following instruction on the stack and jumps; RET takes it off and jumps back. The call stack is not a language feature here, it is these two instructions and a register."
       },
       {
-        "code": "PUSH src and POP dst",
+        "code": "PUSH src\nPOP dst   -- adjusts RSP",
         "means": "pushes value onto stack (decrements RSP) / pops into register (increments RSP)",
-        "consequence": "The x86_64 stack grows downward from high memory to low memory."
+        "consequence": "The stack grows downward, from high addresses towards low ones, so pushing subtracts from the stack pointer and the deepest frame has the lowest address."
       },
       {
         "code": "RAX / EAX",
@@ -53,9 +54,9 @@
         "consequence": "By calling convention, functions return their numeric or pointer result in RAX."
       },
       {
-        "code": "RSP (Stack Pointer)",
+        "code": "RSP (stack pointer)\nPUSH / POP / CALL / RET adjust it\nsub rsp, 32   -- allocate a frame by hand",
         "means": "points to the top of the current thread execution stack",
-        "consequence": "Modified automatically by PUSH, POP, CALL, and RET, or adjusted manually via sub rsp, 32 to allocate local stack frames."
+        "consequence": "Moved automatically by the stack instructions, or by hand to make room for locals — which is what a function prologue is, once the language is taken away."
       },
       {
         "code": "RBP (Base Pointer)",
@@ -63,29 +64,29 @@
         "consequence": "Historically used to index function local variables and arguments; modern compilers often omit it (-fomit-frame-pointer)."
       },
       {
-        "code": "RDI, RSI, RDX, RCX, R8, R9",
-        "means": "System V AMD64 ABI registers holding function arguments",
-        "consequence": "On Linux/macOS, the first 6 integer/pointer arguments to a function are passed in these registers, not on the stack."
+        "code": "RDI, RSI, RDX, RCX, R8, R9   -- first six integer arguments",
+        "means": "the registers this platform's calling convention uses for arguments",
+        "consequence": "The calling convention used on these systems passes the first six integer or pointer arguments in registers rather than on the stack, which is why a function with few arguments never touches memory to receive them."
       },
       {
-        "code": "RIP (Instruction Pointer / Program Counter)",
+        "code": "RIP (instruction pointer)   -- not writable by MOV",
         "means": "register holding the memory address of the next instruction to execute",
-        "consequence": "Cannot be written directly with MOV; updated via jumps, calls, and returns."
+        "consequence": "Cannot be assigned directly; it is changed by jumps, calls and returns. That restriction is the reason control flow is a small fixed set of instructions rather than arithmetic on an address."
       },
       {
-        "code": "LEA dst, [src + offset]",
-        "means": "Load Effective Address: computes address calculation without memory access",
-        "consequence": "Commonly abused as a fast arithmetic trick: lea rax, [rdi + rsi*4 + 8] performs multiply and add in a single CPU clock cycle."
+        "code": "LEA dst, [src + offset]\nlea rax, [rdi + rsi*4 + 8]",
+        "means": "loads an effective address: computes an address without touching memory",
+        "consequence": "Computes an address without reading memory, which is why it gets used as a fast multiply-and-add: the address arithmetic unit does the work the arithmetic instructions would have."
       },
       {
-        "code": "SYSCALL",
-        "means": "switches from user space (Ring 3) to OS kernel space (Ring 0)",
-        "consequence": "Passes syscall number in RAX (e.g. 1 for sys_write on Linux) and arguments in RDI, RSI, RDX; invokes OS kernel services."
+        "code": "SYSCALL   -- number in RAX, arguments in RDI, RSI, RDX",
+        "means": "hands control to the kernel, leaving the program's own privilege level",
+        "consequence": "Hands control to the kernel with the call number in a register and the arguments in the argument registers. Everything a program cannot do for itself — open a file, write output, exit — goes through this one instruction."
       },
       {
         "code": "NOP (0x90)",
-        "means": "No Operation: advances instruction pointer by 1 byte without doing anything",
-        "consequence": "Used for memory alignment of loop targets so instructions line up on 16-byte CPU cache line boundaries."
+        "means": "does nothing, and occupies space while doing it",
+        "consequence": "Does nothing, and is used to pad so that a loop target begins on an address the processor fetches efficiently. An instruction whose only purpose is where the next one starts."
       }
     ],
     "slug": "assembly"
@@ -335,7 +336,8 @@
     "lang": "C#",
     "category": "Backend & Enterprise",
     "summary": "Modern, type-safe, multi-paradigm language driving the cross-platform .NET runtime, cloud microservices, and enterprise systems.",
-    "status": "unsourced",
+    "status": "traced",
+    "seed": "C.17",
     "rows": [
       {
         "code": "namespace Company.App; and using System.Text.Json;",
@@ -345,7 +347,7 @@
       {
         "code": "public class / record / struct",
         "means": "reference type / immutable data-carrier / lightweight value type",
-        "consequence": "records provide value-based equality out-of-the-box; structs are allocated on the stack to minimize GC memory pressure."
+        "consequence": "records give value-based equality without writing it; structs are values rather than references, which keeps them off the managed heap and out of the collector's work."
       },
       {
         "code": "public string Name { get; set; }",
@@ -358,9 +360,9 @@
         "consequence": "Releases the operating system thread back to the thread pool while awaiting I/O operations, maximizing server throughput."
       },
       {
-        "code": "LINQ: items.Where(x => x.Active).Select(x => x.Name).ToList()",
-        "means": "Language Integrated Query for querying collections and databases",
-        "consequence": "Executes seamlessly in memory or translates directly into optimized SQL queries when using Entity Framework Core."
+        "code": "items.Where(x => x.Active).Select(x => x.Name).ToList()",
+        "means": "language-integrated query over collections and databases",
+        "consequence": "The same expression runs in memory over a collection, or is translated into a query the database executes, depending on what it is applied to — which is convenient and is also how a query nobody meant to send ends up being sent."
       },
       {
         "code": "Null-conditional: user?.Profile?.AvatarUrl",
@@ -368,9 +370,9 @@
         "consequence": "Returns null safely if any reference in the chain is null, eliminating deeply nested if (obj != null) checks."
       },
       {
-        "code": "Null-coalescing: val ?? fallback and val ??= fallback",
+        "code": "val ?? fallback\nval ??= fallback\nstring display = username ?? \"Guest\";",
         "means": "provides fallback value / assigns fallback only if currently null",
-        "consequence": "string display = username ?? \"Guest\"; assigns \"Guest\" if username is null."
+        "consequence": "The second form assigns only when the target is currently null, which removes the read-test-write that people write by hand and get subtly wrong."
       },
       {
         "code": "Nullable reference types: string? vs string",
@@ -378,9 +380,9 @@
         "consequence": "When enabled, the compiler treats all standard types as non-null by default, catching NullReferenceException before deployment."
       },
       {
-        "code": "using var stream = new FileStream(...);",
+        "code": "using var stream = new FileStream(...);\n// stream.Dispose() at end of scope",
         "means": "disposes IDisposable resources automatically when scope ends",
-        "consequence": "Modern using declaration automatically invokes stream.Dispose() at the end of the enclosing block, preventing leaks."
+        "consequence": "The declaration form releases the resource when the enclosing block ends, on every path out of it, so a release cannot be skipped by an early return or an exception."
       },
       {
         "code": "Pattern matching: switch (obj) { case Circle c => ... }",
@@ -408,9 +410,9 @@
         "consequence": "Creates a shallow copy of the record with specified properties updated, preserving immutability."
       },
       {
-        "code": "Dependency Injection: services.AddScoped<IOrderService, OrderService>()",
-        "means": "built-in IoC container lifecycle management in ASP.NET Core",
-        "consequence": "Transient creates new instance each time; Scoped creates one per HTTP request; Singleton creates one for the entire application."
+        "code": "services.AddScoped<IOrderService, OrderService>()\n// AddTransient / AddScoped / AddSingleton",
+        "means": "built-in container managing how long a dependency lives",
+        "consequence": "Transient creates a new instance per request for it; scoped creates one per incoming web request; singleton creates one for the life of the application. Choosing wrongly is how shared state appears where nobody intended it."
       }
     ],
     "slug": "c-"
@@ -543,7 +545,8 @@
     "lang": "CSS",
     "category": "Web & Frontend",
     "summary": "Cascading Style Sheets: layout engines, the box model, responsive typography, and visual animation systems.",
-    "status": "unsourced",
+    "status": "traced",
+    "seed": "C.24",
     "rows": [
       {
         "code": "* { box-sizing: border-box; }",
@@ -552,8 +555,8 @@
       },
       {
         "code": "element, .class, #id",
-        "means": "tag selector / class selector / unique ID selector",
-        "consequence": "ID selectors (#) have high specificity (1-0-0) that makes them hard to override. Prefer classes (.class, specificity 0-1-0) for maintainable styles."
+        "means": "tag selector / class selector / unique identifier selector",
+        "consequence": "An identifier selector carries high specificity and is correspondingly hard to override later; a class selector is weaker and composes, which is why maintainable sheets are built from classes."
       },
       {
         "code": "margin vs padding",
@@ -613,12 +616,12 @@
       {
         "code": "rem vs em vs vh / vw vs %",
         "means": "font-relative and viewport-relative length units",
-        "consequence": "1rem is relative to root <html> font-size (respecting user browser zoom); em is relative to parent element; vh/vw are 1% of viewport."
+        "consequence": "rem is relative to the root font size, so it respects a reader who has changed it; em is relative to the parent, so it compounds when nested; the viewport units are a hundredth of the viewport's width or height."
       },
       {
         "code": "color vs background-color",
         "means": "text foreground color / container background surface color",
-        "consequence": "Always ensure at least a 4.5:1 contrast ratio between foreground and background colors to satisfy WCAG AA accessibility standards."
+        "consequence": "Text needs a contrast ratio of at least 4.5 to 1 against its background to meet the accessibility guidelines at level AA, with large text allowed 3 to 1. The ratios are thresholds rather than targets to round towards, and the reason for them is readers with moderately low vision who are not using any assistive technology."
       },
       {
         "code": "font-family: 'Inter', system-ui, sans-serif",
@@ -648,7 +651,7 @@
       {
         "code": "transform: translate(x, y) rotate(deg) scale(s)",
         "means": "GPU-accelerated geometric transformations",
-        "consequence": "Transforms do not trigger browser layout reflow or repaint loops, making them the primary choice for fluid UI animations."
+        "consequence": "Transforms do not trigger layout or repaint, which is why they are the ones to reach for when animating something the reader is watching."
       },
       {
         "code": "@keyframes spin { from { ... } to { ... } }",
@@ -666,14 +669,14 @@
         "consequence": "Used for zebra striping tables, alternating grid cards, or styling specific rows without extra HTML classes."
       },
       {
-        "code": "::before and ::after",
+        "code": "::before and ::after\ncontent: '';",
         "means": "pseudo-elements that insert decorative content into CSS",
-        "consequence": "Requires content: '' property. Used for icons, tooltips, accent lines, and overlays without polluting the HTML DOM."
+        "consequence": "Requires the content property to exist at all. Used for icons, tooltips and accent lines without adding elements to the document that mean nothing."
       },
       {
         "code": "--primary-color: #2563eb and var(--primary-color)",
         "means": "CSS custom properties (design tokens and variables)",
-        "consequence": "Unlike preprocessor variables (Sass), CSS variables update dynamically at runtime and cascade through DOM subtrees, powering dark mode."
+        "consequence": "Unlike a preprocessor's variables, which are substituted before the sheet ships, these are live: they cascade, can be changed at run time, and are read by the element that uses them — which is what makes a theme switch a change to one value."
       },
       {
         "code": "calc(100% - 2rem)",
@@ -714,7 +717,8 @@
     "lang": "CUDA",
     "category": "AI & High Performance",
     "summary": "Massively parallel SIMD computing on NVIDIA GPU hardware: kernels, thread blocks, shared memory, and AI tensor acceleration.",
-    "status": "unsourced",
+    "status": "traced",
+    "seed": "C.23",
     "rows": [
       {
         "code": "__global__ void kernel()",
@@ -724,7 +728,7 @@
       {
         "code": "__device__ void helper()",
         "means": "GPU function callable only from other GPU kernels or functions",
-        "consequence": "Compiled directly into GPU PTX assembly; executed by individual threads on streaming multiprocessors."
+        "consequence": "Compiled into the device's own instruction set and run by individual threads on the hardware's processing units, so it can be called from a kernel but never from the host program."
       },
       {
         "code": "__host__ void cpuFunc()",
@@ -748,28 +752,28 @@
       },
       {
         "code": "cudaMalloc((void**)&d_ptr, size)",
-        "means": "allocates raw memory on the GPU's high-bandwidth VRAM",
-        "consequence": "The CPU cannot directly dereference d_ptr; data must be transferred using cudaMemcpy."
+        "means": "allocates raw memory in the device's own high-bandwidth memory",
+        "consequence": "The host cannot dereference the pointer this returns: it addresses memory on the other side of the bus, and reaching it requires an explicit copy."
       },
       {
         "code": "cudaMemcpy(dst, src, size, cudaMemcpyHostToDevice)",
-        "means": "copies data over the PCIe bus from CPU RAM to GPU VRAM",
-        "consequence": "Transferring data across PCIe is often the main performance bottleneck in GPU computing; minimize transfers."
+        "means": "copies data across the bus from host memory to device memory",
+        "consequence": "That transfer is frequently the bottleneck in the whole program, which is why the shape of a fast solution is usually to move data once and do as much as possible while it is there."
       },
       {
         "code": "cudaMemcpy(dst, src, size, cudaMemcpyDeviceToHost)",
-        "means": "transfers computed results from GPU VRAM back to CPU RAM",
-        "consequence": "Synchronizes execution: the CPU blocks until the memory transfer completes."
+        "means": "transfers computed results from device memory back to the host",
+        "consequence": "Synchronises as well as copies: the host waits until the transfer completes, so a result that is read too eagerly serialises a program that was meant to be parallel."
       },
       {
         "code": "cudaFree(d_ptr)",
-        "means": "frees allocated VRAM memory on the GPU device",
-        "consequence": "Must be called for every cudaMalloc to prevent running out of GPU memory (CUDA Out of Memory)."
+        "means": "frees an allocation on the device",
+        "consequence": "Must pair with every allocation. The device's memory is smaller than the host's and is not collected for you, so a leak in a long-running process ends as a failed allocation rather than as slow swapping."
       },
       {
         "code": "__shared__ float cache[256]",
-        "means": "allocates ultra-fast on-chip SRAM shared by threads in a block",
-        "consequence": "Shared memory has orders of magnitude lower latency and higher bandwidth than global VRAM; used for tile caching in matrix multiplication."
+        "means": "allocates fast on-chip memory shared by the threads of one block",
+        "consequence": "Latency and bandwidth are orders of magnitude better than the device's main memory, which is why the standard shape of a fast kernel is to stage a tile of data here, work on it, and write back once."
       },
       {
         "code": "__syncthreads()",
@@ -800,7 +804,8 @@
     "lang": "Elixir & Erlang",
     "category": "Backend & Enterprise",
     "summary": "Built on the BEAM virtual machine: millions of isolated processes, supervision trees, and nine-nines uptime fault tolerance.",
-    "status": "unsourced",
+    "status": "traced",
+    "seed": "C.16",
     "rows": [
       {
         "code": "defmodule ModuleName do ... end",
@@ -834,8 +839,8 @@
       },
       {
         "code": "spawn(fn -> ... end)",
-        "means": "spawns a lightweight BEAM actor process in microseconds",
-        "consequence": "BEAM processes are not OS threads; they consume only ~300 words of memory and are isolated from other processes."
+        "means": "starts a lightweight process belonging to the runtime",
+        "consequence": "These are not operating system threads: they are created and scheduled by the runtime, start with a very small amount of memory, and are isolated from one another, which is why a program can hold hundreds of thousands of them and why one dying harms nothing else."
       },
       {
         "code": "send(pid, msg) and receive do msg -> ... end",
@@ -844,8 +849,8 @@
       },
       {
         "code": "GenServer (Generic Server)",
-        "means": "OTP abstraction for stateful client-server worker processes",
-        "consequence": "Standardizes callbacks (init, handle_call, handle_cast, handle_info) for managing concurrent state."
+        "means": "a standard behaviour for a stateful server process",
+        "consequence": "Standardises the callbacks — init, handle_call, handle_cast, handle_info — so that every stateful process in a system is started, called and supervised the same way."
       },
       {
         "code": "Supervisor: 'let it crash' philosophy",
@@ -853,9 +858,9 @@
         "consequence": "Instead of defensive code trying to handle every rare corrupt state, crashed processes are simply restarted from clean initial state."
       },
       {
-        "code": "Enum.map / Enum.filter / Enum.reduce",
+        "code": "Enum.map / Enum.filter / Enum.reduce\nStream.map(...) |> Enum.to_list()",
         "means": "functional transformations over collections and streams",
-        "consequence": "Eagerly evaluates collections; for lazy streaming over huge data sources, use the Stream module."
+        "consequence": "The eager versions build the whole collection at each step; the lazy module defers the work so a large source is walked once rather than copied repeatedly."
       }
     ],
     "slug": "elixir---erlang"
@@ -968,7 +973,8 @@
     "lang": "HTML",
     "category": "Web & Frontend",
     "summary": "HyperText Markup Language: the semantic skeleton, document tree, and accessibility foundation of the web.",
-    "status": "unsourced",
+    "status": "traced",
+    "seed": "C.24",
     "rows": [
       {
         "code": "<!DOCTYPE html>",
@@ -1003,7 +1009,7 @@
       {
         "code": "<link rel=\"stylesheet\" href=\"styles.css\">",
         "means": "imports external CSS stylesheets into the document",
-        "consequence": "Placed in <head> so the browser applies styles before painting text, eliminating the Flash of Unstyled Content (FOUC)."
+        "consequence": "Placed in the head so styles are applied before the text is painted, which is what prevents the unstyled flash a reader sees when a sheet arrives late."
       },
       {
         "code": "<script src=\"app.js\" defer></script>",
@@ -1043,12 +1049,12 @@
       {
         "code": "<button type=\"button|submit|reset\">",
         "means": "accessible, clickable trigger for actions",
-        "consequence": "Unlike a <div> with an onclick handler, <button> automatically handles keyboard Enter/Space triggers and native screen reader focus."
+        "consequence": "Unlike a div with a click handler, it is reachable by keyboard, activates on the usual keys without code, and is announced as a button by a screen reader."
       },
       {
         "code": "<form action=\"/api/submit\" method=\"POST\">",
         "means": "data collection and submission container",
-        "consequence": "Groups user inputs and manages form submission. Handles Enter-key submission and HTML5 constraint validation natively."
+        "consequence": "Groups inputs and owns submission, including submission from the keyboard and the validation the browser performs before anything is sent."
       },
       {
         "code": "<label for=\"user-email\">Email</label>",
@@ -1078,7 +1084,7 @@
       {
         "code": "<ul>, <ol>, and <li>",
         "means": "unordered list (bullets) / ordered list (numbered) / list item",
-        "consequence": "Tells screen readers how many items are in the set (e.g. 'List of 5 items'), vastly improving navigation over raw div tags."
+        "consequence": "Tells a screen reader how many items are in the set before it starts reading them, which is the difference between navigating a list and wading through a stack of anonymous containers."
       },
       {
         "code": "<img src=\"pic.webp\" alt=\"Descriptive text\" loading=\"lazy\">",
@@ -1086,9 +1092,9 @@
         "consequence": "The alt attribute describes the image for blind users and when images fail to load. loading=\"lazy\" defers offscreen downloads."
       },
       {
-        "code": "<picture> and <source srcset=\"...\" media=\"...\">",
+        "code": "<picture>\n  <source srcset=\"hero.avif\" type=\"image/avif\">\n  <source srcset=\"hero.webp\" type=\"image/webp\">\n  <img src=\"hero.jpg\" alt=\"...\">\n</picture>",
         "means": "art direction and responsive image switching",
-        "consequence": "Allows serving modern formats (AVIF/WebP) with JPEG fallback, or different crops for mobile versus desktop viewports."
+        "consequence": "Offers newer formats first and falls back to the widely supported one, or swaps the crop entirely between a phone and a desktop — the choice being made by the browser, which knows things the author does not."
       },
       {
         "code": "<video controls poster=\"preview.jpg\"> and <audio>",
@@ -1113,7 +1119,7 @@
       {
         "code": "<dialog id=\"modal\"> and dialog.showModal()",
         "means": "native accessible modal dialog box",
-        "consequence": "Handles the backdrop, traps keyboard focus inside the modal, and closes on the Escape key without custom JavaScript."
+        "consequence": "Handles the backdrop, keeps keyboard focus inside the dialog while it is open, and closes on the usual key, none of which has to be written by hand."
       },
       {
         "code": "<details> and <summary>Click to toggle</summary>",
@@ -1122,8 +1128,8 @@
       },
       {
         "code": "aria-* attributes (e.g. aria-expanded, aria-label)",
-        "means": "Accessible Rich Internet Applications accessibility overrides",
-        "consequence": "Communicates dynamic state changes (e.g. menu open/closed, loading) to assistive screen readers."
+        "means": "accessibility attributes describing state and role",
+        "consequence": "Communicates dynamic changes — a menu opening, a region loading — to assistive technology, which otherwise sees only the markup and not what changed."
       },
       {
         "code": "data-* attributes (e.g. data-user-id=\"42\")",
@@ -1139,7 +1145,8 @@
     "lang": "Java",
     "category": "Backend & Enterprise",
     "summary": "Type-safe, object-oriented platform powering enterprise backends, Android runtimes, and large distributed data pipelines.",
-    "status": "unsourced",
+    "status": "traced",
+    "seed": "C.12",
     "rows": [
       {
         "code": "public class Name { ... }",
@@ -1148,8 +1155,8 @@
       },
       {
         "code": "public static void main(String[] args)",
-        "means": "standard program entry point executed by the JVM",
-        "consequence": "public allows JVM access; static means it runs without instantiating the class; void means it returns no exit code."
+        "means": "the entry point the runtime looks for",
+        "consequence": "public so the runtime may call it, static so it runs without an instance of the class existing, and returning nothing because the exit status is set separately."
       },
       {
         "code": "System.out.println(data)",
@@ -1158,8 +1165,8 @@
       },
       {
         "code": "new ClassName()",
-        "means": "instantiates an object on the JVM heap and invokes its constructor",
-        "consequence": "All objects in Java live on the garbage-collected heap; references to objects live on the thread execution stack."
+        "means": "allocates an object on the managed heap and runs its constructor",
+        "consequence": "Objects live on the collected heap; the references to them live on the stack of the thread using them, which is the distinction that makes the collector possible."
       },
       {
         "code": "extends vs implements",
@@ -1172,9 +1179,9 @@
         "consequence": "Interfaces define behavior contracts (can also have default methods); abstract classes can hold instance state and constructors."
       },
       {
-        "code": "final (variable / method / class)",
+        "code": "final (variable / method / class)\npublic final class java.lang.String",
         "means": "constant value / cannot be overridden / cannot be subclassed",
-        "consequence": "Declaring classes final (like java.lang.String) guarantees immutability, thread safety, and compiler inlining optimizations."
+        "consequence": "A final class cannot be subclassed, which is what lets the standard string type promise that an instance never changes after it is made — and that promise is what makes sharing one between threads safe."
       },
       {
         "code": "record User(String id, String name) {}",
@@ -1234,7 +1241,7 @@
       {
         "code": "volatile boolean running = true;",
         "means": "ensures reads and writes are visible immediately across all CPU threads",
-        "consequence": "Prevents the JVM and CPU from caching the variable in hardware thread registers, enforcing memory visibility."
+        "consequence": "Prevents the compiler and the processor from keeping the variable in a register or a cache, so a write by one thread is visible to the next thread that reads it."
       },
       {
         "code": "var count = 42; (local variable type inference)",
@@ -1242,14 +1249,14 @@
         "consequence": "Available in Java 10+ for local variables. Keeps code concise without sacrificing static compile-time type safety."
       },
       {
-        "code": "Lambda expression: (x, y) -> x + y",
-        "means": "compact implementation of a Single Abstract Method (SAM) interface",
-        "consequence": "Passed directly into methods expecting functional interfaces like Predicate, Function, or Consumer."
+        "code": "(x, y) -> x + y",
+        "means": "compact implementation of an interface with a single abstract method",
+        "consequence": "Passed directly wherever such an interface is expected, which is what lets a method take behaviour as an argument without a named class existing for it."
       },
       {
-        "code": "Generics: <T extends Comparable<T>>",
+        "code": "<T extends Comparable<T>>\n// erased to Object in the bytecode",
         "means": "compile-time type parameters with bounded constraints",
-        "consequence": "Implemented via type erasure: the compiler checks types at build time and erases them to Object in JVM bytecode."
+        "consequence": "Implemented by erasure: the compiler checks the types and then removes them, so the runtime sees the unparameterised type. That is why you cannot ask, at run time, what a collection was parameterised with."
       }
     ],
     "slug": "java"
@@ -1783,7 +1790,8 @@
     "lang": "Regular Expressions",
     "category": "Data & Storage",
     "summary": "Formal language describing text patterns: character classes, greedy and lazy quantifiers, lookarounds, and capture groups.",
-    "status": "unsourced",
+    "status": "traced",
+    "seed": "C.26",
     "rows": [
       {
         "code": ". (dot)",
@@ -1816,9 +1824,9 @@
         "consequence": "Hyphens represent ranges inside brackets unless placed at the start or end of the bracket expression."
       },
       {
-        "code": "\\d vs \\D and \\w vs \\W and \\s vs \\S",
+        "code": "\\d \\w \\s   and   \\D \\W \\S",
         "means": "shorthand character classes (digit, word, whitespace) and their inverses",
-        "consequence": "\\d matches [0-9]; \\w matches [a-zA-Z0-9_]; \\s matches spaces, tabs, and newlines. Uppercase letters invert the match."
+        "consequence": "\\d matches a digit, \\w a word character, \\s whitespace; the capitalised forms match everything the lower-case one does not."
       },
       {
         "code": "\\b (word boundary)",
@@ -1826,9 +1834,9 @@
         "consequence": "\\bcat\\b matches the standalone word 'cat', but will not match 'catalog' or 'scatter'."
       },
       {
-        "code": "(pattern) (capturing group)",
+        "code": "(\\d{4})-(\\d{2})-(\\d{2})   -- groups $1, $2, $3",
         "means": "groups sub-patterns together and captures matched text",
-        "consequence": "(\\d{4})-(\\d{2})-(\\d{2}) captures year, month, and day into indexed groups $1, $2, $3."
+        "consequence": "Parentheses both group a sub-pattern and capture what it matched, which is why adding brackets for precedence quietly renumbers everything after them."
       },
       {
         "code": "(?:pattern) (non-capturing group)",
@@ -1838,7 +1846,7 @@
       {
         "code": "(?<name>pattern) (named capture group)",
         "means": "captures matched text into a named group",
-        "consequence": "Access via match.groups.name in JavaScript/Python, making code far more maintainable than numeric indices."
+        "consequence": "Reading a group by name rather than by position, which survives someone adding a bracket earlier in the pattern — the failure that numeric groups invite."
       },
       {
         "code": "(?=pattern) (positive lookahead)",
@@ -1847,8 +1855,8 @@
       },
       {
         "code": "(?!pattern) (negative lookahead)",
-        "means": "asserts that what follows does NOT match pattern",
-        "consequence": "foo(?!bar) matches 'foo' only if it is not followed by 'bar'. Essential for password complexity validations."
+        "means": "asserts that what follows does not match the pattern",
+        "consequence": "foo(?!bar) matches foo only where bar does not follow. The assertion consumes nothing, so the position after the match is unchanged."
       },
       {
         "code": "(?<=pattern) and (?<!pattern) (lookbehinds)",
@@ -1866,9 +1874,9 @@
         "consequence": "\\d{4} matches exactly 4 digits; \\d{2,4} matches between 2 and 4 digits."
       },
       {
-        "code": "*? and +? (lazy / non-greedy match)",
+        "code": "<.*?>   lazy      -- one tag\n<.*>    greedy    -- first < to last >",
         "means": "matches as few characters as possible to satisfy the pattern",
-        "consequence": "<.*?> matches single HTML tags like <div>, whereas <.*> greedily consumes everything from the first < to the last >."
+        "consequence": "The lazy form stops at the first thing that satisfies the pattern; the greedy form takes as much as it can and gives back only when forced. Most surprising matches are this distinction."
       },
       {
         "code": "Flags: /pattern/gims",
@@ -1966,7 +1974,8 @@
     "lang": "Rust",
     "category": "Systems & Hardware",
     "summary": "Zero-cost abstractions, compile-time memory ownership, fearless concurrency, and bare-metal performance without a garbage collector.",
-    "status": "unsourced",
+    "status": "traced",
+    "seed": "C.20",
     "rows": [
       {
         "code": "let vs let mut",
@@ -1986,7 +1995,7 @@
       {
         "code": "&T (immutable borrow) vs &mut T (mutable borrow)",
         "means": "references allowing reading / reference allowing writing",
-        "consequence": "The Borrow Checker rule: you may have any number of immutable references (&T), OR exactly one mutable reference (&mut T), never both."
+        "consequence": "The borrow checker's rule: any number of immutable references, or exactly one mutable reference, and never both at once. That single constraint is what makes a dangling reference and a data race both impossible to express."
       },
       {
         "code": "Lifetimes: 'a in &'a str",
@@ -1996,7 +2005,7 @@
       {
         "code": "Option<T>: Some(val) and None",
         "means": "type representing a value that may or may not exist",
-        "consequence": "Rust has no NULL pointer. The compiler forces developers to handle the None case explicitly before unwrapping the value."
+        "consequence": "There is no null pointer in the language. Absence is a value of the type, so the compiler can require that the absent case is handled before the value inside is used."
       },
       {
         "code": "Result<T, E>: Ok(val) and Err(err)",
@@ -2004,9 +2013,9 @@
         "consequence": "All recoverable errors in Rust return Result. Combined with the ? operator for ergonomic error propagation."
       },
       {
-        "code": "? operator (e.g. let file = File::open(path)?)",
+        "code": "let file = File::open(path)?;   // returns Err to the caller",
         "means": "unwraps Ok value or immediately returns Err upward to caller",
-        "consequence": "Replaces verbose match statements with concise error bubbling while preserving the original error type."
+        "consequence": "Replaces a match at every call with one character, while keeping the error type, so the short path and the careful path are the same path."
       },
       {
         "code": "match expr { PatternA => ..., PatternB => ... }",
@@ -2024,9 +2033,9 @@
         "consequence": "Functions without &self are associated functions (constructors like Type::new()); functions taking &self are instance methods."
       },
       {
-        "code": "trait TraitName { fn method(&self); }",
+        "code": "trait TraitName { fn method(&self); }\nimpl TraitName for MyType { ... }",
         "means": "defines a shared interface of behavior across types",
-        "consequence": "Types implement traits via impl TraitName for Type. Enables static dispatch with zero runtime performance cost."
+        "consequence": "Behaviour is attached to a type after the fact rather than at its definition, and the call is resolved at compile time, so the abstraction costs nothing at run time."
       },
       {
         "code": "#[derive(Debug, Clone, PartialEq)]",
@@ -2040,8 +2049,8 @@
       },
       {
         "code": "Rc<T> and Arc<T>",
-        "means": "reference counting pointer for single-thread / multi-thread shared ownership",
-        "consequence": "Arc<T> (Atomic Reference Counting) allows multiple threads to safely share read-only ownership of the same heap data."
+        "means": "reference counting pointer for shared ownership, single-threaded and thread-safe",
+        "consequence": "The thread-safe version counts atomically, which is why it is the one that may cross threads and why it costs slightly more than the single-threaded one. Shared ownership is opt-in rather than the default."
       },
       {
         "code": "Mutex<T>",
@@ -2061,12 +2070,12 @@
       {
         "code": "String vs &str",
         "means": "heap-allocated owned string / borrowed read-only string slice",
-        "consequence": "String can grow and mutate; &str is an immutable view pointing into existing UTF-8 memory."
+        "consequence": "The owned form can grow and change; the borrowed form is an immutable view into text that already exists somewhere else, which is why passing one costs nothing and returning one needs care about what it points into."
       },
       {
         "code": "unsafe { ... }",
-        "means": "tells compiler to permit raw pointer dereferencing and FFI",
-        "consequence": "Used internally by standard libraries to implement low-level hardware access and high-performance primitives."
+        "means": "permits raw pointer dereferencing and calls into other languages",
+        "consequence": "Used inside the standard library to implement the low-level primitives that the safe interfaces are built from. The block does not switch the checks off everywhere; it widens what is permitted inside it, and marks the region a reviewer has to read."
       }
     ],
     "slug": "rust"
@@ -2077,7 +2086,8 @@
     "lang": "SQL",
     "category": "Data & Storage",
     "summary": "Declarative relational database engine: describe the desired result set, and let the query optimizer find the optimal physical plan.",
-    "status": "unsourced",
+    "status": "traced",
+    "seed": "C.22",
     "rows": [
       {
         "code": "SELECT col1, col2 FROM table_name",
@@ -2085,24 +2095,24 @@
         "consequence": "Never use SELECT * in production applications; fetching unneeded columns wastes memory, network bandwidth, and prevents index-only scans."
       },
       {
-        "code": "WHERE condition (AND, OR, NOT)",
+        "code": "WHERE condition (AND, OR, NOT)   -- not HAVING",
         "means": "filters physical rows before grouping or aggregation",
-        "consequence": "Filters must be placed here rather than in HAVING so the database engine can utilize B-Tree indexes to avoid full table scans."
+        "consequence": "A filter on individual rows belongs here rather than in HAVING, because this one runs before grouping and can be answered from an index instead of by reading the whole table."
       },
       {
-        "code": "INNER JOIN vs LEFT JOIN on col = col",
+        "code": "INNER JOIN vs LEFT JOIN on col = col   -- unmatched -> NULL",
         "means": "returns matching rows only / returns all left rows plus matched right",
-        "consequence": "INNER JOIN drops rows without a counterpart; LEFT JOIN preserves all left rows, filling unmatched right columns with NULL."
+        "consequence": "INNER JOIN drops rows with no counterpart; LEFT JOIN keeps every row from the left and fills the missing right-hand columns with NULL, which is why a left join quietly changes what a later count means."
       },
       {
-        "code": "GROUP BY column_name",
+        "code": "GROUP BY column_name   -- every SELECT column: grouped or aggregated",
         "means": "collapses rows sharing the same value into single summary buckets",
-        "consequence": "Every column in the SELECT list must either appear in the GROUP BY clause or be wrapped inside an aggregate function."
+        "consequence": "Each column in the SELECT list must either appear in the GROUP BY clause or be wrapped in an aggregate, because anything else would be asking for one value where the group holds many."
       },
       {
-        "code": "HAVING aggregate_condition",
+        "code": "HAVING aggregate_condition   -- e.g. HAVING COUNT(*) > 5\n-- WHERE filters rows, GROUP BY collapses them, HAVING filters groups",
         "means": "filters aggregated summary buckets after GROUP BY",
-        "consequence": "WHERE filters individual rows before grouping; HAVING filters collapsed groups (e.g. HAVING COUNT(*) > 5)."
+        "consequence": "WHERE filters rows before they are grouped; HAVING filters the groups afterwards. Putting a row-level test in the second one works and reads the whole table to do it."
       },
       {
         "code": "ORDER BY col ASC | DESC and LIMIT n OFFSET m",
@@ -2115,19 +2125,19 @@
         "consequence": "Support batch inserts: INSERT INTO table VALUES (...), (...) executes in a single round-trip."
       },
       {
-        "code": "UPDATE table SET col = val WHERE condition",
+        "code": "UPDATE table SET col = val WHERE condition\n-- run the SELECT form of the WHERE first",
         "means": "modifies existing rows matching the filter",
-        "consequence": "Always test the WHERE clause with a SELECT first; omitting WHERE updates every single row in the entire database table."
+        "consequence": "Test the condition as a SELECT before running it as an update. Omitting the clause entirely updates every row in the table, and the statement will not warn you."
       },
       {
-        "code": "DELETE FROM table WHERE condition",
+        "code": "DELETE FROM table WHERE condition\nTRUNCATE TABLE name   -- whole table, no row-by-row log",
         "means": "removes matching rows from a table",
-        "consequence": "Logged row by row. For wiping an entire table instantly, prefer TRUNCATE TABLE, which resets storage extents directly."
+        "consequence": "Deletion is logged row by row, so removing everything that way is slow and produces an enormous log; truncation resets the storage instead, and cannot be given a condition."
       },
       {
-        "code": "CREATE TABLE name (id SERIAL PRIMARY KEY, ...)",
+        "code": "CREATE TABLE name (\n  id SERIAL PRIMARY KEY,\n  email TEXT NOT NULL UNIQUE,\n  age INT CHECK (age >= 0)\n)",
         "means": "defines relational schema, column types, and constraints",
-        "consequence": "Constraints (NOT NULL, UNIQUE, CHECK) enforce data integrity at the database level regardless of application bugs."
+        "consequence": "Constraints are enforced by the database whatever the application does, which matters because the application is not the only thing that will ever write to this table."
       },
       {
         "code": "PRIMARY KEY vs FOREIGN KEY ... REFERENCES",
@@ -2136,18 +2146,18 @@
       },
       {
         "code": "CREATE INDEX idx_name ON table (column)",
-        "means": "creates a B-Tree lookup structure for fast O(log N) searches",
-        "consequence": "Indexes speed up SELECT queries dramatically, but add minor overhead to INSERT, UPDATE, and DELETE operations."
+        "means": "builds an ordered lookup structure so a search need not read every row",
+        "consequence": "Reads that can use the index get dramatically faster; every write has to maintain it, so an index is a standing charge paid on insert, update and delete in exchange for a discount on reads."
       },
       {
-        "code": "NULL, IS NULL, IS NOT NULL",
+        "code": "NULL, IS NULL, IS NOT NULL   -- never col = NULL",
         "means": "represents unknown or missing data in three-valued logic",
-        "consequence": "Never check col = NULL; in SQL, NULL = NULL evaluates to UNKNOWN, not TRUE. You must use IS NULL or IS NOT NULL."
+        "consequence": "Comparing anything to NULL yields neither true nor false but unknown, so a row is not matched by col = NULL even when the column is empty. The IS forms exist because equality cannot answer the question."
       },
       {
-        "code": "COUNT(*), SUM(col), AVG(col), MIN(col), MAX(col)",
+        "code": "COUNT(*), COUNT(col), SUM(col), AVG(col), MIN(col), MAX(col)",
         "means": "aggregate functions computing values across multiple rows",
-        "consequence": "COUNT(*) counts all rows; COUNT(col) counts only rows where col is not NULL."
+        "consequence": "COUNT(*) counts rows; COUNT(col) counts only the rows where that column has a value, which is the difference people discover when two counts disagree."
       },
       {
         "code": "DISTINCT",
@@ -2155,14 +2165,14 @@
         "consequence": "Requires the database engine to perform an expensive sort or hash operation across all retrieved rows."
       },
       {
-        "code": "LIKE '%pattern%' vs ILIKE",
+        "code": "LIKE '%pattern%' vs ILIKE 'Pattern%'",
         "means": "wildcard pattern matching / case-insensitive matching",
-        "consequence": "Prefix wildcards ('%text') cannot utilize standard B-Tree indexes, triggering full table scans. Use full-text search indexes instead."
+        "consequence": "A wildcard at the start means the index cannot be used, because an index is ordered by prefix and there is no prefix to look up — which is when a search quietly becomes a full read of the table."
       },
       {
-        "code": "IN (val1, val2) and NOT IN",
+        "code": "IN (val1, val2)\nNOT IN (subquery)   -- a single NULL empties the result\n-- prefer NOT EXISTS",
         "means": "checks if value matches any item in a list or subquery",
-        "consequence": "Warning: NOT IN returns zero rows if the subquery contains even a single NULL value due to three-valued logic. Use NOT EXISTS."
+        "consequence": "NOT IN returns nothing at all if the subquery yields a single NULL, because the comparison becomes unknown for every row. The EXISTS form does not have that behaviour."
       },
       {
         "code": "CASE WHEN cond THEN val ELSE default END",
@@ -2170,14 +2180,14 @@
         "consequence": "Allows dynamic computed columns: CASE WHEN score >= 90 THEN 'A' ELSE 'B' END."
       },
       {
-        "code": "BEGIN TRANSACTION, COMMIT, ROLLBACK",
-        "means": "guarantees ACID atomic transaction boundaries",
-        "consequence": "All updates inside the transaction succeed together, or ROLLBACK aborts them completely if a failure occurs."
+        "code": "BEGIN TRANSACTION; ... COMMIT; / ROLLBACK;",
+        "means": "groups statements so they take effect together or not at all",
+        "consequence": "Every statement inside either takes effect together or is undone together, which is what lets two updates that must agree be written as two statements. The guarantees a database makes about that are the reason this is one word rather than a protocol you implement."
       },
       {
-        "code": "EXPLAIN and EXPLAIN ANALYZE",
+        "code": "EXPLAIN SELECT ...\nEXPLAIN ANALYZE SELECT ...",
         "means": "displays the query execution plan and actual execution timings",
-        "consequence": "Identifies sequential scans (Seq Scan), index scans (Index Scan), join algorithms, and execution bottlenecks."
+        "consequence": "Shows the plan the optimiser chose — whether it read the table sequentially or used an index, which join method it picked, and where the time went. It is the only way to see the decision, because you did not make it."
       },
       {
         "code": "COALESCE(val1, val2, ...)",
@@ -2185,9 +2195,9 @@
         "consequence": "COALESCE(user.phone, user.email, 'N/A') provides fallbacks for nullable database columns."
       },
       {
-        "code": "Window function: ROW_NUMBER() OVER (PARTITION BY ... ORDER BY ...)",
+        "code": "ROW_NUMBER() OVER (PARTITION BY dept ORDER BY salary DESC)",
         "means": "calculates ranking or cumulative metrics across row subsets",
-        "consequence": "Unlike GROUP BY, window functions do not collapse rows together; they compute values alongside the original individual rows."
+        "consequence": "A window function computes a value alongside each row rather than collapsing rows together, so you keep the detail and the ranking in one result."
       }
     ],
     "slug": "sql"
@@ -2198,7 +2208,8 @@
     "lang": "Swift",
     "category": "Mobile & Multiplatform",
     "summary": "Fast, safe, modern language engineered by Apple for iOS, macOS, watchOS, and native systems development.",
-    "status": "unsourced",
+    "status": "traced",
+    "seed": "C.21",
     "rows": [
       {
         "code": "let vs var",
@@ -2206,9 +2217,9 @@
         "consequence": "Swift strongly encourages let for all values that do not change, enabling compiler optimization and thread safety."
       },
       {
-        "code": "func name(label param: Type) -> ReturnType",
+        "code": "func greet(person: String, from town: String) -> String\ngreet(person: \"Ada\", from: \"Lagos\")",
         "means": "function declaration with external argument labels",
-        "consequence": "Argument labels make calls read like natural English sentences: greet(person: \"Alice\", from: \"London\")."
+        "consequence": "Argument labels make a call read as a sentence, which is why the label at the call site and the name inside the function are allowed to differ."
       },
       {
         "code": "Optional<Wrapped> (Type?): .some(val) or .none",
@@ -2221,9 +2232,9 @@
         "consequence": "guard let checks for non-null and exits early if nil, keeping the unwrapped variable in scope for the rest of the function."
       },
       {
-        "code": "Nil-coalescing: opt ?? fallback",
+        "code": "opt ?? fallback\nlet name = username ?? \"anonymous\"",
         "means": "unwraps optional or returns fallback value if nil",
-        "consequence": "let name = username ?? \"Guest\" guarantees a non-optional String value."
+        "consequence": "Produces a value that is no longer optional, so everything downstream stops having to ask whether it is there."
       },
       {
         "code": "struct (value type) vs class (reference type)",
@@ -2233,22 +2244,22 @@
       {
         "code": "protocol ProtocolName { func method() }",
         "means": "defines an interface contract of methods and properties",
-        "consequence": "The core of Protocol-Oriented Programming (POP). Protocols can provide default implementations via extensions."
+        "consequence": "Protocols can carry default implementations through extensions, which is what makes composing behaviour from several of them practical rather than relying on a base class."
       },
       {
-        "code": "extension Type { ... }",
+        "code": "extension Type { ... }\nextension Int { var squared: Int { self * self } }",
         "means": "adds new methods, computed properties, or protocol conformance",
-        "consequence": "Allows extending built-in types (e.g. extension Int { var squared: Int { self * self } }) across codebases."
+        "consequence": "Adds methods and computed properties to a type you did not write, including a built-in one, without subclassing it."
       },
       {
-        "code": "enum with associated values: Result<Success, Failure>",
+        "code": "enum NetworkState { case loading; case success(Data); case error(Error) }",
         "means": "enumeration variants carrying custom data payloads",
-        "consequence": "enum NetworkState { case loading; case success(Data); case error(Error) } models state machines cleanly."
+        "consequence": "Each case can carry its own payload, so a state machine and the data belonging to each state are one type rather than two that must be kept in step."
       },
       {
-        "code": "Closures: { (params) -> ReturnType in body }",
+        "code": "{ (params) -> ReturnType in body }\nnumbers.map { $0 * 2 }",
         "means": "self-contained anonymous functional blocks",
-        "consequence": "Trailing closure syntax allows omitting parentheses: numbers.map { $0 * 2 } using shorthand argument names ($0, $1)."
+        "consequence": "A trailing closure can drop the parentheses, and the positional shorthand names its arguments, which is why so much code in this language reads as a chain of small blocks."
       },
       {
         "code": "defer { cleanup() }",
@@ -2256,9 +2267,9 @@
         "consequence": "Guarantees resource teardown (file closes, lock releases) regardless of how the function returns."
       },
       {
-        "code": "async / await and Task { ... }",
+        "code": "async / await and Task { ... }\nactor BankAccount { ... }",
         "means": "structured modern asynchronous programming",
-        "consequence": "Paired with Actors (actor BankAccount) to eliminate data races and thread synchronization bugs automatically."
+        "consequence": "An actor serialises access to its own state, so concurrent callers cannot race on it and the compiler can check that they do not try."
       }
     ],
     "slug": "swift"
@@ -2269,7 +2280,8 @@
     "lang": "TypeScript",
     "category": "Web & Frontend",
     "summary": "Typed JavaScript at scale: compile-time type verification, structural type modeling, and developer tooling.",
-    "status": "unsourced",
+    "status": "traced",
+    "seed": "C.19",
     "rows": [
       {
         "code": ": string | number | boolean",
@@ -2277,14 +2289,14 @@
         "consequence": "Enforces compile-time checking. If a function declares (id: string), passing a number immediately halts the build with an error."
       },
       {
-        "code": "interface User { id: string; name: string; }",
+        "code": "interface User { id: string; name: string; }\ninterface Admin extends User { level: number }",
         "means": "defines an extensible object shape contract",
-        "consequence": "Interfaces can be extended (interface Admin extends User) and merged; ideal for public library APIs and data contracts."
+        "consequence": "Interfaces can be extended and merged, which is what makes them the usual choice for a shape a library publishes and other code adds to."
       },
       {
-        "code": "type ID = string | number",
+        "code": "type ID = string | number\ntype Point = [number, number]",
         "means": "type alias for naming any type, union, or primitive",
-        "consequence": "Unlike interfaces, type aliases can name unions, tuples, and primitive primitives directly: type Point = [number, number]."
+        "consequence": "Unlike an interface, an alias can name a union, a tuple or a primitive directly — the shapes that are not objects."
       },
       {
         "code": "prop?: string (optional property)",
@@ -2302,9 +2314,9 @@
         "consequence": "TypeScript requires you to narrow the union with type guards (typeof, instanceof, or in) before accessing specific properties."
       },
       {
-        "code": "Intersection types: A & B",
+        "code": "A & B\ntype Employee = Person & { employeeId: number }",
         "means": "combines all properties of multiple types into one",
-        "consequence": "type Employee = Person & { employeeId: number } requires an object to have all properties from both Person and the new type."
+        "consequence": "Requires a value to satisfy both sides at once, which is how a base shape and the extra fields one context adds are combined without inheritance."
       },
       {
         "code": "Generics: <T>",
@@ -2322,24 +2334,24 @@
         "consequence": "Use sparingly. Does not perform runtime conversion; if value is not actually a string, it will cause runtime bugs."
       },
       {
-        "code": "satisfies operator",
+        "code": "const config = { host: 'localhost' } satisfies Config",
         "means": "validates an expression matches a type without widening it",
-        "consequence": "const config = { host: 'localhost' } satisfies Config checks that config matches Config while preserving exact string literal types."
+        "consequence": "Checks the value against the type while keeping the exact literal types it was written with, which a type annotation would have widened away."
       },
       {
-        "code": "keyof T",
+        "code": "keyof T\ntype User = { id: string; name: string }  // keyof User = 'id' | 'name'",
         "means": "extracts a union of all property keys of type T",
-        "consequence": "If type User = { id: string; name: string }, keyof User evaluates to 'id' | 'name'."
+        "consequence": "Gives the property names as a union of string literals, so a function can be constrained to take only a key that actually exists."
       },
       {
-        "code": "typeof variable",
+        "code": "typeof variable\nconst defaultUser = { ... }; type User = typeof defaultUser;",
         "means": "extracts the TypeScript type of a runtime JavaScript variable",
-        "consequence": "Allows generating types directly from runtime constants: const defaultUser = { ... }; type User = typeof defaultUser;."
+        "consequence": "Derives the type from a value that already exists, so a constant and its type cannot drift apart."
       },
       {
-        "code": "as const",
+        "code": "as const\nconst ROLES = ['admin', 'editor'] as const",
         "means": "narrows literals to readonly immutable values",
-        "consequence": "const ROLES = ['admin', 'editor'] as const infers readonly ['admin', 'editor'] instead of string[], preserving exact literal values."
+        "consequence": "Infers a readonly tuple of exact literals rather than an array of strings, which is what lets those values be used as a type."
       },
       {
         "code": "unknown vs any vs never",
@@ -2349,12 +2361,12 @@
       {
         "code": "Partial<T>",
         "means": "utility type making all properties in T optional",
-        "consequence": "Essential for PATCH update APIs where users can update any subset of an entity's fields without providing the entire object."
+        "consequence": "What a partial-update endpoint needs: a caller may send any subset of an entity's fields without providing the whole object."
       },
       {
         "code": "Required<T>",
         "means": "utility type making all properties in T mandatory",
-        "consequence": "Inverts Partial<T>, stripping away all ? optional markers from an interface."
+        "consequence": "The inverse of the optional-making utility, stripping the question marks from every property."
       },
       {
         "code": "Readonly<T>",
@@ -2362,9 +2374,9 @@
         "consequence": "Marks all fields readonly, preventing accidental modifications in pure functional code pipelines."
       },
       {
-        "code": "Record<K, V>",
+        "code": "Record<K, V>\nRecord<string, User>",
         "means": "utility type for key-value dictionaries with keys K and values V",
-        "consequence": "Record<string, User> models a lookup table or hash map where string IDs map to User objects."
+        "consequence": "Models a lookup table where an identifier maps to an entity, with both halves of the mapping typed."
       },
       {
         "code": "Pick<T, 'id' | 'name'>",
@@ -2374,7 +2386,7 @@
       {
         "code": "Omit<T, 'password'>",
         "means": "utility type excluding specified properties from T",
-        "consequence": "Creates a new type with everything from T except the omitted keys, ideal for public DTO projections."
+        "consequence": "Creates a new type with everything from the original except the named keys — the usual way to publish a shape with its secrets removed."
       },
       {
         "code": "ReturnType<typeof fn>",
@@ -2387,9 +2399,9 @@
         "consequence": "Useful for wrapping or proxying third-party functions while preserving their exact argument types."
       },
       {
-        "code": "Type guard: pet is Dog",
+        "code": "function isDog(p: Animal): p is Dog { return 'bark' in p; }",
         "means": "custom function that narrows types in conditional branches",
-        "consequence": "function isDog(p: Animal): p is Dog { return 'bark' in p; }. Inside an if (isDog(pet)) block, pet is automatically typed as Dog."
+        "consequence": "Inside a branch guarded by that call, the value is treated as the narrower type, so the check a person makes and the check the compiler makes are the same check."
       },
       {
         "code": "Discriminated union: { kind: 'circle', radius: number } | ...",
@@ -2407,6 +2419,38 @@
 ];
 
   const SOURCES = {
+  "C.1-assembly": [
+    {
+      "claim": "EDSAC was the first stored-program computer to operate a regular computing service. Maurice Wilkes led the team responsible for its design and construction, and it ran its first program successfully on May 6, 1949.",
+      "title": "Richards, M., EDSAC Initial Orders and Squares Program, University of Cambridge Computer Laboratory",
+      "url": "https://www.cl.cam.ac.uk/~mr10/Edsac/edsacposter.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "The EDSAC initial orders were written by David Wheeler in May 1949 to load and enter a paper tape representation of a program. They were placed in memory locations 0 to 30 by a mechanism involving uniselectors, before execution started from location 0.",
+      "title": "Richards, M., EDSAC Initial Orders and Squares Program, University of Cambridge Computer Laboratory",
+      "url": "https://www.cl.cam.ac.uk/~mr10/Edsac/edsacposter.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "An EDSAC order was punched on paper tape as a character that directly gave the 5-bit operation code, followed by zero or more decimal digits giving the address, terminated by S or L specifying the operand length bit. R16S assembled to 00100 0 0000010000 0 and T11L to 00101 0 0000001011 1; the characters R and T had codes 4 and 5 respectively.",
+      "title": "Richards, M., EDSAC Initial Orders and Squares Program, University of Cambridge Computer Laboratory",
+      "url": "https://www.cl.cam.ac.uk/~mr10/Edsac/edsacposter.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "The first published description of an assembly language is generally identified as Coding for A.R.C., a 1947 report by Andrew Booth and Kathleen Britten, later Kathleen Booth, produced while visiting the Institute for Advanced Study at Princeton. The report is not readily available in digital form, so the attribution rests on later accounts rather than on a document a reader can inspect.",
+      "title": "Assembly language: history, citing Booth, A. D. and Britten, K. H. V., Coding for A.R.C., Institute for Advanced Study, 1947 — an attribution repeated from secondary accounts rather than an inspectable scan",
+      "url": "https://en.wikipedia.org/wiki/Assembly_language",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The word assembler is generally attributed to Wilkes, Wheeler and Gill, The Preparation of Programs for an Electronic Digital Computer, 1951, where it named a program that assembled several sections into one program rather than one that translated mnemonics.",
+      "title": "In Praise of Wilkes, Wheeler, and Gill, Communications of the ACM, on The Preparation of Programs for an Electronic Digital Computer, 1951",
+      "url": "https://cacm.acm.org/opinion/in-praise-of-wilkes-wheeler-and-gill/",
+      "kind": "secondary"
+    }
+  ],
   "C.25-bash": [
     {
       "claim": "The first Unix shell was written by Ken Thompson and introduced with the first version of Unix in 1971. It was a command interpreter rather than a scripting language, and it was distributed with versions one through six, from 1971 to 1975.",
@@ -2489,6 +2533,38 @@
       "kind": "primary"
     }
   ],
+  "C.17-c": [
+    {
+      "claim": "In January 1999 Anders Hejlsberg formed a team to build a new language, at the time called COOL, standing for C-like Object Oriented Language. The name was not kept for trademark reasons; a naming committee was convened and wanted a reference to the C heritage. Other candidates considered included Safe C.",
+      "title": "C Sharp (programming language): the COOL codename, the July 2000 release with the .NET Framework, and the Ecma standardisation adopted in December 2001",
+      "url": "https://en.wikipedia.org/wiki/C_Sharp_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The principal designers were Anders Hejlsberg, Scott Wiltamuth and Peter Golde. The first widely distributed implementation was released by Microsoft in July 2000 as part of the .NET Framework initiative.",
+      "title": "C Sharp (programming language): the COOL codename, the July 2000 release with the .NET Framework, and the Ecma standardisation adopted in December 2001",
+      "url": "https://en.wikipedia.org/wiki/C_Sharp_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "An Ecma technical committee task group was formed in September 2000 to produce a standard for the language, with a separate group formed at the same time for the common language infrastructure. Development of the standard began in November 2000 and it was adopted as an Ecma standard by the General Assembly of December 2001.",
+      "title": "C Sharp (programming language): the COOL codename, the July 2000 release with the .NET Framework, and the Ecma standardisation adopted in December 2001",
+      "url": "https://en.wikipedia.org/wiki/C_Sharp_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The standard was based on a submission from Hewlett-Packard, Intel and Microsoft, and was later approved by the international standards bodies in 2003.",
+      "title": "C Sharp (programming language): the COOL codename, the July 2000 release with the .NET Framework, and the Ecma standardisation adopted in December 2001",
+      "url": "https://en.wikipedia.org/wiki/C_Sharp_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The precedent for putting a language definition in a document nobody owns is COBOL, whose specifying committees were set up at a Pentagon meeting in May 1959 and whose specification was approved in January 1960, so that the document rather than any vendor’s compiler was the authority.",
+      "title": "Sammet, J. E., The Early History of COBOL, in History of Programming Languages, ACM SIGPLAN Notices, 1978",
+      "url": "https://dl.acm.org/doi/10.1145/960118.808378",
+      "kind": "primary"
+    }
+  ],
   "C.9-c": [
     {
       "claim": "Stroustrup states the motivation as wanting to write efficient systems programs in the styles encouraged by Simula, so he added better type checking, data abstraction and object-oriented programming to C. His stated goal was \"to design a language in which I could write programs that were both efficient and elegant\", and the triggering tasks concerned distributing operating system facilities across a network.",
@@ -2525,6 +2601,132 @@
       "title": "Stroustrup, B., A History of C++: 1979-1991, HOPL-II, ACM SIGPLAN Notices 28(3), March 1993",
       "url": "https://www.stroustrup.com/hopl2.pdf",
       "kind": "primary"
+    }
+  ],
+  "C.24-css": [
+    {
+      "claim": "The first publicly available description of the markup language was a document called HTML Tags, first mentioned on the internet by Berners-Lee in late 1991. Apart from the hyperlink, its elements were strongly influenced by an in-house documentation format at CERN. Thirteen of those elements still existed in the fourth version of the language.",
+      "title": "Raggett, D., A history of HTML, in Raggett on HTML 4, published by the World Wide Web Consortium",
+      "url": "https://www.w3.org/People/Raggett/book4/ch02.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "The proposal titled Cascading HTML style sheets is dated 10 October 1994, version 0.92, by Wium Lie, and describes itself as work in progress. It proposes a mapping between elements and presentation hints, with logic to make presentation decisions based on the user’s environment, such as screen size.",
+      "title": "Lie, H. W., Cascading HTML style sheets — a proposal, version 0.92, 10 October 1994",
+      "url": "https://w3.org/People/howcome/p/cascade.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "The proposal’s defining property is in its name: sheets are designed to cascade, so that the user or browser specifies initial preferences and hands the remaining influence to the sheets referenced in the incoming document. Presentation is therefore negotiated between author and reader rather than dictated by either.",
+      "title": "Lie, H. W., Cascading HTML style sheets — a proposal, version 0.92, 10 October 1994",
+      "url": "https://w3.org/People/howcome/p/cascade.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "Level 1 became a W3C Recommendation on 17 December 1996, authored by Wium Lie and Bert Bos. The work began in October 1994 while Lie was at CERN and continued from July 1995 at INRIA, the European host of the consortium, where Bos joined the project.",
+      "title": "The World Wide Web Consortium Issues Cascading Style Sheets Recommendation, W3C press release, 17 December 1996",
+      "url": "https://www.w3.org/press-releases/1996/css1-rec/",
+      "kind": "primary"
+    },
+    {
+      "claim": "The consortium’s account records that by 1994 the markup language had established itself as a universal document format, but that it was clear the language even with extensions would not meet authors’ demands for presentational capability.",
+      "title": "The World Wide Web Consortium Issues Cascading Style Sheets Recommendation, W3C press release, 17 December 1996",
+      "url": "https://www.w3.org/press-releases/1996/css1-rec/",
+      "kind": "primary"
+    },
+    {
+      "claim": "The markup language is now published as a living standard by the WHATWG rather than as numbered versions; the numbered name HTML5 refers to the generation of the language standardised in that era, and the living standard requires the UTF-8 encoding, treating no other as valid.",
+      "title": "HTML Standard, WHATWG living standard",
+      "url": "https://html.spec.whatwg.org/multipage/",
+      "kind": "primary"
+    },
+    {
+      "claim": "UTF-8 is defined by RFC 3629 as a transformation format of ISO 10646, encoding the Unicode character set as a sequence of bytes in a way that preserves the ASCII range unchanged.",
+      "title": "F. Yergeau, UTF-8, a transformation format of ISO 10646, RFC 3629, November 2003",
+      "url": "https://www.rfc-editor.org/rfc/rfc3629",
+      "kind": "primary"
+    },
+    {
+      "claim": "The Extensible Markup Language, abbreviated XML, is defined by a W3C Recommendation as a subset of SGML whose goal is that documents conforming to it should be straightforwardly usable over the internet.",
+      "title": "Extensible Markup Language (XML) 1.0 (Fifth Edition), W3C Recommendation",
+      "url": "https://www.w3.org/TR/xml/",
+      "kind": "primary"
+    },
+    {
+      "claim": "Cascading Style Sheets, abbreviated CSS, is the language for describing the presentation of documents, defined across a family of specifications collected by the W3C in its periodic snapshot.",
+      "title": "CSS Snapshot, W3C",
+      "url": "https://www.w3.org/TR/CSS/",
+      "kind": "primary"
+    },
+    {
+      "claim": "The Web Content Accessibility Guidelines, abbreviated WCAG, define success criterion 1.4.3, Contrast (Minimum), at conformance level AA: the visual presentation of text and images of text has a contrast ratio of at least 4.5 to 1, with large-scale text required to reach 3 to 1, and with exceptions for incidental text and for logotypes. The stated intent is to provide enough contrast that text can be read by people with moderately low vision who do not use contrast-enhancing assistive technology. The ratios are thresholds and are not rounded up to.",
+      "title": "Web Content Accessibility Guidelines (WCAG) 2.2, success criterion 1.4.3 Contrast (Minimum), W3C Recommendation",
+      "url": "https://www.w3.org/TR/WCAG22/#contrast-minimum",
+      "kind": "primary"
+    }
+  ],
+  "C.23-cuda": [
+    {
+      "claim": "The work began in 2004, when NVIDIA hired Ian Buck and paired him with John Nickolls, then director of architecture for GPU computing, to develop a research language called Brook into a product.",
+      "title": "CUDA: the 2004 origin with Ian Buck and John Nickolls, the February 2007 initial release, and the July 2007 1.0 toolkit",
+      "url": "https://en.wikipedia.org/wiki/CUDA",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The initial public release was in February 2007, and version 1.0 of the toolkit, including the compiler, followed in mid-2007 with availability for the GeForce 8 Series, the Quadro FX 5600 and 4600, and Tesla. The version 1.0 programming guide is dated 23 June 2007.",
+      "title": "CUDA: the 2004 origin with Ian Buck and John Nickolls, the February 2007 initial release, and the July 2007 1.0 toolkit",
+      "url": "https://en.wikipedia.org/wiki/CUDA",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The programming guide presents a model in which the programmer writes functions executed by many threads in parallel, organised into blocks and grids, and in which the distinct memory spaces available to those threads — per-thread, per-block shared, and device-wide — are part of the programming model rather than hidden by it.",
+      "title": "NVIDIA CUDA Compute Unified Device Architecture Programming Guide, Version 1.0, 23 June 2007",
+      "url": "https://developer.download.nvidia.com/compute/cuda/1.0/NVIDIA_CUDA_Programming_Guide_1.0.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "Before this, using the hardware for general computation required expressing the problem in terms of the graphics pipeline — as textures, shaders and rendering passes — whether or not the problem had anything to do with graphics.",
+      "title": "CUDA: the 2004 origin with Ian Buck and John Nickolls, the February 2007 initial release, and the July 2007 1.0 toolkit",
+      "url": "https://en.wikipedia.org/wiki/CUDA",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The coupling deliberately re-accepted here — code written against one manufacturer’s machine — is the one the COBOL committees were set up to remove at a Pentagon meeting in May 1959, by making a written specification rather than any vendor’s product the authority.",
+      "title": "Sammet, J. E., The Early History of COBOL, in History of Programming Languages, ACM SIGPLAN Notices, 1978",
+      "url": "https://dl.acm.org/doi/10.1145/960118.808378",
+      "kind": "primary"
+    }
+  ],
+  "C.16-elixir-erlang": [
+    {
+      "claim": "The first version was developed by Joe Armstrong in 1986 at Ericsson, in a Prolog form over 1986 and 1987, with Robert Virding joining to help rewrite the prototype and improve concurrency performance. An early internal document is Armstrong’s Telephony Programming in Prolog, Ericsson internal report T/SU 86 036, dated 3 March 1986.",
+      "title": "Erlang (programming language): the 1986 origin at Ericsson, the February 1998 in-house ban, and the December 1998 open-source release",
+      "url": "https://en.wikipedia.org/wiki/Erlang_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Armstrong describes the language as designed for writing concurrent programs that run indefinitely, structured around lightweight concurrent processes that belong to the language rather than the operating system, with no shared memory and asynchronous message passing, plus mechanisms for changing code while the system runs. He calls the resulting model concurrency-oriented programming.",
+      "title": "Armstrong, J., A History of Erlang, Third ACM SIGPLAN Conference on History of Programming Languages, San Diego, June 2007",
+      "url": "https://dl.acm.org/doi/10.1145/1238844.1238850",
+      "kind": "primary"
+    },
+    {
+      "claim": "In March 1998 Ericsson announced a switch containing over a million lines of the language, reported to achieve an availability of nine nines, alongside an observed four-fold increase in development productivity.",
+      "title": "Armstrong, J., A History of Erlang, Third ACM SIGPLAN Conference on History of Programming Languages, San Diego, June 2007",
+      "url": "https://dl.acm.org/doi/10.1145/1238844.1238850",
+      "kind": "primary"
+    },
+    {
+      "claim": "In February 1998 Ericsson Radio Systems banned in-house use of the language for new products, citing a preference for non-proprietary languages. In December 1998 the implementation was open-sourced and most of the team resigned to form Bluetail AB. The ban was eventually relaxed and Armstrong was re-hired in 2004.",
+      "title": "Erlang (programming language): the 1986 origin at Ericsson, the February 1998 in-house ban, and the December 1998 open-source release",
+      "url": "https://en.wikipedia.org/wiki/Erlang_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Elixir was designed by José Valim and first appeared on 25 May 2012, running on the same virtual machine, influenced by Clojure, Erlang and Ruby. Valim’s stated aim was to increase the extensibility and productivity of that virtual machine while keeping compatibility with its existing tooling and ecosystem.",
+      "title": "Elixir (programming language): design by José Valim, first appearance 25 May 2012, and its relationship to the Erlang virtual machine",
+      "url": "https://en.wikipedia.org/wiki/Elixir_(programming_language)",
+      "kind": "secondary"
     }
   ],
   "C.18-go": [
@@ -2569,6 +2771,100 @@
       "title": "Extensible Markup Language (XML) 1.0 (Fifth Edition), W3C Recommendation",
       "url": "https://www.w3.org/TR/xml/",
       "kind": "primary"
+    }
+  ],
+  "C.24-html": [
+    {
+      "claim": "The first publicly available description of the markup language was a document called HTML Tags, first mentioned on the internet by Berners-Lee in late 1991. Apart from the hyperlink, its elements were strongly influenced by an in-house documentation format at CERN. Thirteen of those elements still existed in the fourth version of the language.",
+      "title": "Raggett, D., A history of HTML, in Raggett on HTML 4, published by the World Wide Web Consortium",
+      "url": "https://www.w3.org/People/Raggett/book4/ch02.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "The proposal titled Cascading HTML style sheets is dated 10 October 1994, version 0.92, by Wium Lie, and describes itself as work in progress. It proposes a mapping between elements and presentation hints, with logic to make presentation decisions based on the user’s environment, such as screen size.",
+      "title": "Lie, H. W., Cascading HTML style sheets — a proposal, version 0.92, 10 October 1994",
+      "url": "https://w3.org/People/howcome/p/cascade.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "The proposal’s defining property is in its name: sheets are designed to cascade, so that the user or browser specifies initial preferences and hands the remaining influence to the sheets referenced in the incoming document. Presentation is therefore negotiated between author and reader rather than dictated by either.",
+      "title": "Lie, H. W., Cascading HTML style sheets — a proposal, version 0.92, 10 October 1994",
+      "url": "https://w3.org/People/howcome/p/cascade.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "Level 1 became a W3C Recommendation on 17 December 1996, authored by Wium Lie and Bert Bos. The work began in October 1994 while Lie was at CERN and continued from July 1995 at INRIA, the European host of the consortium, where Bos joined the project.",
+      "title": "The World Wide Web Consortium Issues Cascading Style Sheets Recommendation, W3C press release, 17 December 1996",
+      "url": "https://www.w3.org/press-releases/1996/css1-rec/",
+      "kind": "primary"
+    },
+    {
+      "claim": "The consortium’s account records that by 1994 the markup language had established itself as a universal document format, but that it was clear the language even with extensions would not meet authors’ demands for presentational capability.",
+      "title": "The World Wide Web Consortium Issues Cascading Style Sheets Recommendation, W3C press release, 17 December 1996",
+      "url": "https://www.w3.org/press-releases/1996/css1-rec/",
+      "kind": "primary"
+    },
+    {
+      "claim": "The markup language is now published as a living standard by the WHATWG rather than as numbered versions; the numbered name HTML5 refers to the generation of the language standardised in that era, and the living standard requires the UTF-8 encoding, treating no other as valid.",
+      "title": "HTML Standard, WHATWG living standard",
+      "url": "https://html.spec.whatwg.org/multipage/",
+      "kind": "primary"
+    },
+    {
+      "claim": "UTF-8 is defined by RFC 3629 as a transformation format of ISO 10646, encoding the Unicode character set as a sequence of bytes in a way that preserves the ASCII range unchanged.",
+      "title": "F. Yergeau, UTF-8, a transformation format of ISO 10646, RFC 3629, November 2003",
+      "url": "https://www.rfc-editor.org/rfc/rfc3629",
+      "kind": "primary"
+    },
+    {
+      "claim": "The Extensible Markup Language, abbreviated XML, is defined by a W3C Recommendation as a subset of SGML whose goal is that documents conforming to it should be straightforwardly usable over the internet.",
+      "title": "Extensible Markup Language (XML) 1.0 (Fifth Edition), W3C Recommendation",
+      "url": "https://www.w3.org/TR/xml/",
+      "kind": "primary"
+    },
+    {
+      "claim": "Cascading Style Sheets, abbreviated CSS, is the language for describing the presentation of documents, defined across a family of specifications collected by the W3C in its periodic snapshot.",
+      "title": "CSS Snapshot, W3C",
+      "url": "https://www.w3.org/TR/CSS/",
+      "kind": "primary"
+    },
+    {
+      "claim": "The Web Content Accessibility Guidelines, abbreviated WCAG, define success criterion 1.4.3, Contrast (Minimum), at conformance level AA: the visual presentation of text and images of text has a contrast ratio of at least 4.5 to 1, with large-scale text required to reach 3 to 1, and with exceptions for incidental text and for logotypes. The stated intent is to provide enough contrast that text can be read by people with moderately low vision who do not use contrast-enhancing assistive technology. The ratios are thresholds and are not rounded up to.",
+      "title": "Web Content Accessibility Guidelines (WCAG) 2.2, success criterion 1.4.3 Contrast (Minimum), W3C Recommendation",
+      "url": "https://www.w3.org/TR/WCAG22/#contrast-minimum",
+      "kind": "primary"
+    }
+  ],
+  "C.12-java": [
+    {
+      "claim": "James Gosling, Mike Sheridan and Patrick Naughton started the project in June 1991 at Sun Microsystems, chartered to anticipate the next wave in computing. The target was digital consumer devices such as set-top boxes and televisions.",
+      "title": "Java (programming language): the Green Project, the Oak name, the 1994 retarget to the internet, and the SunWorld announcement of 23 May 1995",
+      "url": "https://en.wikipedia.org/wiki/Java_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The language was first called Oak, after a tree outside Gosling’s office. A trademark search found Oak already registered by a video adaptor card manufacturer, so it was renamed. Gosling gave it a syntax in the style of C and C++ so that working programmers would find it familiar.",
+      "title": "Java (programming language): the Green Project, the Oak name, the 1994 retarget to the internet, and the SunWorld announcement of 23 May 1995",
+      "url": "https://en.wikipedia.org/wiki/Java_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "In June and July 1994 the team retargeted the work from consumer devices to the internet, judging that with the arrival of the Mosaic browser the web was moving toward the interactive vision they had had for cable television. On 16 September 1994 work began on a browser called WebRunner, later renamed HotJava, demonstrated to executives on 29 September 1994.",
+      "title": "Java (programming language): the Green Project, the Oak name, the 1994 retarget to the internet, and the SunWorld announcement of 23 May 1995",
+      "url": "https://en.wikipedia.org/wiki/Java_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Sun announced the language and the browser at SunWorld on 23 May 1995. John Gage of Sun and Marc Andreessen of Netscape announced on stage that the technology would be incorporated into Netscape Navigator; Andreessen’s announcement was a surprise. The team numbered fewer than 30 people at the time.",
+      "title": "Java (programming language): the Green Project, the Oak name, the 1994 retarget to the internet, and the SunWorld announcement of 23 May 1995",
+      "url": "https://en.wikipedia.org/wiki/Java_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Programs are compiled to bytecode, which can be executed on any device with a compatible runtime. This is the property summarised by the slogan write once, run anywhere.",
+      "title": "Java (programming language): the Green Project, the Oak name, the 1994 retarget to the internet, and the SunWorld announcement of 23 May 1995",
+      "url": "https://en.wikipedia.org/wiki/Java_(programming_language)",
+      "kind": "secondary"
     }
   ],
   "C.13-javascript": [
@@ -2723,6 +3019,38 @@
       "kind": "secondary"
     }
   ],
+  "C.26-regular-expressions": [
+    {
+      "claim": "Kleene introduced the notion of regular events in Representation of Events in Nerve Nets and Finite Automata, a RAND research memorandum of 1951, published in 1956 in Automata Studies, Annals of Mathematics Studies 34, pages 3 to 41, Princeton University Press. He offered the term as an alternative to an existing one and said he would welcome a more descriptive suggestion.",
+      "title": "Kleene, S. C., Representation of Events in Nerve Nets and Finite Automata, RAND Research Memorandum RM-704, 1951; published in Automata Studies, Annals of Mathematics Studies 34, pp. 3-41, Princeton University Press, 1956",
+      "url": "https://www.rand.org/pubs/research_memoranda/RM704.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "Thompson published Regular expression search algorithm in Communications of the ACM volume 11 number 6, June 1968, pages 419 to 422, in the journal’s programming techniques department. The construction simulates a nondeterministic finite automaton in lockstep.",
+      "title": "Thompson, K., Regular expression search algorithm, Communications of the ACM 11(6):419-422, June 1968",
+      "url": "https://dl.acm.org/doi/10.1145/363347.363387",
+      "kind": "primary"
+    },
+    {
+      "claim": "Cox demonstrates the difference with the pattern formed of n optional letters followed by n required ones, matched against a string of n letters. A backtracking implementation tries one-then-zero for each optional element, giving two-to-the-n possibilities of which only the last leads to a match, so it requires exponential time and does not scale much beyond n of about 25.",
+      "title": "Cox, R., Regular Expression Matching Can Be Simple And Fast (but is slow in Java, Perl, PHP, Python, Ruby, ...), January 2007",
+      "url": "https://swtch.com/~rsc/regexp/regexp1.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "Thompson’s algorithm instead maintains state lists of length approximately n over a string of length n, giving quadratic total time. The efficiency comes from tracking the set of reachable states without tracking which paths reached them: an automaton of n nodes has at most n reachable states at each step, although there may be two-to-the-n paths.",
+      "title": "Cox, R., Regular Expression Matching Can Be Simple And Fast (but is slow in Java, Perl, PHP, Python, Ruby, ...), January 2007",
+      "url": "https://swtch.com/~rsc/regexp/regexp1.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "Cox observes that a slow implementation of a linear-time algorithm easily outperforms a fast implementation of an exponential-time one once the exponent is large enough.",
+      "title": "Cox, R., Regular Expression Matching Can Be Simple And Fast (but is slow in Java, Perl, PHP, Python, Ruby, ...), January 2007",
+      "url": "https://swtch.com/~rsc/regexp/regexp1.html",
+      "kind": "primary"
+    }
+  ],
   "C.15-ruby-rails": [
     {
       "claim": "The name was chosen on 24 February 1993, in a chat between Yukihiro Matsumoto and Keiju Ishitsuka, before any code existed. Coral and Ruby were the two proposals and Matsumoto picked the latter.",
@@ -2753,6 +3081,134 @@
       "title": "Backus, J., The History of Fortran I, II and III, in History of Programming Languages, ACM/Academic Press, 1978",
       "url": "https://cse.sc.edu/~mgv/csce330f12/Backus78.pdf",
       "kind": "primary"
+    }
+  ],
+  "C.20-rust": [
+    {
+      "claim": "Rust 1.0 was announced on 15 May 2015 by the Rust Core Team. The announcement states that it \"combines low-level control over performance with high-level convenience and safety guarantees\".",
+      "title": "Announcing Rust 1.0, The Rust Core Team, The Rust Programming Language Blog, 15 May 2015",
+      "url": "https://blog.rust-lang.org/2015/05/15/Rust-1.0/",
+      "kind": "primary"
+    },
+    {
+      "claim": "The announcement states that it achieves these goals \"without requiring a garbage collector or runtime\", which is what allows its libraries to serve as a drop-in substitute for C.",
+      "title": "Announcing Rust 1.0, The Rust Core Team, The Rust Programming Language Blog, 15 May 2015",
+      "url": "https://blog.rust-lang.org/2015/05/15/Rust-1.0/",
+      "kind": "primary"
+    },
+    {
+      "claim": "The announcement attributes the language’s distinctiveness to its type system, described as a refinement and codification of best practices drawn from experience with C and C++. It says newcomers can write low-level code without worrying about minor mistakes leading to mysterious crashes, and that experienced developers save time they would otherwise spend debugging.",
+      "title": "Announcing Rust 1.0, The Rust Core Team, The Rust Programming Language Blog, 15 May 2015",
+      "url": "https://blog.rust-lang.org/2015/05/15/Rust-1.0/",
+      "kind": "primary"
+    },
+    {
+      "claim": "The release marks a stability commitment: the announcement describes the preceding churn as ended and breaking changes as largely out of scope going forward, alongside a six-week release train.",
+      "title": "Announcing Rust 1.0, The Rust Core Team, The Rust Programming Language Blog, 15 May 2015",
+      "url": "https://blog.rust-lang.org/2015/05/15/Rust-1.0/",
+      "kind": "primary"
+    },
+    {
+      "claim": "The language was sponsored by Mozilla, which supported its development in the years before the 1.0 release.",
+      "title": "Rust (programming language): origins and Mozilla sponsorship",
+      "url": "https://en.wikipedia.org/wiki/Rust_(programming_language)",
+      "kind": "secondary"
+    }
+  ],
+  "C.22-sql": [
+    {
+      "claim": "The relational model it implements was set out by Codd in A Relational Model of Data for Large Shared Data Banks, Communications of the ACM volume 13 number 6, pages 377 to 387, in 1970.",
+      "title": "Codd, E. F., A Relational Model of Data for Large Shared Data Banks, Communications of the ACM 13(6):377-387, 1970",
+      "url": "https://dl.acm.org/doi/10.1145/362384.362685",
+      "kind": "primary"
+    },
+    {
+      "claim": "Donald Chamberlin and Raymond Boyce of the IBM Research Laboratory in San Jose presented SEQUEL at the 1974 ACM SIGFIDET workshop in Ann Arbor, pages 249 to 264. Participants afterwards renamed the group SIGMOD.",
+      "title": "Chamberlin, D. D. and Boyce, R. F., SEQUEL: A Structured English Query Language, Proc. 1974 ACM SIGFIDET Workshop on Data Description, Access and Control, Ann Arbor, May 1974, pp. 249-264",
+      "url": "https://dl.acm.org/doi/10.1145/800296.811515",
+      "kind": "primary"
+    },
+    {
+      "claim": "The paper states that without resorting to the concepts of bound variables and quantifiers, the language identifies a set of simple operations on tabular structures which are shown to be of equivalent power to the first-order predicate calculus. Users are presented with a consistent set of keyword English templates which can be composed to form more complex queries.",
+      "title": "Chamberlin, D. D. and Boyce, R. F., SEQUEL: A Structured English Query Language, Proc. 1974 ACM SIGFIDET Workshop on Data Description, Access and Control, Ann Arbor, May 1974, pp. 249-264",
+      "url": "https://dl.acm.org/doi/10.1145/800296.811515",
+      "kind": "primary"
+    },
+    {
+      "claim": "It was intended as a database sublanguage for both the professional programmer and the more infrequent database user, refining an earlier language the same authors had worked on called SQUARE, and was built for a prototype intended to demonstrate the practicality of relational technology.",
+      "title": "Chamberlin, D. D. and Boyce, R. F., SEQUEL: A Structured English Query Language, Proc. 1974 ACM SIGFIDET Workshop on Data Description, Access and Control, Ann Arbor, May 1974, pp. 249-264",
+      "url": "https://dl.acm.org/doi/10.1145/800296.811515",
+      "kind": "primary"
+    },
+    {
+      "claim": "The name was later changed because SEQUEL was a trademark registered by the Hawker Siddeley aircraft company. Boyce died of a brain aneurysm in 1974, shortly after the work, and Chamberlin continued the development.",
+      "title": "SQL: the renaming from SEQUEL owing to the Hawker Siddeley trademark, and the deaths and continuations around the 1974 work",
+      "url": "https://en.wikipedia.org/wiki/SQL",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The earlier link this trade is compared with is Fortran, shipped to users in April 1957, where a compiler began choosing machine instructions on the programmer’s behalf and the executed program stopped being the written one.",
+      "title": "Backus, J., The History of Fortran I, II and III, in History of Programming Languages, ACM/Academic Press, 1978",
+      "url": "https://cse.sc.edu/~mgv/csce330f12/Backus78.pdf",
+      "kind": "primary"
+    }
+  ],
+  "C.21-swift": [
+    {
+      "claim": "Kotlin was unveiled in July 2011 and open-sourced under the Apache licence in February 2012. Version 1.0 was released on 15 February 2016 and was the first officially stable release, with a commitment to long-term backwards compatibility from that point. It is named after Kotlin Island, off Saint Petersburg.",
+      "title": "Kotlin: unveiled July 2011, open-sourced February 2012, version 1.0 on 15 February 2016, and Google’s Android announcements of 2017 and 2019",
+      "url": "https://en.wikipedia.org/wiki/Kotlin",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Google announced first-class support for Kotlin on Android in 2017, and on 7 May 2019 announced that it was its preferred language for Android application developers.",
+      "title": "Kotlin: unveiled July 2011, open-sourced February 2012, version 1.0 on 15 February 2016, and Google’s Android announcements of 2017 and 2019",
+      "url": "https://en.wikipedia.org/wiki/Kotlin",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Swift was created by Chris Lattner, beginning in 2010, while he was director of the developer tools department at Apple. It was first announced at the company’s developer conference in June 2014 and shipped in the toolchain from Xcode version 6 in September 2014.",
+      "title": "Swift (programming language): created by Chris Lattner from 2010, announced at WWDC in June 2014, shipped in Xcode 6 in September 2014",
+      "url": "https://en.wikipedia.org/wiki/Swift_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "On 2 June 2014 the conference application became the first publicly released application written in Swift.",
+      "title": "Swift (programming language): created by Chris Lattner from 2010, announced at WWDC in June 2014, shipped in Xcode 6 in September 2014",
+      "url": "https://en.wikipedia.org/wiki/Swift_(programming_language)",
+      "kind": "secondary"
+    }
+  ],
+  "C.19-typescript": [
+    {
+      "claim": "It was announced publicly on 1 October 2012 as version 0.8, with the source released as open source under the Apache licence the same day, after roughly two years of internal development at Microsoft under the codename Strada. Anders Hejlsberg is among the designers.",
+      "title": "TypeScript: the public release of version 0.8 on 1 October 2012, the internal development from 2010 under the codename Strada, and its gradual, structural typing",
+      "url": "https://en.wikipedia.org/wiki/TypeScript",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Rather than replacing the existing language, it is a superset of it: any existing file in the base language is a valid file in this one, which lets a codebase be converted file by file. Version 1.0 shipped in 2014.",
+      "title": "TypeScript: the public release of version 0.8 on 1 October 2012, the internal development from 2010 under the codename Strada, and its gradual, structural typing",
+      "url": "https://en.wikipedia.org/wiki/TypeScript",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Its typing discipline is gradual and structural: convertibility between types depends on the parts of the type rather than on a declared name, so a value fits a type when its shape matches.",
+      "title": "TypeScript: the public release of version 0.8 on 1 October 2012, the internal development from 2010 under the codename Strada, and its gradual, structural typing",
+      "url": "https://en.wikipedia.org/wiki/TypeScript",
+      "kind": "secondary"
+    },
+    {
+      "claim": "It extends the base language with features aimed at large-scale programming, including optional static type checking, classes, interfaces and modules.",
+      "title": "TypeScript: the public release of version 0.8 on 1 October 2012, the internal development from 2010 under the codename Strada, and its gradual, structural typing",
+      "url": "https://en.wikipedia.org/wiki/TypeScript",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The base language it is a superset of was prototyped in about ten days in May 1995 at Netscape and shipped into a client shared by everyone, which is why it could not subsequently be replaced or corrected.",
+      "title": "Brendan Eich: the ten-day prototype of May 1995 at Netscape",
+      "url": "https://en.wikipedia.org/wiki/Brendan_Eich",
+      "kind": "secondary"
     }
   ]
 };

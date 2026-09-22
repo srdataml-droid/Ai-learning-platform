@@ -4,7 +4,8 @@
   "lang": "CUDA",
   "category": "AI & High Performance",
   "summary": "Massively parallel SIMD computing on NVIDIA GPU hardware: kernels, thread blocks, shared memory, and AI tensor acceleration.",
-  "status": "unsourced",
+  "status": "traced",
+  "seed": "C.23",
   "rows": [
     {
       "code": "__global__ void kernel()",
@@ -14,7 +15,7 @@
     {
       "code": "__device__ void helper()",
       "means": "GPU function callable only from other GPU kernels or functions",
-      "consequence": "Compiled directly into GPU PTX assembly; executed by individual threads on streaming multiprocessors."
+      "consequence": "Compiled into the device's own instruction set and run by individual threads on the hardware's processing units, so it can be called from a kernel but never from the host program."
     },
     {
       "code": "__host__ void cpuFunc()",
@@ -38,28 +39,28 @@
     },
     {
       "code": "cudaMalloc((void**)&d_ptr, size)",
-      "means": "allocates raw memory on the GPU's high-bandwidth VRAM",
-      "consequence": "The CPU cannot directly dereference d_ptr; data must be transferred using cudaMemcpy."
+      "means": "allocates raw memory in the device's own high-bandwidth memory",
+      "consequence": "The host cannot dereference the pointer this returns: it addresses memory on the other side of the bus, and reaching it requires an explicit copy."
     },
     {
       "code": "cudaMemcpy(dst, src, size, cudaMemcpyHostToDevice)",
-      "means": "copies data over the PCIe bus from CPU RAM to GPU VRAM",
-      "consequence": "Transferring data across PCIe is often the main performance bottleneck in GPU computing; minimize transfers."
+      "means": "copies data across the bus from host memory to device memory",
+      "consequence": "That transfer is frequently the bottleneck in the whole program, which is why the shape of a fast solution is usually to move data once and do as much as possible while it is there."
     },
     {
       "code": "cudaMemcpy(dst, src, size, cudaMemcpyDeviceToHost)",
-      "means": "transfers computed results from GPU VRAM back to CPU RAM",
-      "consequence": "Synchronizes execution: the CPU blocks until the memory transfer completes."
+      "means": "transfers computed results from device memory back to the host",
+      "consequence": "Synchronises as well as copies: the host waits until the transfer completes, so a result that is read too eagerly serialises a program that was meant to be parallel."
     },
     {
       "code": "cudaFree(d_ptr)",
-      "means": "frees allocated VRAM memory on the GPU device",
-      "consequence": "Must be called for every cudaMalloc to prevent running out of GPU memory (CUDA Out of Memory)."
+      "means": "frees an allocation on the device",
+      "consequence": "Must pair with every allocation. The device's memory is smaller than the host's and is not collected for you, so a leak in a long-running process ends as a failed allocation rather than as slow swapping."
     },
     {
       "code": "__shared__ float cache[256]",
-      "means": "allocates ultra-fast on-chip SRAM shared by threads in a block",
-      "consequence": "Shared memory has orders of magnitude lower latency and higher bandwidth than global VRAM; used for tile caching in matrix multiplication."
+      "means": "allocates fast on-chip memory shared by the threads of one block",
+      "consequence": "Latency and bandwidth are orders of magnitude better than the device's main memory, which is why the standard shape of a fast kernel is to stage a tile of data here, work on it, and write back once."
     },
     {
       "code": "__syncthreads()",

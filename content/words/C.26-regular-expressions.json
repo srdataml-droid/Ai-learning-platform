@@ -4,7 +4,8 @@
   "lang": "Regular Expressions",
   "category": "Data & Storage",
   "summary": "Formal language describing text patterns: character classes, greedy and lazy quantifiers, lookarounds, and capture groups.",
-  "status": "unsourced",
+  "status": "traced",
+  "seed": "C.26",
   "rows": [
     {
       "code": ". (dot)",
@@ -37,9 +38,9 @@
       "consequence": "Hyphens represent ranges inside brackets unless placed at the start or end of the bracket expression."
     },
     {
-      "code": "\\d vs \\D and \\w vs \\W and \\s vs \\S",
+      "code": "\\d \\w \\s   and   \\D \\W \\S",
       "means": "shorthand character classes (digit, word, whitespace) and their inverses",
-      "consequence": "\\d matches [0-9]; \\w matches [a-zA-Z0-9_]; \\s matches spaces, tabs, and newlines. Uppercase letters invert the match."
+      "consequence": "\\d matches a digit, \\w a word character, \\s whitespace; the capitalised forms match everything the lower-case one does not."
     },
     {
       "code": "\\b (word boundary)",
@@ -47,9 +48,9 @@
       "consequence": "\\bcat\\b matches the standalone word 'cat', but will not match 'catalog' or 'scatter'."
     },
     {
-      "code": "(pattern) (capturing group)",
+      "code": "(\\d{4})-(\\d{2})-(\\d{2})   -- groups $1, $2, $3",
       "means": "groups sub-patterns together and captures matched text",
-      "consequence": "(\\d{4})-(\\d{2})-(\\d{2}) captures year, month, and day into indexed groups $1, $2, $3."
+      "consequence": "Parentheses both group a sub-pattern and capture what it matched, which is why adding brackets for precedence quietly renumbers everything after them."
     },
     {
       "code": "(?:pattern) (non-capturing group)",
@@ -59,7 +60,7 @@
     {
       "code": "(?<name>pattern) (named capture group)",
       "means": "captures matched text into a named group",
-      "consequence": "Access via match.groups.name in JavaScript/Python, making code far more maintainable than numeric indices."
+      "consequence": "Reading a group by name rather than by position, which survives someone adding a bracket earlier in the pattern \u2014 the failure that numeric groups invite."
     },
     {
       "code": "(?=pattern) (positive lookahead)",
@@ -68,8 +69,8 @@
     },
     {
       "code": "(?!pattern) (negative lookahead)",
-      "means": "asserts that what follows does NOT match pattern",
-      "consequence": "foo(?!bar) matches 'foo' only if it is not followed by 'bar'. Essential for password complexity validations."
+      "means": "asserts that what follows does not match the pattern",
+      "consequence": "foo(?!bar) matches foo only where bar does not follow. The assertion consumes nothing, so the position after the match is unchanged."
     },
     {
       "code": "(?<=pattern) and (?<!pattern) (lookbehinds)",
@@ -87,9 +88,9 @@
       "consequence": "\\d{4} matches exactly 4 digits; \\d{2,4} matches between 2 and 4 digits."
     },
     {
-      "code": "*? and +? (lazy / non-greedy match)",
+      "code": "<.*?>   lazy      -- one tag\n<.*>    greedy    -- first < to last >",
       "means": "matches as few characters as possible to satisfy the pattern",
-      "consequence": "<.*?> matches single HTML tags like <div>, whereas <.*> greedily consumes everything from the first < to the last >."
+      "consequence": "The lazy form stops at the first thing that satisfies the pattern; the greedy form takes as much as it can and gives back only when forced. Most surprising matches are this distinction."
     },
     {
       "code": "Flags: /pattern/gims",

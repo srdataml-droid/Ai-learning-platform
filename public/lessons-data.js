@@ -15843,6 +15843,12 @@
       "title": "CSS Snapshot, W3C",
       "url": "https://www.w3.org/TR/CSS/",
       "kind": "primary"
+    },
+    {
+      "claim": "The Web Content Accessibility Guidelines, abbreviated WCAG, define success criterion 1.4.3, Contrast (Minimum), at conformance level AA: the visual presentation of text and images of text has a contrast ratio of at least 4.5 to 1, with large-scale text required to reach 3 to 1, and with exceptions for incidental text and for logotypes. The stated intent is to provide enough contrast that text can be read by people with moderately low vision who do not use contrast-enhancing assistive technology. The ratios are thresholds and are not rounded up to.",
+      "title": "Web Content Accessibility Guidelines (WCAG) 2.2, success criterion 1.4.3 Contrast (Minimum), W3C Recommendation",
+      "url": "https://www.w3.org/TR/WCAG22/#contrast-minimum",
+      "kind": "primary"
     }
   ],
   "C.25": [

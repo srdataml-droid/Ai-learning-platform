@@ -4,7 +4,8 @@
   "lang": "HTML",
   "category": "Web & Frontend",
   "summary": "HyperText Markup Language: the semantic skeleton, document tree, and accessibility foundation of the web.",
-  "status": "unsourced",
+  "status": "traced",
+  "seed": "C.24",
   "rows": [
     {
       "code": "<!DOCTYPE html>",
@@ -32,14 +33,14 @@
       "consequence": "Without this single line, mobile phones render desktop-width pages at 980px zoom, causing tiny illegible text and horizontal scrolling."
     },
     {
-      "code": "<title>Page Title — Site Name</title>",
+      "code": "<title>Page Title \u2014 Site Name</title>",
       "means": "sets browser tab title and search engine snippet title",
       "consequence": "Crucial for both browser bookmarks and search results; also announced first by assistive screen reading technology."
     },
     {
       "code": "<link rel=\"stylesheet\" href=\"styles.css\">",
       "means": "imports external CSS stylesheets into the document",
-      "consequence": "Placed in <head> so the browser applies styles before painting text, eliminating the Flash of Unstyled Content (FOUC)."
+      "consequence": "Placed in the head so styles are applied before the text is painted, which is what prevents the unstyled flash a reader sees when a sheet arrives late."
     },
     {
       "code": "<script src=\"app.js\" defer></script>",
@@ -79,12 +80,12 @@
     {
       "code": "<button type=\"button|submit|reset\">",
       "means": "accessible, clickable trigger for actions",
-      "consequence": "Unlike a <div> with an onclick handler, <button> automatically handles keyboard Enter/Space triggers and native screen reader focus."
+      "consequence": "Unlike a div with a click handler, it is reachable by keyboard, activates on the usual keys without code, and is announced as a button by a screen reader."
     },
     {
       "code": "<form action=\"/api/submit\" method=\"POST\">",
       "means": "data collection and submission container",
-      "consequence": "Groups user inputs and manages form submission. Handles Enter-key submission and HTML5 constraint validation natively."
+      "consequence": "Groups inputs and owns submission, including submission from the keyboard and the validation the browser performs before anything is sent."
     },
     {
       "code": "<label for=\"user-email\">Email</label>",
@@ -114,7 +115,7 @@
     {
       "code": "<ul>, <ol>, and <li>",
       "means": "unordered list (bullets) / ordered list (numbered) / list item",
-      "consequence": "Tells screen readers how many items are in the set (e.g. 'List of 5 items'), vastly improving navigation over raw div tags."
+      "consequence": "Tells a screen reader how many items are in the set before it starts reading them, which is the difference between navigating a list and wading through a stack of anonymous containers."
     },
     {
       "code": "<img src=\"pic.webp\" alt=\"Descriptive text\" loading=\"lazy\">",
@@ -122,9 +123,9 @@
       "consequence": "The alt attribute describes the image for blind users and when images fail to load. loading=\"lazy\" defers offscreen downloads."
     },
     {
-      "code": "<picture> and <source srcset=\"...\" media=\"...\">",
+      "code": "<picture>\n  <source srcset=\"hero.avif\" type=\"image/avif\">\n  <source srcset=\"hero.webp\" type=\"image/webp\">\n  <img src=\"hero.jpg\" alt=\"...\">\n</picture>",
       "means": "art direction and responsive image switching",
-      "consequence": "Allows serving modern formats (AVIF/WebP) with JPEG fallback, or different crops for mobile versus desktop viewports."
+      "consequence": "Offers newer formats first and falls back to the widely supported one, or swaps the crop entirely between a phone and a desktop \u2014 the choice being made by the browser, which knows things the author does not."
     },
     {
       "code": "<video controls poster=\"preview.jpg\"> and <audio>",
@@ -149,7 +150,7 @@
     {
       "code": "<dialog id=\"modal\"> and dialog.showModal()",
       "means": "native accessible modal dialog box",
-      "consequence": "Handles the backdrop, traps keyboard focus inside the modal, and closes on the Escape key without custom JavaScript."
+      "consequence": "Handles the backdrop, keeps keyboard focus inside the dialog while it is open, and closes on the usual key, none of which has to be written by hand."
     },
     {
       "code": "<details> and <summary>Click to toggle</summary>",
@@ -158,8 +159,8 @@
     },
     {
       "code": "aria-* attributes (e.g. aria-expanded, aria-label)",
-      "means": "Accessible Rich Internet Applications accessibility overrides",
-      "consequence": "Communicates dynamic state changes (e.g. menu open/closed, loading) to assistive screen readers."
+      "means": "accessibility attributes describing state and role",
+      "consequence": "Communicates dynamic changes \u2014 a menu opening, a region loading \u2014 to assistive technology, which otherwise sees only the markup and not what changed."
     },
     {
       "code": "data-* attributes (e.g. data-user-id=\"42\")",
