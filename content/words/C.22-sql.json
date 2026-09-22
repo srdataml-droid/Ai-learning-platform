@@ -4,7 +4,8 @@
   "lang": "SQL",
   "category": "Data & Storage",
   "summary": "Declarative relational database engine: describe the desired result set, and let the query optimizer find the optimal physical plan.",
-  "status": "unsourced",
+  "status": "traced",
+  "seed": "C.22",
   "rows": [
     {
       "code": "SELECT col1, col2 FROM table_name",
@@ -12,24 +13,24 @@
       "consequence": "Never use SELECT * in production applications; fetching unneeded columns wastes memory, network bandwidth, and prevents index-only scans."
     },
     {
-      "code": "WHERE condition (AND, OR, NOT)",
+      "code": "WHERE condition (AND, OR, NOT)   -- not HAVING",
       "means": "filters physical rows before grouping or aggregation",
-      "consequence": "Filters must be placed here rather than in HAVING so the database engine can utilize B-Tree indexes to avoid full table scans."
+      "consequence": "A filter on individual rows belongs here rather than in HAVING, because this one runs before grouping and can be answered from an index instead of by reading the whole table."
     },
     {
-      "code": "INNER JOIN vs LEFT JOIN on col = col",
+      "code": "INNER JOIN vs LEFT JOIN on col = col   -- unmatched -> NULL",
       "means": "returns matching rows only / returns all left rows plus matched right",
-      "consequence": "INNER JOIN drops rows without a counterpart; LEFT JOIN preserves all left rows, filling unmatched right columns with NULL."
+      "consequence": "INNER JOIN drops rows with no counterpart; LEFT JOIN keeps every row from the left and fills the missing right-hand columns with NULL, which is why a left join quietly changes what a later count means."
     },
     {
-      "code": "GROUP BY column_name",
+      "code": "GROUP BY column_name   -- every SELECT column: grouped or aggregated",
       "means": "collapses rows sharing the same value into single summary buckets",
-      "consequence": "Every column in the SELECT list must either appear in the GROUP BY clause or be wrapped inside an aggregate function."
+      "consequence": "Each column in the SELECT list must either appear in the GROUP BY clause or be wrapped in an aggregate, because anything else would be asking for one value where the group holds many."
     },
     {
-      "code": "HAVING aggregate_condition",
+      "code": "HAVING aggregate_condition   -- e.g. HAVING COUNT(*) > 5\n-- WHERE filters rows, GROUP BY collapses them, HAVING filters groups",
       "means": "filters aggregated summary buckets after GROUP BY",
-      "consequence": "WHERE filters individual rows before grouping; HAVING filters collapsed groups (e.g. HAVING COUNT(*) > 5)."
+      "consequence": "WHERE filters rows before they are grouped; HAVING filters the groups afterwards. Putting a row-level test in the second one works and reads the whole table to do it."
     },
     {
       "code": "ORDER BY col ASC | DESC and LIMIT n OFFSET m",
@@ -42,19 +43,19 @@
       "consequence": "Support batch inserts: INSERT INTO table VALUES (...), (...) executes in a single round-trip."
     },
     {
-      "code": "UPDATE table SET col = val WHERE condition",
+      "code": "UPDATE table SET col = val WHERE condition\n-- run the SELECT form of the WHERE first",
       "means": "modifies existing rows matching the filter",
-      "consequence": "Always test the WHERE clause with a SELECT first; omitting WHERE updates every single row in the entire database table."
+      "consequence": "Test the condition as a SELECT before running it as an update. Omitting the clause entirely updates every row in the table, and the statement will not warn you."
     },
     {
-      "code": "DELETE FROM table WHERE condition",
+      "code": "DELETE FROM table WHERE condition\nTRUNCATE TABLE name   -- whole table, no row-by-row log",
       "means": "removes matching rows from a table",
-      "consequence": "Logged row by row. For wiping an entire table instantly, prefer TRUNCATE TABLE, which resets storage extents directly."
+      "consequence": "Deletion is logged row by row, so removing everything that way is slow and produces an enormous log; truncation resets the storage instead, and cannot be given a condition."
     },
     {
-      "code": "CREATE TABLE name (id SERIAL PRIMARY KEY, ...)",
+      "code": "CREATE TABLE name (\n  id SERIAL PRIMARY KEY,\n  email TEXT NOT NULL UNIQUE,\n  age INT CHECK (age >= 0)\n)",
       "means": "defines relational schema, column types, and constraints",
-      "consequence": "Constraints (NOT NULL, UNIQUE, CHECK) enforce data integrity at the database level regardless of application bugs."
+      "consequence": "Constraints are enforced by the database whatever the application does, which matters because the application is not the only thing that will ever write to this table."
     },
     {
       "code": "PRIMARY KEY vs FOREIGN KEY ... REFERENCES",
@@ -63,18 +64,18 @@
     },
     {
       "code": "CREATE INDEX idx_name ON table (column)",
-      "means": "creates a B-Tree lookup structure for fast O(log N) searches",
-      "consequence": "Indexes speed up SELECT queries dramatically, but add minor overhead to INSERT, UPDATE, and DELETE operations."
+      "means": "builds an ordered lookup structure so a search need not read every row",
+      "consequence": "Reads that can use the index get dramatically faster; every write has to maintain it, so an index is a standing charge paid on insert, update and delete in exchange for a discount on reads."
     },
     {
-      "code": "NULL, IS NULL, IS NOT NULL",
+      "code": "NULL, IS NULL, IS NOT NULL   -- never col = NULL",
       "means": "represents unknown or missing data in three-valued logic",
-      "consequence": "Never check col = NULL; in SQL, NULL = NULL evaluates to UNKNOWN, not TRUE. You must use IS NULL or IS NOT NULL."
+      "consequence": "Comparing anything to NULL yields neither true nor false but unknown, so a row is not matched by col = NULL even when the column is empty. The IS forms exist because equality cannot answer the question."
     },
     {
-      "code": "COUNT(*), SUM(col), AVG(col), MIN(col), MAX(col)",
+      "code": "COUNT(*), COUNT(col), SUM(col), AVG(col), MIN(col), MAX(col)",
       "means": "aggregate functions computing values across multiple rows",
-      "consequence": "COUNT(*) counts all rows; COUNT(col) counts only rows where col is not NULL."
+      "consequence": "COUNT(*) counts rows; COUNT(col) counts only the rows where that column has a value, which is the difference people discover when two counts disagree."
     },
     {
       "code": "DISTINCT",
@@ -82,14 +83,14 @@
       "consequence": "Requires the database engine to perform an expensive sort or hash operation across all retrieved rows."
     },
     {
-      "code": "LIKE '%pattern%' vs ILIKE",
+      "code": "LIKE '%pattern%' vs ILIKE 'Pattern%'",
       "means": "wildcard pattern matching / case-insensitive matching",
-      "consequence": "Prefix wildcards ('%text') cannot utilize standard B-Tree indexes, triggering full table scans. Use full-text search indexes instead."
+      "consequence": "A wildcard at the start means the index cannot be used, because an index is ordered by prefix and there is no prefix to look up \u2014 which is when a search quietly becomes a full read of the table."
     },
     {
-      "code": "IN (val1, val2) and NOT IN",
+      "code": "IN (val1, val2)\nNOT IN (subquery)   -- a single NULL empties the result\n-- prefer NOT EXISTS",
       "means": "checks if value matches any item in a list or subquery",
-      "consequence": "Warning: NOT IN returns zero rows if the subquery contains even a single NULL value due to three-valued logic. Use NOT EXISTS."
+      "consequence": "NOT IN returns nothing at all if the subquery yields a single NULL, because the comparison becomes unknown for every row. The EXISTS form does not have that behaviour."
     },
     {
       "code": "CASE WHEN cond THEN val ELSE default END",
@@ -97,14 +98,14 @@
       "consequence": "Allows dynamic computed columns: CASE WHEN score >= 90 THEN 'A' ELSE 'B' END."
     },
     {
-      "code": "BEGIN TRANSACTION, COMMIT, ROLLBACK",
-      "means": "guarantees ACID atomic transaction boundaries",
-      "consequence": "All updates inside the transaction succeed together, or ROLLBACK aborts them completely if a failure occurs."
+      "code": "BEGIN TRANSACTION; ... COMMIT; / ROLLBACK;",
+      "means": "groups statements so they take effect together or not at all",
+      "consequence": "Every statement inside either takes effect together or is undone together, which is what lets two updates that must agree be written as two statements. The guarantees a database makes about that are the reason this is one word rather than a protocol you implement."
     },
     {
-      "code": "EXPLAIN and EXPLAIN ANALYZE",
+      "code": "EXPLAIN SELECT ...\nEXPLAIN ANALYZE SELECT ...",
       "means": "displays the query execution plan and actual execution timings",
-      "consequence": "Identifies sequential scans (Seq Scan), index scans (Index Scan), join algorithms, and execution bottlenecks."
+      "consequence": "Shows the plan the optimiser chose \u2014 whether it read the table sequentially or used an index, which join method it picked, and where the time went. It is the only way to see the decision, because you did not make it."
     },
     {
       "code": "COALESCE(val1, val2, ...)",
@@ -112,9 +113,9 @@
       "consequence": "COALESCE(user.phone, user.email, 'N/A') provides fallbacks for nullable database columns."
     },
     {
-      "code": "Window function: ROW_NUMBER() OVER (PARTITION BY ... ORDER BY ...)",
+      "code": "ROW_NUMBER() OVER (PARTITION BY dept ORDER BY salary DESC)",
       "means": "calculates ranking or cumulative metrics across row subsets",
-      "consequence": "Unlike GROUP BY, window functions do not collapse rows together; they compute values alongside the original individual rows."
+      "consequence": "A window function computes a value alongside each row rather than collapsing rows together, so you keep the detail and the ranking in one result."
     }
   ]
 }

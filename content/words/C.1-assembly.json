@@ -4,7 +4,8 @@
   "lang": "Assembly",
   "category": "Systems & Hardware",
   "summary": "Direct x86_64 machine instructions, hardware CPU registers, stack pointers, and system call execution.",
-  "status": "unsourced",
+  "status": "traced",
+  "seed": "C.1",
   "rows": [
     {
       "code": "MOV dst, src",
@@ -12,9 +13,9 @@
       "consequence": "x86_64 cannot move directly from memory to memory in a single instruction; data must load into a register first."
     },
     {
-      "code": "ADD dst, src and SUB dst, src",
+      "code": "ADD dst, src\nSUB dst, src   -- sets ZF CF SF OF",
       "means": "performs arithmetic addition and subtraction on registers",
-      "consequence": "Updates CPU condition flags (Zero Flag ZF, Carry Flag CF, Sign Flag SF, Overflow Flag OF)."
+      "consequence": "Arithmetic also writes the condition flags \u2014 zero, carry, sign and overflow \u2014 which is how the next instruction knows what happened without being told."
     },
     {
       "code": "CMP op1, op2",
@@ -22,24 +23,24 @@
       "consequence": "Sets CPU flags based on the subtraction result, immediately followed by conditional jump instructions."
     },
     {
-      "code": "JMP label",
-      "means": "unconditional jump: changes instruction pointer (RIP) to target address",
-      "consequence": "Direct hardware jump instruction, the assembly equivalent of goto."
+      "code": "JMP label   -- writes the instruction pointer",
+      "means": "unconditional jump: replaces the instruction pointer with the target address",
+      "consequence": "A direct jump: the address of the next instruction is replaced, which is what every loop, branch and function return is made of underneath."
     },
     {
-      "code": "JE / JZ and JNE / JNZ",
-      "means": "jump if equal (Zero Flag = 1) / jump if not equal",
-      "consequence": "Conditional branch instructions used to implement if/else statements and loop termination checks."
+      "code": "JE / JZ   (jump if equal / zero)\nJNE / JNZ (jump if not equal / not zero)",
+      "means": "jump if the previous comparison was equal, or if it was not",
+      "consequence": "Conditional branches read the flag the previous arithmetic set, which is why a comparison and the branch that uses it must not be separated by anything that also writes flags."
     },
     {
-      "code": "CALL label and RET",
+      "code": "CALL label\nRET   -- pushes and pops the return address",
       "means": "calls subroutine / returns to caller address",
-      "consequence": "CALL pushes the next instruction address onto the stack; RET pops that address off the stack back into RIP."
+      "consequence": "CALL puts the address of the following instruction on the stack and jumps; RET takes it off and jumps back. The call stack is not a language feature here, it is these two instructions and a register."
     },
     {
-      "code": "PUSH src and POP dst",
+      "code": "PUSH src\nPOP dst   -- adjusts RSP",
       "means": "pushes value onto stack (decrements RSP) / pops into register (increments RSP)",
-      "consequence": "The x86_64 stack grows downward from high memory to low memory."
+      "consequence": "The stack grows downward, from high addresses towards low ones, so pushing subtracts from the stack pointer and the deepest frame has the lowest address."
     },
     {
       "code": "RAX / EAX",
@@ -47,9 +48,9 @@
       "consequence": "By calling convention, functions return their numeric or pointer result in RAX."
     },
     {
-      "code": "RSP (Stack Pointer)",
+      "code": "RSP (stack pointer)\nPUSH / POP / CALL / RET adjust it\nsub rsp, 32   -- allocate a frame by hand",
       "means": "points to the top of the current thread execution stack",
-      "consequence": "Modified automatically by PUSH, POP, CALL, and RET, or adjusted manually via sub rsp, 32 to allocate local stack frames."
+      "consequence": "Moved automatically by the stack instructions, or by hand to make room for locals \u2014 which is what a function prologue is, once the language is taken away."
     },
     {
       "code": "RBP (Base Pointer)",
@@ -57,29 +58,29 @@
       "consequence": "Historically used to index function local variables and arguments; modern compilers often omit it (-fomit-frame-pointer)."
     },
     {
-      "code": "RDI, RSI, RDX, RCX, R8, R9",
-      "means": "System V AMD64 ABI registers holding function arguments",
-      "consequence": "On Linux/macOS, the first 6 integer/pointer arguments to a function are passed in these registers, not on the stack."
+      "code": "RDI, RSI, RDX, RCX, R8, R9   -- first six integer arguments",
+      "means": "the registers this platform's calling convention uses for arguments",
+      "consequence": "The calling convention used on these systems passes the first six integer or pointer arguments in registers rather than on the stack, which is why a function with few arguments never touches memory to receive them."
     },
     {
-      "code": "RIP (Instruction Pointer / Program Counter)",
+      "code": "RIP (instruction pointer)   -- not writable by MOV",
       "means": "register holding the memory address of the next instruction to execute",
-      "consequence": "Cannot be written directly with MOV; updated via jumps, calls, and returns."
+      "consequence": "Cannot be assigned directly; it is changed by jumps, calls and returns. That restriction is the reason control flow is a small fixed set of instructions rather than arithmetic on an address."
     },
     {
-      "code": "LEA dst, [src + offset]",
-      "means": "Load Effective Address: computes address calculation without memory access",
-      "consequence": "Commonly abused as a fast arithmetic trick: lea rax, [rdi + rsi*4 + 8] performs multiply and add in a single CPU clock cycle."
+      "code": "LEA dst, [src + offset]\nlea rax, [rdi + rsi*4 + 8]",
+      "means": "loads an effective address: computes an address without touching memory",
+      "consequence": "Computes an address without reading memory, which is why it gets used as a fast multiply-and-add: the address arithmetic unit does the work the arithmetic instructions would have."
     },
     {
-      "code": "SYSCALL",
-      "means": "switches from user space (Ring 3) to OS kernel space (Ring 0)",
-      "consequence": "Passes syscall number in RAX (e.g. 1 for sys_write on Linux) and arguments in RDI, RSI, RDX; invokes OS kernel services."
+      "code": "SYSCALL   -- number in RAX, arguments in RDI, RSI, RDX",
+      "means": "hands control to the kernel, leaving the program's own privilege level",
+      "consequence": "Hands control to the kernel with the call number in a register and the arguments in the argument registers. Everything a program cannot do for itself \u2014 open a file, write output, exit \u2014 goes through this one instruction."
     },
     {
       "code": "NOP (0x90)",
-      "means": "No Operation: advances instruction pointer by 1 byte without doing anything",
-      "consequence": "Used for memory alignment of loop targets so instructions line up on 16-byte CPU cache line boundaries."
+      "means": "does nothing, and occupies space while doing it",
+      "consequence": "Does nothing, and is used to pad so that a loop target begins on an address the processor fetches efficiently. An instruction whose only purpose is where the next one starts."
     }
   ]
 }
