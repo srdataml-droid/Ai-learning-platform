@@ -4,7 +4,7 @@ Written 2026-09-21. Derived by running the gate's own atom extractor over
 every lesson, so the numbers are reproducible rather than estimated — see
 "How to regenerate" at the end.
 
-Updated 2026-09-22. Current: **276 lessons, 186 traced, 67 claimless, 23
+Updated 2026-09-22. Current: **276 lessons, 186 traced, 69 claimless, 21
 unsourced**, and **399 checkable atoms** still sitting in unsourced prose —
 down from 707 at the time of writing. The section below records the state
 *before* those changes, because the prioritisation was built on it and still
@@ -364,20 +364,33 @@ a factual claim, which is the one direction that should never happen.
   lesson. That is worse than an unsourced figure, because a reader cannot tell
   there is anything to check.
 
-### The 23 lessons still `unsourced`
+### The 21 lessons still `unsourced`
 
-Every one of these makes real historical or empirical claims and needs a seed.
-None can be honestly converted to `claimless` — that option is now exhausted.
+**Correction to an earlier version of this section**, which claimed all 23
+remaining lessons made real historical claims and that `claimless` was
+exhausted. That was asserted from the atom lists without reading the lessons,
+and it was wrong. `L.12`'s percentages — flagged here as the densest numeric
+claim left in the repo — turned out to be `0.9^5` and `0.9^10` worked out from
+an explicitly hypothetical premise. Arithmetic, not measurement. `D.12` was
+the same. Both are now `claimless`.
+
+The lesson for whoever picks this up: read the lesson before classifying it.
+An atom count tells you the extractor fired, not what the prose was doing.
+
+`B.28` and `P.3` are also plausibly `claimless` on the same grounds — their
+atoms are protocol verbs, statement keywords and scenario amounts rather than
+claims — but neither has been read closely, so they are listed below as
+unresolved rather than assumed either way.
 
 | track | lessons | the subject, and what it will need |
 |---|---|---|
 | 0 | `0.2`, `0.6` | shell and Unix lineage; floating point and IEEE 754 |
 | B | `B.8`, `B.16`, `B.18`, `B.22`, `B.24`, `B.28` | TCP/IP; transactions and write-ahead logging (Jim Gray); Dynamo; caching systems; idempotency |
-| D | `D.1`, `D.12`, `D.13` | git's origin; AI-assisted development claims; YAGNI and Gall's law |
+| D | `D.1`, `D.13` | git's origin; YAGNI and Gall's law |
 | E | `E.1`, `E.4` | Dijkstra 1956 and Knuth; hashing and Luhn 1953 |
 | F | `F.1`, `F.8` | Boole 1854 and Shannon 1937; three-valued logic and `NULL` |
 | K | `K.2`, `K.6`, `K.13` | the perceptron and its winter; backpropagation 1986; attention and transformers |
-| L | `L.6`, `L.12` | retrieval and ranking; agent evaluation figures |
+| L | `L.6` | retrieval and ranking |
 | P | `P.3`, `P.5`, `P.11` | injection; password hashing; prompt injection |
 
 **Two of these already have their sources in the repo.** `B.8` needs Cerf and
@@ -385,13 +398,14 @@ Kahn 1974, which is claim `c1` of `content/seeds/0.12.json`. `B.22` needs the
 Dynamo paper, which is claim `c5` of `content/seeds/B.32.json`. Reuse the
 source rather than duplicating it, as `A.3` does with `B.29`'s Amdahl citation.
 
-**Highest risk of the 23**, on the same reasoning as the original
-prioritisation: `L.12` (asserts `90%`, `59%`, `34%`, `60%` — four unsourced
-percentages, the densest numeric claim left in the repo), `P.5` (asserts
-hardware cracking rates, which are stale by construction like `B.39`'s
-pricing was), `P.11` (attributes prompt injection work to a named individual
-and a year), `D.12` (asserts a `10x` productivity figure). Do those four
-first.
+**Highest risk of the 21**, on the same reasoning as the original
+prioritisation: `P.5` (asserts hardware cracking rates, which are stale by
+construction the way `B.39`'s pricing was), `P.11` (attributes prompt
+injection work to a named individual and a year), `B.24` (attributes two
+caching systems to two named authors with dates), `K.13` (attributes
+attention to named authors and two years). Do those four first — all are
+attributions, which are the claims a reader is least able to check from
+inside the lesson and the ones a wrong answer damages most.
 
 ### The 37 tasks with no lesson at all
 
