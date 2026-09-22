@@ -1,0 +1,50 @@
+{
+  "id": "C.19",
+  "name": "TypeScript",
+  "status": "traced",
+  "seed": "C.19",
+  "constraint": "It could not replace the language it was fixing. That language was prototyped in about ten days in May 1995 at Netscape and shipped into a client shared by everyone, which is why it could not subsequently be replaced or corrected \u2014 so the only available move was to add something on top that the existing thing would still run.",
+  "inherited": {
+    "from": "C.13",
+    "wall": "No types and no modules is survivable for a script in a page and not for an application of a hundred thousand lines written by forty people who cannot all hold it in their heads."
+  },
+  "opening": "Every decision here is shaped by a constraint no other language in this chain had: the thing it improves cannot be changed, cannot be replaced, and has to keep running everything already written. Announced on 1 October 2012 as version 0.8, with the source released as open source the same day after roughly two years of internal development under the codename Strada, it is an exercise in what you can add when subtraction is not available.",
+  "decisions": [
+    {
+      "decision": "Be a superset, so existing files are already valid",
+      "because": "Nobody converts a large codebase in one step. If adoption requires a rewrite, there is no adoption; if any existing file is already a valid file, adoption can be one file at a time and can stop whenever it stops paying.",
+      "syntax": [
+        {
+          "code": "function add(a: number, b: number): number { return a + b; }",
+          "means": "the same function, with annotations the base language ignores",
+          "consequence": "Rather than replacing the existing language it is a superset of it, which lets a codebase be converted file by file; version 1.0 shipped in 2014. The incremental path is the entire adoption strategy, and it is why this succeeded where cleaner replacements for the same language did not."
+        }
+      ]
+    },
+    {
+      "decision": "Judge types by shape rather than by name",
+      "because": "The code being described was written without types and full of object literals passed around directly. A system that required every value to belong to a declared class would fail to describe the programs it exists to describe.",
+      "syntax": [
+        {
+          "code": "function show(p: { name: string }) { }\nshow({ name: \"a\", extra: 1 });",
+          "means": "anything with that shape fits, whatever it is called",
+          "consequence": "Its typing discipline is gradual and structural: convertibility depends on the parts of the type rather than on a declared name, so a value fits when its shape matches. This is what lets types be added to code that already exists, and it is why the annotations read as descriptions of what the program already does rather than as demands it be rewritten."
+        }
+      ]
+    },
+    {
+      "decision": "Erase everything before it runs",
+      "because": "The output has to be ordinary code the existing runtime accepts, so nothing in the type system can survive into execution. That forces every check to be a compile-time check, which is also what keeps the output fast.",
+      "syntax": [
+        {
+          "code": "const u = JSON.parse(text) as User;",
+          "means": "assert a shape the compiler cannot verify",
+          "consequence": "At the boundary \u2014 a response, a file, a message \u2014 the types are a claim about data that has not been checked, and the assertion is where a wrong claim enters silently. The feature extends the base language with optional static type checking, classes, interfaces and modules, and none of it is present when the program runs, which is the price of being a superset that erases."
+        }
+      ]
+    }
+  ],
+  "wall": "It buys an editor that knows every shape and a class of error caught before shipping, and it costs a build step in a language whose defining quality was not having one, plus a type system that describes the program and cannot enforce anything at the boundary where data actually arrives. Hejlsberg is among the designers, which makes this the second appearance in this chain of the same approach: take what a dynamic language leaves to a run-time surprise and move it into a place where a tool can see it.",
+  "leadsTo": "C.20",
+  "leadsToReason": "Checking shapes before shipping is worth a great deal, and it still cannot say anything about memory, lifetimes, or two things touching the same data at once."
+}

@@ -1,0 +1,61 @@
+{
+  "id": "C.16",
+  "name": "Erlang, then Elixir",
+  "status": "traced",
+  "seed": "C.16",
+  "constraint": "A telephone switch is not permitted to stop. Not for a crash, not for a bug in one call, and not to install a new version \u2014 so the language had to be designed for writing concurrent programs that run indefinitely.",
+  "inherited": {
+    "from": "C.15",
+    "wall": "Getting concurrency by adding processes is a limit you eventually reach, and a crash anywhere in a shared-memory program is a crash everywhere in it."
+  },
+  "opening": "Armstrong describes the language as designed for writing concurrent programs that run indefinitely, structured around lightweight concurrent processes that belong to the language rather than the operating system, with no shared memory and asynchronous message passing, plus mechanisms for changing code in a running system. Read that sentence as a specification and the syntax is a series of deductions from it \u2014 which is why this is the least fashion-driven design in the chain and the one that has changed least.",
+  "decisions": [
+    {
+      "decision": "Processes belong to the language, and there is no shared memory",
+      "because": "If a unit of work is owned by the operating system, you can afford thousands and not millions. And if two units can touch the same memory, a fault in one can corrupt the other, which means isolation has to be a property of the language rather than a discipline.",
+      "syntax": [
+        {
+          "code": "Pid = spawn(fun worker/0),\nPid ! {job, Data}",
+          "means": "start a process, then send it a message",
+          "consequence": "Creating one is a language operation, so a call can have its own process the way another language would give it its own stack frame. Nothing is shared, so the message is a copy \u2014 which costs a copy and removes every lock, every race on shared state, and every question about who owns what."
+        }
+      ]
+    },
+    {
+      "decision": "Let a process crash, and let another process be responsible for it",
+      "because": "In a program that must run indefinitely, the failure you have not thought of is guaranteed. Trying to handle every fault where it happens means writing code for cases you cannot enumerate, so the design moves the responsibility somewhere it can be enumerated.",
+      "syntax": [
+        {
+          "code": "handle_call(Msg, _From, State) ->\n    {reply, work(Msg), State}.",
+          "means": "handle the expected case, and nothing else",
+          "consequence": "A process is written for the case it understands and dies otherwise, and a supervisor whose only job is restarting decides what happens next. The code that handles failure is separate from the code that does work, and both are simpler \u2014 which is the single most transferable idea on this page, and it is architectural rather than syntactic."
+        }
+      ]
+    },
+    {
+      "decision": "Replace code in a running system",
+      "because": "A switch cannot be stopped to be updated, and an upgrade that requires downtime is an outage you scheduled rather than one you avoided.",
+      "syntax": [
+        {
+          "code": "handle_info(upgrade, State) -> ?MODULE:loop(State).",
+          "means": "continue in the new version of this module",
+          "consequence": "Calling a function through its module name takes the current version, so a running process can step from old code into new code between messages. This is why the design insists on isolated processes with explicit state: a unit whose entire state is one value it passes to itself can be moved to a new version at a defined moment, and a unit with shared mutable state cannot."
+        }
+      ]
+    },
+    {
+      "decision": "A second language on the same machine, for the people rather than the model",
+      "because": "The model was right and the surface put people off. Elixir was designed by Jos\u00e9 Valim and first appeared on 25 May 2012, running on the same virtual machine, with the stated aim of increasing its extensibility and productivity while keeping compatibility with its existing tooling and ecosystem.",
+      "syntax": [
+        {
+          "code": "def handle_call(msg, _from, state) do\n  {:reply, work(msg), state}\nend",
+          "means": "the same thing, in a surface borrowed from elsewhere",
+          "consequence": "Influenced by Clojure, Erlang and Ruby, it changes the syntax and the tooling and keeps the process model exactly. It is the clearest case in this chain of a language whose contribution is ergonomic rather than semantic \u2014 and the strongest evidence that adoption is often a surface problem rather than a model problem."
+        }
+      ]
+    }
+  ],
+  "wall": "The model is excellent and the market is not persuaded by models. In March 1998 Ericsson announced a switch containing over a million lines of the language, reported to achieve an availability of nine nines alongside a four-fold increase in development productivity \u2014 and in February 1998, before that announcement, Ericsson Radio Systems banned in-house use of it for new products, citing a preference for non-proprietary languages. In December 1998 the implementation was open-sourced and most of the team resigned to form Bluetail. A demonstrated result did not beat a procurement preference, which is a lesson about engineering organisations rather than about languages.",
+  "leadsTo": "C.17",
+  "leadsToReason": "Most organisations are not building a switch. They are building line-of-business software on one vendor's platform, and what they want is the safety of a managed runtime with tooling that fits the machines they already own."
+}

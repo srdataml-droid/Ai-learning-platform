@@ -1,0 +1,50 @@
+{
+  "id": "C.18",
+  "name": "Go",
+  "status": "traced",
+  "seed": "C.18",
+  "constraint": "The problem was not expressiveness. Pike describes server programs grown to tens of millions of lines, worked on by hundreds or thousands of programmers, updated daily, in one source tree with a distributed build system \u2014 where build times, even on large compilation clusters, had stretched to many minutes, even hours.",
+  "inherited": {
+    "from": "C.17",
+    "wall": "A rich managed language with excellent tooling still compiles slowly, still lets a team express the same idea in six ways, and still needs a runtime installed where it lands."
+  },
+  "opening": "Pike frames the work as being designed by and for people who write, read, debug and maintain large software systems, and says its purpose is improving the working environment rather than programming-language research \u2014 that it is more about software engineering than programming language research. Almost everything people criticise about the language is a feature that was refused on those grounds, so the useful question for each one is not whether it would be nice but what it would cost a thousand people and a build cluster.",
+  "decisions": [
+    {
+      "decision": "Compile fast, by refusing anything that makes compiling slow",
+      "because": "A build measured in hours changes how people work: they batch changes, they stop running tests, and the feedback loop that keeps a large codebase correct goes away. Speed here is not comfort, it is whether the process survives.",
+      "syntax": [
+        {
+          "code": "import \"fmt\"   // unused -> compile error",
+          "means": "an unused import is not a warning",
+          "consequence": "Dependencies are explicit, minimal and enforced, because the cost of resolving a dependency graph is what the build spends its time on. A rule that seems petty at the scale of one file is the difference between minutes and hours at the scale of the tree \u2014 which is the general form of every decision on this page."
+        }
+      ]
+    },
+    {
+      "decision": "One way to write it, and a tool that decides formatting",
+      "because": "Across thousands of programmers, variation in style is a real cost: reviews argue about layout, diffs contain changes nobody made, and reading unfamiliar code takes longer.",
+      "syntax": [
+        {
+          "code": "if err != nil {\n    return err\n}",
+          "means": "the error is a value, checked where it happens",
+          "consequence": "Failure is returned rather than thrown, so the path a program takes when something goes wrong is visible in the text rather than inferred from what might be caught above. It is repetitive on purpose \u2014 the repetition is what makes every early return greppable \u2014 and it is the most criticised feature in the language by people optimising for how much they type."
+        }
+      ]
+    },
+    {
+      "decision": "Concurrency in the language, with communication rather than sharing",
+      "because": "The programs are servers holding many connections at once, and the failure mode of threads plus locks at that scale is not slowness, it is a class of bug that cannot be reproduced.",
+      "syntax": [
+        {
+          "code": "go handle(conn)\nresults <- value",
+          "means": "start a concurrent unit; pass a value to another one",
+          "consequence": "A concurrent unit is a keyword and a channel is a type, so the cheap thing to do is the thing the designers wanted done. This is the same argument made by the switch language two links back, arriving in a curly-brace syntax with a garbage collector, which is what made it acceptable to people who would not have adopted the original."
+        }
+      ]
+    }
+  ],
+  "wall": "The stated goals were to eliminate slowness, eliminate clumsiness, improve effectiveness, and maintain or improve scale; it first appeared on 10 November 2009 and stabilised at version 1 in early 2012. The cost of those goals is the language people complain about: repetitive error handling, an austere feature set, and for more than a decade no generics \u2014 the last being a case where the affordability argument was made and then, eventually, lost. The argument it is making about barriers is an old one: the time-sharing system built at Dartmouth, demonstrated on 1 May 1964, removed a barrier that was the hours-long turnaround of a single attempt rather than any difficulty in the language, and this is the same claim about a build cluster.",
+  "leadsTo": "C.20",
+  "leadsToReason": "A garbage collector is still a pause you did not schedule, and there remain programs \u2014 a kernel, a browser engine, a device \u2014 that cannot accept one and still need memory safety."
+}

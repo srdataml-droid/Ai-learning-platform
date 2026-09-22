@@ -381,6 +381,222 @@
     "leadsTo": "C.16",
     "leadsToReason": "Adding processes to get concurrency is a limit you eventually hit, and the systems that never hit it were designed from the start around many small independent units that communicate rather than share."
   },
+  "C.16": {
+    "id": "C.16",
+    "name": "Erlang, then Elixir",
+    "status": "traced",
+    "seed": "C.16",
+    "constraint": "A telephone switch is not permitted to stop. Not for a crash, not for a bug in one call, and not to install a new version — so the language had to be designed for writing concurrent programs that run indefinitely.",
+    "inherited": {
+      "from": "C.15",
+      "wall": "Getting concurrency by adding processes is a limit you eventually reach, and a crash anywhere in a shared-memory program is a crash everywhere in it."
+    },
+    "opening": "Armstrong describes the language as designed for writing concurrent programs that run indefinitely, structured around lightweight concurrent processes that belong to the language rather than the operating system, with no shared memory and asynchronous message passing, plus mechanisms for changing code in a running system. Read that sentence as a specification and the syntax is a series of deductions from it — which is why this is the least fashion-driven design in the chain and the one that has changed least.",
+    "decisions": [
+      {
+        "decision": "Processes belong to the language, and there is no shared memory",
+        "because": "If a unit of work is owned by the operating system, you can afford thousands and not millions. And if two units can touch the same memory, a fault in one can corrupt the other, which means isolation has to be a property of the language rather than a discipline.",
+        "syntax": [
+          {
+            "code": "Pid = spawn(fun worker/0),\nPid ! {job, Data}",
+            "means": "start a process, then send it a message",
+            "consequence": "Creating one is a language operation, so a call can have its own process the way another language would give it its own stack frame. Nothing is shared, so the message is a copy — which costs a copy and removes every lock, every race on shared state, and every question about who owns what."
+          }
+        ]
+      },
+      {
+        "decision": "Let a process crash, and let another process be responsible for it",
+        "because": "In a program that must run indefinitely, the failure you have not thought of is guaranteed. Trying to handle every fault where it happens means writing code for cases you cannot enumerate, so the design moves the responsibility somewhere it can be enumerated.",
+        "syntax": [
+          {
+            "code": "handle_call(Msg, _From, State) ->\n    {reply, work(Msg), State}.",
+            "means": "handle the expected case, and nothing else",
+            "consequence": "A process is written for the case it understands and dies otherwise, and a supervisor whose only job is restarting decides what happens next. The code that handles failure is separate from the code that does work, and both are simpler — which is the single most transferable idea on this page, and it is architectural rather than syntactic."
+          }
+        ]
+      },
+      {
+        "decision": "Replace code in a running system",
+        "because": "A switch cannot be stopped to be updated, and an upgrade that requires downtime is an outage you scheduled rather than one you avoided.",
+        "syntax": [
+          {
+            "code": "handle_info(upgrade, State) -> ?MODULE:loop(State).",
+            "means": "continue in the new version of this module",
+            "consequence": "Calling a function through its module name takes the current version, so a running process can step from old code into new code between messages. This is why the design insists on isolated processes with explicit state: a unit whose entire state is one value it passes to itself can be moved to a new version at a defined moment, and a unit with shared mutable state cannot."
+          }
+        ]
+      },
+      {
+        "decision": "A second language on the same machine, for the people rather than the model",
+        "because": "The model was right and the surface put people off. Elixir was designed by José Valim and first appeared on 25 May 2012, running on the same virtual machine, with the stated aim of increasing its extensibility and productivity while keeping compatibility with its existing tooling and ecosystem.",
+        "syntax": [
+          {
+            "code": "def handle_call(msg, _from, state) do\n  {:reply, work(msg), state}\nend",
+            "means": "the same thing, in a surface borrowed from elsewhere",
+            "consequence": "Influenced by Clojure, Erlang and Ruby, it changes the syntax and the tooling and keeps the process model exactly. It is the clearest case in this chain of a language whose contribution is ergonomic rather than semantic — and the strongest evidence that adoption is often a surface problem rather than a model problem."
+          }
+        ]
+      }
+    ],
+    "wall": "The model is excellent and the market is not persuaded by models. In March 1998 Ericsson announced a switch containing over a million lines of the language, reported to achieve an availability of nine nines alongside a four-fold increase in development productivity — and in February 1998, before that announcement, Ericsson Radio Systems banned in-house use of it for new products, citing a preference for non-proprietary languages. In December 1998 the implementation was open-sourced and most of the team resigned to form Bluetail. A demonstrated result did not beat a procurement preference, which is a lesson about engineering organisations rather than about languages.",
+    "leadsTo": "C.17",
+    "leadsToReason": "Most organisations are not building a switch. They are building line-of-business software on one vendor's platform, and what they want is the safety of a managed runtime with tooling that fits the machines they already own."
+  },
+  "C.17": {
+    "id": "C.17",
+    "name": "C#",
+    "status": "traced",
+    "seed": "C.17",
+    "constraint": "It had to give a large organisation the safety and productivity of a managed runtime on the platform it had already bought, without depending on a language another vendor owned.",
+    "inherited": {
+      "from": "C.16",
+      "wall": "A process model built for a switch that must never stop asks an ordinary organisation to adopt an unfamiliar paradigm to solve a problem it does not have."
+    },
+    "opening": "In January 1999 Hejlsberg formed a team to build a new language, at the time called COOL, standing for C-like Object Oriented Language; the name was not kept for trademark reasons and a naming committee was convened that wanted a reference to the C heritage. The principal designers were Hejlsberg, Scott Wiltamuth and Peter Golde, and the first widely distributed implementation was released in July 2000. Read the design as a second attempt at a managed language by people who had watched the first one closely.",
+    "decisions": [
+      {
+        "decision": "Put the language definition in a document nobody owns",
+        "because": "The objection to the managed language that came before was that it belonged to a vendor. A specification held by a standards body removes that objection in the only way it can be removed, which is by giving it away.",
+        "syntax": [
+          {
+            "code": "(a standard, not a product)",
+            "means": "the definition is a document, not an implementation",
+            "consequence": "A technical committee task group was formed in September 2000, development of the standard began that November, and it was adopted by the General Assembly, based on a submission from Hewlett-Packard, Intel and Microsoft, and later approved by the international bodies in 2003. The precedent is COBOL, whose specifying committees were set up at a Pentagon meeting in May 1959 and whose specification was approved in January 1960 so that the document rather than any vendor's compiler was the authority. The same move, forty years apart, for the same reason."
+          }
+        ]
+      },
+      {
+        "decision": "Say explicitly what the previous language left implicit",
+        "because": "Watching a design in the field for five years tells you which of its defaults were wrong, and the cheapest corrections are the ones that make a decision visible in the source rather than inferred from a rule.",
+        "syntax": [
+          {
+            "code": "public override void Draw() { }",
+            "means": "this replaces a method from the base class, and says so",
+            "consequence": "Overriding requires both that the base permits it and that the derived method declares it, so a method that silently replaces another is not expressible. It is a small feature and a good example of the design's habit: prefer a keyword that makes an intention checkable over a rule a reader has to know."
+          },
+          {
+            "code": "int? id = null;",
+            "means": "a value type that is allowed to be absent",
+            "consequence": "Absence is a property of the type rather than a value any reference may secretly hold, so the compiler can ask whether you handled it. This is the same move again — take something the previous language left to a run-time check and move it into the type where a tool can see it."
+          }
+        ]
+      },
+      {
+        "decision": "The language and its tooling are designed together",
+        "because": "The team's advantage was not the runtime; it was that the same organisation shipped the compiler, the editor and the platform, and could make features that only pay off when an editor understands them.",
+        "syntax": [
+          {
+            "code": "var query = items.Where(i => i.Active).Select(i => i.Name);",
+            "means": "a query written in the language, checked by the compiler",
+            "consequence": "Queries as expressions with inferred types are pleasant to write and nearly unusable without completion and inline types, which is the point: a feature can assume a tool. The trade is that the language's ergonomics degrade outside the environment it was designed with, and for its first decade both were tied to one platform."
+          }
+        ]
+      }
+    ],
+    "wall": "It got what it aimed at, and inherited the shape of the thing it was aimed at. The enterprise codebases look like the enterprise codebases of the language it replaced — layers, ceremony, and configuration — because the organisations are the same organisations. And for years the answer to whether it ran anywhere else was a qualified one, so a language explicitly standardised to avoid belonging to a vendor was in practice chosen by people who had already chosen that vendor.",
+    "leadsTo": "C.18",
+    "leadsToReason": "None of this helps when the problem is that the program is twenty million lines, the build takes an hour, and a thousand people are editing it at once."
+  },
+  "C.18": {
+    "id": "C.18",
+    "name": "Go",
+    "status": "traced",
+    "seed": "C.18",
+    "constraint": "The problem was not expressiveness. Pike describes server programs grown to tens of millions of lines, worked on by hundreds or thousands of programmers, updated daily, in one source tree with a distributed build system — where build times, even on large compilation clusters, had stretched to many minutes, even hours.",
+    "inherited": {
+      "from": "C.17",
+      "wall": "A rich managed language with excellent tooling still compiles slowly, still lets a team express the same idea in six ways, and still needs a runtime installed where it lands."
+    },
+    "opening": "Pike frames the work as being designed by and for people who write, read, debug and maintain large software systems, and says its purpose is improving the working environment rather than programming-language research — that it is more about software engineering than programming language research. Almost everything people criticise about the language is a feature that was refused on those grounds, so the useful question for each one is not whether it would be nice but what it would cost a thousand people and a build cluster.",
+    "decisions": [
+      {
+        "decision": "Compile fast, by refusing anything that makes compiling slow",
+        "because": "A build measured in hours changes how people work: they batch changes, they stop running tests, and the feedback loop that keeps a large codebase correct goes away. Speed here is not comfort, it is whether the process survives.",
+        "syntax": [
+          {
+            "code": "import \"fmt\"   // unused -> compile error",
+            "means": "an unused import is not a warning",
+            "consequence": "Dependencies are explicit, minimal and enforced, because the cost of resolving a dependency graph is what the build spends its time on. A rule that seems petty at the scale of one file is the difference between minutes and hours at the scale of the tree — which is the general form of every decision on this page."
+          }
+        ]
+      },
+      {
+        "decision": "One way to write it, and a tool that decides formatting",
+        "because": "Across thousands of programmers, variation in style is a real cost: reviews argue about layout, diffs contain changes nobody made, and reading unfamiliar code takes longer.",
+        "syntax": [
+          {
+            "code": "if err != nil {\n    return err\n}",
+            "means": "the error is a value, checked where it happens",
+            "consequence": "Failure is returned rather than thrown, so the path a program takes when something goes wrong is visible in the text rather than inferred from what might be caught above. It is repetitive on purpose — the repetition is what makes every early return greppable — and it is the most criticised feature in the language by people optimising for how much they type."
+          }
+        ]
+      },
+      {
+        "decision": "Concurrency in the language, with communication rather than sharing",
+        "because": "The programs are servers holding many connections at once, and the failure mode of threads plus locks at that scale is not slowness, it is a class of bug that cannot be reproduced.",
+        "syntax": [
+          {
+            "code": "go handle(conn)\nresults <- value",
+            "means": "start a concurrent unit; pass a value to another one",
+            "consequence": "A concurrent unit is a keyword and a channel is a type, so the cheap thing to do is the thing the designers wanted done. This is the same argument made by the switch language two links back, arriving in a curly-brace syntax with a garbage collector, which is what made it acceptable to people who would not have adopted the original."
+          }
+        ]
+      }
+    ],
+    "wall": "The stated goals were to eliminate slowness, eliminate clumsiness, improve effectiveness, and maintain or improve scale; it first appeared on 10 November 2009 and stabilised at version 1 in early 2012. The cost of those goals is the language people complain about: repetitive error handling, an austere feature set, and for more than a decade no generics — the last being a case where the affordability argument was made and then, eventually, lost. The argument it is making about barriers is an old one: the time-sharing system built at Dartmouth, demonstrated on 1 May 1964, removed a barrier that was the hours-long turnaround of a single attempt rather than any difficulty in the language, and this is the same claim about a build cluster.",
+    "leadsTo": "C.20",
+    "leadsToReason": "A garbage collector is still a pause you did not schedule, and there remain programs — a kernel, a browser engine, a device — that cannot accept one and still need memory safety."
+  },
+  "C.19": {
+    "id": "C.19",
+    "name": "TypeScript",
+    "status": "traced",
+    "seed": "C.19",
+    "constraint": "It could not replace the language it was fixing. That language was prototyped in about ten days in May 1995 at Netscape and shipped into a client shared by everyone, which is why it could not subsequently be replaced or corrected — so the only available move was to add something on top that the existing thing would still run.",
+    "inherited": {
+      "from": "C.13",
+      "wall": "No types and no modules is survivable for a script in a page and not for an application of a hundred thousand lines written by forty people who cannot all hold it in their heads."
+    },
+    "opening": "Every decision here is shaped by a constraint no other language in this chain had: the thing it improves cannot be changed, cannot be replaced, and has to keep running everything already written. Announced on 1 October 2012 as version 0.8, with the source released as open source the same day after roughly two years of internal development under the codename Strada, it is an exercise in what you can add when subtraction is not available.",
+    "decisions": [
+      {
+        "decision": "Be a superset, so existing files are already valid",
+        "because": "Nobody converts a large codebase in one step. If adoption requires a rewrite, there is no adoption; if any existing file is already a valid file, adoption can be one file at a time and can stop whenever it stops paying.",
+        "syntax": [
+          {
+            "code": "function add(a: number, b: number): number { return a + b; }",
+            "means": "the same function, with annotations the base language ignores",
+            "consequence": "Rather than replacing the existing language it is a superset of it, which lets a codebase be converted file by file; version 1.0 shipped in 2014. The incremental path is the entire adoption strategy, and it is why this succeeded where cleaner replacements for the same language did not."
+          }
+        ]
+      },
+      {
+        "decision": "Judge types by shape rather than by name",
+        "because": "The code being described was written without types and full of object literals passed around directly. A system that required every value to belong to a declared class would fail to describe the programs it exists to describe.",
+        "syntax": [
+          {
+            "code": "function show(p: { name: string }) { }\nshow({ name: \"a\", extra: 1 });",
+            "means": "anything with that shape fits, whatever it is called",
+            "consequence": "Its typing discipline is gradual and structural: convertibility depends on the parts of the type rather than on a declared name, so a value fits when its shape matches. This is what lets types be added to code that already exists, and it is why the annotations read as descriptions of what the program already does rather than as demands it be rewritten."
+          }
+        ]
+      },
+      {
+        "decision": "Erase everything before it runs",
+        "because": "The output has to be ordinary code the existing runtime accepts, so nothing in the type system can survive into execution. That forces every check to be a compile-time check, which is also what keeps the output fast.",
+        "syntax": [
+          {
+            "code": "const u = JSON.parse(text) as User;",
+            "means": "assert a shape the compiler cannot verify",
+            "consequence": "At the boundary — a response, a file, a message — the types are a claim about data that has not been checked, and the assertion is where a wrong claim enters silently. The feature extends the base language with optional static type checking, classes, interfaces and modules, and none of it is present when the program runs, which is the price of being a superset that erases."
+          }
+        ]
+      }
+    ],
+    "wall": "It buys an editor that knows every shape and a class of error caught before shipping, and it costs a build step in a language whose defining quality was not having one, plus a type system that describes the program and cannot enforce anything at the boundary where data actually arrives. Hejlsberg is among the designers, which makes this the second appearance in this chain of the same approach: take what a dynamic language leaves to a run-time surprise and move it into a place where a tool can see it.",
+    "leadsTo": "C.20",
+    "leadsToReason": "Checking shapes before shipping is worth a great deal, and it still cannot say anything about memory, lifetimes, or two things touching the same data at once."
+  },
   "C.2": {
     "id": "C.2",
     "name": "FORTRAN",
@@ -1115,6 +1331,134 @@
       "title": "Backus, J., The History of Fortran I, II and III, in History of Programming Languages, ACM/Academic Press, 1978",
       "url": "https://cse.sc.edu/~mgv/csce330f12/Backus78.pdf",
       "kind": "primary"
+    }
+  ],
+  "C.16": [
+    {
+      "claim": "The first version was developed by Joe Armstrong in 1986 at Ericsson, in a Prolog form over 1986 and 1987, with Robert Virding joining to help rewrite the prototype and improve concurrency performance. An early internal document is Armstrong’s Telephony Programming in Prolog, Ericsson internal report T/SU 86 036, dated 3 March 1986.",
+      "title": "Erlang (programming language): the 1986 origin at Ericsson, the February 1998 in-house ban, and the December 1998 open-source release",
+      "url": "https://en.wikipedia.org/wiki/Erlang_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Armstrong describes the language as designed for writing concurrent programs that run indefinitely, structured around lightweight concurrent processes that belong to the language rather than the operating system, with no shared memory and asynchronous message passing, plus mechanisms for changing code while the system runs. He calls the resulting model concurrency-oriented programming.",
+      "title": "Armstrong, J., A History of Erlang, Third ACM SIGPLAN Conference on History of Programming Languages, San Diego, June 2007",
+      "url": "https://dl.acm.org/doi/10.1145/1238844.1238850",
+      "kind": "primary"
+    },
+    {
+      "claim": "In March 1998 Ericsson announced a switch containing over a million lines of the language, reported to achieve an availability of nine nines, alongside an observed four-fold increase in development productivity.",
+      "title": "Armstrong, J., A History of Erlang, Third ACM SIGPLAN Conference on History of Programming Languages, San Diego, June 2007",
+      "url": "https://dl.acm.org/doi/10.1145/1238844.1238850",
+      "kind": "primary"
+    },
+    {
+      "claim": "In February 1998 Ericsson Radio Systems banned in-house use of the language for new products, citing a preference for non-proprietary languages. In December 1998 the implementation was open-sourced and most of the team resigned to form Bluetail AB. The ban was eventually relaxed and Armstrong was re-hired in 2004.",
+      "title": "Erlang (programming language): the 1986 origin at Ericsson, the February 1998 in-house ban, and the December 1998 open-source release",
+      "url": "https://en.wikipedia.org/wiki/Erlang_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Elixir was designed by José Valim and first appeared on 25 May 2012, running on the same virtual machine, influenced by Clojure, Erlang and Ruby. Valim’s stated aim was to increase the extensibility and productivity of that virtual machine while keeping compatibility with its existing tooling and ecosystem.",
+      "title": "Elixir (programming language): design by José Valim, first appearance 25 May 2012, and its relationship to the Erlang virtual machine",
+      "url": "https://en.wikipedia.org/wiki/Elixir_(programming_language)",
+      "kind": "secondary"
+    }
+  ],
+  "C.17": [
+    {
+      "claim": "In January 1999 Anders Hejlsberg formed a team to build a new language, at the time called COOL, standing for C-like Object Oriented Language. The name was not kept for trademark reasons; a naming committee was convened and wanted a reference to the C heritage. Other candidates considered included Safe C.",
+      "title": "C Sharp (programming language): the COOL codename, the July 2000 release with the .NET Framework, and the Ecma standardisation adopted in December 2001",
+      "url": "https://en.wikipedia.org/wiki/C_Sharp_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The principal designers were Anders Hejlsberg, Scott Wiltamuth and Peter Golde. The first widely distributed implementation was released by Microsoft in July 2000 as part of the .NET Framework initiative.",
+      "title": "C Sharp (programming language): the COOL codename, the July 2000 release with the .NET Framework, and the Ecma standardisation adopted in December 2001",
+      "url": "https://en.wikipedia.org/wiki/C_Sharp_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "An Ecma technical committee task group was formed in September 2000 to produce a standard for the language, with a separate group formed at the same time for the common language infrastructure. Development of the standard began in November 2000 and it was adopted as an Ecma standard by the General Assembly of December 2001.",
+      "title": "C Sharp (programming language): the COOL codename, the July 2000 release with the .NET Framework, and the Ecma standardisation adopted in December 2001",
+      "url": "https://en.wikipedia.org/wiki/C_Sharp_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The standard was based on a submission from Hewlett-Packard, Intel and Microsoft, and was later approved by the international standards bodies in 2003.",
+      "title": "C Sharp (programming language): the COOL codename, the July 2000 release with the .NET Framework, and the Ecma standardisation adopted in December 2001",
+      "url": "https://en.wikipedia.org/wiki/C_Sharp_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The precedent for putting a language definition in a document nobody owns is COBOL, whose specifying committees were set up at a Pentagon meeting in May 1959 and whose specification was approved in January 1960, so that the document rather than any vendor’s compiler was the authority.",
+      "title": "Sammet, J. E., The Early History of COBOL, in History of Programming Languages, ACM SIGPLAN Notices, 1978",
+      "url": "https://dl.acm.org/doi/10.1145/960118.808378",
+      "kind": "primary"
+    }
+  ],
+  "C.18": [
+    {
+      "claim": "The language was conceived in September 2007 by Robert Griesemer, Rob Pike and Ken Thompson at Google, as an answer to problems seen while developing software infrastructure there. It first appeared on 10 November 2009 and stabilised at version 1 in early 2012.",
+      "title": "Go (programming language): conception in September 2007 by Griesemer, Pike and Thompson, first appearance 10 November 2009, and Go 1 in early 2012",
+      "url": "https://en.wikipedia.org/wiki/Go_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Pike describes the environment it was designed for: server programs grown to tens of millions of lines of code, worked on by hundreds or thousands of programmers, updated daily, in one source tree with a distributed build system, written mostly in C++ with substantial amounts of Java and Python.",
+      "title": "Pike, R., Go at Google: Language Design in the Service of Software Engineering, keynote at SPLASH 2012, Tucson, 25 October 2012",
+      "url": "https://go.dev/talks/2012/splash.article",
+      "kind": "primary"
+    },
+    {
+      "claim": "Pike states that in that environment build times, even on large compilation clusters, had stretched to many minutes, even hours. The stated goals of the project were to eliminate slowness, eliminate clumsiness, improve effectiveness, and maintain or improve scale.",
+      "title": "Pike, R., Go at Google: Language Design in the Service of Software Engineering, keynote at SPLASH 2012, Tucson, 25 October 2012",
+      "url": "https://go.dev/talks/2012/splash.article",
+      "kind": "primary"
+    },
+    {
+      "claim": "Pike frames the work as being designed by and for people who write, read, debug and maintain large software systems, and says its purpose is improving the working environment rather than programming-language research — that it is more about software engineering than programming language research.",
+      "title": "Pike, R., Go at Google: Language Design in the Service of Software Engineering, keynote at SPLASH 2012, Tucson, 25 October 2012",
+      "url": "https://go.dev/talks/2012/splash.article",
+      "kind": "primary"
+    },
+    {
+      "claim": "The earlier link this argument is drawn from is the time-sharing system built at Dartmouth, demonstrated on 1 May 1964, where the barrier to using a computer was the hours-long turnaround of a single attempt rather than the difficulty of the language.",
+      "title": "BASIC at Dartmouth, Dartmouth College",
+      "url": "https://www.dartmouth.edu/basicfifty/basic.html",
+      "kind": "primary"
+    }
+  ],
+  "C.19": [
+    {
+      "claim": "It was announced publicly on 1 October 2012 as version 0.8, with the source released as open source under the Apache licence the same day, after roughly two years of internal development at Microsoft under the codename Strada. Anders Hejlsberg is among the designers.",
+      "title": "TypeScript: the public release of version 0.8 on 1 October 2012, the internal development from 2010 under the codename Strada, and its gradual, structural typing",
+      "url": "https://en.wikipedia.org/wiki/TypeScript",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Rather than replacing the existing language, it is a superset of it: any existing file in the base language is a valid file in this one, which lets a codebase be converted file by file. Version 1.0 shipped in 2014.",
+      "title": "TypeScript: the public release of version 0.8 on 1 October 2012, the internal development from 2010 under the codename Strada, and its gradual, structural typing",
+      "url": "https://en.wikipedia.org/wiki/TypeScript",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Its typing discipline is gradual and structural: convertibility between types depends on the parts of the type rather than on a declared name, so a value fits a type when its shape matches.",
+      "title": "TypeScript: the public release of version 0.8 on 1 October 2012, the internal development from 2010 under the codename Strada, and its gradual, structural typing",
+      "url": "https://en.wikipedia.org/wiki/TypeScript",
+      "kind": "secondary"
+    },
+    {
+      "claim": "It extends the base language with features aimed at large-scale programming, including optional static type checking, classes, interfaces and modules.",
+      "title": "TypeScript: the public release of version 0.8 on 1 October 2012, the internal development from 2010 under the codename Strada, and its gradual, structural typing",
+      "url": "https://en.wikipedia.org/wiki/TypeScript",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The base language it is a superset of was prototyped in about ten days in May 1995 at Netscape and shipped into a client shared by everyone, which is why it could not subsequently be replaced or corrected.",
+      "title": "Brendan Eich: the ten-day prototype of May 1995 at Netscape",
+      "url": "https://en.wikipedia.org/wiki/Brendan_Eich",
+      "kind": "secondary"
     }
   ],
   "C.2": [

@@ -1,0 +1,55 @@
+{
+  "id": "C.17",
+  "name": "C#",
+  "status": "traced",
+  "seed": "C.17",
+  "constraint": "It had to give a large organisation the safety and productivity of a managed runtime on the platform it had already bought, without depending on a language another vendor owned.",
+  "inherited": {
+    "from": "C.16",
+    "wall": "A process model built for a switch that must never stop asks an ordinary organisation to adopt an unfamiliar paradigm to solve a problem it does not have."
+  },
+  "opening": "In January 1999 Hejlsberg formed a team to build a new language, at the time called COOL, standing for C-like Object Oriented Language; the name was not kept for trademark reasons and a naming committee was convened that wanted a reference to the C heritage. The principal designers were Hejlsberg, Scott Wiltamuth and Peter Golde, and the first widely distributed implementation was released in July 2000. Read the design as a second attempt at a managed language by people who had watched the first one closely.",
+  "decisions": [
+    {
+      "decision": "Put the language definition in a document nobody owns",
+      "because": "The objection to the managed language that came before was that it belonged to a vendor. A specification held by a standards body removes that objection in the only way it can be removed, which is by giving it away.",
+      "syntax": [
+        {
+          "code": "(a standard, not a product)",
+          "means": "the definition is a document, not an implementation",
+          "consequence": "A technical committee task group was formed in September 2000, development of the standard began that November, and it was adopted by the General Assembly, based on a submission from Hewlett-Packard, Intel and Microsoft, and later approved by the international bodies in 2003. The precedent is COBOL, whose specifying committees were set up at a Pentagon meeting in May 1959 and whose specification was approved in January 1960 so that the document rather than any vendor's compiler was the authority. The same move, forty years apart, for the same reason."
+        }
+      ]
+    },
+    {
+      "decision": "Say explicitly what the previous language left implicit",
+      "because": "Watching a design in the field for five years tells you which of its defaults were wrong, and the cheapest corrections are the ones that make a decision visible in the source rather than inferred from a rule.",
+      "syntax": [
+        {
+          "code": "public override void Draw() { }",
+          "means": "this replaces a method from the base class, and says so",
+          "consequence": "Overriding requires both that the base permits it and that the derived method declares it, so a method that silently replaces another is not expressible. It is a small feature and a good example of the design's habit: prefer a keyword that makes an intention checkable over a rule a reader has to know."
+        },
+        {
+          "code": "int? id = null;",
+          "means": "a value type that is allowed to be absent",
+          "consequence": "Absence is a property of the type rather than a value any reference may secretly hold, so the compiler can ask whether you handled it. This is the same move again \u2014 take something the previous language left to a run-time check and move it into the type where a tool can see it."
+        }
+      ]
+    },
+    {
+      "decision": "The language and its tooling are designed together",
+      "because": "The team's advantage was not the runtime; it was that the same organisation shipped the compiler, the editor and the platform, and could make features that only pay off when an editor understands them.",
+      "syntax": [
+        {
+          "code": "var query = items.Where(i => i.Active).Select(i => i.Name);",
+          "means": "a query written in the language, checked by the compiler",
+          "consequence": "Queries as expressions with inferred types are pleasant to write and nearly unusable without completion and inline types, which is the point: a feature can assume a tool. The trade is that the language's ergonomics degrade outside the environment it was designed with, and for its first decade both were tied to one platform."
+        }
+      ]
+    }
+  ],
+  "wall": "It got what it aimed at, and inherited the shape of the thing it was aimed at. The enterprise codebases look like the enterprise codebases of the language it replaced \u2014 layers, ceremony, and configuration \u2014 because the organisations are the same organisations. And for years the answer to whether it ran anywhere else was a qualified one, so a language explicitly standardised to avoid belonging to a vendor was in practice chosen by people who had already chosen that vendor.",
+  "leadsTo": "C.18",
+  "leadsToReason": "None of this helps when the problem is that the program is twenty million lines, the build takes an hour, and a thousand people are editing it at once."
+}
