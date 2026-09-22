@@ -1,0 +1,50 @@
+{
+  "id": "C.10",
+  "name": "Perl",
+  "status": "traced",
+  "seed": "C.10",
+  "constraint": "It was written for a job the author actually had: reports about information being synchronised between two sites, where the existing tools ran out of capability and writing it in C was not worth the effort.",
+  "inherited": {
+    "from": "C.9",
+    "wall": "A compiled systems language makes you declare types, manage memory and run a build for a program that exists to read a file and print a summary."
+  },
+  "opening": "It is a language designed to be the next thing you reach for when a shell pipeline stops being enough, which means it has to be at least as convenient as the pipeline and rather more capable. Everything below follows from that, and the manual page states the niche directly: \u201cIf you have a problem that would ordinarily use sed or awk or sh, but it exceeds their capabilities or must run a little faster, and you don't want to write the silly thing in C, then perl may be for you.\u201d",
+  "decisions": [
+    {
+      "decision": "Pattern matching is part of the language, not a library",
+      "because": "The job is scanning arbitrary text files, extracting information from them and printing reports based on it. If that is the job, the matching operation should be as short to write as arithmetic is in a language about numbers.",
+      "syntax": [
+        {
+          "code": "if ($line =~ /^(\\w+)\\s+(\\d+)/) { ... }",
+          "means": "match the line against a pattern and capture two pieces",
+          "consequence": "The pattern has its own place in the grammar and the captures land in variables without being asked for. This is the clearest example in the whole chain of a language making the common case short: the ratio of characters typed to work done is the design, and everything awkward about the language is downstream of protecting that ratio."
+        }
+      ]
+    },
+    {
+      "decision": "Variables carry a symbol saying what kind of thing they are",
+      "because": "A text-processing program is full of scalars, lists and tables at once, and the author wanted to see which is which while reading a dense line rather than by looking up a declaration.",
+      "syntax": [
+        {
+          "code": "$count   @lines   %seen",
+          "means": "one value, a list of values, a table of them",
+          "consequence": "The marker makes a one-line program readable in a way an undecorated name would not, and makes a large program noisy in a way an undecorated name would not. The same decision produces both, which is why the language divides people so cleanly."
+        }
+      ]
+    },
+    {
+      "decision": "Do what people mean, and provide several ways to say it",
+      "because": "The stated preference is to be practical \u2014 easy to use rather than small, and hospitable rather than restrictive \u2014 because the competition is a shell pipeline, and a pipeline never told anybody they had written something the wrong way.",
+      "syntax": [
+        {
+          "code": "print \"found\\n\" if $found;",
+          "means": "a condition written after the thing it guards",
+          "consequence": "The statement reads the way a person would say it, and the language gained a second way to write a conditional to allow that. Repeated across the grammar it produces enormous expressive range, and a program that two authors write in two visibly different dialects of the same language."
+        }
+      ]
+    }
+  ],
+  "wall": "Larry Wall released version 1.0 on 18 December 1987 while working as a programmer at Unisys, posting the source to a newsgroup, and it did exactly what it promised \u2014 it combines some of the best features of C, sed, awk and sh, and for a few hundred lines it is unbeatable. Past that the bill arrives: the decisions that make one line dense make ten thousand lines unreadable, the punctuation that marks the kind of a variable also fills the screen, and the several ways to say a thing mean the next reader must know all of them. The name is a good miniature of the language's relationship with its own reputation: it is commonly expanded as Practical Extraction and Report Language, but Wall has said it is a riff on Pearl, from the parable of the pearl, with the letter dropped because a language called Pearl already existed.",
+  "leadsTo": "C.11",
+  "leadsToReason": "If a script survives to be read by somebody else, the property that matters most is not how short it was to write but whether the next person can see what it does."
+}

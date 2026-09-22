@@ -1,0 +1,55 @@
+{
+  "id": "C.8",
+  "name": "Smalltalk",
+  "status": "traced",
+  "seed": "C.8",
+  "constraint": "It was designed to fit on a personal machine that did not exist yet and to be understandable by one person, which meant the whole language had to be small enough to describe on a page and the system had to stay alive while you changed it.",
+  "inherited": {
+    "from": "C.7",
+    "wall": "Free functions over plain data give a large program no seams: the data is passive, the procedures are somewhere else, and nothing in the language says which procedures are allowed to touch which data."
+  },
+  "opening": "This one starts as a bet. In a hallway conversation with Ted Kaehler and Dan Ingalls about how large a language would have to be to have real power, Kay boasted that he could define \u201cthe most powerful language in the world\u201d in \u201ca page of code\u201d, and their reply was \u201cPut up or shut up.\u201d No money was wagered. He worked on it for roughly two weeks, arriving at PARC at 4 a.m. each day and working until 8, when Ingalls, Henry Fuchs, John Shoch and Steve Purcell would arrive to critique the morning's progress. Everything below follows from trying to win that bet.",
+  "decisions": [
+    {
+      "decision": "There is one mechanism, and it is sending a message to an object",
+      "because": "A language you can define on a page cannot have a dozen constructs. If every operation is the same operation, the definition stays small and the power comes from what the objects are rather than from what the language provides.",
+      "syntax": [
+        {
+          "code": "3 + 4",
+          "means": "send the message + with argument 4 to the object 3",
+          "consequence": "Arithmetic is not built in; it is a message that a number happens to understand. The first working version computed three plus four extremely slowly \u2014 Butler Lampson called it glacial \u2014 but always returned seven, which is the right thing to be proud of, because it means the mechanism was general enough to do arithmetic without arithmetic being a special case."
+        },
+        {
+          "code": "anAccount deposit: 50",
+          "means": "ask the account to deposit, rather than modify its balance",
+          "consequence": "The object decides what happens, so the data and the code that may touch it arrive as one thing. Kay described objects as little computers, \u201ca recursion on the notion of computer itself\u201d \u2014 which is a stronger claim than encapsulation: each one is a whole machine, not a record with functions attached."
+        }
+      ]
+    },
+    {
+      "decision": "Inheritance was left out of the first version on purpose",
+      "because": "The single static inheritance available in the language that inspired it seemed too limiting, and it was better to ship the mechanism that was general than the convenience that was not.",
+      "syntax": [
+        {
+          "code": "Object subclass: #Account",
+          "means": "a class, defined by sending a message to another class",
+          "consequence": "When it did arrive it arrived as more message sending, not as new syntax, which is why the language stays small while gaining a feature. The omission is the lesson: the first version did not include inheritance not because it was thought unimportant but because the available form of it was judged too restrictive, and shipping without it was preferable to shipping the wrong version of it."
+        }
+      ]
+    },
+    {
+      "decision": "The system stays running while you change it",
+      "because": "The point was a machine a person could think with. A tool that must be stopped, edited, rebuilt and restarted puts a gap between the idea and the result, and the gap is where the thinking stops.",
+      "syntax": [
+        {
+          "code": "(browser, inspector, debugger \u2014 all live)",
+          "means": "the environment is part of the language",
+          "consequence": "The modern form followed after substantial revision, with a development environment containing most of the now-familiar tools including a class library browser and editor; Ingalls described its design and implementation at the fifth symposium on Principles of Programming Languages in Tucson in January 1978. Every one of those tools is now in your editor, which is the strongest evidence that the idea won even where the language did not."
+        }
+      ]
+    }
+  ],
+  "wall": "A live image is a wonderful place to work and a difficult thing to ship: the program is a running world rather than a file, so version control, deployment and interoperating with anything outside it are all awkward. It is also slow, and it arrived tied to hardware \u2014 Lampson and Thacker offered to build Kay's machine using the $230K he had earmarked for other computers, and the system was bootstrapped onto that machine after the one known as Bilbo came alive in early April 1973. The ideas left the walled garden and the language mostly did not.",
+  "leadsTo": "C.9",
+  "leadsToReason": "If objects are what a large program needs, and a running world is what you cannot ship, then the objects have to arrive in a language that compiles to the metal and costs nothing you did not ask for."
+}

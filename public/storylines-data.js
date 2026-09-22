@@ -66,6 +66,106 @@
     "leadsTo": "C.2",
     "leadsToReason": "If the expensive part is writing formulas as instructions, and the formulas are the part the scientist already has, then the translator should take the formula."
   },
+  "C.10": {
+    "id": "C.10",
+    "name": "Perl",
+    "status": "traced",
+    "seed": "C.10",
+    "constraint": "It was written for a job the author actually had: reports about information being synchronised between two sites, where the existing tools ran out of capability and writing it in C was not worth the effort.",
+    "inherited": {
+      "from": "C.9",
+      "wall": "A compiled systems language makes you declare types, manage memory and run a build for a program that exists to read a file and print a summary."
+    },
+    "opening": "It is a language designed to be the next thing you reach for when a shell pipeline stops being enough, which means it has to be at least as convenient as the pipeline and rather more capable. Everything below follows from that, and the manual page states the niche directly: “If you have a problem that would ordinarily use sed or awk or sh, but it exceeds their capabilities or must run a little faster, and you don't want to write the silly thing in C, then perl may be for you.”",
+    "decisions": [
+      {
+        "decision": "Pattern matching is part of the language, not a library",
+        "because": "The job is scanning arbitrary text files, extracting information from them and printing reports based on it. If that is the job, the matching operation should be as short to write as arithmetic is in a language about numbers.",
+        "syntax": [
+          {
+            "code": "if ($line =~ /^(\\w+)\\s+(\\d+)/) { ... }",
+            "means": "match the line against a pattern and capture two pieces",
+            "consequence": "The pattern has its own place in the grammar and the captures land in variables without being asked for. This is the clearest example in the whole chain of a language making the common case short: the ratio of characters typed to work done is the design, and everything awkward about the language is downstream of protecting that ratio."
+          }
+        ]
+      },
+      {
+        "decision": "Variables carry a symbol saying what kind of thing they are",
+        "because": "A text-processing program is full of scalars, lists and tables at once, and the author wanted to see which is which while reading a dense line rather than by looking up a declaration.",
+        "syntax": [
+          {
+            "code": "$count   @lines   %seen",
+            "means": "one value, a list of values, a table of them",
+            "consequence": "The marker makes a one-line program readable in a way an undecorated name would not, and makes a large program noisy in a way an undecorated name would not. The same decision produces both, which is why the language divides people so cleanly."
+          }
+        ]
+      },
+      {
+        "decision": "Do what people mean, and provide several ways to say it",
+        "because": "The stated preference is to be practical — easy to use rather than small, and hospitable rather than restrictive — because the competition is a shell pipeline, and a pipeline never told anybody they had written something the wrong way.",
+        "syntax": [
+          {
+            "code": "print \"found\\n\" if $found;",
+            "means": "a condition written after the thing it guards",
+            "consequence": "The statement reads the way a person would say it, and the language gained a second way to write a conditional to allow that. Repeated across the grammar it produces enormous expressive range, and a program that two authors write in two visibly different dialects of the same language."
+          }
+        ]
+      }
+    ],
+    "wall": "Larry Wall released version 1.0 on 18 December 1987 while working as a programmer at Unisys, posting the source to a newsgroup, and it did exactly what it promised — it combines some of the best features of C, sed, awk and sh, and for a few hundred lines it is unbeatable. Past that the bill arrives: the decisions that make one line dense make ten thousand lines unreadable, the punctuation that marks the kind of a variable also fills the screen, and the several ways to say a thing mean the next reader must know all of them. The name is a good miniature of the language's relationship with its own reputation: it is commonly expanded as Practical Extraction and Report Language, but Wall has said it is a riff on Pearl, from the parable of the pearl, with the letter dropped because a language called Pearl already existed.",
+    "leadsTo": "C.11",
+    "leadsToReason": "If a script survives to be read by somebody else, the property that matters most is not how short it was to write but whether the next person can see what it does."
+  },
+  "C.11": {
+    "id": "C.11",
+    "name": "Python",
+    "status": "traced",
+    "seed": "C.11",
+    "constraint": "It was built by somebody who had already implemented a teaching language and remembered both what he learned from it and what frustrated him about it, for a job where writing system utilities in C was taking too long.",
+    "inherited": {
+      "from": "C.10",
+      "wall": "A language that optimises for how short a line is to write produces programs nobody can read six months later, including the person who wrote them."
+    },
+    "opening": "In 1989 van Rossum was working on a microkernel-based distributed system, developing system utilities for it, and found that developing in C took too much time — so he decided to spend his free time building a language that would let him work faster. Implementation started that December, over a Christmas holiday, as a successor to the earlier teaching language capable of exception handling and of interfacing with that operating system. The design question it answers is narrower than people assume: not what is the best language, but what makes a utility program fast to write and still readable by somebody else.",
+    "decisions": [
+      {
+        "decision": "Indentation is the block structure",
+        "because": "Programmers indent anyway to show structure, and when the indentation and the delimiters disagree it is the indentation a reader believes. Making the visible structure the real structure removes a whole class of disagreement between what a program looks like and what it does.",
+        "syntax": [
+          {
+            "code": "if total > limit:\n    notify(user)\n    log(total)",
+            "means": "both statements are inside the condition because both are indented",
+            "consequence": "There is no way to write code whose appearance and behaviour differ on this point, and no argument about where a brace goes. What you give up is the ability to have the layout ignored: a block cannot be reformatted by a tool that does not understand it, and a line pasted at the wrong depth is a different program rather than an untidy one."
+          }
+        ]
+      },
+      {
+        "decision": "The common data structures are in the language, with syntax",
+        "because": "A utility program is mostly lists of things and lookups by name. If those need a library and a constructor call, the short program is not short.",
+        "syntax": [
+          {
+            "code": "counts = {}\nfor line in lines:\n    counts[line] = counts.get(line, 0) + 1",
+            "means": "a table, built by looking things up in it",
+            "consequence": "Several features were present in the initial release: classes with inheritance, exception handling, functions, and the core datatypes list, dict and str. Having the table and the list be first-class, with their own notation, is what lets the language be terse without any of the punctuation that made its predecessor terse."
+          }
+        ]
+      },
+      {
+        "decision": "Failure is an exception, and a module is a file",
+        "because": "The language existed to write system utilities, which spend their lives being interrupted by things outside them; and the parts of a growing program need boundaries that do not require a build system to declare.",
+        "syntax": [
+          {
+            "code": "try:\n    data = open(path).read()\nexcept IOError as e:\n    ...",
+            "means": "handle the failure where it matters, not at the call",
+            "consequence": "The module system was borrowed from Modula-3, and the exception model also resembled that of Modula-3, with the addition of an else clause. Both were taken deliberately from a language the author admired rather than invented, which is worth noticing: the design's distinguishing quality is what it declined to invent."
+          }
+        ]
+      }
+    ],
+    "wall": "The first public release, version 0.9.0, came on 20 February 1991, published to a newsgroup in 21 uuencoded messages because that was the size limit — and the properties that made it pleasant are the ones that cost. Everything is looked up at run time, so the interpreter loop is slow; the object model is dynamic, so there is little a compiler can prove; and the ease of adding a module to a program becomes, at scale, the problem of saying which versions of which modules a program needs. The name, after the British comedy series, is the last piece of evidence for what it was optimising for: not gravity, and not the machine.",
+    "leadsTo": "C.12",
+    "leadsToReason": "A language that is pleasant on one machine still has to answer the question of what happens when the program must run on machines you do not control, written by teams you cannot talk to."
+  },
   "C.2": {
     "id": "C.2",
     "name": "FORTRAN",
@@ -452,6 +552,116 @@
     "wall": "Every one of those decisions buys speed with the programmer's attention. Manual memory means the mistakes are yours; no string type means the overflows are yours; free functions over plain data means a large program has no seams. C scales down to the metal beautifully and scales up to a large team badly.",
     "leadsTo": "C.9",
     "leadsToReason": "C++ kept the compile-to-metal, zero-overhead bargain and added a way to bundle data with the code that acts on it, so that a large program could have seams."
+  },
+  "C.8": {
+    "id": "C.8",
+    "name": "Smalltalk",
+    "status": "traced",
+    "seed": "C.8",
+    "constraint": "It was designed to fit on a personal machine that did not exist yet and to be understandable by one person, which meant the whole language had to be small enough to describe on a page and the system had to stay alive while you changed it.",
+    "inherited": {
+      "from": "C.7",
+      "wall": "Free functions over plain data give a large program no seams: the data is passive, the procedures are somewhere else, and nothing in the language says which procedures are allowed to touch which data."
+    },
+    "opening": "This one starts as a bet. In a hallway conversation with Ted Kaehler and Dan Ingalls about how large a language would have to be to have real power, Kay boasted that he could define “the most powerful language in the world” in “a page of code”, and their reply was “Put up or shut up.” No money was wagered. He worked on it for roughly two weeks, arriving at PARC at 4 a.m. each day and working until 8, when Ingalls, Henry Fuchs, John Shoch and Steve Purcell would arrive to critique the morning's progress. Everything below follows from trying to win that bet.",
+    "decisions": [
+      {
+        "decision": "There is one mechanism, and it is sending a message to an object",
+        "because": "A language you can define on a page cannot have a dozen constructs. If every operation is the same operation, the definition stays small and the power comes from what the objects are rather than from what the language provides.",
+        "syntax": [
+          {
+            "code": "3 + 4",
+            "means": "send the message + with argument 4 to the object 3",
+            "consequence": "Arithmetic is not built in; it is a message that a number happens to understand. The first working version computed three plus four extremely slowly — Butler Lampson called it glacial — but always returned seven, which is the right thing to be proud of, because it means the mechanism was general enough to do arithmetic without arithmetic being a special case."
+          },
+          {
+            "code": "anAccount deposit: 50",
+            "means": "ask the account to deposit, rather than modify its balance",
+            "consequence": "The object decides what happens, so the data and the code that may touch it arrive as one thing. Kay described objects as little computers, “a recursion on the notion of computer itself” — which is a stronger claim than encapsulation: each one is a whole machine, not a record with functions attached."
+          }
+        ]
+      },
+      {
+        "decision": "Inheritance was left out of the first version on purpose",
+        "because": "The single static inheritance available in the language that inspired it seemed too limiting, and it was better to ship the mechanism that was general than the convenience that was not.",
+        "syntax": [
+          {
+            "code": "Object subclass: #Account",
+            "means": "a class, defined by sending a message to another class",
+            "consequence": "When it did arrive it arrived as more message sending, not as new syntax, which is why the language stays small while gaining a feature. The omission is the lesson: the first version did not include inheritance not because it was thought unimportant but because the available form of it was judged too restrictive, and shipping without it was preferable to shipping the wrong version of it."
+          }
+        ]
+      },
+      {
+        "decision": "The system stays running while you change it",
+        "because": "The point was a machine a person could think with. A tool that must be stopped, edited, rebuilt and restarted puts a gap between the idea and the result, and the gap is where the thinking stops.",
+        "syntax": [
+          {
+            "code": "(browser, inspector, debugger — all live)",
+            "means": "the environment is part of the language",
+            "consequence": "The modern form followed after substantial revision, with a development environment containing most of the now-familiar tools including a class library browser and editor; Ingalls described its design and implementation at the fifth symposium on Principles of Programming Languages in Tucson in January 1978. Every one of those tools is now in your editor, which is the strongest evidence that the idea won even where the language did not."
+          }
+        ]
+      }
+    ],
+    "wall": "A live image is a wonderful place to work and a difficult thing to ship: the program is a running world rather than a file, so version control, deployment and interoperating with anything outside it are all awkward. It is also slow, and it arrived tied to hardware — Lampson and Thacker offered to build Kay's machine using the $230K he had earmarked for other computers, and the system was bootstrapped onto that machine after the one known as Bilbo came alive in early April 1973. The ideas left the walled garden and the language mostly did not.",
+    "leadsTo": "C.9",
+    "leadsToReason": "If objects are what a large program needs, and a running world is what you cannot ship, then the objects have to arrive in a language that compiles to the metal and costs nothing you did not ask for."
+  },
+  "C.9": {
+    "id": "C.9",
+    "name": "C++",
+    "status": "traced",
+    "seed": "C.9",
+    "constraint": "Objects had to cost nothing. The design criterion Stroustrup states is that “a facility must not just be useful, it must be affordable”, which rules out any mechanism that makes a program slower than the equivalent written by hand.",
+    "inherited": {
+      "from": "C.8",
+      "wall": "A language where every operation is a message and the system is a living image gives you seams and takes away the metal: it cannot be compiled to something a systems programmer would accept, and it cannot be shipped as a file."
+    },
+    "opening": "Stroustrup states the motivation as wanting to write efficient systems programs in the styles encouraged by Simula, so he added better type checking, data abstraction and object-oriented programming to C — his stated goal being “to design a language in which I could write programs that were both efficient and elegant”. Read every feature as an answer to the question that follows from the affordability criterion: what would this construct cost at run time, and can that cost be zero?",
+    "decisions": [
+      {
+        "decision": "A class is a struct with the functions that belong to it, and no more",
+        "because": "Data and the code that maintains its invariants belong together, and that grouping can be done entirely by the compiler. A call to a member function can compile into exactly the call you would have written by hand.",
+        "syntax": [
+          {
+            "code": "class Account {\n  int balance;\npublic:\n  void deposit(int n);\n};",
+            "means": "a layout, plus which functions may touch it",
+            "consequence": "Work began in 1979, and by October 1979 a pre-processor named Cpre added classes in the style of Simula to C. The language it accepted was called C with Classes, and the name is the honest description: the object is a record with rules about who may modify it, which is a compile-time fact with no run-time representation."
+          },
+          {
+            "code": "account.deposit(50);",
+            "means": "call a function that receives the object as a hidden first argument",
+            "consequence": "There is no lookup and no message dispatch by default, so the call costs what a free function taking a pointer costs. That is the whole bargain: you get the organisation and you do not pay for it, and the price of the bargain is that everything about who handles a call is decided before the program runs."
+          }
+        ]
+      },
+      {
+        "decision": "Construction and destruction are automatic, and tied to scope",
+        "because": "If a resource is acquired when an object is created and released when it goes out of scope, the release cannot be forgotten — and scope is already known to the compiler, so this costs nothing to arrange.",
+        "syntax": [
+          {
+            "code": "{ File f(\"data\"); ... }  // closed here",
+            "means": "acquire on construction, release at the closing brace",
+            "consequence": "This is the single largest improvement over the language it extends, and it required no run-time support: the compiler inserts the release where the scope ends. It also explains why the language is stricter about copying than its predecessor — if a copy is made, the question of who releases the resource has to have an answer."
+          }
+        ]
+      },
+      {
+        "decision": "Where dispatch has to happen at run time, you ask for it",
+        "because": "Choosing behaviour by the type of an object at run time costs an indirection. That cost is worth it sometimes and not always, so the language makes it a decision rather than a default.",
+        "syntax": [
+          {
+            "code": "virtual void draw();",
+            "means": "decide which function to call from the object, at run time",
+            "consequence": "The keyword exists because the affordable version is the one you did not ask for. A reader can see where the program pays for flexibility, which is the same reason the language has so many keywords: each one names a cost that a different language hides."
+          }
+        ]
+      }
+    ],
+    "wall": "The features added through Cfront — the class, the derived class, strong type checking, inlining and default arguments — were designed and implemented between spring 1982 and summer 1983, and the first version was used internally at AT&T in August 1983; the name was suggested by Rick Mascitti and signifies evolution from C via the increment operator. What the bargain does not buy is simplicity. Every construct that costs nothing at run time costs something at compile time and something in the reader's head, so the language grows without a natural place to stop, builds are slow, and the memory management that was never automatic is still yours to get wrong.",
+    "leadsTo": "C.10",
+    "leadsToReason": "Not every program is a system. A great many are a few hundred lines that read a log, pull out three fields and print a report — and paying a compile cycle and manual memory management for that is absurd."
   }
 };
 
@@ -485,6 +695,88 @@
       "claim": "The word assembler is generally attributed to Wilkes, Wheeler and Gill, The Preparation of Programs for an Electronic Digital Computer, 1951, where it named a program that assembled several sections into one program rather than one that translated mnemonics.",
       "title": "In Praise of Wilkes, Wheeler, and Gill, Communications of the ACM, on The Preparation of Programs for an Electronic Digital Computer, 1951",
       "url": "https://cacm.acm.org/opinion/in-praise-of-wilkes-wheeler-and-gill/",
+      "kind": "secondary"
+    }
+  ],
+  "C.10": [
+    {
+      "claim": "Larry Wall released version 1.0 on 18 December 1987, posting the source to the newsgroup comp.sources.misc. He was working as a programmer at Unisys at the time and needed reports about information being synchronised between two sites.",
+      "title": "Perl: the 18 December 1987 release of version 1.0 to comp.sources.misc, Wall’s employment at Unisys, and the account of the name",
+      "url": "https://en.wikipedia.org/wiki/Perl",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Related material appeared separately in comp.sources.unix volume 13 in February 1988, posted by the moderator Rich Salz: issue 12 carried patches 6 to 10, and issue 13 carried a forwarded explanatory article and a sample program together with patches 11 to 14. The original release and these follow-on postings went to different newsgroups, which is why the release is sometimes misattributed.",
+      "title": "comp.sources.unix, Volume 13, Issue 13: forwarded posting of perl code, February 1988, archived by The Unix Heritage Society",
+      "url": "https://www.tuhs.org/Usenet/comp.sources.unix/1988-February/005937.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "The manual page states the intended niche directly: \"If you have a problem that would ordinarily use sed or awk or sh, but it exceeds their capabilities or must run a little faster, and you don’t want to write the silly thing in C, then perl may be for you.\"",
+      "title": "Wall, L., perl(1) manual page — the description text dating from the original 1987 release, carried forward essentially unchanged into later manuals",
+      "url": "https://perldoc.perl.org/5.005/perl",
+      "kind": "primary"
+    },
+    {
+      "claim": "The same manual page describes it as an interpreted language optimized for scanning arbitrary text files, extracting information from those text files and printing reports based on that information, and as combining some of the best features of C, sed, awk and sh. It states the design preference as being practical — easy to use, efficient, complete — rather than beautiful, meaning tiny, elegant, minimal.",
+      "title": "Wall, L., perl(1) manual page — the description text dating from the original 1987 release, carried forward essentially unchanged into later manuals",
+      "url": "https://perldoc.perl.org/5.005/perl",
+      "kind": "primary"
+    },
+    {
+      "claim": "On the name: it is commonly expanded as Practical Extraction and Report Language, but Wall has said it is a riff on Pearl, from the parable of the pearl, with the letter dropped because a language called Pearl already existed.",
+      "title": "Perl: the 18 December 1987 release of version 1.0 to comp.sources.misc, Wall’s employment at Unisys, and the account of the name",
+      "url": "https://en.wikipedia.org/wiki/Perl",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The tools it set out to subsume — sed, awk and the shell — are the standard text-processing tools of Unix, and the follow-on postings were carried in the comp.sources.unix newsgroup.",
+      "title": "comp.sources.unix, Volume 13, Issue 13: forwarded posting of perl code, February 1988, archived by The Unix Heritage Society",
+      "url": "https://www.tuhs.org/Usenet/comp.sources.unix/1988-February/005937.html",
+      "kind": "primary"
+    }
+  ],
+  "C.11": [
+    {
+      "claim": "Implementation was started in December 1989 by Guido van Rossum at CWI in the Netherlands, as a successor to ABC capable of exception handling and of interfacing with the Amoeba operating system. It was begun over a Christmas holiday.",
+      "title": "History of Python: the December 1989 start at CWI, the ABC and Amoeba context, the Modula-3 module system, and the February 1991 release to alt.sources",
+      "url": "https://en.wikipedia.org/wiki/History_of_Python",
+      "kind": "secondary"
+    },
+    {
+      "claim": "In 1989 van Rossum was working on Amoeba, a microkernel-based distributed system, developing system utilities for it. He found that developing in C took too much time and decided to spend his free time building a language that would let him work faster.",
+      "title": "History of Python: the December 1989 start at CWI, the ABC and Amoeba context, the Modula-3 module system, and the February 1991 release to alt.sources",
+      "url": "https://en.wikipedia.org/wiki/History_of_Python",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Van Rossum had worked in the early 1980s as an implementer on the team at CWI that built ABC, and has said he feels indebted to what he learned on that project, while also remembering his frustration with it.",
+      "title": "History of Python: the December 1989 start at CWI, the ABC and Amoeba context, the Modula-3 module system, and the February 1991 release to alt.sources",
+      "url": "https://en.wikipedia.org/wiki/History_of_Python",
+      "kind": "secondary"
+    },
+    {
+      "claim": "CWI records that the language was designed in December 1989, that the first working draft was finished some months later in 1990, and that the first public release, version 0.9.0, came on 20 February 1991.",
+      "title": "25 Years of Python at CWI — Centrum Wiskunde & Informatica’s own account",
+      "url": "https://www.cwi.nl/en/news/25-years-of-python-at-cwi/",
+      "kind": "primary"
+    },
+    {
+      "claim": "The code was published to the alt.sources newsgroup in February 1991; the interpreter source had to be split into 21 uuencoded messages to be posted there. Accounts differ on whether the version posted was labelled 0.9.0 or 0.9.1.",
+      "title": "History of Python: the December 1989 start at CWI, the ABC and Amoeba context, the Modula-3 module system, and the February 1991 release to alt.sources",
+      "url": "https://en.wikipedia.org/wiki/History_of_Python",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Several features were present in the initial release: classes with inheritance, exception handling, functions, and the core datatypes list, dict and str. The module system was borrowed from Modula-3, and the exception model also resembled that of Modula-3, with the addition of an else clause.",
+      "title": "History of Python: the December 1989 start at CWI, the ABC and Amoeba context, the Modula-3 module system, and the February 1991 release to alt.sources",
+      "url": "https://en.wikipedia.org/wiki/History_of_Python",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The language is named after the British comedy series Monty Python’s Flying Circus.",
+      "title": "History of Python: the December 1989 start at CWI, the ABC and Amoeba context, the Modula-3 module system, and the February 1991 release to alt.sources",
+      "url": "https://en.wikipedia.org/wiki/History_of_Python",
       "kind": "secondary"
     }
   ],
@@ -749,6 +1041,94 @@
       "claim": "Ritchie’s own assessment is that the most characteristic features — the relationship between arrays and pointers, and the declaration syntax — are also major sources of difficulty, and that the language offers limited support for modularisation, automatic memory management and strong type checking, while its pointer-oriented array model complicates optimisation.",
       "title": "Ritchie, D. M., The Development of the C Language, Second ACM SIGPLAN Conference on History of Programming Languages, April 1993; SIGPLAN Notices 28(3):201-208",
       "url": "https://dl.acm.org/doi/10.1145/154766.155580",
+      "kind": "primary"
+    }
+  ],
+  "C.8": [
+    {
+      "claim": "Kay’s own history of the language was published at the Second History of Programming Languages conference in 1993. In it he states that he centres the account on the events leading to the first version and its transition to the modern form, because most of the ideas occurred there.",
+      "title": "Kay, A. C., The Early History of Smalltalk, HOPL-II, ACM SIGPLAN Notices 28(3), March 1993 — the author’s own narrative",
+      "url": "https://worrydream.com/EarlyHistoryOfSmalltalk/",
+      "kind": "primary"
+    },
+    {
+      "claim": "In a hallway conversation with Ted Kaehler and Dan Ingalls about how large a language would have to be to have real power, Kay boasted that he could define \"the most powerful language in the world\" in \"a page of code\". Their reply was \"Put up or shut up.\" No money was wagered. His confidence rested on McCarthy’s self-describing interpreter, which was about a page.",
+      "title": "Kay, A. C., The Early History of Smalltalk, HOPL-II, ACM SIGPLAN Notices 28(3), March 1993 — the author’s own narrative",
+      "url": "https://worrydream.com/EarlyHistoryOfSmalltalk/",
+      "kind": "primary"
+    },
+    {
+      "claim": "Kay worked on it for roughly two weeks, arriving at PARC at 4 a.m. each day and working until 8, when Ingalls, Henry Fuchs, John Shoch and Steve Purcell would arrive to critique the morning’s progress.",
+      "title": "Kay, A. C., The Early History of Smalltalk, HOPL-II, ACM SIGPLAN Notices 28(3), March 1993 — the author’s own narrative",
+      "url": "https://worrydream.com/EarlyHistoryOfSmalltalk/",
+      "kind": "primary"
+    },
+    {
+      "claim": "Kay writes that \"only a few days later, Dan Ingalls showed me the scheme working on the NOVA\". Ingalls had coded it in BASIC, adding a token scanner, a list maker and other details. Kay quotes Ingalls’s attitude as \"You just do it and it’s done.\"",
+      "title": "Kay, A. C., The Early History of Smalltalk, HOPL-II, ACM SIGPLAN Notices 28(3), March 1993 — the author’s own narrative",
+      "url": "https://worrydream.com/EarlyHistoryOfSmalltalk/",
+      "kind": "primary"
+    },
+    {
+      "claim": "The first working version emerged on the NOVA in roughly September 1972. It computed three plus four extremely slowly — Butler Lampson called it glacial — but always returned seven. It was later bootstrapped onto the Interim Dynabook, the ALTO, after the machine known as Bilbo came alive in early April 1973, and for many months was the only software system running on it.",
+      "title": "Kay, A. C., The Early History of Smalltalk, HOPL-II, ACM SIGPLAN Notices 28(3), March 1993 — the author’s own narrative",
+      "url": "https://worrydream.com/EarlyHistoryOfSmalltalk/",
+      "kind": "primary"
+    },
+    {
+      "claim": "The first version did not include inheritance — not because it was thought unimportant, but because the single static inheritance of Simula seemed too limiting. Kay drew on the simplicity of LISP and the classes and objects of Simula, and described objects as little computers, \"a recursion on the notion of computer itself\".",
+      "title": "Kay, A. C., The Early History of Smalltalk, HOPL-II, ACM SIGPLAN Notices 28(3), March 1993 — the author’s own narrative",
+      "url": "https://worrydream.com/EarlyHistoryOfSmalltalk/",
+      "kind": "primary"
+    },
+    {
+      "claim": "The other bet of the period was hardware: Butler Lampson and Chuck Thacker offered to build Kay’s machine using the $230K he had earmarked for other computers. Thacker had his own wager with Bill Vitic that he could build an entire machine in three months; he started on November 22, 1972 and delivered in just over three.",
+      "title": "Kay, A. C., The Early History of Smalltalk, HOPL-II, ACM SIGPLAN Notices 28(3), March 1993 — the author’s own narrative",
+      "url": "https://worrydream.com/EarlyHistoryOfSmalltalk/",
+      "kind": "primary"
+    },
+    {
+      "claim": "The modern form followed after substantial revision, with a development environment containing most of the now-familiar tools including a class library browser and editor; Ingalls described its design and implementation at the fifth symposium on Principles of Programming Languages in Tucson in January 1978. The release version followed between 1980 and 1983.",
+      "title": "Kay, A. C., The Early History of Smalltalk, HOPL-II, ACM SIGPLAN Notices 28(3), March 1993 — the author’s own narrative",
+      "url": "https://worrydream.com/EarlyHistoryOfSmalltalk/",
+      "kind": "primary"
+    }
+  ],
+  "C.9": [
+    {
+      "claim": "Stroustrup states the motivation as wanting to write efficient systems programs in the styles encouraged by Simula, so he added better type checking, data abstraction and object-oriented programming to C. His stated goal was \"to design a language in which I could write programs that were both efficient and elegant\", and the triggering tasks concerned distributing operating system facilities across a network.",
+      "title": "Stroustrup, B., Bjarne Stroustrup’s FAQ — the author’s own answers on motivation, naming and design criteria",
+      "url": "https://www.stroustrup.com/bs_faq.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "Stroustrup gives the design criterion that \"a facility must not just be useful, it must be affordable\".",
+      "title": "Stroustrup, B., Bjarne Stroustrup’s FAQ — the author’s own answers on motivation, naming and design criteria",
+      "url": "https://www.stroustrup.com/bs_faq.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "Work began in 1979. By October 1979 a pre-processor named Cpre added classes in the style of Simula to C, and by March 1980 it had been refined to support one real project and several experiments. The language it accepted was called C with Classes.",
+      "title": "Stroustrup, B., A History of C++: 1979-1991, HOPL-II, ACM SIGPLAN Notices 28(3), March 1993",
+      "url": "https://www.stroustrup.com/hopl2.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "The work and experience with C with Classes from 1979 to 1983 determined the shape of the successor. Cfront, the compiler front end, was designed and implemented between spring 1982 and summer 1983; the features added to C through it included the class, the derived class, strong type checking, inlining and default arguments.",
+      "title": "Stroustrup, B., A History of C++: 1979-1991, HOPL-II, ACM SIGPLAN Notices 28(3), March 1993",
+      "url": "https://www.stroustrup.com/hopl2.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "The first version was used internally at AT&T in August 1983. The name was suggested by Rick Mascitti; it was first used in December 1983, when it was edited into the final copies of the 1984 papers, and signifies evolution from C via the increment operator.",
+      "title": "Stroustrup, B., Bjarne Stroustrup’s FAQ — the author’s own answers on motivation, naming and design criteria",
+      "url": "https://www.stroustrup.com/bs_faq.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "The first commercial implementation was released in October 1985, at the same time as the publication of the first edition of The C++ Programming Language.",
+      "title": "Stroustrup, B., A History of C++: 1979-1991, HOPL-II, ACM SIGPLAN Notices 28(3), March 1993",
+      "url": "https://www.stroustrup.com/hopl2.pdf",
       "kind": "primary"
     }
   ]

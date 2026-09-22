@@ -1,0 +1,55 @@
+{
+  "id": "C.9",
+  "name": "C++",
+  "status": "traced",
+  "seed": "C.9",
+  "constraint": "Objects had to cost nothing. The design criterion Stroustrup states is that \u201ca facility must not just be useful, it must be affordable\u201d, which rules out any mechanism that makes a program slower than the equivalent written by hand.",
+  "inherited": {
+    "from": "C.8",
+    "wall": "A language where every operation is a message and the system is a living image gives you seams and takes away the metal: it cannot be compiled to something a systems programmer would accept, and it cannot be shipped as a file."
+  },
+  "opening": "Stroustrup states the motivation as wanting to write efficient systems programs in the styles encouraged by Simula, so he added better type checking, data abstraction and object-oriented programming to C \u2014 his stated goal being \u201cto design a language in which I could write programs that were both efficient and elegant\u201d. Read every feature as an answer to the question that follows from the affordability criterion: what would this construct cost at run time, and can that cost be zero?",
+  "decisions": [
+    {
+      "decision": "A class is a struct with the functions that belong to it, and no more",
+      "because": "Data and the code that maintains its invariants belong together, and that grouping can be done entirely by the compiler. A call to a member function can compile into exactly the call you would have written by hand.",
+      "syntax": [
+        {
+          "code": "class Account {\n  int balance;\npublic:\n  void deposit(int n);\n};",
+          "means": "a layout, plus which functions may touch it",
+          "consequence": "Work began in 1979, and by October 1979 a pre-processor named Cpre added classes in the style of Simula to C. The language it accepted was called C with Classes, and the name is the honest description: the object is a record with rules about who may modify it, which is a compile-time fact with no run-time representation."
+        },
+        {
+          "code": "account.deposit(50);",
+          "means": "call a function that receives the object as a hidden first argument",
+          "consequence": "There is no lookup and no message dispatch by default, so the call costs what a free function taking a pointer costs. That is the whole bargain: you get the organisation and you do not pay for it, and the price of the bargain is that everything about who handles a call is decided before the program runs."
+        }
+      ]
+    },
+    {
+      "decision": "Construction and destruction are automatic, and tied to scope",
+      "because": "If a resource is acquired when an object is created and released when it goes out of scope, the release cannot be forgotten \u2014 and scope is already known to the compiler, so this costs nothing to arrange.",
+      "syntax": [
+        {
+          "code": "{ File f(\"data\"); ... }  // closed here",
+          "means": "acquire on construction, release at the closing brace",
+          "consequence": "This is the single largest improvement over the language it extends, and it required no run-time support: the compiler inserts the release where the scope ends. It also explains why the language is stricter about copying than its predecessor \u2014 if a copy is made, the question of who releases the resource has to have an answer."
+        }
+      ]
+    },
+    {
+      "decision": "Where dispatch has to happen at run time, you ask for it",
+      "because": "Choosing behaviour by the type of an object at run time costs an indirection. That cost is worth it sometimes and not always, so the language makes it a decision rather than a default.",
+      "syntax": [
+        {
+          "code": "virtual void draw();",
+          "means": "decide which function to call from the object, at run time",
+          "consequence": "The keyword exists because the affordable version is the one you did not ask for. A reader can see where the program pays for flexibility, which is the same reason the language has so many keywords: each one names a cost that a different language hides."
+        }
+      ]
+    }
+  ],
+  "wall": "The features added through Cfront \u2014 the class, the derived class, strong type checking, inlining and default arguments \u2014 were designed and implemented between spring 1982 and summer 1983, and the first version was used internally at AT&T in August 1983; the name was suggested by Rick Mascitti and signifies evolution from C via the increment operator. What the bargain does not buy is simplicity. Every construct that costs nothing at run time costs something at compile time and something in the reader's head, so the language grows without a natural place to stop, builds are slow, and the memory management that was never automatic is still yours to get wrong.",
+  "leadsTo": "C.10",
+  "leadsToReason": "Not every program is a system. A great many are a few hundred lines that read a log, pull out three fields and print a report \u2014 and paying a compile cycle and manual memory management for that is absurd."
+}

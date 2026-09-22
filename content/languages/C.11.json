@@ -1,0 +1,50 @@
+{
+  "id": "C.11",
+  "name": "Python",
+  "status": "traced",
+  "seed": "C.11",
+  "constraint": "It was built by somebody who had already implemented a teaching language and remembered both what he learned from it and what frustrated him about it, for a job where writing system utilities in C was taking too long.",
+  "inherited": {
+    "from": "C.10",
+    "wall": "A language that optimises for how short a line is to write produces programs nobody can read six months later, including the person who wrote them."
+  },
+  "opening": "In 1989 van Rossum was working on a microkernel-based distributed system, developing system utilities for it, and found that developing in C took too much time \u2014 so he decided to spend his free time building a language that would let him work faster. Implementation started that December, over a Christmas holiday, as a successor to the earlier teaching language capable of exception handling and of interfacing with that operating system. The design question it answers is narrower than people assume: not what is the best language, but what makes a utility program fast to write and still readable by somebody else.",
+  "decisions": [
+    {
+      "decision": "Indentation is the block structure",
+      "because": "Programmers indent anyway to show structure, and when the indentation and the delimiters disagree it is the indentation a reader believes. Making the visible structure the real structure removes a whole class of disagreement between what a program looks like and what it does.",
+      "syntax": [
+        {
+          "code": "if total > limit:\n    notify(user)\n    log(total)",
+          "means": "both statements are inside the condition because both are indented",
+          "consequence": "There is no way to write code whose appearance and behaviour differ on this point, and no argument about where a brace goes. What you give up is the ability to have the layout ignored: a block cannot be reformatted by a tool that does not understand it, and a line pasted at the wrong depth is a different program rather than an untidy one."
+        }
+      ]
+    },
+    {
+      "decision": "The common data structures are in the language, with syntax",
+      "because": "A utility program is mostly lists of things and lookups by name. If those need a library and a constructor call, the short program is not short.",
+      "syntax": [
+        {
+          "code": "counts = {}\nfor line in lines:\n    counts[line] = counts.get(line, 0) + 1",
+          "means": "a table, built by looking things up in it",
+          "consequence": "Several features were present in the initial release: classes with inheritance, exception handling, functions, and the core datatypes list, dict and str. Having the table and the list be first-class, with their own notation, is what lets the language be terse without any of the punctuation that made its predecessor terse."
+        }
+      ]
+    },
+    {
+      "decision": "Failure is an exception, and a module is a file",
+      "because": "The language existed to write system utilities, which spend their lives being interrupted by things outside them; and the parts of a growing program need boundaries that do not require a build system to declare.",
+      "syntax": [
+        {
+          "code": "try:\n    data = open(path).read()\nexcept IOError as e:\n    ...",
+          "means": "handle the failure where it matters, not at the call",
+          "consequence": "The module system was borrowed from Modula-3, and the exception model also resembled that of Modula-3, with the addition of an else clause. Both were taken deliberately from a language the author admired rather than invented, which is worth noticing: the design's distinguishing quality is what it declined to invent."
+        }
+      ]
+    }
+  ],
+  "wall": "The first public release, version 0.9.0, came on 20 February 1991, published to a newsgroup in 21 uuencoded messages because that was the size limit \u2014 and the properties that made it pleasant are the ones that cost. Everything is looked up at run time, so the interpreter loop is slow; the object model is dynamic, so there is little a compiler can prove; and the ease of adding a module to a program becomes, at scale, the problem of saying which versions of which modules a program needs. The name, after the British comedy series, is the last piece of evidence for what it was optimising for: not gravity, and not the machine.",
+  "leadsTo": "C.12",
+  "leadsToReason": "A language that is pleasant on one machine still has to answer the question of what happens when the program must run on machines you do not control, written by teams you cannot talk to."
+}
