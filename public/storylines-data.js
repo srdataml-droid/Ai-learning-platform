@@ -166,6 +166,221 @@
     "leadsTo": "C.12",
     "leadsToReason": "A language that is pleasant on one machine still has to answer the question of what happens when the program must run on machines you do not control, written by teams you cannot talk to."
   },
+  "C.12": {
+    "id": "C.12",
+    "name": "Java",
+    "status": "traced",
+    "seed": "C.12",
+    "constraint": "It was chartered to anticipate the next wave in computing, and the target was digital consumer devices such as set-top boxes and televisions — machines you do not control, cannot update easily, and cannot assume anything about.",
+    "inherited": {
+      "from": "C.11",
+      "wall": "A language that is pleasant on the machine in front of you still has to answer what happens when the program runs somewhere you have never seen."
+    },
+    "opening": "The design is usually explained by where it ended up rather than by where it started, and that gets it backwards. The project began in June 1991 at Sun Microsystems, aimed at consumer devices, and only in June and July 1994 was the work retargeted to the internet, on the judgement that with the arrival of the Mosaic browser the web was moving toward the interactive vision they had had for cable television. Every property people associate with the web — running somewhere unknown, refusing to touch memory directly, carrying its own safety net — was designed for a set-top box first.",
+    "decisions": [
+      {
+        "decision": "Compile to an instruction set that no processor implements",
+        "because": "Shipping to devices you do not control means you cannot ship a build per device. A fixed, simple instruction set with a runtime for each target moves the per-machine work from you to whoever makes the machine.",
+        "syntax": [
+          {
+            "code": "javac Main.java  ->  Main.class",
+            "means": "compile to bytecode, not to this processor",
+            "consequence": "Programs are compiled to bytecode which can be executed on any device with a compatible runtime, the property summarised by the slogan write once, run anywhere. The compile step stays, so you keep the type checking; the target disappears, so you lose the ability to do anything the runtime does not offer — including the pointer arithmetic that the previous link in this chain treated as the whole point."
+          }
+        ]
+      },
+      {
+        "decision": "Familiar syntax, deliberately",
+        "because": "A new runtime model is already a large ask. Gosling gave it a syntax in the style of C and C++ so that working programmers would find it familiar, which spends the novelty budget on the one place it mattered.",
+        "syntax": [
+          {
+            "code": "for (int i = 0; i < n; i++) { ... }",
+            "means": "a loop that looks exactly like the loop they already knew",
+            "consequence": "Nothing here is new, and that is the decision. The radical parts — a managed heap, no pointers, a verified instruction set — are invisible at the level of a line, so the argument a programmer had to accept was about the runtime rather than about everything at once."
+          },
+          {
+            "code": "public class Main { public static void main(String[] a) { } }",
+            "means": "everything lives inside a class, including the entry point",
+            "consequence": "The unit of code and the unit of loading were made the same thing, so a program is a set of classes a runtime can fetch, verify and link one at a time. The ceremony people complain about is the loading model showing through the syntax."
+          }
+        ]
+      },
+      {
+        "decision": "The runtime owns memory",
+        "because": "On a device that must not crash, in a program shipped to someone you cannot reach, the class of bugs where memory is freed twice or not at all is not acceptable — and the cost of collecting it automatically is a pause, which a set-top box can afford.",
+        "syntax": [
+          {
+            "code": "Account a = new Account();",
+            "means": "allocate, and never say when to release",
+            "consequence": "The reference is not an address you can do arithmetic on, which is what makes the collector possible and the language safe in the specific sense it claims: a program cannot read memory that is not its own. What you give up is the ability to decide when work happens, and every discussion of pause times since is the invoice for this line."
+          }
+        ]
+      }
+    ],
+    "wall": "Announced with the browser at SunWorld on 23 May 1995 — where John Gage of Sun and Marc Andreessen of Netscape announced on stage, as a surprise, that the technology would be incorporated into Netscape Navigator — it won the server and lost the client. What it costs is visible in every file: the ceremony of classes and declarations, a runtime that must start before anything happens, and a verbosity that comes from making every structural fact explicit. It was also named twice: first Oak, after a tree outside Gosling's office, until a trademark search found the name already registered by a video adaptor card manufacturer.",
+    "leadsTo": "C.13",
+    "leadsToReason": "Inside the page itself, a runtime that takes a second to start and a compile step before anything runs are both impossible, and what is needed is something that can respond to a click."
+  },
+  "C.13": {
+    "id": "C.13",
+    "name": "JavaScript",
+    "status": "traced",
+    "seed": "C.13",
+    "constraint": "It had to be prototyped in about ten days, for client-side interactivity inside a browser, and be approachable enough that people writing pages rather than programs would use it.",
+    "inherited": {
+      "from": "C.12",
+      "wall": "A runtime that must start before anything happens and a compile step before anything runs are both impossible inside a page that has to respond to a click."
+    },
+    "opening": "Eich, recently hired by Netscape Communications, was tasked in May 1995 with producing a scripting language for client-side interactivity, and prototyped it in about ten days. Ten days is the single most useful fact about the design: it explains what was borrowed rather than invented, why the borrowings sit oddly together, and why the parts that were never finished were shipped anyway and then could not be changed.",
+    "decisions": [
+      {
+        "decision": "Borrow the good parts from three different languages",
+        "because": "There was no time to invent a model. The design drew on Scheme for its functional elements, Self for prototype-based inheritance, and the syntax of Java for familiarity.",
+        "syntax": [
+          {
+            "code": "function make(n) { return function () { return n++; }; }",
+            "means": "a function that returns a function which remembers n",
+            "consequence": "Functions as values, carrying the variables they closed over, arrived from the functional side and are the best thing in the language. They were also invisible to most of its users for a decade, because the surface looked like the curly-brace language the syntax was borrowed from, and nobody expects that language to do this."
+          },
+          {
+            "code": "const child = Object.create(parent);",
+            "means": "an object whose lookups fall through to another object",
+            "consequence": "Inheritance is between objects rather than between classes, taken from the prototype-based side. It is simpler than a class system and unfamiliar to everyone arriving from one, so the language spent twenty years growing syntax that makes it look like the thing it deliberately is not."
+          }
+        ]
+      },
+      {
+        "decision": "Never stop on an error the page can survive",
+        "because": "The audience was authors of pages, and the alternative to a forgiving language was a blank screen in front of a visitor. A page that renders imperfectly is better than a page that renders not at all.",
+        "syntax": [
+          {
+            "code": "\"5\" - 2   //  3\n\"5\" + 2   //  \"52\"",
+            "means": "the operator decides how to reconcile the types",
+            "consequence": "Coercion means almost nothing is an error, which is exactly what a forgiving environment requires and exactly what makes a large program hard to reason about. The rule is consistent and the results are surprising, which is the worst combination for learning: you cannot dismiss it as random, and you cannot predict it without knowing the table."
+          }
+        ]
+      },
+      {
+        "decision": "The name was a marketing decision, and the confusion was the point",
+        "because": "It was chosen to ride on the contemporaneous success of the other language, whose vendor had just agreed a licensing deal with the browser maker.",
+        "syntax": [
+          {
+            "code": "(Mocha, then LiveScript, then the name it kept)",
+            "means": "three names in seven months",
+            "consequence": "The prototype was codenamed Mocha, renamed in September 1995 for the beta of the second version of the browser, and renamed again that December after the licensing deal. Despite the eventual name the two languages differ fundamentally — one compiled, class-based and statically typed, the other interpreted, prototype-based and dynamic — and the resulting confusion has persisted ever since. A name is an interface too, and this is the most expensive one in the chain."
+          }
+        ]
+      }
+    ],
+    "wall": "Ten days buys you a working language and no time to finish it: no module system, no integers, an object model borrowed from a family nobody in the audience knew, and coercion rules that cannot be changed because pages depend on them. Eich also wrote the first engine to execute it in the browser, and when Mozilla inherited the Netscape codebase in 1998 that engine came with it; the language was taken to Ecma in 1996 and 1997 to produce a standard specification. Standardising it froze the mistakes as well as the good parts, which is the price of a language whose runtime is installed on every machine on earth.",
+    "leadsTo": "C.19",
+    "leadsToReason": "A language with no types and no modules is survivable for a script in a page and not for an application of a hundred thousand lines written by forty people."
+  },
+  "C.14": {
+    "id": "C.14",
+    "name": "PHP",
+    "status": "traced",
+    "seed": "C.14",
+    "constraint": "It started as a set of small, tightly written binaries a person used to run their own home page, on shared hosting that cost almost nothing and gave the author no control over the server.",
+    "inherited": {
+      "from": "C.13",
+      "wall": "Script inside the page handles what happens after the page arrives, and says nothing about how the page was produced or how it reaches the database."
+    },
+    "opening": "The thing to understand is that the model is inverted from every other language in this chain, and that inversion is the whole product. Everywhere else a program runs and may emit a document. Here a file is a document which may contain code: the page is served as written except where an escape into code occurs. Read the language that way and its reputation makes sense as a consequence rather than as a verdict.",
+    "decisions": [
+      {
+        "decision": "The file is a page, and code is an escape inside it",
+        "because": "The author already has a page. What they want is for three lines of it to change, and every alternative asks them to turn the page into a program first.",
+        "syntax": [
+          {
+            "code": "<p>Hello, <?php echo $name; ?></p>",
+            "means": "the paragraph is output as written; the escape is evaluated",
+            "consequence": "There is no main, no entry point and no template to register, so the distance from a page you have to a page that changes is one tag. That is the most effective on-ramp any language in this chain has had, and it is the same property that puts logic, markup and queries in one file by default."
+          }
+        ]
+      },
+      {
+        "decision": "The request is the lifetime",
+        "because": "On shared hosting, a process per request is what the environment gives you. If everything is torn down afterwards, the author never has to think about state left behind by the last visitor.",
+        "syntax": [
+          {
+            "code": "$_GET['id']",
+            "means": "what this request carried, available immediately",
+            "consequence": "The request's data is in the language as a variable rather than behind a framework object, and anything you allocate stops mattering when the request ends. A whole class of leaks and cross-request contamination cannot happen, and a whole class of long-running work becomes awkward — which is the trade the environment forced rather than one the language chose."
+          }
+        ]
+      },
+      {
+        "decision": "Grow by accretion, from what people actually asked for",
+        "because": "What was released on 8 June 1995 was a utility library and templating mechanism rather than a scripting language, and it became a language by being extended wherever users hit a wall.",
+        "syntax": [
+          {
+            "code": "strlen($s);  str_replace($a, $b, $s);",
+            "means": "functions named however they were named on the day",
+            "consequence": "A complete rewrite followed in October 1995 and the second generation arrived in April 1996, but the standard library kept its origins: argument orders and naming conventions differ between functions because they arrived at different times from different people. The inconsistency is the fossil record of a library that was never designed in one sitting, and it is the most cited complaint about the language."
+          }
+        ]
+      }
+    ],
+    "wall": "The on-ramp is the wall. A model where the page is the program and the request is the lifetime makes the first change trivial and offers no structure for the hundredth, and a language that puts input in a variable and output in the same file makes the insecure version the shortest version. The name records the same trajectory: originally an abbreviation of Personal Home Page, later redefined as a recursive abbreviation for Hypertext Preprocessor, which is a language growing out of its own origins and keeping the letters.",
+    "leadsTo": "C.15",
+    "leadsToReason": "If the first change should be trivial and the hundredth should be survivable, the structure has to come from somewhere other than the file — from conventions the framework already knows."
+  },
+  "C.15": {
+    "id": "C.15",
+    "name": "Ruby, then Rails",
+    "status": "traced",
+    "seed": "C.15",
+    "constraint": "The language was designed for the pleasure of the person writing it, which is a real design criterion and an unusual one — and the framework was extracted from an application that already worked, so every convention in it had already earned its place.",
+    "inherited": {
+      "from": "C.14",
+      "wall": "A model where the page is the program gives you no structure at all past the first few files, and the ceremony offered as the alternative drained the appetite of the people who had to type it."
+    },
+    "opening": "This entry is two things, and the join between them is the interesting part. The language was named on 24 February 1993 in a chat between Matsumoto and Ishitsuka, before any code existed, with Coral and Ruby the two proposals. The framework came a decade later, extracted by Hansson from his work on a project management application, created for the company's internal use first and open-sourced in July 2004. A language optimised for the writer, plus a framework that had already been proved by an application, is why the pair landed so hard.",
+    "decisions": [
+      {
+        "decision": "Optimise for the person writing it, and say so",
+        "because": "The stated goal is the programmer's enjoyment, which sounds soft until you notice it is the opposite of the choice the first compiler in this chain made — its designers deliberately treated the translator rather than the language as the real challenge, optimising for the machine rather than for the person.",
+        "syntax": [
+          {
+            "code": "3.times { puts \"hi\" }",
+            "means": "ask the number to do something three times",
+            "consequence": "Everything is an object including the number, and a block of code can be handed to a method as an argument, so control structures read as ordinary calls. The cost is an object model and a dispatch on every operation, which is where the throughput goes."
+          },
+          {
+            "code": "unless user.admin?\n  deny\nend",
+            "means": "a negative condition, written as one",
+            "consequence": "Method names may end in a question mark, and the language provides the inverse of a construct when the inverse reads better. Both are pure ergonomics with no new power, which is precisely the point: the design treats the sentence the programmer reads as a thing worth spending grammar on."
+          }
+        ]
+      },
+      {
+        "decision": "Defaults derived from names and locations, rather than declarations",
+        "because": "The framework is built on convention over configuration: defaults derived from names and locations stand in for declarations the developer would otherwise have to write.",
+        "syntax": [
+          {
+            "code": "class Order < ApplicationRecord; end",
+            "means": "a class with no configuration, mapped to the orders table",
+            "consequence": "The table name, the primary key and the file's location are inferred, so the declaration file that other stacks require does not exist. What you gain is that a new reader who knows the conventions can find anything; what you pay is that a reader who does not cannot see where the behaviour comes from, because the configuration is absent rather than elsewhere."
+          }
+        ]
+      },
+      {
+        "decision": "Extract the framework from a working application, rather than designing it first",
+        "because": "A convention is only worth imposing if it has already survived contact with a real product. Extracting it means every default was chosen by somebody who had already paid for the alternative.",
+        "syntax": [
+          {
+            "code": "app/models  app/views  app/controllers",
+            "means": "a layout that is not negotiable, and does not need to be",
+            "consequence": "It reached version 1.0 in December 2005, having been open-sourced the year before, and the directory layout became an industry default for a decade. This is the strongest argument in the chain for extraction over design: the conventions were not predictions about what applications need, they were observations of what one working application had needed."
+          }
+        ]
+      }
+    ],
+    "wall": "The first public release of the language, version 0.95, was announced on Japanese domestic newsgroups on 21 December 1995, with version 1.0 following on 25 December 1996 — and the properties that make it a pleasure are the ones that limit it. Dispatch on every operation and an object for every value cost throughput, and the model of a process per request scales by adding processes rather than by doing more inside one. Convention makes an unfamiliar codebase navigable and makes the framework's behaviour hard to locate, because there is nothing to read where the decision was made.",
+    "leadsTo": "C.16",
+    "leadsToReason": "Adding processes to get concurrency is a limit you eventually hit, and the systems that never hit it were designed from the start around many small independent units that communicate rather than share."
+  },
   "C.2": {
     "id": "C.2",
     "name": "FORTRAN",
@@ -778,6 +993,128 @@
       "title": "History of Python: the December 1989 start at CWI, the ABC and Amoeba context, the Modula-3 module system, and the February 1991 release to alt.sources",
       "url": "https://en.wikipedia.org/wiki/History_of_Python",
       "kind": "secondary"
+    }
+  ],
+  "C.12": [
+    {
+      "claim": "James Gosling, Mike Sheridan and Patrick Naughton started the project in June 1991 at Sun Microsystems, chartered to anticipate the next wave in computing. The target was digital consumer devices such as set-top boxes and televisions.",
+      "title": "Java (programming language): the Green Project, the Oak name, the 1994 retarget to the internet, and the SunWorld announcement of 23 May 1995",
+      "url": "https://en.wikipedia.org/wiki/Java_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The language was first called Oak, after a tree outside Gosling’s office. A trademark search found Oak already registered by a video adaptor card manufacturer, so it was renamed. Gosling gave it a syntax in the style of C and C++ so that working programmers would find it familiar.",
+      "title": "Java (programming language): the Green Project, the Oak name, the 1994 retarget to the internet, and the SunWorld announcement of 23 May 1995",
+      "url": "https://en.wikipedia.org/wiki/Java_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "In June and July 1994 the team retargeted the work from consumer devices to the internet, judging that with the arrival of the Mosaic browser the web was moving toward the interactive vision they had had for cable television. On 16 September 1994 work began on a browser called WebRunner, later renamed HotJava, demonstrated to executives on 29 September 1994.",
+      "title": "Java (programming language): the Green Project, the Oak name, the 1994 retarget to the internet, and the SunWorld announcement of 23 May 1995",
+      "url": "https://en.wikipedia.org/wiki/Java_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Sun announced the language and the browser at SunWorld on 23 May 1995. John Gage of Sun and Marc Andreessen of Netscape announced on stage that the technology would be incorporated into Netscape Navigator; Andreessen’s announcement was a surprise. The team numbered fewer than 30 people at the time.",
+      "title": "Java (programming language): the Green Project, the Oak name, the 1994 retarget to the internet, and the SunWorld announcement of 23 May 1995",
+      "url": "https://en.wikipedia.org/wiki/Java_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Programs are compiled to bytecode, which can be executed on any device with a compatible runtime. This is the property summarised by the slogan write once, run anywhere.",
+      "title": "Java (programming language): the Green Project, the Oak name, the 1994 retarget to the internet, and the SunWorld announcement of 23 May 1995",
+      "url": "https://en.wikipedia.org/wiki/Java_(programming_language)",
+      "kind": "secondary"
+    }
+  ],
+  "C.13": [
+    {
+      "claim": "Brendan Eich, recently hired by Netscape Communications, was tasked in May 1995 with producing a scripting language for client-side interactivity in Netscape Navigator, and prototyped it in about ten days.",
+      "title": "Brendan Eich: the ten-day prototype of May 1995 at Netscape, the Mocha and LiveScript names, and the December 1995 renaming under the Sun licensing deal",
+      "url": "https://en.wikipedia.org/wiki/Brendan_Eich",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The design drew on Scheme for its functional elements, Self for prototype-based inheritance, and the syntax of Java for familiarity. Despite the eventual name the two languages differ fundamentally: one is compiled, class-based and statically typed, the other interpreted, prototype-based and dynamically typed, and the main similarity is C-style syntax.",
+      "title": "Brendan Eich: the ten-day prototype of May 1995 at Netscape, the Mocha and LiveScript names, and the December 1995 renaming under the Sun licensing deal",
+      "url": "https://en.wikipedia.org/wiki/Brendan_Eich",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The prototype was codenamed Mocha, renamed LiveScript in September 1995 for the beta of the second version of the browser, and renamed again in December 1995 after Netscape and Sun reached a licensing deal. Eich described it in a later interview: \"in early December Netscape and Sun reached a licensing deal, and the language became JavaScript.\"",
+      "title": "Brendan Eich: the ten-day prototype of May 1995 at Netscape, the Mocha and LiveScript names, and the December 1995 renaming under the Sun licensing deal",
+      "url": "https://en.wikipedia.org/wiki/Brendan_Eich",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The name was chosen to ride on the contemporaneous success of Java, and the resulting confusion between the two has persisted ever since.",
+      "title": "Brendan Eich: the ten-day prototype of May 1995 at Netscape, the Mocha and LiveScript names, and the December 1995 renaming under the Sun licensing deal",
+      "url": "https://en.wikipedia.org/wiki/Brendan_Eich",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Eich also wrote the first engine to execute the language in the browser. When Mozilla inherited the Netscape codebase in 1998, that engine came with it. The language was taken to Ecma in 1996 and 1997 to produce a standard specification.",
+      "title": "Brendan Eich: the ten-day prototype of May 1995 at Netscape, the Mocha and LiveScript names, and the December 1995 renaming under the Sun licensing deal",
+      "url": "https://en.wikipedia.org/wiki/Brendan_Eich",
+      "kind": "secondary"
+    }
+  ],
+  "C.14": [
+    {
+      "claim": "Rasmus Lerdorf released version 1.0, then called Personal Home Page Tools, on 8 June 1995, announcing it on the newsgroup comp.infosystems.www.authoring.cgi under the subject Announce: Personal Home Page Tools.",
+      "title": "History of PHP — the project’s own account of the 1995 Personal Home Page Tools release and the rewrites that followed",
+      "url": "https://www.php.net/manual/en/history.php.php",
+      "kind": "primary"
+    },
+    {
+      "claim": "What was released was a set of small, tightly written CGI binaries in C — a utility library and templating mechanism rather than a scripting language. A complete rewrite followed in October 1995, and the second generation arrived in April 1996.",
+      "title": "History of PHP — the project’s own account of the 1995 Personal Home Page Tools release and the rewrites that followed",
+      "url": "https://www.php.net/manual/en/history.php.php",
+      "kind": "primary"
+    },
+    {
+      "claim": "The name was originally an abbreviation of Personal Home Page, and was later redefined as a recursive abbreviation for Hypertext Preprocessor.",
+      "title": "History of PHP — the project’s own account of the 1995 Personal Home Page Tools release and the rewrites that followed",
+      "url": "https://www.php.net/manual/en/history.php.php",
+      "kind": "primary"
+    },
+    {
+      "claim": "The model is that a file is a document which may contain code, rather than a program which emits a document: the page is served as written except where an escape into code occurs.",
+      "title": "History of PHP — the project’s own account of the 1995 Personal Home Page Tools release and the rewrites that followed",
+      "url": "https://www.php.net/manual/en/history.php.php",
+      "kind": "primary"
+    }
+  ],
+  "C.15": [
+    {
+      "claim": "The name was chosen on 24 February 1993, in a chat between Yukihiro Matsumoto and Keiju Ishitsuka, before any code existed. Coral and Ruby were the two proposals and Matsumoto picked the latter.",
+      "title": "Ruby (programming language): the February 1993 naming, the 0.95 release of 21 December 1995, and the 1.0 release of 25 December 1996",
+      "url": "https://en.wikipedia.org/wiki/Ruby_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The first public release, version 0.95, was announced on Japanese domestic newsgroups on 21 December 1995. Three further versions followed within two days, and the release coincided with the launch of the language’s first mailing list. Version 1.0 followed on 25 December 1996.",
+      "title": "Ruby (programming language): the February 1993 naming, the 0.95 release of 21 December 1995, and the 1.0 release of 25 December 1996",
+      "url": "https://en.wikipedia.org/wiki/Ruby_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "David Heinemeier Hansson extracted the framework from his work on the project management application Basecamp at 37signals. It was created for the company’s internal use first, open-sourced in July 2004, and reached version 1.0 in December 2005. Hansson had discovered the language in 2003.",
+      "title": "Ruby on Rails: extraction from Basecamp at 37signals, the July 2004 open-source release, and version 1.0 in December 2005",
+      "url": "https://en.wikipedia.org/wiki/Ruby_on_Rails",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The framework is built on convention over configuration: defaults derived from names and locations stand in for declarations the developer would otherwise have to write.",
+      "title": "Ruby on Rails: extraction from Basecamp at 37signals, the July 2004 open-source release, and version 1.0 in December 2005",
+      "url": "https://en.wikipedia.org/wiki/Ruby_on_Rails",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The earlier link in this chain that this one is contrasted with is Fortran, whose designers deliberately treated the translator rather than the language as the real challenge — that is, they optimised for the machine rather than for the programmer writing it.",
+      "title": "Backus, J., The History of Fortran I, II and III, in History of Programming Languages, ACM/Academic Press, 1978",
+      "url": "https://cse.sc.edu/~mgv/csce330f12/Backus78.pdf",
+      "kind": "primary"
     }
   ],
   "C.2": [

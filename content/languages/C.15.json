@@ -1,0 +1,55 @@
+{
+  "id": "C.15",
+  "name": "Ruby, then Rails",
+  "status": "traced",
+  "seed": "C.15",
+  "constraint": "The language was designed for the pleasure of the person writing it, which is a real design criterion and an unusual one \u2014 and the framework was extracted from an application that already worked, so every convention in it had already earned its place.",
+  "inherited": {
+    "from": "C.14",
+    "wall": "A model where the page is the program gives you no structure at all past the first few files, and the ceremony offered as the alternative drained the appetite of the people who had to type it."
+  },
+  "opening": "This entry is two things, and the join between them is the interesting part. The language was named on 24 February 1993 in a chat between Matsumoto and Ishitsuka, before any code existed, with Coral and Ruby the two proposals. The framework came a decade later, extracted by Hansson from his work on a project management application, created for the company's internal use first and open-sourced in July 2004. A language optimised for the writer, plus a framework that had already been proved by an application, is why the pair landed so hard.",
+  "decisions": [
+    {
+      "decision": "Optimise for the person writing it, and say so",
+      "because": "The stated goal is the programmer's enjoyment, which sounds soft until you notice it is the opposite of the choice the first compiler in this chain made \u2014 its designers deliberately treated the translator rather than the language as the real challenge, optimising for the machine rather than for the person.",
+      "syntax": [
+        {
+          "code": "3.times { puts \"hi\" }",
+          "means": "ask the number to do something three times",
+          "consequence": "Everything is an object including the number, and a block of code can be handed to a method as an argument, so control structures read as ordinary calls. The cost is an object model and a dispatch on every operation, which is where the throughput goes."
+        },
+        {
+          "code": "unless user.admin?\n  deny\nend",
+          "means": "a negative condition, written as one",
+          "consequence": "Method names may end in a question mark, and the language provides the inverse of a construct when the inverse reads better. Both are pure ergonomics with no new power, which is precisely the point: the design treats the sentence the programmer reads as a thing worth spending grammar on."
+        }
+      ]
+    },
+    {
+      "decision": "Defaults derived from names and locations, rather than declarations",
+      "because": "The framework is built on convention over configuration: defaults derived from names and locations stand in for declarations the developer would otherwise have to write.",
+      "syntax": [
+        {
+          "code": "class Order < ApplicationRecord; end",
+          "means": "a class with no configuration, mapped to the orders table",
+          "consequence": "The table name, the primary key and the file's location are inferred, so the declaration file that other stacks require does not exist. What you gain is that a new reader who knows the conventions can find anything; what you pay is that a reader who does not cannot see where the behaviour comes from, because the configuration is absent rather than elsewhere."
+        }
+      ]
+    },
+    {
+      "decision": "Extract the framework from a working application, rather than designing it first",
+      "because": "A convention is only worth imposing if it has already survived contact with a real product. Extracting it means every default was chosen by somebody who had already paid for the alternative.",
+      "syntax": [
+        {
+          "code": "app/models  app/views  app/controllers",
+          "means": "a layout that is not negotiable, and does not need to be",
+          "consequence": "It reached version 1.0 in December 2005, having been open-sourced the year before, and the directory layout became an industry default for a decade. This is the strongest argument in the chain for extraction over design: the conventions were not predictions about what applications need, they were observations of what one working application had needed."
+        }
+      ]
+    }
+  ],
+  "wall": "The first public release of the language, version 0.95, was announced on Japanese domestic newsgroups on 21 December 1995, with version 1.0 following on 25 December 1996 \u2014 and the properties that make it a pleasure are the ones that limit it. Dispatch on every operation and an object for every value cost throughput, and the model of a process per request scales by adding processes rather than by doing more inside one. Convention makes an unfamiliar codebase navigable and makes the framework's behaviour hard to locate, because there is nothing to read where the decision was made.",
+  "leadsTo": "C.16",
+  "leadsToReason": "Adding processes to get concurrency is a limit you eventually hit, and the systems that never hit it were designed from the start around many small independent units that communicate rather than share."
+}

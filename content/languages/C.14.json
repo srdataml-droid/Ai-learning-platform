@@ -1,0 +1,50 @@
+{
+  "id": "C.14",
+  "name": "PHP",
+  "status": "traced",
+  "seed": "C.14",
+  "constraint": "It started as a set of small, tightly written binaries a person used to run their own home page, on shared hosting that cost almost nothing and gave the author no control over the server.",
+  "inherited": {
+    "from": "C.13",
+    "wall": "Script inside the page handles what happens after the page arrives, and says nothing about how the page was produced or how it reaches the database."
+  },
+  "opening": "The thing to understand is that the model is inverted from every other language in this chain, and that inversion is the whole product. Everywhere else a program runs and may emit a document. Here a file is a document which may contain code: the page is served as written except where an escape into code occurs. Read the language that way and its reputation makes sense as a consequence rather than as a verdict.",
+  "decisions": [
+    {
+      "decision": "The file is a page, and code is an escape inside it",
+      "because": "The author already has a page. What they want is for three lines of it to change, and every alternative asks them to turn the page into a program first.",
+      "syntax": [
+        {
+          "code": "<p>Hello, <?php echo $name; ?></p>",
+          "means": "the paragraph is output as written; the escape is evaluated",
+          "consequence": "There is no main, no entry point and no template to register, so the distance from a page you have to a page that changes is one tag. That is the most effective on-ramp any language in this chain has had, and it is the same property that puts logic, markup and queries in one file by default."
+        }
+      ]
+    },
+    {
+      "decision": "The request is the lifetime",
+      "because": "On shared hosting, a process per request is what the environment gives you. If everything is torn down afterwards, the author never has to think about state left behind by the last visitor.",
+      "syntax": [
+        {
+          "code": "$_GET['id']",
+          "means": "what this request carried, available immediately",
+          "consequence": "The request's data is in the language as a variable rather than behind a framework object, and anything you allocate stops mattering when the request ends. A whole class of leaks and cross-request contamination cannot happen, and a whole class of long-running work becomes awkward \u2014 which is the trade the environment forced rather than one the language chose."
+        }
+      ]
+    },
+    {
+      "decision": "Grow by accretion, from what people actually asked for",
+      "because": "What was released on 8 June 1995 was a utility library and templating mechanism rather than a scripting language, and it became a language by being extended wherever users hit a wall.",
+      "syntax": [
+        {
+          "code": "strlen($s);  str_replace($a, $b, $s);",
+          "means": "functions named however they were named on the day",
+          "consequence": "A complete rewrite followed in October 1995 and the second generation arrived in April 1996, but the standard library kept its origins: argument orders and naming conventions differ between functions because they arrived at different times from different people. The inconsistency is the fossil record of a library that was never designed in one sitting, and it is the most cited complaint about the language."
+        }
+      ]
+    }
+  ],
+  "wall": "The on-ramp is the wall. A model where the page is the program and the request is the lifetime makes the first change trivial and offers no structure for the hundredth, and a language that puts input in a variable and output in the same file makes the insecure version the shortest version. The name records the same trajectory: originally an abbreviation of Personal Home Page, later redefined as a recursive abbreviation for Hypertext Preprocessor, which is a language growing out of its own origins and keeping the letters.",
+  "leadsTo": "C.15",
+  "leadsToReason": "If the first change should be trivial and the hundredth should be survivable, the structure has to come from somewhere other than the file \u2014 from conventions the framework already knows."
+}

@@ -1,0 +1,55 @@
+{
+  "id": "C.13",
+  "name": "JavaScript",
+  "status": "traced",
+  "seed": "C.13",
+  "constraint": "It had to be prototyped in about ten days, for client-side interactivity inside a browser, and be approachable enough that people writing pages rather than programs would use it.",
+  "inherited": {
+    "from": "C.12",
+    "wall": "A runtime that must start before anything happens and a compile step before anything runs are both impossible inside a page that has to respond to a click."
+  },
+  "opening": "Eich, recently hired by Netscape Communications, was tasked in May 1995 with producing a scripting language for client-side interactivity, and prototyped it in about ten days. Ten days is the single most useful fact about the design: it explains what was borrowed rather than invented, why the borrowings sit oddly together, and why the parts that were never finished were shipped anyway and then could not be changed.",
+  "decisions": [
+    {
+      "decision": "Borrow the good parts from three different languages",
+      "because": "There was no time to invent a model. The design drew on Scheme for its functional elements, Self for prototype-based inheritance, and the syntax of Java for familiarity.",
+      "syntax": [
+        {
+          "code": "function make(n) { return function () { return n++; }; }",
+          "means": "a function that returns a function which remembers n",
+          "consequence": "Functions as values, carrying the variables they closed over, arrived from the functional side and are the best thing in the language. They were also invisible to most of its users for a decade, because the surface looked like the curly-brace language the syntax was borrowed from, and nobody expects that language to do this."
+        },
+        {
+          "code": "const child = Object.create(parent);",
+          "means": "an object whose lookups fall through to another object",
+          "consequence": "Inheritance is between objects rather than between classes, taken from the prototype-based side. It is simpler than a class system and unfamiliar to everyone arriving from one, so the language spent twenty years growing syntax that makes it look like the thing it deliberately is not."
+        }
+      ]
+    },
+    {
+      "decision": "Never stop on an error the page can survive",
+      "because": "The audience was authors of pages, and the alternative to a forgiving language was a blank screen in front of a visitor. A page that renders imperfectly is better than a page that renders not at all.",
+      "syntax": [
+        {
+          "code": "\"5\" - 2   //  3\n\"5\" + 2   //  \"52\"",
+          "means": "the operator decides how to reconcile the types",
+          "consequence": "Coercion means almost nothing is an error, which is exactly what a forgiving environment requires and exactly what makes a large program hard to reason about. The rule is consistent and the results are surprising, which is the worst combination for learning: you cannot dismiss it as random, and you cannot predict it without knowing the table."
+        }
+      ]
+    },
+    {
+      "decision": "The name was a marketing decision, and the confusion was the point",
+      "because": "It was chosen to ride on the contemporaneous success of the other language, whose vendor had just agreed a licensing deal with the browser maker.",
+      "syntax": [
+        {
+          "code": "(Mocha, then LiveScript, then the name it kept)",
+          "means": "three names in seven months",
+          "consequence": "The prototype was codenamed Mocha, renamed in September 1995 for the beta of the second version of the browser, and renamed again that December after the licensing deal. Despite the eventual name the two languages differ fundamentally \u2014 one compiled, class-based and statically typed, the other interpreted, prototype-based and dynamic \u2014 and the resulting confusion has persisted ever since. A name is an interface too, and this is the most expensive one in the chain."
+        }
+      ]
+    }
+  ],
+  "wall": "Ten days buys you a working language and no time to finish it: no module system, no integers, an object model borrowed from a family nobody in the audience knew, and coercion rules that cannot be changed because pages depend on them. Eich also wrote the first engine to execute it in the browser, and when Mozilla inherited the Netscape codebase in 1998 that engine came with it; the language was taken to Ecma in 1996 and 1997 to produce a standard specification. Standardising it froze the mistakes as well as the good parts, which is the price of a language whose runtime is installed on every machine on earth.",
+  "leadsTo": "C.19",
+  "leadsToReason": "A language with no types and no modules is survivable for a script in a page and not for an application of a hundred thousand lines written by forty people."
+}

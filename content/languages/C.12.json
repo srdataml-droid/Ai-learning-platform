@@ -1,0 +1,55 @@
+{
+  "id": "C.12",
+  "name": "Java",
+  "status": "traced",
+  "seed": "C.12",
+  "constraint": "It was chartered to anticipate the next wave in computing, and the target was digital consumer devices such as set-top boxes and televisions \u2014 machines you do not control, cannot update easily, and cannot assume anything about.",
+  "inherited": {
+    "from": "C.11",
+    "wall": "A language that is pleasant on the machine in front of you still has to answer what happens when the program runs somewhere you have never seen."
+  },
+  "opening": "The design is usually explained by where it ended up rather than by where it started, and that gets it backwards. The project began in June 1991 at Sun Microsystems, aimed at consumer devices, and only in June and July 1994 was the work retargeted to the internet, on the judgement that with the arrival of the Mosaic browser the web was moving toward the interactive vision they had had for cable television. Every property people associate with the web \u2014 running somewhere unknown, refusing to touch memory directly, carrying its own safety net \u2014 was designed for a set-top box first.",
+  "decisions": [
+    {
+      "decision": "Compile to an instruction set that no processor implements",
+      "because": "Shipping to devices you do not control means you cannot ship a build per device. A fixed, simple instruction set with a runtime for each target moves the per-machine work from you to whoever makes the machine.",
+      "syntax": [
+        {
+          "code": "javac Main.java  ->  Main.class",
+          "means": "compile to bytecode, not to this processor",
+          "consequence": "Programs are compiled to bytecode which can be executed on any device with a compatible runtime, the property summarised by the slogan write once, run anywhere. The compile step stays, so you keep the type checking; the target disappears, so you lose the ability to do anything the runtime does not offer \u2014 including the pointer arithmetic that the previous link in this chain treated as the whole point."
+        }
+      ]
+    },
+    {
+      "decision": "Familiar syntax, deliberately",
+      "because": "A new runtime model is already a large ask. Gosling gave it a syntax in the style of C and C++ so that working programmers would find it familiar, which spends the novelty budget on the one place it mattered.",
+      "syntax": [
+        {
+          "code": "for (int i = 0; i < n; i++) { ... }",
+          "means": "a loop that looks exactly like the loop they already knew",
+          "consequence": "Nothing here is new, and that is the decision. The radical parts \u2014 a managed heap, no pointers, a verified instruction set \u2014 are invisible at the level of a line, so the argument a programmer had to accept was about the runtime rather than about everything at once."
+        },
+        {
+          "code": "public class Main { public static void main(String[] a) { } }",
+          "means": "everything lives inside a class, including the entry point",
+          "consequence": "The unit of code and the unit of loading were made the same thing, so a program is a set of classes a runtime can fetch, verify and link one at a time. The ceremony people complain about is the loading model showing through the syntax."
+        }
+      ]
+    },
+    {
+      "decision": "The runtime owns memory",
+      "because": "On a device that must not crash, in a program shipped to someone you cannot reach, the class of bugs where memory is freed twice or not at all is not acceptable \u2014 and the cost of collecting it automatically is a pause, which a set-top box can afford.",
+      "syntax": [
+        {
+          "code": "Account a = new Account();",
+          "means": "allocate, and never say when to release",
+          "consequence": "The reference is not an address you can do arithmetic on, which is what makes the collector possible and the language safe in the specific sense it claims: a program cannot read memory that is not its own. What you give up is the ability to decide when work happens, and every discussion of pause times since is the invoice for this line."
+        }
+      ]
+    }
+  ],
+  "wall": "Announced with the browser at SunWorld on 23 May 1995 \u2014 where John Gage of Sun and Marc Andreessen of Netscape announced on stage, as a surprise, that the technology would be incorporated into Netscape Navigator \u2014 it won the server and lost the client. What it costs is visible in every file: the ceremony of classes and declarations, a runtime that must start before anything happens, and a verbosity that comes from making every structural fact explicit. It was also named twice: first Oak, after a tree outside Gosling's office, until a trademark search found the name already registered by a video adaptor card manufacturer.",
+  "leadsTo": "C.13",
+  "leadsToReason": "Inside the page itself, a runtime that takes a second to start and a compile step before anything runs are both impossible, and what is needed is something that can respond to a click."
+}
