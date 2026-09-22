@@ -1,6 +1,6 @@
 # Tasks with no lesson
 
-Regenerated 2026-09-21. Derived from content/lessons/ against the curriculum — not maintained by hand, so it cannot drift.
+Regenerated 2026-09-22. Derived from content/lessons/ against the curriculum — not maintained by hand, so it cannot drift.
 
 Study order: the sequence first, then the five habits running underneath.
 
@@ -46,24 +46,12 @@ Study order: the sequence first, then the five habits running underneath.
 
 ## Track K — Neural networks
 
-14 of 18 still missing.
+3 of 18 still missing.
 
-- [ ] `K.1` A neuron: weights, bias, activation
-- [ ] `K.3` Why non linearity is the whole trick
-- [ ] `K.4` Loss functions: what you are actually minimising
-- [ ] `K.5` Gradient descent, by hand, on paper, once
-- [ ] `K.7` Overfitting, regularisation, train and test splits
-- [ ] `K.8` Why the 1990s stalled: data, compute, vanishing gradients
-- [ ] `K.9` Convolutional networks, LeCun, cheque reading by 1998
-- [ ] `K.10` Recurrent networks and LSTM, 1997
-      <br>_note: built to fix forgetting, and still forgot_
-- [ ] `K.12` Embeddings: meaning as geometry
 - [ ] `K.14` Pretraining and transfer: BERT 2018, GPT-2 2019, GPT-3 2020
 - [ ] `K.15` Scaling laws, 2020
 - [ ] `K.16` Instruction tuning and RLHF
       <br>_note: why ChatGPT in 2022 felt different from GPT-3 in 2020. The base model was not the change, the alignment step was_
-- [ ] `K.17` Tokenisation, context windows, and why cost grows the way it does
-- [ ] `K.18` Inference versus training: completely different engineering problems
 
 ## Track L — AI engineering
 
@@ -115,7 +103,7 @@ Study order: the sequence first, then the five habits running underneath.
 
 ---
 
-**Total remaining: 37 of 313.**
+**Total remaining: 26 of 313.**
 
 Regenerate: `node tools/missing-lessons.mjs > docs/MISSING-LESSONS.md`
 

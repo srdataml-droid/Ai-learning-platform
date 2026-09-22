@@ -1,0 +1,53 @@
+{
+  "taskId": "K.12",
+  "title": "Word vectors, the analogy demonstration, and what the implementations exclude",
+  "researchedAt": "2026-09-22",
+  "claims": [
+    {
+      "id": "c1",
+      "type": "event",
+      "tokens": [
+        "Mikolov",
+        "Chen",
+        "Corrado",
+        "Dean",
+        "Tomas Mikolov",
+        "2013"
+      ],
+      "text": "Mikolov, Chen, Corrado and Dean published Efficient Estimation of Word Representations in Vector Space in 2013. Its introduction reports that the vector for king, minus the vector for man, plus the vector for woman, gives a vector closest to the representation of the word queen. The paper also introduces a test set of syntactic and semantic regularities, containing 8,869 semantic questions and 10,675 syntactic questions, and states the goal of maximising the accuracy of such vector operations by developing architectures that preserve the linear regularities among words.",
+      "source": {
+        "title": "Tomas Mikolov, Kai Chen, Greg Corrado and Jeffrey Dean, Efficient Estimation of Word Representations in Vector Space, 2013",
+        "url": "https://arxiv.org/abs/1301.3781",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "type": "number",
+      "tokens": [
+        "Nissim",
+        "Noord",
+        "Goot",
+        "Malvina Nissim",
+        "Linzen",
+        "Schluter",
+        "Bolukbasi",
+        "2016",
+        "2018",
+        "2020"
+      ],
+      "text": "Nissim, van Noord and van der Goot published Fair Is Better than Sensational: Man Is to Doctor as Woman Is to Doctor in Computational Linguistics volume 46 number 2 in 2020, pages 487 to 497. They report that in the default implementation of word2vec, in gensim, and in the code from Bolukbasi et al. 2016, the input terms of the analogy query are not allowed to be returned. They adapted all three code bases to allow the input words to be returned and re-evaluated on the test set from Mikolov et al. 2013, observing a large drop in macro-accuracy in the unconstrained setting: from 0.71 to 0.21 for the method known as 3CosAdd, and from 0.73 to 0.45 for 3CosMul. In most cases this is because the second term is returned as the answer, which happens when no close neighbour is found, and in some cases the third term is returned instead. A similar drop was observed before by Linzen in 2016 and by Schluter in 2018. The authors note that although the constraint is mentioned in the original paper and in follow-up work, they believe it is not common knowledge in the field, and that analogy examples are still widely used.",
+      "source": {
+        "title": "Malvina Nissim, Rik van Noord and Rob van der Goot, Fair Is Better than Sensational: Man Is to Doctor as Woman Is to Doctor, Computational Linguistics volume 46 number 2, 2020, pages 487-497",
+        "url": "https://aclanthology.org/2020.cl-2.7/",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "comparing meaning by comparing strings fails on everything that says the same thing in different words, and a hand-built taxonomy of meanings covers only what somebody thought to enter",
+    "fix": "give every item a position in one shared space, learned from which items appear in the same contexts, so that closeness stands in for relatedness and the only operation needed is a distance",
+    "cost": "distance measures whatever the training made nearby rather than what is true or relevant, and the most famous demonstration of the geometry depended on a filter that excluded the query words from the answers",
+    "interview": "what a vector distance is actually measuring, and what the analogy demonstration excluded"
+  }
+}

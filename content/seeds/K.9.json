@@ -1,0 +1,48 @@
+{
+  "taskId": "K.9",
+  "title": "Convolutional networks and their commercial deployment on handwritten documents",
+  "researchedAt": "2026-09-22",
+  "claims": [
+    {
+      "id": "c1",
+      "type": "event",
+      "tokens": [
+        "LeCun",
+        "Bottou",
+        "Bengio",
+        "Haffner",
+        "Yann LeCun",
+        "IEEE",
+        "1998"
+      ],
+      "text": "LeCun, Bottou, Bengio and Haffner published Gradient-based learning applied to document recognition in the Proceedings of the IEEE in November 1998. It describes convolutional networks trained by gradient descent and applied to handwritten document recognition, including systems deployed commercially, and argues that a network can learn its own features from pixels rather than having them designed by hand.",
+      "source": {
+        "title": "Yann LeCun, Leon Bottou, Yoshua Bengio and Patrick Haffner, Gradient-based learning applied to document recognition, Proceedings of the IEEE volume 86 number 11, November 1998, pages 2278-2324",
+        "url": "https://ieeexplore.ieee.org/document/726791",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "type": "number",
+      "tokens": [
+        "NCR",
+        "1996",
+        "2001",
+        "20 million"
+      ],
+      "text": "The architecture's descendants were deployed in commercial cheque-reading systems, with NCR fielding them from 1996. A widely repeated retrospective estimate puts the system at about 20 million cheques a day around 2001, roughly a tenth of those in the United States. The percentage is an estimate made afterwards rather than an audited statistic or a figure from the paper, and different retellings give different values.",
+      "source": {
+        "title": "LeNet — deployment of the architecture's descendants in commercial cheque-reading systems, with a widely repeated retrospective estimate of about 20 million cheques a day, roughly a tenth of those in the United States, around 2001",
+        "url": "https://en.wikipedia.org/wiki/LeNet",
+        "kind": "secondary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "treating an image as an unstructured list of pixels discards the facts that nearby pixels are related and that a pattern means the same thing wherever it appears, so the model must learn both from scratch and needs a parameter for every position",
+    "fix": "build those two facts into the architecture: apply the same small detector across every position, so what is learned in one place is available everywhere and the parameter count stops depending on the image size",
+    "cost": "the assumptions are the architecture, so data that does not satisfy them is served badly by it, and there is no setting that turns them off",
+    "interview": "what a convolutional layer assumes, and what that assumption buys"
+  }
+}

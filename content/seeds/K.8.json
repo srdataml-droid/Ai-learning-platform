@@ -1,0 +1,48 @@
+{
+  "taskId": "K.8",
+  "title": "Why deep and recurrent networks would not train: the vanishing gradient analysis",
+  "researchedAt": "2026-09-22",
+  "claims": [
+    {
+      "id": "c1",
+      "type": "event",
+      "tokens": [
+        "Hochreiter",
+        "Sepp Hochreiter",
+        "Schmidhuber",
+        "Technische",
+        "1991"
+      ],
+      "text": "Sepp Hochreiter's 1991 diploma thesis at the Technische Universitaet Muenchen formally identified the reason for the training failure, now called the vanishing gradient problem, which affects many-layered feedforward networks and recurrent networks alike. With standard activation functions, cumulative backpropagated error signals either shrink rapidly or grow out of bounds, decaying exponentially in the number of layers. His supervisor later described the thesis as one of the most important documents in the history of machine learning.",
+      "source": {
+        "title": "Sepp Hochreiter, Untersuchungen zu dynamischen neuronalen Netzen, diploma thesis, Technische Universitaet Muenchen, 1991 — the analysis identifying the vanishing gradient problem",
+        "url": "https://people.idsia.ch/~juergen/SeppHochreiter1991ThesisAdvisorSchmidhuber.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "type": "quote",
+      "tokens": [
+        "Bengio",
+        "Simard",
+        "Frasconi",
+        "Yoshua Bengio",
+        "IEEE",
+        "1994"
+      ],
+      "text": "Bengio, Simard and Frasconi published Learning long-term dependencies with gradient descent is difficult in IEEE Transactions on Neural Networks in March 1994. They show why gradient-based learning faces an increasingly difficult problem as the duration of the dependency increases, exposing a trade-off between efficient learning by gradient descent and latching information for long periods. Approached as a question about dynamical systems, the result is that either the dynamics are not robust to noise, or the gradients vanish.",
+      "source": {
+        "title": "Yoshua Bengio, Patrice Simard and Paolo Frasconi, Learning long-term dependencies with gradient descent is difficult, IEEE Transactions on Neural Networks volume 5 number 2, March 1994, pages 157-166, doi 10.1109/72.279181",
+        "url": "https://ieeexplore.ieee.org/document/279181",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "deep and recurrent networks could be written down and could not be trained, and the failure was read as evidence that the approach was wrong rather than as a specific defect with a cause",
+    "fix": "identify the cause precisely: the error signal is a product of terms along a path, so it shrinks or grows exponentially in the path's length, which makes distant parameters receive almost no signal",
+    "cost": "the analysis showed the difficulty was structural rather than incidental, so the remedies are architectural rather than a matter of better optimisation",
+    "interview": "why the error signal fails to reach early layers, and what that ruled out"
+  }
+}

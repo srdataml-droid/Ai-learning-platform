@@ -1,0 +1,83 @@
+{
+  "taskId": "K.10",
+  "title": "Recurrent networks, the long time lag problem, and the memory cell that answered it",
+  "researchedAt": "2026-09-22",
+  "claims": [
+    {
+      "id": "c1",
+      "type": "event",
+      "tokens": [
+        "Hochreiter",
+        "Sepp Hochreiter",
+        "1991"
+      ],
+      "text": "Hochreiter's 1991 diploma thesis formally identified the vanishing gradient problem, which affects deep feedforward networks and recurrent networks alike: with standard activation functions the backpropagated error signal either shrinks rapidly or grows out of bounds, decaying exponentially in the number of steps it is carried back through. In recurrent networks the same effect is known as the long time lag problem.",
+      "source": {
+        "title": "Sepp Hochreiter, Untersuchungen zu dynamischen neuronalen Netzen, diploma thesis, 1991, as described in Schmidhuber, Deep Learning in Neural Networks: An Overview, section on vanishing and exploding gradients",
+        "url": "https://arxiv.org/abs/1404.7828",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c2",
+      "type": "event",
+      "tokens": [
+        "Bengio",
+        "Simard",
+        "Frasconi",
+        "Yoshua Bengio",
+        "IEEE",
+        "Transactions",
+        "Neural Networks",
+        "1994"
+      ],
+      "text": "Bengio, Simard and Frasconi published Learning long-term dependencies with gradient descent is difficult in IEEE Transactions on Neural Networks, volume 5 number 2, in March 1994. They show that gradient-based learning faces an increasingly difficult problem as the duration of the dependency increases, and expose a trade-off between efficient learning by gradient descent and latching information robustly for long periods: either the dynamics are not robust to noise, or the gradients vanish.",
+      "source": {
+        "title": "Yoshua Bengio, Patrice Simard and Paolo Frasconi, Learning long-term dependencies with gradient descent is difficult, IEEE Transactions on Neural Networks volume 5 number 2, March 1994, pages 157-166",
+        "url": "https://doi.org/10.1109/72.279181",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "type": "event",
+      "tokens": [
+        "Hochreiter",
+        "Schmidhuber",
+        "Long Short-Term Memory",
+        "Neural Computation",
+        "1997",
+        "1000"
+      ],
+      "text": "Hochreiter and Schmidhuber published Long Short-Term Memory in Neural Computation, volume 9 number 8, in 1997, pages 1735-1780. Storing information over extended intervals by recurrent backpropagation takes very long because of insufficient, decaying error backflow; the paper reviews the 1991 analysis and introduces an architecture that bridges minimal time lags in excess of 1000 discrete time steps by enforcing constant error flow through constant error carousels within special units, with multiplicative gate units learning to open and close access to that error flow. Each carousel uses the identity function as its activation and a self-connection of fixed weight 1.0, so the derivative is constantly 1.0 and the backpropagated error neither decays nor grows while it stays inside. Previous recurrent networks failed at minimal lags of 10 steps.",
+      "source": {
+        "title": "Sepp Hochreiter and Juergen Schmidhuber, Long Short-Term Memory, Neural Computation volume 9 number 8, 1997, pages 1735-1780",
+        "url": "https://doi.org/10.1162/neco.1997.9.8.1735",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "type": "event",
+      "tokens": [
+        "Gers",
+        "Schmidhuber",
+        "Cummins",
+        "Neural Computation",
+        "2000"
+      ],
+      "text": "Gers, Schmidhuber and Cummins published Learning to Forget: Continual Prediction with LSTM in Neural Computation, volume 12 number 10, in October 2000, pages 2451-2471. They identify a weakness of the 1997 architecture on continual input streams that are not segmented in advance into subsequences with explicitly marked ends at which the internal state could be reset: without resets the state may grow indefinitely and eventually cause the network to break down. Their remedy is an adaptive forget gate that enables a memory cell to learn to reset itself at appropriate times, releasing internal resources. All the algorithms they review, including the unmodified architecture, fail on continual versions of the benchmark problems; with forget gates those problems are solved.",
+      "source": {
+        "title": "Felix Gers, Juergen Schmidhuber and Fred Cummins, Learning to Forget: Continual Prediction with LSTM, Neural Computation volume 12 number 10, October 2000, pages 2451-2471",
+        "url": "https://doi.org/10.1162/089976600300015015",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "an error signal travelling back across many steps is multiplied at every one of them, and any repeated factor other than one exactly either decays to nothing or grows out of bounds, so a cause far from its effect cannot be learned",
+    "fix": "give the error one path through time whose factor is one exactly, an identity unit with a self-connection of fixed weight, and put learned multiplicative gates on the way in and the way out",
+    "cost": "a cell that nothing ever clears fills up on a stream with no marked ends, so a learned way to forget had to be added to the architecture built to stop forgetting",
+    "interview": "why depth in time is harder than depth in layers, and what a weight of one exactly is protecting"
+  }
+}
