@@ -1,0 +1,43 @@
+{
+  "taskId": "L.7",
+  "title": "The cost gap between scoring a pair jointly and comparing two independent embeddings",
+  "researchedAt": "2026-09-22",
+  "claims": [
+    {
+      "id": "c1",
+      "type": "number",
+      "tokens": [
+        "Reimers",
+        "Gurevych",
+        "Nils Reimers",
+        "2019"
+      ],
+      "text": "Reimers and Gurevych published Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks in 2019, at the conference on empirical methods in natural language processing, pages 3982 to 3992. They report that requiring both sentences to be fed into the network causes a massive computational overhead: finding the most similar pair in a collection of 10,000 sentences requires about 50 million inference computations, which takes around 65 hours, making that construction unsuitable for semantic similarity search and for unsupervised tasks such as clustering. Their modification derives sentence embeddings that can be compared with cosine similarity, which reduces the effort of finding the most similar pair from around 65 hours to about 5 seconds while maintaining accuracy.",
+      "source": {
+        "title": "Nils Reimers and Iryna Gurevych, Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks, EMNLP-IJCNLP 2019, pages 3982-3992",
+        "url": "https://aclanthology.org/D19-1410/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "type": "quote",
+      "tokens": [
+        "Reimers",
+        "Gurevych"
+      ],
+      "text": "The terms cross-encoder, for a model that takes both texts together and scores them jointly, and bi-encoder, for a model that encodes each text independently so the vectors can be compared afterwards, became the standard names for this distinction in later literature rather than in the 2019 paper itself, which describes the construction without using those words.",
+      "source": {
+        "title": "Naming note: the cross-encoder and bi-encoder terminology postdates Reimers and Gurevych 2019, which describes the same distinction in other words",
+        "url": "https://aclanthology.org/D19-1410/",
+        "kind": "secondary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "the accurate way to score a document against a query is to run both through the model together, and that cost is paid per pair, so it cannot be run over a corpus",
+    "fix": "split it into two stages: a cheap comparison of independently computed vectors to get a small candidate set, then the expensive joint scoring on those candidates only",
+    "cost": "the second stage can only reorder what the first returned, so a document missing from the candidate set is unreachable however good the scorer is",
+    "interview": "why two stages rather than one, and what a reranker cannot do"
+  }
+}

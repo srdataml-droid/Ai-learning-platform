@@ -50,15 +50,11 @@ Study order: the sequence first, then the five habits running underneath.
 
 ## Track L — AI engineering
 
-23 of 26 still missing.
+19 of 26 still missing.
 
 - [ ] `L.1` Prompting as an engineering discipline, not a trick
 - [ ] `L.2` Structured output, and why JSON mode changed what was buildable
 - [ ] `L.3` Context engineering: what goes in the window and in what order
-- [ ] `L.4` Chunking strategies, and why they decide retrieval quality
-- [ ] `L.5` Embeddings in practice: model choice, dimensions, cost
-- [ ] `L.7` Reranking
-- [ ] `L.8` Grounding and citation
 - [ ] `L.10` Evaluation: golden sets, offline scoring, human review, regression gates
 - [ ] `L.11` Tool calling: schemas, validation, failure handling
 - [ ] `L.13` Memory and state across turns
@@ -98,7 +94,7 @@ Study order: the sequence first, then the five habits running underneath.
 
 ---
 
-**Total remaining: 23 of 313.**
+**Total remaining: 19 of 313.**
 
 Regenerate: `node tools/missing-lessons.mjs > docs/MISSING-LESSONS.md`
 
