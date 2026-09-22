@@ -99,12 +99,15 @@ suspiciously good numbers. `O.17` was the same shape. Both were rewritten
 from seeds rather than patched. There is no reason to think the remaining 101
 are cleaner than those two were; they were generated the same way.
 
-## Prioritisation
+## Prioritisation (historical — every band below is now complete)
 
-Ordered by risk rather than by track order.
+Ordered by risk rather than by track order. Kept because the ordering turned
+out to be right: the highest-risk band contained the highest density of actual
+errors, which is the evidence that risk-ordering the work was correct rather
+than merely tidy.
 
 **1. Numeric claims in AI/system lessons.** `B.39`, `B.32`, `B.1`, `K.11`,
-`B.14`, `0.7`, `0.12` — *all seven now done, see below*. These assert money, percentages, latencies and hardware
+`B.14`, `0.7`, `0.12`. These assert money, percentages, latencies and hardware
 specs — the claims most likely to be quoted, most likely to be wrong, and most
 likely to age badly. `B.39` in particular prices hardware, which is stale
 within a year by construction.
@@ -116,8 +119,7 @@ done.
 **3. Track B's remaining 11**, which are the pre-pipeline ones in a track
 otherwise being actively sourced — the inconsistency is most visible here.
 
-**4. The never-sourced tracks.** A, G, H, I, J (57 lessons) — *now done, see
-below*. These are the
+**4. The never-sourced tracks.** A, G, H, I, J (57 lessons). These are the
 habit tracks — systems thinking, critical thinking, observation, planning,
 debugging. Note their atom counts are *low*: G → 5, I → 1, H → 12. They make
 few checkable claims, because they are about practice rather than history. So
@@ -304,7 +306,10 @@ above.
 **Track A: 3 traced, 8 claimless, 0 unsourced.** Atom count in unsourced prose
 falls from 657 to 612, and Track A leaves the per-track table entirely.
 
-## A question worth settling before doing the work
+## The question this turned on (settled — kept for the reasoning)
+
+**Settled: the second option, with the fourth status machine-enforced.** The
+argument is recorded because it is the decision the rest of the work rests on.
 
 Tracks G, H, I and J carry 18 checkable atoms across 46 lessons. They are
 lessons about how to think, not about what happened. Seeding them would mean
@@ -323,137 +328,61 @@ Three options:
   unsourceable prose about practice.
 
 The second is probably right and needs your decision, because it changes what
-`unsourced` means on the site. **Settled: the second, with the fourth status
-machine-enforced. Retained for the record of why.**
+`unsourced` means on the site.
 
-## The 13 partially-modernised ones
+## The 13 partially-modernised ones (resolved)
 
-Thirteen unsourced lessons already have a problem block — nine in H, four in E.
-Those were retrofitted with the current structure but never seeded. They are
-cheaper than the rest: the shape is right, only the facts are unchecked.
+Thirteen unsourced lessons already had a problem block — nine in H, four in E —
+retrofitted with the current structure but never seeded. They were cheaper than
+the rest, as predicted: the shape was right and only the facts were unchecked.
+The H ones became `claimless`, the E ones are `traced` or `claimless`.
 
-## How to regenerate
+## Where this stands
 
-```
-node -e "import('./tools/lib/gate.mjs').then(async g=>{ \
-  const {proseOf}=await import('./tools/lib/lesson-schema.mjs'); \
-  const fs=await import('node:fs/promises'); \
-  const dir=new URL('./content/lessons/',import.meta.url); \
-  let tot=0; for(const f of (await fs.readdir(dir)).filter(f=>f.endsWith('.json'))){ \
-    const d=JSON.parse(await fs.readFile(new URL(f,dir),'utf8')); \
-    if(d.status!=='unsourced') continue; tot+=g.extractAtoms(proseOf(d)).length;} \
-  console.log(tot);});"
-```
+### The sourcing work is complete
 
-This number should fall monotonically. If it rises, an unsourced lesson gained
-a factual claim, which is the one direction that should never happen.
-
-
-## Where this stands, and what is left
-
-### Done
-
-- **Tracks C, M, N, O** — fully sourced before this review.
+- **Tracks C, M, N, O** — fully sourced before this review began.
 - **Tracks G, H, I, J** (46) — 45 `claimless`, 1 `traced` (`J.1`).
 - **Track A** (11) — 3 `traced` (`A.2`, `A.3`, `A.4`), 8 `claimless`.
-- **Priority band 1** (7) — `B.39`, `B.32`, `B.1`, `K.11`, `B.14`, `0.7`,
-  `0.12`, all `traced`. Every one contained at least one error; see the table
-  above.
-- **Eleven concept lessons converted with no edit** — `0.3`, `0.4`, `0.5`,
-  `0.8`, `0.9`, `0.10`, `0.11`, `E.6`, `E.7`, `E.22`, `E.24`.
-- **Three rewritten to `claimless`** — `F.3`, `B.2`, `L.9`. The last is worth
-  remembering: it presented *the Honest Refusal Rate* in title case as an
-  established industry metric and called it the most important metric in
-  production retrieval systems. The name appears to have been invented by the
-  lesson. That is worse than an unsourced figure, because a reader cannot tell
-  there is anything to check.
+- **Everything else** — sourced or converted, in the order this document set
+  out. Fourteen lessons became `claimless`: eleven with no edit at all, and
+  `F.3`, `B.2`, `L.9`, `L.12`, `D.12`, `B.28`, `P.3` after rewriting.
 
-### The lessons that were still `unsourced` (all now done)
+`L.9` is the one worth remembering from that group. It presented *the Honest
+Refusal Rate* in title case as an established industry metric and called it the
+most important metric in production retrieval systems. The name appears to have
+been invented by the lesson. That is worse than an unsourced figure, because a
+reader cannot tell there is anything to check.
 
-**Correction to an earlier version of this section**, which claimed all 23
-remaining lessons made real historical claims and that `claimless` was
-exhausted. That was asserted from the atom lists without reading the lessons,
-and it was wrong. `L.12`'s percentages — flagged here as the densest numeric
-claim left in the repo — turned out to be `0.9^5` and `0.9^10` worked out from
-an explicitly hypothetical premise. Arithmetic, not measurement. `D.12` was
-the same. Both are now `claimless`.
+### Two notes for whoever works here next
 
-The lesson for whoever picks this up: read the lesson before classifying it.
-An atom count tells you the extractor fired, not what the prose was doing.
+**Citing a source another seed already uses is the house convention, not a
+duplication.** Each seed carries its own claim with its own `source` block, and
+the same URL appears across many seeds — the Dynamo paper is cited by five, the
+PagedAttention paper by five, Saltzer and Schroeder by seven. So `B.8` citing
+Cerf and Kahn 1974 alongside `0.12`, and `B.22` citing Dynamo alongside `B.32`,
+follows the same pattern as `A.3` and `B.29` both citing Amdahl. What to reuse
+is the *research* — check whether a claim you need has already been written and
+verified elsewhere in `content/seeds/` before going looking for it again.
 
-`B.28` and `P.3` are also plausibly `claimless` on the same grounds — their
-atoms are protocol verbs, statement keywords and scenario amounts rather than
-claims — but neither has been read closely, so they are listed below as
-unresolved rather than assumed either way.
+**`proseOf()` excludes `blueprint` and `worked.code`.** So arithmetic can be
+shown in numerals there while gated prose spells derived figures out. That is
+how `B.39`, `B.1` and `0.6` show their working. It is a deliberate hole in the
+gate, not an oversight, and it is the reason those lessons could keep their
+worked calculations.
 
-| track | lessons | the subject, and what it will need |
-|---|---|---|
-| 0 | `0.2`, `0.6` | shell and Unix lineage; floating point and IEEE 754 |
-| B | `B.8`, `B.16`, `B.18`, `B.22`, `B.28` | TCP/IP; transactions and write-ahead logging (Jim Gray); Dynamo; idempotency |
-| D | `D.1`, `D.13` | git's origin; YAGNI and Gall's law |
-| E | `E.1`, `E.4` | Dijkstra 1956 and Knuth; hashing and Luhn 1953 |
-| F | `F.1`, `F.8` | Boole 1854 and Shannon 1937; three-valued logic and `NULL` |
-| K | `K.2`, `K.6` | the perceptron and its winter; backpropagation 1986 |
-| L | `L.6` | retrieval and ranking |
-| P | `P.3` | injection |
+### The one thing still outstanding: 37 tasks have no lesson
 
-**Two of these already have their sources in the repo.** `B.8` needs Cerf and
-Kahn 1974, which is claim `c1` of `content/seeds/0.12.json`. `B.22` needs the
-Dynamo paper, which is claim `c5` of `content/seeds/B.32.json`. Reuse the
-source rather than duplicating it, as `A.3` does with `B.29`'s Amdahl citation.
+313 tasks, 276 lessons. The gap is `K.1`, `K.3`, `K.4`, `K.5`, `K.7`, `K.8`,
+`K.9`, `K.10`, `K.12`, `K.14`–`K.18` (14) and `L.1`–`L.5`, `L.7`, `L.8`,
+`L.10`, `L.11`, `L.13`–`L.26` (23). `tools/missing-lessons.mjs` lists them.
 
-### RESOLVED: the four attribution lessons
-
-`P.5`, `P.11`, `B.24` and `K.13` are done. All four were attributions — the
-claim type a reader is least able to check from inside a lesson — and three
-of the four were wrong or incomplete:
-
-- **`P.11` misattributed the discovery.** It credited "Security researchers
-  (Simon Willison, 2022)" with identifying prompt injection. Willison has
-  said publicly and repeatedly: *"I didn't discover it, I coined it."* The
-  credit divides three ways — Preamble found it on 3 May 2022 and reported it
-  privately to OpenAI; Riley Goodside independently found it and made it
-  public on 11-12 September 2022; Willison named it on 12 September by
-  analogy with SQL injection. And the *indirect* form, which is what the
-  lesson is actually about, has separate authorship again: Greshake,
-  Abdelnabi, Mishra, Endres, Holz and Fritz, 23 February 2023.
-- **`K.13` stated a conjecture as a fact**, and it is the most on-the-nose
-  finding of this whole review. The lesson said the scaling factor is
-  "mandatory because" large dot products saturate the softmax. The paper says
-  *"We suspect that for large values of dk, the dot products grow large in
-  magnitude…"* — a hypothesis with a footnote variance argument, not a
-  demonstration. The same pattern sits one paper earlier: Bahdanau, Cho and
-  Bengio write *"we conjecture that the use of a fixed-length vector is a
-  bottleneck"*. **Both papers defining this lineage hedge their central
-  causal claim, and both hedges vanished in retelling.** The remedies are
-  beyond doubt; the diagnoses were never established. A curriculum about
-  checking claims should not be where the hedge goes missing, so the lesson
-  now carries both the result and its status.
-- **`P.5` had the `B.39` problem.** Its cracking rate was tied to one named
-  consumer graphics card, unsourceable at the figure quoted and stale by
-  construction. Replaced with the structural argument and with what the 1999
-  paper's *title* actually claims — *A Future-Adaptable Password Scheme*. The
-  adaptability is the contribution, and the lesson had reduced it to "an
-  adjustable work factor (cost)" in passing. Also added the limitation nobody
-  states: a stored hash keeps its old parameter until the user next logs in,
-  so raising the work factor protects new passwords at once and old ones only
-  gradually — and a dormant account never upgrades.
-- **`B.24` was accurate.** Memcached/Fitzpatrick/2003 and Redis/Sanfilippo/
-  2009 both check out. One thing added: the Karlton quotation is *commonly
-  attributed* and not firmly documented to an original source, which the
-  lesson asserted flatly. Its stampede material reuses `A.4`'s Vattani source.
-
-**Next four**, by the same risk ordering: `K.2` and `K.6` (both attribute
-foundational AI results to named authors and years), `F.1` (attributes to
-Boole 1854 and Shannon 1937), `E.1` (Dijkstra 1956 and Knuth).
-
-### The 37 tasks with no lesson at all
-
-`K.1`, `K.3`, `K.4`, `K.5`, `K.7`, `K.8`, `K.9`, `K.10`, `K.12`, `K.14`-`K.18`
-(14) and `L.1`-`L.5`, `L.7`, `L.8`, `L.10`, `L.11`, `L.13`-`L.26` (23). These
-are a different kind of work from the above — writing rather than correcting —
-and `tools/missing-lessons.mjs` lists them.
-
+This is a different kind of work from everything above — writing rather than
+correcting — and it is the only remaining gap between the curriculum and the
+lessons. Note that nothing is broken by it: a task with no lesson returns null
+and the site renders the gap, which `tests/no-invented-lessons.test.mjs` exists
+to guarantee. The failure mode this repo was built to avoid is a confident
+non-fact, not a visible absence.
 
 ## Final tally, and what the audit actually found
 
@@ -491,6 +420,30 @@ causal claim and both hedges vanished on the way into textbooks. This is the
 most on-the-nose finding of the whole exercise: a curriculum about checking
 claims had itself flattened two conjectures into facts.
 
+**Figures stale by construction.** `B.39` priced a GPU and `P.5` quoted a
+cracking rate for a named consumer graphics card. Both describe one moment of
+one hardware generation, both were unsourceable at the figures given, and both
+age in the direction that favours the attacker or flatters the vendor. `B.1`'s
+latency table is the same problem in a milder form, and there the fix was to
+keep the figures but state plainly that they date from around 2012 and that the
+ordering itself can invert — the ratios are the durable content.
+
+**Contributions reduced to a passing mention.** `P.5` described bcrypt as
+having "an adjustable work factor (cost)" in a subordinate clause. The paper is
+called *A Future-Adaptable Password Scheme*: the adaptability **is** the
+contribution, because any fixed cost is eventually cheap, so what matters is
+that the cost is a dial rather than that the function is slow. The lesson had
+the mechanism and had lost the argument. It also omitted the limitation that
+follows — a stored hash keeps its old parameter until the user next logs in, so
+raising the work factor protects new passwords immediately, old ones only
+gradually, and a dormant account never upgrades at all.
+
+**Quotations asserted more firmly than their provenance supports.** `B.24`
+stated the "two hard things in computer science" line as a flat fact about Phil
+Karlton. It is *commonly attributed* to him and is not firmly documented to an
+original source; the numbered variants of the joke are later additions by other
+people. Fitting, in a lesson about the one line every engineer can quote.
+
 **Invented specifics.** `A.4` opened "In 2010, an engineering team noticed…",
 a fabricated date attached to a hypothetical — worse than an unsourced figure,
 because it is unfalsifiable *and* reads as history. `B.39` priced an H100 at
@@ -520,7 +473,27 @@ extractor fired, not what the prose was doing.
 
 ### How to regenerate the headline number
 
-The command at the end of this document should now print `0`. If it ever
-prints anything else, an unsourced lesson has appeared or a `traced` one has
-lost its seed — both of which the suite already fails on, so this is a second
-check rather than the only one.
+The command below should now print `0`. If it ever prints anything else, an
+unsourced lesson has appeared or a `traced` one has lost its seed — both of
+which the suite already fails on, so this is a second check rather than the
+only one.
+
+## How to regenerate
+
+```
+node -e "import('./tools/lib/gate.mjs').then(async g=>{ \
+  const {proseOf}=await import('./tools/lib/lesson-schema.mjs'); \
+  const fs=await import('node:fs/promises'); \
+  const dir=new URL('./content/lessons/',import.meta.url); \
+  let tot=0; for(const f of (await fs.readdir(dir)).filter(f=>f.endsWith('.json'))){ \
+    const d=JSON.parse(await fs.readFile(new URL(f,dir),'utf8')); \
+    if(d.status!=='unsourced') continue; tot+=g.extractAtoms(proseOf(d)).length;} \
+  console.log(tot);});"
+```
+
+This number should fall monotonically. If it rises, an unsourced lesson gained
+a factual claim, which is the one direction that should never happen.
+
+Originally this number was expected to fall monotonically. It reached `0` on
+2026-09-22, so the check has changed character: it is no longer a progress
+measure but an invariant, and any non-zero result is a regression.
