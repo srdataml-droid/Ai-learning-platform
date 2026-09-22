@@ -1,0 +1,65 @@
+{
+  "taskId": "B.18",
+  "title": "What the transaction properties mean in practice, and where the acronym came from",
+  "researchedAt": "2026-09-22",
+  "claims": [
+    {
+      "id": "c1",
+      "type": "event",
+      "tokens": [
+        "Gray",
+        "Jim Gray",
+        "VLDB",
+        "Cannes",
+        "1981",
+        "1978"
+      ],
+      "text": "Jim Gray presented The Transaction Concept: Virtues and Limitations at the seventh Very Large Data Bases conference in Cannes in September 1981, describing transactions in terms of atomicity, defined as an all-or-nothing property, consistency, and durability, the survival of a committed transaction's effects after failures. He compared the transaction concept to a legal contract, in which work can proceed provisionally before a commitment establishes the resulting state. His earlier Notes on Data Base Operating Systems of 1978 had already covered concurrency control, locking, recovery, logging, checkpointing and commit protocols.",
+      "source": {
+        "title": "Jim Gray, The Transaction Concept: Virtues and Limitations, Proceedings of the 7th International Conference on Very Large Data Bases, Cannes, September 1981, pages 144-154",
+        "url": "https://jimgray.azurewebsites.net/papers/thetransactionconcept.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "type": "event",
+      "tokens": [
+        "Haerder",
+        "Reuter",
+        "Theo Haerder",
+        "Andreas Reuter",
+        "ACM Computing Surveys",
+        "1983",
+        "ACID"
+      ],
+      "text": "The acronym itself is not Gray's. It appears in Haerder and Reuter's 1983 paper Principles of Transaction-Oriented Database Recovery in ACM Computing Surveys, which built on the earlier transaction processing work including Gray's, and which provides a terminological framework for describing recovery schemes conceptually rather than in an implementation-dependent way.",
+      "source": {
+        "title": "Theo Haerder and Andreas Reuter, Principles of Transaction-Oriented Database Recovery, ACM Computing Surveys volume 15 number 4, December 1983, pages 287-317, doi 10.1145/289.291 — the paper in which the ACID acronym appears",
+        "url": "https://dl.acm.org/doi/10.1145/289.291",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "type": "date",
+      "tokens": [
+        "Gray",
+        "Turing",
+        "1998"
+      ],
+      "text": "Gray received the 1998 ACM Turing Award for seminal contributions to database and transaction processing research and technical leadership in system implementation.",
+      "source": {
+        "title": "Jim Gray — recipient of the 1998 ACM A. M. Turing Award for seminal contributions to database and transaction processing research and technical leadership in system implementation",
+        "url": "https://amturing.acm.org/award_winners/gray_3649936.cfm",
+        "kind": "secondary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "the four properties are recited as one guarantee, when only some are absolute and the rest are settings with defaults nobody chose",
+    "fix": "treat isolation as the dial it is: pick the level deliberately by naming the anomaly you cannot tolerate, rather than inheriting whatever the database ships with",
+    "cost": "the strongest level requires locking or version management that limits concurrency, so every weaker level is a decision to permit a specific anomaly",
+    "interview": "the difference between two isolation levels and the anomaly the stronger one removes"
+  }
+}

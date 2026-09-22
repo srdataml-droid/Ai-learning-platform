@@ -1,0 +1,76 @@
+{
+  "taskId": "B.22",
+  "title": "Dynamo 2007: what was given up, what was gained, and what the quorum condition does not guarantee",
+  "researchedAt": "2026-09-22",
+  "claims": [
+    {
+      "id": "c1",
+      "type": "event",
+      "tokens": [
+        "DeCandia",
+        "Giuseppe DeCandia",
+        "Amazon",
+        "SOSP",
+        "2007",
+        "October 2007"
+      ],
+      "text": "Dynamo: Amazon's highly available key-value store was presented at the ACM Symposium on Operating Systems Principles in October 2007. The paper describes a store used by some of Amazon's core services to provide an always-on experience, motivated by the observation that even the slightest outage has significant financial consequences and impacts customer trust.",
+      "source": {
+        "title": "Giuseppe DeCandia et al., Dynamo: Amazon's highly available key-value store, Proceedings of the 21st ACM Symposium on Operating Systems Principles (SOSP), Stevenson, Washington, October 2007, also ACM SIGOPS Operating Systems Review volume 41 number 6, pages 205-220",
+        "url": "https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "type": "event",
+      "tokens": [
+        "Dynamo",
+        "The"
+      ],
+      "text": "The design synthesises several known techniques: consistent hashing for partitioning and replication, object versioning for consistency, a quorum-like technique with decentralised replica synchronisation, and a gossip-based protocol for failure detection and membership. It targets the design space of an always writeable data store by pushing conflict resolution to read time, so that writes are never rejected, the motivating case being that a customer must be able to add an item to a shopping cart during partial network failures or data centre outages.",
+      "source": {
+        "title": "Giuseppe DeCandia et al., Dynamo: Amazon's highly available key-value store, Proceedings of the 21st ACM Symposium on Operating Systems Principles (SOSP), Stevenson, Washington, October 2007, also ACM SIGOPS Operating Systems Review volume 41 number 6, pages 205-220",
+        "url": "https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "type": "number",
+      "tokens": [
+        "R",
+        "W",
+        "N",
+        "Dynamo"
+      ],
+      "text": "Read and write quorum sizes are configurable: R is the minimum number of nodes that must participate in a successful read and W the minimum for a successful write, out of N replicas. Setting R plus W greater than N yields a quorum-like system, though in practice both are often set below N for better latency. Separately, Dynamo uses what it calls a sloppy quorum together with hinted handoff: rather than enforcing strict membership, a write may be accepted by healthy nodes outside the key's preference list and handed back later, which is a distinct mechanism from the quorum condition and is what keeps the store writeable during failures.",
+      "source": {
+        "title": "Giuseppe DeCandia et al., Dynamo: Amazon's highly available key-value store, Proceedings of the 21st ACM Symposium on Operating Systems Principles (SOSP), Stevenson, Washington, October 2007, also ACM SIGOPS Operating Systems Review volume 41 number 6, pages 205-220",
+        "url": "https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "type": "event",
+      "tokens": [
+        "Dynamo",
+        "Versions",
+        "For"
+      ],
+      "text": "Versions are tracked with vector clocks, each a list of node and counter pairs. When branches cannot be reconciled automatically the store returns all of the leaves with version information in the context, and a subsequent update using that context collapses them into a single new version. For the shopping cart the reconciliation is the union of the conflicting versions, which means a deleted item can reappear, but nothing is lost.",
+      "source": {
+        "title": "Giuseppe DeCandia et al., Dynamo: Amazon's highly available key-value store, Proceedings of the 21st ACM Symposium on Operating Systems Principles (SOSP), Stevenson, Washington, October 2007, also ACM SIGOPS Operating Systems Review volume 41 number 6, pages 205-220",
+        "url": "https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a store that refuses writes when replicas cannot be reached converts every network problem into lost customer activity, which for some workloads costs more than serving stale data ever could",
+    "fix": "accept the write on whatever healthy nodes can take it, track versions rather than overwriting, and push the reconciliation of divergent versions to read time where the application can apply its own rule",
+    "cost": "the application inherits the merge, and the merge has consequences a user can see, so correctness moves out of the store and into code that has to decide what conflicting truths mean",
+    "interview": "what the quorum condition does and what it does not guarantee here"
+  }
+}

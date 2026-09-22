@@ -1,0 +1,86 @@
+{
+  "taskId": "B.8",
+  "title": "How the internet's transport layer was specified, and when TCP and IP became two things",
+  "researchedAt": "2026-09-22",
+  "claims": [
+    {
+      "id": "c1",
+      "type": "event",
+      "tokens": [
+        "Cerf",
+        "Kahn",
+        "Vinton Cerf",
+        "Robert Kahn",
+        "IEEE",
+        "1974"
+      ],
+      "text": "Cerf and Kahn published A Protocol for Packet Network Intercommunication in IEEE Transactions on Communications in May 1974, setting out a protocol for interconnecting separate packet networks which became the basis of the internet's transport and addressing layers.",
+      "source": {
+        "title": "Vinton G. Cerf and Robert E. Kahn, A Protocol for Packet Network Intercommunication, IEEE Transactions on Communications volume 22 number 5, May 1974, pages 637-648",
+        "url": "https://ieeexplore.ieee.org/document/1092259",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "type": "date",
+      "tokens": [
+        "RFC",
+        "Cerf",
+        "Dalal",
+        "Sunshine",
+        "Yogen Dalal",
+        "Carl Sunshine",
+        "December 1974",
+        "1974"
+      ],
+      "text": "The first detailed specification was RFC 675, Specification of Internet Transmission Control Program, by Cerf, Dalal and Sunshine, published in December 1974. It describes the functions to be performed by the internetwork Transmission Control Program and its interface to the programs or users requiring its services, and contains the first attested use of the word internet as shorthand for internetwork.",
+      "source": {
+        "title": "RFC 675, Specification of Internet Transmission Control Program, Vinton Cerf, Yogen Dalal and Carl Sunshine, December 1974",
+        "url": "https://www.rfc-editor.org/rfc/rfc675.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "type": "date",
+      "tokens": [
+        "IP",
+        "TCP",
+        "1978",
+        "1980",
+        "1981",
+        "RFC"
+      ],
+      "text": "There was no separate internet protocol at that point. The Transmission Control Program originally incorporated both connection-oriented links and datagram services between hosts, and it was in version 4 that the monolithic program was divided into a modular architecture of two protocols, one for transport and one for addressing and routing. The split was implemented in September 1978 and standardised in RFC 760 in 1980 and RFC 791 in 1981.",
+      "source": {
+        "title": "Transmission Control Protocol — the monolithic Transmission Control Program was divided into TCP and IP in version 4, implemented September 1978 and standardised in RFC 760 (1980) and RFC 791 (1981)",
+        "url": "https://en.wikipedia.org/wiki/Transmission_Control_Protocol",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c4",
+      "type": "event",
+      "tokens": [
+        "RFC",
+        "TCP",
+        "SYN",
+        "ACK",
+        "1981"
+      ],
+      "text": "RFC 793, of September 1981, specifies the transport protocol as it is still used: a connection is established by a three-way handshake, data is delivered reliably and in order, lost segments are retransmitted, and the sending rate responds to congestion.",
+      "source": {
+        "title": "RFC 793, Transmission Control Protocol, September 1981",
+        "url": "https://www.rfc-editor.org/rfc/rfc793",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "separate networks could not interoperate, and a reliable connection could not be built across links that lose, duplicate and reorder what is sent",
+    "fix": "push reliability up to the endpoints and keep the network in the middle simple, so that delivery can be unreliable while the connection built on it is not",
+    "cost": "ordering is enforced by holding what has arrived until what is missing is retransmitted, so one lost segment stalls everything behind it",
+    "interview": "why a newer protocol moved off this transport, and what that fixed"
+  }
+}
