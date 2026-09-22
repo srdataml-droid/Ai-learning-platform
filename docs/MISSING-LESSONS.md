@@ -50,16 +50,10 @@ Study order: the sequence first, then the five habits running underneath.
 
 ## Track L — AI engineering
 
-9 of 26 still missing.
+3 of 26 still missing.
 
-- [ ] `L.10` Evaluation: golden sets, offline scoring, human review, regression gates
 - [ ] `L.14` Guardrails: input filtering, output checking, prompt injection
 - [ ] `L.18` When to fine tune, and the three cheaper things to try first
-- [ ] `L.21` Model versioning
-- [ ] `L.22` Reproducibility
-- [ ] `L.23` Drift detection
-- [ ] `L.24` Shadow deployment
-- [ ] `L.25` Feedback loops into evaluation
 - [ ] `L.26` Safety: bias, red teaming, failure disclosure
 
 ## Track A — Systems thinking
@@ -84,7 +78,7 @@ Study order: the sequence first, then the five habits running underneath.
 
 ---
 
-**Total remaining: 9 of 313.**
+**Total remaining: 3 of 313.**
 
 Regenerate: `node tools/missing-lessons.mjs > docs/MISSING-LESSONS.md`
 
