@@ -1,0 +1,64 @@
+{
+  "taskId": "F.1",
+  "title": "Boolean algebra and the thesis that connected it to switches",
+  "researchedAt": "2026-09-22",
+  "claims": [
+    {
+      "id": "c1",
+      "type": "event",
+      "tokens": [
+        "Boole",
+        "George Boole",
+        "An Investigation",
+        "Laws of Thought",
+        "1854"
+      ],
+      "text": "George Boole published An Investigation of the Laws of Thought, on Which are Founded the Mathematical Theories of Logic and Probabilities in 1854. It develops an algebraic treatment of logic in which the variables take only two values, so that reasoning about propositions becomes calculation.",
+      "source": {
+        "title": "George Boole, An Investigation of the Laws of Thought, on Which are Founded the Mathematical Theories of Logic and Probabilities, Walton and Maberly, London, 1854",
+        "url": "https://www.gutenberg.org/ebooks/15114",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "type": "event",
+      "tokens": [
+        "Shannon",
+        "Claude Shannon",
+        "MIT",
+        "Massachusetts Institute of Technology",
+        "1937",
+        "1938"
+      ],
+      "text": "Claude Shannon submitted A Symbolic Analysis of Relay and Switching Circuits as a master's thesis at the Massachusetts Institute of Technology in 1937, published the following year in the Transactions of the American Institute of Electrical Engineers. It shows that the algebra of two-valued logic describes the behaviour of relay and switching circuits exactly: circuits in series correspond to conjunction and circuits in parallel to disjunction, so a circuit can be designed by manipulating an expression and an expression can be simplified before any hardware is built.",
+      "source": {
+        "title": "Claude E. Shannon, A Symbolic Analysis of Relay and Switching Circuits, master's thesis, Massachusetts Institute of Technology, 1937; published in Transactions of the American Institute of Electrical Engineers volume 57, 1938, pages 713-723",
+        "url": "https://dspace.mit.edu/handle/1721.1/11173",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "type": "event",
+      "tokens": [
+        "De Morgan",
+        "Augustus De Morgan",
+        "Formal Logic",
+        "1847"
+      ],
+      "text": "The two laws relating negation to conjunction and disjunction are named after Augustus De Morgan, a contemporary of Boole's, who stated them in Formal Logic: or, The Calculus of Inference, Necessary and Probable, published in 1847. The negation of a disjunction is the conjunction of the negations, and the negation of a conjunction is the disjunction of the negations.",
+      "source": {
+        "title": "Augustus De Morgan, Formal Logic: or, The Calculus of Inference, Necessary and Probable, Taylor and Walton, London, 1847",
+        "url": "https://archive.org/details/formallogicorca00morggoog",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "circuit design was an empirical craft of arranging switches until the behaviour looked right, with no way to prove a design correct or to simplify it before building it",
+    "fix": "recognise that two-valued algebra and switching circuits are the same structure, so a circuit becomes an expression that can be manipulated, proved and reduced symbolically",
+    "cost": "everything above the gates has to be expressed in two states, so any quantity a machine handles must first be encoded as a pattern of them",
+    "interview": "the laws that let a negation be pushed inside a bracket"
+  }
+}

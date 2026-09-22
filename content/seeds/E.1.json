@@ -1,0 +1,62 @@
+{
+  "taskId": "E.1",
+  "title": "Dijkstra's own account of the shortest path algorithm, and the case for analysing algorithms",
+  "researchedAt": "2026-09-22",
+  "claims": [
+    {
+      "id": "c1",
+      "type": "quote",
+      "tokens": [
+        "Dijkstra",
+        "Edsger Dijkstra",
+        "Amsterdam",
+        "Rotterdam",
+        "Groningen",
+        "1956"
+      ],
+      "text": "Dijkstra gave his own account of the algorithm's origin in a 2001 interview. The lab wanted a problem non-mathematicians could understand for a demonstration, and the question chosen was what the shortest way is to travel from Rotterdam to Groningen, or in general from one given city to another. He designed the algorithm in about twenty minutes, sitting on a cafe terrace in Amsterdam with his young fiancee while out shopping, without pencil and paper — and he attributed its simplicity to that, saying that one of the reasons it is so nice is that he designed it without pencil and paper.",
+      "source": {
+        "title": "An interview with Edsger W. Dijkstra, Communications of the ACM volume 53 number 8, August 2010, interview conducted by Philip L. Frana in 2001 — Dijkstra's own account of designing the shortest path algorithm",
+        "url": "https://cacm.acm.org/opinion/an-interview-with-edsger-w-dijkstra/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "type": "date",
+      "tokens": [
+        "Dijkstra",
+        "Numerische Mathematik",
+        "1959"
+      ],
+      "text": "The algorithm was published three years later, as A note on two problems in connexion with graphs, in Numerische Mathematik in 1959.",
+      "source": {
+        "title": "E. W. Dijkstra, A note on two problems in connexion with graphs, Numerische Mathematik volume 1, 1959, pages 269-271",
+        "url": "https://link.springer.com/article/10.1007/BF01386390",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "type": "event",
+      "tokens": [
+        "Knuth",
+        "Donald Knuth",
+        "The Art of Computer Programming",
+        "1968"
+      ],
+      "text": "Donald Knuth published the first volume of The Art of Computer Programming in 1968, establishing the analysis of algorithms as a discipline in which a program's resource consumption is derived mathematically rather than measured after the fact.",
+      "source": {
+        "title": "Donald E. Knuth, The Art of Computer Programming, Volume 1: Fundamental Algorithms, Addison-Wesley, 1968",
+        "url": "https://www-cs-faculty.stanford.edu/~knuth/taocp.html",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a procedure that worked on a handful of items was assumed to work on many, because nothing in testing it at small size reveals how its cost grows",
+    "fix": "derive how the work grows with the input rather than measuring one input, since the growth rate decides the outcome at every size the measurement did not cover",
+    "cost": "growth rates ignore the constants, so the asymptotically better algorithm can lose at every size that actually occurs",
+    "interview": "when a quadratic sort beats one that grows as n log n"
+  }
+}
