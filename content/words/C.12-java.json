@@ -1,0 +1,120 @@
+{
+  "id": "C.12-java",
+  "languageId": "C.12",
+  "lang": "Java",
+  "category": "Backend & Enterprise",
+  "summary": "Type-safe, object-oriented platform powering enterprise backends, Android runtimes, and large distributed data pipelines.",
+  "status": "unsourced",
+  "rows": [
+    {
+      "code": "public class Name { ... }",
+      "means": "top-level class visible to all packages in the project",
+      "consequence": "In Java, every public class must reside in a file matching its exact name (Name.java). Encapsulates state and methods."
+    },
+    {
+      "code": "public static void main(String[] args)",
+      "means": "standard program entry point executed by the JVM",
+      "consequence": "public allows JVM access; static means it runs without instantiating the class; void means it returns no exit code."
+    },
+    {
+      "code": "System.out.println(data)",
+      "means": "prints formatted text followed by a newline to stdout",
+      "consequence": "Buffered stream output to the operating system terminal; automatically invokes the object's toString() method."
+    },
+    {
+      "code": "new ClassName()",
+      "means": "instantiates an object on the JVM heap and invokes its constructor",
+      "consequence": "All objects in Java live on the garbage-collected heap; references to objects live on the thread execution stack."
+    },
+    {
+      "code": "extends vs implements",
+      "means": "inherits from a single superclass / implements multiple interfaces",
+      "consequence": "Java allows single class inheritance to prevent the diamond problem, but permits implementing any number of interface contracts."
+    },
+    {
+      "code": "interface vs abstract class",
+      "means": "pure contract of methods / partial implementation with state",
+      "consequence": "Interfaces define behavior contracts (can also have default methods); abstract classes can hold instance state and constructors."
+    },
+    {
+      "code": "final (variable / method / class)",
+      "means": "constant value / cannot be overridden / cannot be subclassed",
+      "consequence": "Declaring classes final (like java.lang.String) guarantees immutability, thread safety, and compiler inlining optimizations."
+    },
+    {
+      "code": "record User(String id, String name) {}",
+      "means": "compact syntax for immutable data-carrier classes (Java 14+)",
+      "consequence": "Automatically generates constructor, getters, equals(), hashCode(), and toString() for clean immutable data objects."
+    },
+    {
+      "code": "try (var res = new Resource()) { ... } (try-with-resources)",
+      "means": "automatically closes AutoCloseable resources on block exit",
+      "consequence": "Guarantees database connections, files, and sockets close even if exceptions occur, eliminating manual finally cleanup."
+    },
+    {
+      "code": "throws Exception vs throw new Exception()",
+      "means": "declares checked exception in method signature / throws exception",
+      "consequence": "Checked exceptions must either be handled with a try/catch block or declared in the throws signature, verified by the compiler."
+    },
+    {
+      "code": "List<String> list = new ArrayList<>()",
+      "means": "dynamically resizing array backed by standard interface",
+      "consequence": "Program to the interface (List), not the implementation (ArrayList), allowing you to swap in LinkedList without breaking callers."
+    },
+    {
+      "code": "Map<String, User> map = new HashMap<>()",
+      "means": "hash table providing O(1) average lookup by key",
+      "consequence": "Relies on equals() and hashCode() contracts on the key class; if hashCode() is poorly implemented, lookups degrade to O(n)."
+    },
+    {
+      "code": "Stream API: list.stream().filter(...).map(...).collect(...)",
+      "means": "functional processing pipeline over collections",
+      "consequence": "Executes lazily: intermediate operations (.filter, .map) only compute when a terminal operation (.collect, .count) is triggered."
+    },
+    {
+      "code": "Optional<T> (ofNullable, map, orElse)",
+      "means": "container object that may or may not contain a non-null value",
+      "consequence": "Designed to eliminate NullPointerExceptions by forcing the caller to explicitly handle the empty case."
+    },
+    {
+      "code": "enum Direction { NORTH, SOUTH, EAST, WEST }",
+      "means": "type-safe enumeration with methods and fields",
+      "consequence": "Java enums are full-featured classes that can implement interfaces, hold fields, and define specific constructor behaviors."
+    },
+    {
+      "code": "@Override annotation",
+      "means": "tells compiler this method must override a superclass method",
+      "consequence": "Catches bugs at compile time if the method signature does not exactly match the parent class or interface method."
+    },
+    {
+      "code": "super and this keywords",
+      "means": "references parent superclass / references current object instance",
+      "consequence": "super() invokes the parent constructor; this.field disambiguates between instance fields and parameter names."
+    },
+    {
+      "code": "synchronized (lock) { ... }",
+      "means": "acquires an intrinsic monitor lock for thread synchronization",
+      "consequence": "Guarantees that only one thread executes the protected block at a time, preventing race conditions on shared state."
+    },
+    {
+      "code": "volatile boolean running = true;",
+      "means": "ensures reads and writes are visible immediately across all CPU threads",
+      "consequence": "Prevents the JVM and CPU from caching the variable in hardware thread registers, enforcing memory visibility."
+    },
+    {
+      "code": "var count = 42; (local variable type inference)",
+      "means": "compiler infers the static type from the right-hand initializer",
+      "consequence": "Available in Java 10+ for local variables. Keeps code concise without sacrificing static compile-time type safety."
+    },
+    {
+      "code": "Lambda expression: (x, y) -> x + y",
+      "means": "compact implementation of a Single Abstract Method (SAM) interface",
+      "consequence": "Passed directly into methods expecting functional interfaces like Predicate, Function, or Consumer."
+    },
+    {
+      "code": "Generics: <T extends Comparable<T>>",
+      "means": "compile-time type parameters with bounded constraints",
+      "consequence": "Implemented via type erasure: the compiler checks types at build time and erases them to Object in JVM bytecode."
+    }
+  ]
+}

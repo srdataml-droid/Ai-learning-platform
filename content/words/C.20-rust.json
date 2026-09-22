@@ -1,0 +1,110 @@
+{
+  "id": "C.20-rust",
+  "languageId": "C.20",
+  "lang": "Rust",
+  "category": "Systems & Hardware",
+  "summary": "Zero-cost abstractions, compile-time memory ownership, fearless concurrency, and bare-metal performance without a garbage collector.",
+  "status": "unsourced",
+  "rows": [
+    {
+      "code": "let vs let mut",
+      "means": "immutable variable binding by default / explicitly mutable binding",
+      "consequence": "Variables in Rust are strictly immutable unless declared mut, preventing accidental state corruption."
+    },
+    {
+      "code": "fn name(param: Type) -> ReturnType { ... }",
+      "means": "function declaration with mandatory type signatures",
+      "consequence": "The last expression without a semicolon is the returned value. Statements ending in a semicolon evaluate to unit ()."
+    },
+    {
+      "code": "Ownership: move semantics",
+      "means": "every value has exactly one owner; value moves when assigned",
+      "consequence": "let s2 = s1 moves ownership of heap data to s2. s1 is no longer valid, eliminating double-free memory corruption."
+    },
+    {
+      "code": "&T (immutable borrow) vs &mut T (mutable borrow)",
+      "means": "references allowing reading / reference allowing writing",
+      "consequence": "The Borrow Checker rule: you may have any number of immutable references (&T), OR exactly one mutable reference (&mut T), never both."
+    },
+    {
+      "code": "Lifetimes: 'a in &'a str",
+      "means": "compile-time annotations proving references remain valid",
+      "consequence": "Ensures no reference outlives the data it points to, mathematically preventing dangling pointer bugs at compile time."
+    },
+    {
+      "code": "Option<T>: Some(val) and None",
+      "means": "type representing a value that may or may not exist",
+      "consequence": "Rust has no NULL pointer. The compiler forces developers to handle the None case explicitly before unwrapping the value."
+    },
+    {
+      "code": "Result<T, E>: Ok(val) and Err(err)",
+      "means": "type representing either operation success or failure with a reason",
+      "consequence": "All recoverable errors in Rust return Result. Combined with the ? operator for ergonomic error propagation."
+    },
+    {
+      "code": "? operator (e.g. let file = File::open(path)?)",
+      "means": "unwraps Ok value or immediately returns Err upward to caller",
+      "consequence": "Replaces verbose match statements with concise error bubbling while preserving the original error type."
+    },
+    {
+      "code": "match expr { PatternA => ..., PatternB => ... }",
+      "means": "exhaustive pattern matching expression",
+      "consequence": "The compiler guarantees that every possible enum variant or condition is handled; missing a case produces a build error."
+    },
+    {
+      "code": "if let Some(val) = optional { ... }",
+      "means": "concise pattern matching when you only care about one variant",
+      "consequence": "Executes the block only if the pattern matches, ignoring all other possibilities without requiring an exhaustive match."
+    },
+    {
+      "code": "impl Type { fn method(&self) {} }",
+      "means": "associates methods and constructors with a struct or enum",
+      "consequence": "Functions without &self are associated functions (constructors like Type::new()); functions taking &self are instance methods."
+    },
+    {
+      "code": "trait TraitName { fn method(&self); }",
+      "means": "defines a shared interface of behavior across types",
+      "consequence": "Types implement traits via impl TraitName for Type. Enables static dispatch with zero runtime performance cost."
+    },
+    {
+      "code": "#[derive(Debug, Clone, PartialEq)]",
+      "means": "macro automatically implementing common trait behaviors",
+      "consequence": "Generates code at compile time for string debugging ({:?}), deep cloning (.clone()), or equality comparisons (==)."
+    },
+    {
+      "code": "Box<T>",
+      "means": "heap allocation pointer with single ownership",
+      "consequence": "Moves data from the stack to the heap. Used for recursive types where the compiler needs a known pointer size at compile time."
+    },
+    {
+      "code": "Rc<T> and Arc<T>",
+      "means": "reference counting pointer for single-thread / multi-thread shared ownership",
+      "consequence": "Arc<T> (Atomic Reference Counting) allows multiple threads to safely share read-only ownership of the same heap data."
+    },
+    {
+      "code": "Mutex<T>",
+      "means": "mutual exclusion primitive that encapsulates the data it protects",
+      "consequence": "In Rust, the lock protects the data itself: let mut data = mutex.lock().unwrap(); you cannot access the data without holding the lock."
+    },
+    {
+      "code": "vec![1, 2, 3] and Vec<T>",
+      "means": "dynamically growable heap-allocated array",
+      "consequence": "Provides O(1) push and pop operations, continuous cache memory layout, and automatic deallocation upon dropping."
+    },
+    {
+      "code": "iter().map().filter().collect()",
+      "means": "zero-cost lazy iterator pipeline",
+      "consequence": "Compiles into machine code as fast as a handwritten C while loop, optimizing bounds checks away."
+    },
+    {
+      "code": "String vs &str",
+      "means": "heap-allocated owned string / borrowed read-only string slice",
+      "consequence": "String can grow and mutate; &str is an immutable view pointing into existing UTF-8 memory."
+    },
+    {
+      "code": "unsafe { ... }",
+      "means": "tells compiler to permit raw pointer dereferencing and FFI",
+      "consequence": "Used internally by standard libraries to implement low-level hardware access and high-performance primitives."
+    }
+  ]
+}

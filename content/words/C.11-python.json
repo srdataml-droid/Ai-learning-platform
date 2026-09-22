@@ -1,0 +1,155 @@
+{
+  "id": "C.11-python",
+  "languageId": "C.11",
+  "lang": "Python",
+  "category": "Backend & Enterprise",
+  "summary": "Clear, readable, batteries-included language dominating scripting, backend web services, data science, and modern AI.",
+  "status": "unsourced",
+  "rows": [
+    {
+      "code": "print(*args, sep=' ', end='\\n')",
+      "means": "outputs text and values to standard output",
+      "consequence": "Accepts any number of objects, converts them via str(), separates them with sep, and appends end (defaults to newline)."
+    },
+    {
+      "code": "def func_name(arg1, *args, **kwargs) -> ReturnType:",
+      "means": "defines a reusable function with positional and keyword arguments",
+      "consequence": "*args captures surplus positional arguments as a tuple; **kwargs captures surplus keyword arguments as a dictionary."
+    },
+    {
+      "code": "return vs yield",
+      "means": "returns a single final value / yields items lazily one at a time",
+      "consequence": "yield turns a function into a memory-efficient generator, allowing streaming iteration over gigabytes of data without storing it all in RAM."
+    },
+    {
+      "code": "if / elif / else",
+      "means": "conditional branching based on truthy evaluation",
+      "consequence": "Python treats 0, None, empty collections ([], {}, ''), and False as falsy; everything else evaluates to truthy."
+    },
+    {
+      "code": "for item in iterable:",
+      "means": "iterates directly over any sequence or generator",
+      "consequence": "No manual index counters needed. Iterates over lists, strings, dictionaries, files, or database cursor streams."
+    },
+    {
+      "code": "range(start, stop, step)",
+      "means": "generates an immutable arithmetic progression sequence",
+      "consequence": "Memory efficient: range(1000000) consumes the same tiny constant memory as range(10) because values are generated on-demand."
+    },
+    {
+      "code": "len(collection)",
+      "means": "returns the number of items in O(1) constant time",
+      "consequence": "Python collections store their length directly in memory header structures, so len() never counts elements one by one."
+    },
+    {
+      "code": "List comprehension: [x**2 for x in items if x > 0]",
+      "means": "concise syntax for filtering and mapping a new list",
+      "consequence": "Significantly faster than manual for loops with list.append() because the iteration executes at C-speed in the interpreter."
+    },
+    {
+      "code": "Dict comprehension: {k: v for k, v in pairs}",
+      "means": "builds a dictionary in a single readable expression",
+      "consequence": "Ideal for inverting mappings or indexing list records: {user['id']: user for user in users}."
+    },
+    {
+      "code": "lambda x, y: x + y",
+      "means": "unnamed, single-expression anonymous function",
+      "consequence": "Used for quick throwaway operations, such as custom sorting keys: sorted(users, key=lambda u: u['age'])."
+    },
+    {
+      "code": "with open('file.txt', 'r') as f: (context manager)",
+      "means": "guarantees setup and teardown cleanup even on exceptions",
+      "consequence": "Automatically calls f.close() when the block exits, preventing file descriptor leaks and database connection exhaustion."
+    },
+    {
+      "code": "try / except SpecificError as e / else / finally",
+      "means": "handles runtime exceptions cleanly",
+      "consequence": "Always catch specific exceptions rather than bare except:, which accidentally swallows KeyboardInterrupt and SystemExit."
+    },
+    {
+      "code": "raise ValueError('Invalid argument')",
+      "means": "explicitly triggers an exception",
+      "consequence": "Halts the current function and bubbles up to the caller with a descriptive error message and stack trace."
+    },
+    {
+      "code": "class Name(BaseClass): def __init__(self, val):",
+      "means": "defines an object-oriented class with constructor",
+      "consequence": "self is the explicit reference to the current instance, through which instance attributes and methods are accessed."
+    },
+    {
+      "code": "def __str__(self) vs def __repr__(self):",
+      "means": "human-readable text display / unambiguous developer debug string",
+      "consequence": "__str__ is used by print(); __repr__ should ideally return a valid Python expression recreating the object."
+    },
+    {
+      "code": "@property and @method_name.setter",
+      "means": "exposes a method as an attribute with getter and setter logic",
+      "consequence": "Allows adding validation or computed calculations to attribute access without breaking existing code that reads obj.attribute."
+    },
+    {
+      "code": "@decorator_name",
+      "means": "wraps a function to add logging, caching, or authentication",
+      "consequence": "Syntactic sugar for func = decorator(func). Used everywhere in web frameworks (e.g. @app.get('/'), @login_required)."
+    },
+    {
+      "code": "f\"Hello, {user.name}, value is {x:.2f}\"",
+      "means": "interpolates expressions directly into string literals",
+      "consequence": "Evaluated at runtime. Supports inline formatting like decimals ({x:.2f}), padding, and debug print ({var=})."
+    },
+    {
+      "code": "Slicing: list[start:stop:step]",
+      "means": "extracts sub-sequences or reverses arrays",
+      "consequence": "list[1:4] gets items at indices 1, 2, 3. list[::-1] returns a reversed copy of the list."
+    },
+    {
+      "code": "enumerate(iterable, start=0)",
+      "means": "yields (index, item) pairs during iteration",
+      "consequence": "Replaces manual counter variables: for i, val in enumerate(items): print(i, val)."
+    },
+    {
+      "code": "zip(*iterables)",
+      "means": "aggregates elements from multiple iterables in lockstep",
+      "consequence": "for name, score in zip(names, scores): pairs elements up; stops as soon as the shortest iterable is exhausted."
+    },
+    {
+      "code": "sorted(iterable, key=fn, reverse=True)",
+      "means": "returns a new sorted list using Timsort algorithm",
+      "consequence": "Stable O(n log n) sorting algorithm. Use the key parameter to sort by custom object attributes or dictionary keys."
+    },
+    {
+      "code": "any(iterable) and all(iterable)",
+      "means": "checks if at least one item is truthy / checks if all are truthy",
+      "consequence": "Short-circuits immediately upon determining the outcome: any() stops at the first True; all() stops at the first False."
+    },
+    {
+      "code": "isinstance(obj, (int, float))",
+      "means": "checks if an object is an instance of a class or tuple of classes",
+      "consequence": "Preferred over type(obj) == class because isinstance correctly handles class inheritance and subclasses."
+    },
+    {
+      "code": "collections.defaultdict(list) and collections.Counter",
+      "means": "dictionary with default factories / frequency counter",
+      "consequence": "Counter(words) automatically calculates word frequencies; defaultdict(list) initializes new keys with empty lists without KeyError."
+    },
+    {
+      "code": "@dataclasses.dataclass",
+      "means": "automatically generates __init__, __repr__, and __eq__ for classes",
+      "consequence": "Eliminates repetitive boilerplate when defining pure data-holding classes: @dataclass class User: id: int; name: str."
+    },
+    {
+      "code": "typing: Optional[T], List[T], Dict[K, V], Union[A, B]",
+      "means": "type annotations for static analysis tools like mypy",
+      "consequence": "Provides self-documenting function contracts that can be verified during CI/CD to catch type bugs before production."
+    },
+    {
+      "code": "is None vs == None",
+      "means": "checks memory identity against the singleton / checks equality",
+      "consequence": "Always use is None. None is a unique singleton in Python memory; is checks exact identity in pointer memory."
+    },
+    {
+      "code": "if __name__ == '__main__':",
+      "means": "boilerplate ensuring code runs only when executed directly",
+      "consequence": "Prevents test scripts and script execution from triggering when the file is imported as a library module by other files."
+    }
+  ]
+}

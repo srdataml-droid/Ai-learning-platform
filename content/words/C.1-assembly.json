@@ -1,0 +1,85 @@
+{
+  "id": "C.1-assembly",
+  "languageId": "C.1",
+  "lang": "Assembly",
+  "category": "Systems & Hardware",
+  "summary": "Direct x86_64 machine instructions, hardware CPU registers, stack pointers, and system call execution.",
+  "status": "unsourced",
+  "rows": [
+    {
+      "code": "MOV dst, src",
+      "means": "copies data between CPU registers or between memory and registers",
+      "consequence": "x86_64 cannot move directly from memory to memory in a single instruction; data must load into a register first."
+    },
+    {
+      "code": "ADD dst, src and SUB dst, src",
+      "means": "performs arithmetic addition and subtraction on registers",
+      "consequence": "Updates CPU condition flags (Zero Flag ZF, Carry Flag CF, Sign Flag SF, Overflow Flag OF)."
+    },
+    {
+      "code": "CMP op1, op2",
+      "means": "compares two operands by computing (op1 - op2) without saving result",
+      "consequence": "Sets CPU flags based on the subtraction result, immediately followed by conditional jump instructions."
+    },
+    {
+      "code": "JMP label",
+      "means": "unconditional jump: changes instruction pointer (RIP) to target address",
+      "consequence": "Direct hardware jump instruction, the assembly equivalent of goto."
+    },
+    {
+      "code": "JE / JZ and JNE / JNZ",
+      "means": "jump if equal (Zero Flag = 1) / jump if not equal",
+      "consequence": "Conditional branch instructions used to implement if/else statements and loop termination checks."
+    },
+    {
+      "code": "CALL label and RET",
+      "means": "calls subroutine / returns to caller address",
+      "consequence": "CALL pushes the next instruction address onto the stack; RET pops that address off the stack back into RIP."
+    },
+    {
+      "code": "PUSH src and POP dst",
+      "means": "pushes value onto stack (decrements RSP) / pops into register (increments RSP)",
+      "consequence": "The x86_64 stack grows downward from high memory to low memory."
+    },
+    {
+      "code": "RAX / EAX",
+      "means": "64-bit / 32-bit accumulator register; stores function return values",
+      "consequence": "By calling convention, functions return their numeric or pointer result in RAX."
+    },
+    {
+      "code": "RSP (Stack Pointer)",
+      "means": "points to the top of the current thread execution stack",
+      "consequence": "Modified automatically by PUSH, POP, CALL, and RET, or adjusted manually via sub rsp, 32 to allocate local stack frames."
+    },
+    {
+      "code": "RBP (Base Pointer)",
+      "means": "frame pointer pointing to the base of current stack frame",
+      "consequence": "Historically used to index function local variables and arguments; modern compilers often omit it (-fomit-frame-pointer)."
+    },
+    {
+      "code": "RDI, RSI, RDX, RCX, R8, R9",
+      "means": "System V AMD64 ABI registers holding function arguments",
+      "consequence": "On Linux/macOS, the first 6 integer/pointer arguments to a function are passed in these registers, not on the stack."
+    },
+    {
+      "code": "RIP (Instruction Pointer / Program Counter)",
+      "means": "register holding the memory address of the next instruction to execute",
+      "consequence": "Cannot be written directly with MOV; updated via jumps, calls, and returns."
+    },
+    {
+      "code": "LEA dst, [src + offset]",
+      "means": "Load Effective Address: computes address calculation without memory access",
+      "consequence": "Commonly abused as a fast arithmetic trick: lea rax, [rdi + rsi*4 + 8] performs multiply and add in a single CPU clock cycle."
+    },
+    {
+      "code": "SYSCALL",
+      "means": "switches from user space (Ring 3) to OS kernel space (Ring 0)",
+      "consequence": "Passes syscall number in RAX (e.g. 1 for sys_write on Linux) and arguments in RDI, RSI, RDX; invokes OS kernel services."
+    },
+    {
+      "code": "NOP (0x90)",
+      "means": "No Operation: advances instruction pointer by 1 byte without doing anything",
+      "consequence": "Used for memory alignment of loop targets so instructions line up on 16-byte CPU cache line boundaries."
+    }
+  ]
+}

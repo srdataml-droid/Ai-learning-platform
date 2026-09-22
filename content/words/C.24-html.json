@@ -1,0 +1,170 @@
+{
+  "id": "C.24-html",
+  "languageId": "C.24",
+  "lang": "HTML",
+  "category": "Web & Frontend",
+  "summary": "HyperText Markup Language: the semantic skeleton, document tree, and accessibility foundation of the web.",
+  "status": "unsourced",
+  "rows": [
+    {
+      "code": "<!DOCTYPE html>",
+      "means": "tells the browser to render using modern HTML5 standards",
+      "consequence": "Required at the absolute first line of every HTML file. Without it, browsers trigger legacy 'quirks mode', breaking modern CSS box-sizing and layout standards."
+    },
+    {
+      "code": "<html lang=\"en\">",
+      "means": "the root document element wrapping everything",
+      "consequence": "The lang attribute is critical: screen readers use it for phonetic pronunciation, and search engines use it for geo-targeted indexing."
+    },
+    {
+      "code": "<head> and <body>",
+      "means": "metadata container / visible user interface container",
+      "consequence": "<head> holds machine data (title, meta, styles, scripts). <body> holds all rendered markup visible to the end user."
+    },
+    {
+      "code": "<meta charset=\"UTF-8\">",
+      "means": "declares Unicode character encoding",
+      "consequence": "Ensures characters from all human alphabets, symbols, and emojis render correctly without garbled mojibake symbols."
+    },
+    {
+      "code": "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">",
+      "means": "instructs mobile browsers to scale to the device screen width",
+      "consequence": "Without this single line, mobile phones render desktop-width pages at 980px zoom, causing tiny illegible text and horizontal scrolling."
+    },
+    {
+      "code": "<title>Page Title — Site Name</title>",
+      "means": "sets browser tab title and search engine snippet title",
+      "consequence": "Crucial for both browser bookmarks and search results; also announced first by assistive screen reading technology."
+    },
+    {
+      "code": "<link rel=\"stylesheet\" href=\"styles.css\">",
+      "means": "imports external CSS stylesheets into the document",
+      "consequence": "Placed in <head> so the browser applies styles before painting text, eliminating the Flash of Unstyled Content (FOUC)."
+    },
+    {
+      "code": "<script src=\"app.js\" defer></script>",
+      "means": "loads external JavaScript asynchronously without blocking HTML parsing",
+      "consequence": "The defer attribute downloads scripts in parallel with HTML parsing and executes them in document order once parsing completes."
+    },
+    {
+      "code": "<header>, <nav>, <main>, <footer>",
+      "means": "semantic landmark structural regions",
+      "consequence": "Landmark elements allow screen readers and keyboard users to jump directly across major page sections without navigating every individual link."
+    },
+    {
+      "code": "<article> and <section>",
+      "means": "self-contained reusable unit / thematic content grouping",
+      "consequence": "<article> represents content that makes sense on its own (e.g. blog post, card). <section> represents a thematic chapter with a heading."
+    },
+    {
+      "code": "<aside>",
+      "means": "indirectly related content or sidebar",
+      "consequence": "Used for sidebars, callout boxes, related links, or advertising. Screen readers treat it as secondary content."
+    },
+    {
+      "code": "<h1> through <h6>",
+      "means": "six levels of document heading hierarchy",
+      "consequence": "Never skip heading levels (e.g. h1 to h3) for styling. Use CSS for font size, and reserve headings for the document outline."
+    },
+    {
+      "code": "<p>paragraph text</p>",
+      "means": "standard block of running prose",
+      "consequence": "Browsers apply default vertical paragraph margins to enforce typographic rhythm and readability."
+    },
+    {
+      "code": "<a href=\"url\" target=\"_blank\" rel=\"noopener noreferrer\">",
+      "means": "hypertext anchor navigation link",
+      "consequence": "When opening in a new tab (_blank), rel=\"noopener noreferrer\" prevents the new window from accessing window.opener for tab-napping exploits."
+    },
+    {
+      "code": "<button type=\"button|submit|reset\">",
+      "means": "accessible, clickable trigger for actions",
+      "consequence": "Unlike a <div> with an onclick handler, <button> automatically handles keyboard Enter/Space triggers and native screen reader focus."
+    },
+    {
+      "code": "<form action=\"/api/submit\" method=\"POST\">",
+      "means": "data collection and submission container",
+      "consequence": "Groups user inputs and manages form submission. Handles Enter-key submission and HTML5 constraint validation natively."
+    },
+    {
+      "code": "<label for=\"user-email\">Email</label>",
+      "means": "text label programmatically bound to an input",
+      "consequence": "The for attribute matches the input's id. Clicking the label focuses the input, expanding the touch/click target area."
+    },
+    {
+      "code": "<input type=\"text|email|password|checkbox|radio\">",
+      "means": "interactive data input control",
+      "consequence": "Specifying the correct type enables built-in client validation, mobile keyboards (e.g. numeric keypad for type=\"number\" or \"tel\"), and secure password masking."
+    },
+    {
+      "code": "<textarea rows=\"4\" cols=\"50\"></textarea>",
+      "means": "multi-line plain text editing field",
+      "consequence": "Unlike <input>, maintains multiple lines of user prose. Preserves newline characters upon submission."
+    },
+    {
+      "code": "<select> and <option value=\"val\">",
+      "means": "drop-down selection menu",
+      "consequence": "Allows user to pick one or more options from a fixed list. The selected option's value is sent upon form submit."
+    },
+    {
+      "code": "<table>, <thead>, <tbody>, <tr>, <th>, <td>",
+      "means": "tabular data display architecture",
+      "consequence": "Use <th> with scope=\"col\" or scope=\"row\" so assistive screen readers read column headers aloud alongside cell data."
+    },
+    {
+      "code": "<ul>, <ol>, and <li>",
+      "means": "unordered list (bullets) / ordered list (numbered) / list item",
+      "consequence": "Tells screen readers how many items are in the set (e.g. 'List of 5 items'), vastly improving navigation over raw div tags."
+    },
+    {
+      "code": "<img src=\"pic.webp\" alt=\"Descriptive text\" loading=\"lazy\">",
+      "means": "raster or vector image embedding",
+      "consequence": "The alt attribute describes the image for blind users and when images fail to load. loading=\"lazy\" defers offscreen downloads."
+    },
+    {
+      "code": "<picture> and <source srcset=\"...\" media=\"...\">",
+      "means": "art direction and responsive image switching",
+      "consequence": "Allows serving modern formats (AVIF/WebP) with JPEG fallback, or different crops for mobile versus desktop viewports."
+    },
+    {
+      "code": "<video controls poster=\"preview.jpg\"> and <audio>",
+      "means": "native multimedia playback controls",
+      "consequence": "Eliminated legacy third-party plugins. Supports multiple <source> formats and subtitles via <track kind=\"subtitles\">."
+    },
+    {
+      "code": "<canvas id=\"stage\" width=\"800\" height=\"600\"></canvas>",
+      "means": "bitmapped pixel canvas for 2D/3D graphics and games",
+      "consequence": "Provides a JavaScript drawing context (CanvasRenderingContext2D or WebGL) for immediate-mode graphics."
+    },
+    {
+      "code": "<svg viewBox=\"0 0 24 24\">",
+      "means": "scalable vector graphics element",
+      "consequence": "Resolution-independent vector graphics defined mathematically via XML paths; sharp on any display density."
+    },
+    {
+      "code": "<iframe src=\"url\" title=\"Description\" sandbox=\"...\">",
+      "means": "embeds another nested browsing context (webpage)",
+      "consequence": "The sandbox attribute restricts scripts, forms, and popups to prevent malicious third-party embeds from attacking the host page."
+    },
+    {
+      "code": "<dialog id=\"modal\"> and dialog.showModal()",
+      "means": "native accessible modal dialog box",
+      "consequence": "Handles the backdrop, traps keyboard focus inside the modal, and closes on the Escape key without custom JavaScript."
+    },
+    {
+      "code": "<details> and <summary>Click to toggle</summary>",
+      "means": "native disclosure widget / accordion",
+      "consequence": "Toggles visibility of child content natively without any JavaScript or CSS state management."
+    },
+    {
+      "code": "aria-* attributes (e.g. aria-expanded, aria-label)",
+      "means": "Accessible Rich Internet Applications accessibility overrides",
+      "consequence": "Communicates dynamic state changes (e.g. menu open/closed, loading) to assistive screen readers."
+    },
+    {
+      "code": "data-* attributes (e.g. data-user-id=\"42\")",
+      "means": "stores custom private data directly on HTML elements",
+      "consequence": "Accessible in JavaScript via element.dataset.userId and in CSS selectors via [data-user-id=\"42\"]."
+    }
+  ]
+}

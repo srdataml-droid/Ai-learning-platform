@@ -1,0 +1,100 @@
+{
+  "id": "C.18-go",
+  "languageId": "C.18",
+  "lang": "Go",
+  "category": "Systems & Hardware",
+  "summary": "Fast compilation, cheap goroutine concurrency, explicit error handling, and single static binaries powering cloud infrastructure.",
+  "status": "unsourced",
+  "rows": [
+    {
+      "code": "package main and import (\"fmt\"; \"net/http\")",
+      "means": "declares the executable package name and imports standard libraries",
+      "consequence": "Go compilers reject unused imports with a build error, guaranteeing clean dependency trees."
+    },
+    {
+      "code": "func name(param string) (string, error)",
+      "means": "defines a function with multiple return values",
+      "consequence": "Returning the result and an error together is the foundation of Go's explicit error handling pattern."
+    },
+    {
+      "code": ":= (short variable declaration)",
+      "means": "declares and initializes a variable with inferred type",
+      "consequence": "Only valid inside function bodies. For package-level globals, use var Name string = \"val\"."
+    },
+    {
+      "code": "struct { Field string `json:\"field\"` }",
+      "means": "composite data type with field definitions and reflection tags",
+      "consequence": "Struct tags provide metadata for serialization (JSON, XML, DB). Fields starting with a capital letter are public/exported."
+    },
+    {
+      "code": "type Reader interface { Read(p []byte) (n int, err error) }",
+      "means": "implicit interface satisfied automatically by any matching type",
+      "consequence": "Types do not declare 'implements Reader'. If a type provides the method signature, it satisfies the interface automatically."
+    },
+    {
+      "code": "make(slice/map/chan, length, capacity)",
+      "means": "allocates and initializes slices, maps, or channels in memory",
+      "consequence": "Required for reference types; unlike new(), which only zeroes memory, make sets up internal pointer buffers."
+    },
+    {
+      "code": "append(slice, elements...)",
+      "means": "appends items to a slice, growing capacity when full",
+      "consequence": "If capacity is exceeded, append allocates a new larger backing array and copies elements over, returning a new slice header."
+    },
+    {
+      "code": "for i, val := range collection",
+      "means": "iterates over slices, arrays, maps, and channels",
+      "consequence": "Go has only one looping keyword: for. It handles traditional loops, while-loops, and range iterations."
+    },
+    {
+      "code": "defer cleanupFunction()",
+      "means": "schedules a function call to run when the surrounding function returns",
+      "consequence": "Arguments are evaluated immediately, but execution is deferred until function exit. Ideal for f.Close() or mu.Unlock()."
+    },
+    {
+      "code": "go workerFunction()",
+      "means": "launches a function on a lightweight concurrent goroutine",
+      "consequence": "Goroutines begin with only a ~2KB memory stack that grows and shrinks dynamically, allowing millions of concurrent tasks."
+    },
+    {
+      "code": "chan Type and ch <- val / val := <-ch",
+      "means": "typed channel pipe: send value / receive value",
+      "consequence": "\"Do not communicate by sharing memory; instead, share memory by communicating.\" Enables safe synchronization between goroutines."
+    },
+    {
+      "code": "select { case msg := <-ch1: ... default: ... }",
+      "means": "multiplexes concurrent channel operations simultaneously",
+      "consequence": "Blocks until one of its cases can proceed. If multiple cases are ready, one is chosen via pseudo-random selection."
+    },
+    {
+      "code": "if err != nil { return nil, fmt.Errorf(\"failed: %w\", err) }",
+      "means": "explicit error handling idiom",
+      "consequence": "No hidden exceptions. Errors are normal values that must be inspected and propagated upward explicitly."
+    },
+    {
+      "code": "sync.WaitGroup (Add, Done, Wait)",
+      "means": "synchronization counter waiting for a collection of goroutines to finish",
+      "consequence": "wg.Add(1) increments the counter; wg.Done() decrements it; wg.Wait() blocks execution until the counter reaches zero."
+    },
+    {
+      "code": "sync.Mutex (Lock, Unlock)",
+      "means": "mutual exclusion lock guarding critical shared memory regions",
+      "consequence": "Always follow mu.Lock() immediately with defer mu.Unlock() to prevent deadlocks when functions exit early on errors."
+    },
+    {
+      "code": "context.Context (WithTimeout, WithCancel)",
+      "means": "carries deadlines, cancellation signals, and request-scoped values",
+      "consequence": "Enables propagating cancellation across network calls and child goroutines when an HTTP client disconnects."
+    },
+    {
+      "code": "panic(\"fatal\") and recover()",
+      "means": "triggers catastrophic unwind / recovers control inside deferred function",
+      "consequence": "Reserved exclusively for truly unrecoverable conditions (e.g. nil pointer dereference, out-of-bounds memory)."
+    },
+    {
+      "code": "val, ok := anyVal.(ConcreteType)",
+      "means": "type assertion checking dynamic interface value",
+      "consequence": "If ok is true, val contains the concrete type. If ok is false, prevents a panic and allows safe fallback."
+    }
+  ]
+}

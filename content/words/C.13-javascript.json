@@ -1,0 +1,190 @@
+{
+  "id": "C.13-javascript",
+  "languageId": "C.13",
+  "lang": "JavaScript",
+  "category": "Web & Frontend",
+  "summary": "The dynamic runtime language of the web, Node.js servers, and asynchronous event-driven computing.",
+  "status": "unsourced",
+  "rows": [
+    {
+      "code": "let / const / var",
+      "means": "reassignable variable / immutable binding / legacy function-scoped name",
+      "consequence": "Always default to const. Use let only when a value must change. Never use var because its hoisting and lack of block scope cause silent bugs."
+    },
+    {
+      "code": "function name() vs () => {}",
+      "means": "standard function / arrow function with lexical this",
+      "consequence": "Arrow functions inherit this from their surrounding lexical scope, avoiding the classic .bind(this) bug in object methods and callbacks."
+    },
+    {
+      "code": "console.log / console.error / console.table",
+      "means": "prints debug output, error diagnostics, and tabular arrays",
+      "consequence": "console.table() formats arrays of objects into structured terminal/devtools tables for instant visual inspection."
+    },
+    {
+      "code": "arr.map((item, index) => ...)",
+      "means": "transforms each item into a new array of the same length",
+      "consequence": "Pure function: never modifies the original array. Returns an entirely new array with the mapped results."
+    },
+    {
+      "code": "arr.filter(item => condition)",
+      "means": "returns a new array containing only items passing the test",
+      "consequence": "Pure function: filters down items where the callback returns a truthy value, omitting everything else."
+    },
+    {
+      "code": "arr.reduce((accumulator, item) => ..., initialVal)",
+      "means": "aggregates array items into a single final value or object",
+      "consequence": "The fundamental array primitive: can build totals, group records by category, or flatten nested hierarchies into a single map."
+    },
+    {
+      "code": "arr.find(predicate) / arr.findIndex(predicate)",
+      "means": "returns the first matching item / returns its array index",
+      "consequence": "Stops iterating as soon as a match is found (short-circuiting). Returns undefined / -1 if no item matches."
+    },
+    {
+      "code": "arr.includes(val) / arr.indexOf(val)",
+      "means": "checks if value exists (boolean) / returns index of value",
+      "consequence": "includes() correctly handles NaN comparisons, whereas indexOf() checks strict equality (===) and fails on NaN."
+    },
+    {
+      "code": "arr.some(predicate) / arr.every(predicate)",
+      "means": "checks if at least one item matches / checks if all match",
+      "consequence": "Short-circuits immediately: some() stops at the first true, every() stops at the first false."
+    },
+    {
+      "code": "arr.slice(start, end) vs arr.splice(start, deleteCount, ...items)",
+      "means": "non-destructive sub-array copy / destructive in-place mutation",
+      "consequence": "slice() leaves the original array untouched; splice() deletes or inserts elements directly into the original array."
+    },
+    {
+      "code": "arr.push(x) / pop() / shift() / unshift(x)",
+      "means": "add to end / remove from end / remove from start / add to start",
+      "consequence": "push/pop are O(1) constant time operations; shift/unshift are O(n) because all remaining array elements must be re-indexed."
+    },
+    {
+      "code": "Object.keys(obj) / Object.values() / Object.entries()",
+      "means": "extracts property names / values / [key, value] tuples",
+      "consequence": "Object.entries(obj) is ideal for looping over dictionary records using for (const [k, v] of Object.entries(obj))."
+    },
+    {
+      "code": "Destructuring: const { id, name } = user",
+      "means": "unpacks properties or array items directly into distinct names",
+      "consequence": "Allows setting default values: const { role = 'guest' } = user. Works identically on arrays: const [first, second] = list."
+    },
+    {
+      "code": "Spread syntax: { ...obj, newKey: 'val' } / [ ...arr ]",
+      "means": "shallow copies and merges objects or arrays",
+      "consequence": "Creates a new shallow copy with immutability, allowing clean state updates without mutating the original reference."
+    },
+    {
+      "code": "=== vs ==",
+      "means": "strict equality (checks value and type) / loose equality",
+      "consequence": "Always use ===. Loose equality (==) performs arcane type coercion (e.g. '' == 0 is true, null == undefined is true)."
+    },
+    {
+      "code": "null vs undefined",
+      "means": "deliberate absence of value / variable declared but never assigned",
+      "consequence": "null is an intentional assignment representing 'empty'; undefined is JavaScript's default for missing parameters or unassigned names."
+    },
+    {
+      "code": "Optional chaining: user?.profile?.avatar",
+      "means": "safely accesses nested properties without throwing TypeError",
+      "consequence": "If any reference in the chain is null or undefined, evaluation stops and safely returns undefined instead of crashing."
+    },
+    {
+      "code": "Nullish coalescing: val ?? fallback",
+      "means": "provides fallback ONLY if value is null or undefined",
+      "consequence": "Unlike || (OR), which treats 0, '', and false as falsy and overwrites them, ?? preserves valid falsy values."
+    },
+    {
+      "code": "async / await",
+      "means": "writes asynchronous promise code in synchronous style",
+      "consequence": "Syntactic sugar over Promises. An async function always returns a Promise; await pauses execution until the promise settles."
+    },
+    {
+      "code": "new Promise((resolve, reject) => { ... })",
+      "means": "represents a future value that hasn't arrived yet",
+      "consequence": "Can be in one of three states: pending, fulfilled (via resolve(val)), or rejected (via reject(err))."
+    },
+    {
+      "code": "Promise.all([p1, p2]) vs Promise.allSettled()",
+      "means": "runs promises in parallel; rejects on first error / waits for all",
+      "consequence": "Promise.all fails immediately if any promise rejects; Promise.allSettled always completes and reports each status individually."
+    },
+    {
+      "code": "fetch(url, { method: 'POST', body: JSON.stringify(data) })",
+      "means": "native HTTP client for network requests",
+      "consequence": "Returns a Promise resolving to a Response object. Does not reject on HTTP 404/500 errors; check res.ok === true."
+    },
+    {
+      "code": "try { ... } catch (err) { ... } finally { ... }",
+      "means": "catches and handles runtime exceptions cleanly",
+      "consequence": "The finally block is guaranteed to run regardless of whether an exception occurred, making it ideal for cleaning up resources."
+    },
+    {
+      "code": "throw new Error('Message')",
+      "means": "creates and fires a custom runtime exception with stack trace",
+      "consequence": "Halts the current execution path and bubbles up to the nearest enclosing catch block, preserving the exact line number."
+    },
+    {
+      "code": "document.querySelector(selector) / querySelectorAll()",
+      "means": "finds the first / all matching DOM nodes via CSS selector",
+      "consequence": "querySelectorAll returns a static NodeList that can be looped over directly with .forEach()."
+    },
+    {
+      "code": "element.addEventListener(event, handler)",
+      "means": "binds an event listener to user interactions (click, input)",
+      "consequence": "Supports options like { once: true } or { passive: true } to optimize mobile touch and scroll performance."
+    },
+    {
+      "code": "element.classList.add() / remove() / toggle()",
+      "means": "manipulates CSS class names on DOM elements safely",
+      "consequence": "Prevents messy manual string concatenation of className, ensuring classes aren't duplicated or accidentally removed."
+    },
+    {
+      "code": "JSON.parse(text) / JSON.stringify(data, null, 2)",
+      "means": "deserializes text into JS object / serializes JS object to text",
+      "consequence": "JSON.parse throws SyntaxError on malformed JSON; always wrap in try/catch when reading network or local storage data."
+    },
+    {
+      "code": "localStorage.setItem(key, val) / getItem(key)",
+      "means": "persists string key-value pairs across browser sessions",
+      "consequence": "Synchronous API limited to ~5MB per domain. Stores strings only; use JSON.stringify/JSON.parse to store complex objects."
+    },
+    {
+      "code": "setTimeout(fn, ms) / setInterval(fn, ms)",
+      "means": "schedules a function call after delay / on recurring interval",
+      "consequence": "Returns a numeric timer ID; cancel with clearTimeout(id) or clearInterval(id) to avoid memory leaks."
+    },
+    {
+      "code": "class Name extends Base { constructor() { super(); } }",
+      "means": "object-oriented syntax sugar over prototypal inheritance",
+      "consequence": "Provides clean constructor initialization, private fields (#privateField), and static methods."
+    },
+    {
+      "code": "Set and Map",
+      "means": "collection of unique values / key-value dictionary for any type",
+      "consequence": "Set guarantees O(1) deduplication; Map allows any data type (including objects or functions) to serve as lookup keys."
+    },
+    {
+      "code": "Math.floor() / ceil() / round() / random()",
+      "means": "rounds down / rounds up / rounds to nearest / pseudorandom float",
+      "consequence": "Math.floor(Math.random() * (max - min + 1)) + min generates an inclusive random integer between min and max."
+    },
+    {
+      "code": "str.split(delim) and arr.join(delim)",
+      "means": "splits text into an array / joins an array into text",
+      "consequence": "'a,b,c'.split(',') yields ['a', 'b', 'c']. ['a', 'b'].join('-') yields 'a-b'."
+    },
+    {
+      "code": "str.trim() / replace(regex, replacement)",
+      "means": "removes outer whitespace / replaces pattern matches",
+      "consequence": "Using a global regex (e.g. /pattern/g) replaces all occurrences, or use modern str.replaceAll()."
+    },
+    {
+      "code": "window.requestAnimationFrame(callback)",
+      "means": "schedules a render update before the browser's next screen repaint",
+      "consequence": "Synchronizes visual updates with the display refresh rate (typically 60Hz or 120Hz), yielding silky smooth animations."
+    }
+  ]
+}

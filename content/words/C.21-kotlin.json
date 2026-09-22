@@ -1,0 +1,70 @@
+{
+  "id": "C.21-kotlin",
+  "languageId": "C.21",
+  "lang": "Kotlin",
+  "category": "Mobile & Multiplatform",
+  "summary": "Modern, concise, null-safe language serving as Google's premier standard for Android development and modern JVM backends.",
+  "status": "unsourced",
+  "rows": [
+    {
+      "code": "val vs var",
+      "means": "read-only immutable reference / reassignable mutable variable",
+      "consequence": "Prefer val by default. Immutable references prevent side-effect bugs across multithreaded Android apps."
+    },
+    {
+      "code": "fun name(param: Type): ReturnType { ... }",
+      "means": "function declaration with concise syntax",
+      "consequence": "Single-expression functions can omit curly braces: fun double(x: Int) = x * 2."
+    },
+    {
+      "code": "Nullable types: String? vs non-null String",
+      "means": "type system distinguishes between nullable and non-nullable references",
+      "consequence": "The compiler prevents calling methods on String? directly, eliminating the billion-dollar NullPointerException at build time."
+    },
+    {
+      "code": "Safe call: user?.profile?.avatar",
+      "means": "evaluates property access only if reference is non-null",
+      "consequence": "Returns null safely if user or profile is null rather than throwing an exception."
+    },
+    {
+      "code": "Elvis operator: name ?: \"Anonymous\"",
+      "means": "provides fallback value if left-hand expression is null",
+      "consequence": "val length = str?.length ?: 0 ensures length is a non-null Int with zero fallback."
+    },
+    {
+      "code": "data class User(val id: Int, val name: String)",
+      "means": "concise immutable value-carrier class",
+      "consequence": "Automatically generates equals(), hashCode(), toString(), componentN() destructuring, and copy() methods."
+    },
+    {
+      "code": "when (x) { 1 -> ...; is String -> ...; else -> ... }",
+      "means": "rich pattern-matching expression replacing switch",
+      "consequence": "Can evaluate expressions, type checks, and ranges; compiler checks that all enum or sealed class branches are handled."
+    },
+    {
+      "code": "object (singleton) and companion object",
+      "means": "thread-safe singleton declaration / static class members",
+      "consequence": "object DatabaseManager creates a lazy thread-safe singleton instance on first access without boilerplate."
+    },
+    {
+      "code": "Extension function: fun String.addExclamation() = \"$this!\"",
+      "means": "adds methods to existing classes without inheritance",
+      "consequence": "Allows extending Android framework classes (e.g. View.hide()) cleanly while maintaining full static typing."
+    },
+    {
+      "code": "Smart cast: if (x is String) { x.length }",
+      "means": "compiler automatically casts variable to target type after check",
+      "consequence": "Eliminates explicit casting (as String); once checked with is, the compiler knows the exact type inside that branch."
+    },
+    {
+      "code": "coroutine: viewModelScope.launch { val data = fetchData() }",
+      "means": "lightweight asynchronous concurrency framework",
+      "consequence": "suspend fun functions pause execution without blocking the underlying OS thread, keeping Android UI smooth at 60/120fps."
+    },
+    {
+      "code": "sealed class / sealed interface",
+      "means": "restricted class hierarchies representing finite state variants",
+      "consequence": "Used extensively for UI states: sealed interface UiState { object Loading; data class Success(val d: Data); data class Error(val msg: String); }."
+    }
+  ]
+}

@@ -1,0 +1,100 @@
+{
+  "id": "C.14-php",
+  "languageId": "C.14",
+  "lang": "PHP",
+  "category": "Web & Frontend",
+  "summary": "Server-side web processing language powering over 75% of content-managed websites, modern Laravel APIs, and web hosting.",
+  "status": "unsourced",
+  "rows": [
+    {
+      "code": "<?php ... ?>",
+      "means": "delimiters opening and closing server-side executable PHP code",
+      "consequence": "Everything outside these tags is sent directly to the client browser as raw HTML; code inside is executed on the web server."
+    },
+    {
+      "code": "echo $message; and print",
+      "means": "outputs text and values directly into the HTTP response body",
+      "consequence": "echo is a language construct that accepts multiple comma-separated arguments and has no return value, making it fast."
+    },
+    {
+      "code": "$variable_name",
+      "means": "all variable names begin with a dollar sign sigil",
+      "consequence": "Variables are dynamically typed and loosely scoped. Variable variables ($$name) can evaluate variable names dynamically."
+    },
+    {
+      "code": "$_GET, $_POST, $_SERVER, $_SESSION",
+      "means": "superglobal arrays holding HTTP request and server data",
+      "consequence": "Always sanitize input: accessing $_GET['id'] directly in SQL queries causes SQL injection vulnerabilities."
+    },
+    {
+      "code": "Associative array: $user = ['name' => 'Alice', 'role' => 'admin'];",
+      "means": "unified ordered hash map and list data structure",
+      "consequence": "In PHP, arrays serve as lists, dictionaries, stacks, and queues simultaneously. Array keys can be integers or strings."
+    },
+    {
+      "code": "foreach ($array as $key => $value)",
+      "means": "iterates through arrays and iterable objects",
+      "consequence": "Can modify values in place by using a reference (&): foreach ($items as &$item) { $item *= 2; }."
+    },
+    {
+      "code": "function add(int $a, int $b): int",
+      "means": "declares functions with parameter and return type hints",
+      "consequence": "PHP 7+ enforces scalar type hints. Use declare(strict_types=1); at the top of files to enforce strict type checking."
+    },
+    {
+      "code": "Arrow function: fn($x) => $x * $multiplier",
+      "means": "concise single-expression closure with auto-capture",
+      "consequence": "Automatically captures outer variables by value without needing the verbose use ($multiplier) syntax of classic closures."
+    },
+    {
+      "code": "class User { public function __construct(public string $name) {} }",
+      "means": "constructor property promotion (PHP 8+)",
+      "consequence": "Declaring public string $name in the constructor signature automatically defines and assigns the instance property."
+    },
+    {
+      "code": "namespace App\\Services; and use App\\Models\\User;",
+      "means": "organizes classes into hierarchical packages and imports them",
+      "consequence": "Follows the PSR-4 autoloading standard, allowing Composer to map namespace paths directly to filesystem directories."
+    },
+    {
+      "code": "null, isset($var), empty($var)",
+      "means": "null constant / checks if set and not null / checks if falsy or empty",
+      "consequence": "isset returns true if variable exists and is not null; empty returns true if variable is unset, empty string, 0, or false."
+    },
+    {
+      "code": "=== (strict) vs == (loose)",
+      "means": "checks value and type without coercion / checks with type coercion",
+      "consequence": "Always use ===. In PHP, loose comparisons like '123' == 123 evaluate to true, and in older PHP 'test' == 0 was true."
+    },
+    {
+      "code": "Null coalescing: $val ?? 'default'",
+      "means": "returns fallback if variable is null or unset",
+      "consequence": "Safe against unset variables: $name = $_GET['user'] ?? 'anonymous' will not trigger an 'Undefined index' warning."
+    },
+    {
+      "code": "Spaceship operator: $a <=> $b",
+      "means": "three-way comparison returning -1, 0, or 1",
+      "consequence": "Returns -1 if $a < $b, 0 if $a == $b, and 1 if $a > $b. Ideal for sorting callback functions in usort()."
+    },
+    {
+      "code": "match ($status) { 'active' => ..., default => ... }",
+      "means": "strict-equality pattern matching expression (PHP 8+)",
+      "consequence": "Evaluates to a value like a ternary operator, uses strict comparisons (===), and throws UnhandledMatchError if no arm matches."
+    },
+    {
+      "code": "PDO: $stmt = $pdo->prepare('SELECT * FROM users WHERE id = ?');",
+      "means": "PHP Data Objects abstraction layer with prepared statements",
+      "consequence": "Prepared statements send SQL query structure and data parameters separately, mathematically preventing SQL injection."
+    },
+    {
+      "code": "json_encode($data) and json_decode($json, associative: true)",
+      "means": "serializes PHP data to JSON string / parses JSON into array",
+      "consequence": "Passing true as the second argument to json_decode converts JSON objects into associative PHP arrays instead of stdClass."
+    },
+    {
+      "code": "composer require vendor/package",
+      "means": "dependency manager and PSR-4 autoloader for PHP",
+      "consequence": "require 'vendor/autoload.php' loads all third-party libraries and project classes on demand without manual include statements."
+    }
+  ]
+}

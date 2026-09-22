@@ -1,0 +1,85 @@
+{
+  "id": "C.17-c",
+  "languageId": "C.17",
+  "lang": "C#",
+  "category": "Backend & Enterprise",
+  "summary": "Modern, type-safe, multi-paradigm language driving the cross-platform .NET runtime, cloud microservices, and enterprise systems.",
+  "status": "unsourced",
+  "rows": [
+    {
+      "code": "namespace Company.App; and using System.Text.Json;",
+      "means": "organizes code into logical scopes / imports external namespaces",
+      "consequence": "File-scoped namespaces (C# 10+) eliminate unnecessary indentation levels across entire source files."
+    },
+    {
+      "code": "public class / record / struct",
+      "means": "reference type / immutable data-carrier / lightweight value type",
+      "consequence": "records provide value-based equality out-of-the-box; structs are allocated on the stack to minimize GC memory pressure."
+    },
+    {
+      "code": "public string Name { get; set; }",
+      "means": "auto-implemented property with encapsulation",
+      "consequence": "Provides getters and setters without boilerplate. Use { get; init; } to allow setting values only during object initialization."
+    },
+    {
+      "code": "async Task<T> MethodAsync() and await",
+      "means": "asynchronous non-blocking task-based execution",
+      "consequence": "Releases the operating system thread back to the thread pool while awaiting I/O operations, maximizing server throughput."
+    },
+    {
+      "code": "LINQ: items.Where(x => x.Active).Select(x => x.Name).ToList()",
+      "means": "Language Integrated Query for querying collections and databases",
+      "consequence": "Executes seamlessly in memory or translates directly into optimized SQL queries when using Entity Framework Core."
+    },
+    {
+      "code": "Null-conditional: user?.Profile?.AvatarUrl",
+      "means": "evaluates member access only if the target is non-null",
+      "consequence": "Returns null safely if any reference in the chain is null, eliminating deeply nested if (obj != null) checks."
+    },
+    {
+      "code": "Null-coalescing: val ?? fallback and val ??= fallback",
+      "means": "provides fallback value / assigns fallback only if currently null",
+      "consequence": "string display = username ?? \"Guest\"; assigns \"Guest\" if username is null."
+    },
+    {
+      "code": "Nullable reference types: string? vs string",
+      "means": "compiler warnings when accessing potentially null references",
+      "consequence": "When enabled, the compiler treats all standard types as non-null by default, catching NullReferenceException before deployment."
+    },
+    {
+      "code": "using var stream = new FileStream(...);",
+      "means": "disposes IDisposable resources automatically when scope ends",
+      "consequence": "Modern using declaration automatically invokes stream.Dispose() at the end of the enclosing block, preventing leaks."
+    },
+    {
+      "code": "Pattern matching: switch (obj) { case Circle c => ... }",
+      "means": "tests objects against type shapes, ranges, and property patterns",
+      "consequence": "switch expressions return values directly: var fee = user switch { VipUser => 0, RegularUser => 10, _ => 20 };."
+    },
+    {
+      "code": "String interpolation: $\"User {user.Name} has balance {balance:C}\"",
+      "means": "interpolates expressions and formats directly in strings",
+      "consequence": "The :C format specifier automatically renders local currency formatting according to the current culture."
+    },
+    {
+      "code": "Span<T> and Memory<T>",
+      "means": "allocation-free contiguous memory slicing over arrays and strings",
+      "consequence": "Allows slicing and parsing massive text or byte streams with zero heap allocation, powering high-performance .NET servers."
+    },
+    {
+      "code": "Extension method: public static void Print(this string s)",
+      "means": "adds methods to existing types without modifying their source code",
+      "consequence": "Defined in a static class with the this keyword on the first parameter; invoked as if it were an instance method."
+    },
+    {
+      "code": "record Pos(int X, int Y); with { X = 10 }",
+      "means": "non-destructive mutation on immutable records",
+      "consequence": "Creates a shallow copy of the record with specified properties updated, preserving immutability."
+    },
+    {
+      "code": "Dependency Injection: services.AddScoped<IOrderService, OrderService>()",
+      "means": "built-in IoC container lifecycle management in ASP.NET Core",
+      "consequence": "Transient creates new instance each time; Scoped creates one per HTTP request; Singleton creates one for the entire application."
+    }
+  ]
+}

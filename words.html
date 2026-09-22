@@ -34,7 +34,7 @@
     <!-- Intro Band -->
     <section class="inverted-band" aria-labelledby="words-heading">
       <h1 id="words-heading">Language Cheat Sheets &amp; Word Lists</h1>
-      <p>The code or symbol on the left, plain English concept in the center, and operational mechanics with real-world examples on the right. 21 languages, 430+ essential functions, constructs, and patterns.</p>
+      <p>The code or symbol on the left, plain English concept in the center, and operational mechanics with real-world examples on the right. <span id="words-hero-count">Counting…</span></p>
     </section>
 
     <!-- Search & Filter Controls -->
@@ -44,7 +44,7 @@
           type="search" 
           id="words-search-input" 
           class="words-search-input" 
-          placeholder="Search keywords, syntax, functions, or concepts across all 21 languages (e.g. 'flex', 'null', 'pointer', 'async', 'slice')..." 
+          placeholder="Search keywords, syntax, functions, or concepts (e.g. 'flex', 'null', 'pointer', 'async', 'slice')..." 
           aria-label="Search keywords and functions"
         >
       </div>
@@ -60,7 +60,7 @@
       </div>
 
       <div class="words-search-meta">
-        <span id="words-count-status">Showing all 21 languages and 432 definitions</span>
+        <span id="words-count-status">Counting…</span>
         <span style="font-size: var(--t--2); color: var(--ink-2);">Tip: Click 'Copy' to grab exact syntax</span>
       </div>
     </section>
@@ -84,42 +84,19 @@
   </footer>
 
   <script src="./data.js"></script>
+  <script src="./words-data.js"></script>
   <script src="./app.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       if (!window.CURRICULUM) return;
 
-      const wordsData = window.CURRICULUM.words || [];
+      const wordsData = window.CurriculumWords ? window.CurriculumWords.all() : [];
       const filterStrip = document.getElementById('filter-strip');
       const tablesContainer = document.getElementById('word-tables-container');
       const searchInput = document.getElementById('words-search-input');
       const categoryStrip = document.getElementById('category-strip');
       const countStatus = document.getElementById('words-count-status');
 
-      // Map language names to their corresponding Track C Lesson IDs
-      const lessonMap = {
-        'HTML': 'C.24',
-        'CSS': 'C.24',
-        'JavaScript': 'C.13',
-        'TypeScript': 'C.19',
-        'Python': 'C.11',
-        'C': 'C.7',
-        'C++': 'C.9',
-        'Java': 'C.12',
-        'C#': 'C.17',
-        'PHP': 'C.14',
-        'Ruby & Rails': 'C.15',
-        'Go': 'C.18',
-        'Rust': 'C.20',
-        'Kotlin': 'C.21',
-        'Swift': 'C.21',
-        'Elixir & Erlang': 'C.16',
-        'SQL': 'C.22',
-        'Bash': 'C.25',
-        'Regular Expressions': 'C.26',
-        'CUDA': 'C.23',
-        'Assembly': 'C.1'
-      };
 
       let activeCategory = 'all';
       let searchQuery = '';
@@ -131,7 +108,7 @@
           if (activeCategory !== 'all' && w.category !== activeCategory) {
             return;
           }
-          const slug = w.lang.toLowerCase().replace(/[^a-z0-9]/g, '-');
+          const slug = w.slug;
           const chip = document.createElement('a');
           chip.className = 'words-filter-chip';
           chip.href = `#lang-table-${slug}`;
@@ -160,9 +137,9 @@
           // Search filter: check language name, category, summary, or any row
           const matchingRows = w.rows.filter(row => {
             if (!normalizedQuery) return true;
-            const code = (row[0] || '').toLowerCase();
-            const concept = (row[1] || '').toLowerCase();
-            const detail = (row[2] || '').toLowerCase();
+            const code = (row.code || '').toLowerCase();
+            const concept = (row.means || '').toLowerCase();
+            const detail = (row.consequence || '').toLowerCase();
             return code.includes(normalizedQuery) || concept.includes(normalizedQuery) || detail.includes(normalizedQuery);
           });
 
@@ -173,21 +150,21 @@
           visibleLanguages++;
           totalVisibleDefinitions += matchingRows.length;
 
-          const slug = w.lang.toLowerCase().replace(/[^a-z0-9]/g, '-');
+          const slug = w.slug;
           const section = document.createElement('section');
           section.className = 'word-table-block section-block';
           section.id = `lang-table-${slug}`;
 
           let rowsHtml = '';
           matchingRows.forEach(row => {
-            const codeText = row[0] || '';
+            const codeText = row.code || '';
             const codeEscaped = codeText
               .replace(/&/g, '&amp;')
               .replace(/</g, '&lt;')
               .replace(/>/g, '&gt;');
 
-            const conceptText = row[1] || '';
-            const detailText = row[2] || '';
+            const conceptText = row.means || '';
+            const detailText = row.consequence || '';
 
             rowsHtml += `
               <tr class="interactive-item">
@@ -205,10 +182,13 @@
             `;
           });
 
-          const lessonId = lessonMap[w.lang];
-          const lessonLinkHtml = lessonId 
-            ? `<a href="./lesson.html?id=${lessonId}" class="lang-lesson-link" title="Read historical lesson story and four beats analysis for ${w.lang}">
-                 <span>Lesson ${lessonId} Story →</span>
+          const lessonId = w.languageId;
+          const lessonLinkHtml = lessonId
+            ? `<a href="./language.html?id=${lessonId}" class="lang-lesson-link" title="The decisions that produced this syntax, in the order the language's constraints forced them">
+                 <span>Why this syntax exists →</span>
+               </a>
+               <a href="./lesson.html?id=${lessonId}" class="lang-lesson-link" title="Read the lesson for ${w.lang}">
+                 <span>Lesson ${lessonId} →</span>
                </a>`
             : '';
 
@@ -225,6 +205,7 @@
                 </div>
               </div>
               ${w.summary ? `<p class="lang-summary-text">${w.summary}</p>` : ''}
+              ${provenanceNote(w)}
             </div>
             <table class="word-table" aria-label="${w.lang} Keyword &amp; Function Cheat Sheet">
               <thead>
@@ -272,6 +253,29 @@
         });
       }
 
+      /**
+       * What this table promises, in the same four states as every other page.
+       *
+       * A row's code is exempt from the gate because naming the construct on
+       * display is not a claim; everything else in the row is checked against
+       * the language's seed. A table that has not been through that says so
+       * rather than looking identical to one that has.
+       */
+      function provenanceNote(w) {
+        const states = {
+          unsourced: ['provenance-warn', 'Not yet sourced', 'These rows predate the gate. The explanations have not been checked against a source, so treat a figure or a name in one as a starting point rather than a fact to quote.'],
+          claimless: ['provenance-ok', 'Nothing to source', 'These rows describe what the constructs do and assert nothing citable — checked mechanically to contain no date, figure or name beyond the syntax on display.'],
+          traced: ['provenance-ok', 'Sources traced', 'Every date, figure and name in these explanations is licensed by a claim with a source. The syntax itself needs none: it is what you type, not an assertion.'],
+          verified: ['provenance-ok', 'Verified', 'Traced to sources and read end to end by a person.'],
+        };
+        const state = states[w.status];
+        if (!state) return '';
+        return `<div class="provenance-banner ${state[0]}" role="note" style="margin-top:.5rem;">
+            <span class="provenance-label">${state[1]}</span>
+            <span class="provenance-text">${state[2]}</span>
+          </div>`;
+      }
+
       // 3. Search & Filter Handlers
       if (searchInput) {
         searchInput.addEventListener('input', (e) => {
@@ -294,6 +298,14 @@
             renderTables();
           });
         });
+      }
+
+      // Counted, never asserted: these numbers drift the moment a row is
+      // added, and a stated count is a claim like any other.
+      const heroCount = document.getElementById('words-hero-count');
+      if (heroCount) {
+        const rows = window.CurriculumWords ? window.CurriculumWords.rowCount() : 0;
+        heroCount.textContent = `${wordsData.length} languages, ${rows} functions, constructs and patterns.`;
       }
 
       // Initial Render

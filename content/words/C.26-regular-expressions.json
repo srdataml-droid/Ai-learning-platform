@@ -1,0 +1,100 @@
+{
+  "id": "C.26-regular-expressions",
+  "languageId": "C.26",
+  "lang": "Regular Expressions",
+  "category": "Data & Storage",
+  "summary": "Formal language describing text patterns: character classes, greedy and lazy quantifiers, lookarounds, and capture groups.",
+  "status": "unsourced",
+  "rows": [
+    {
+      "code": ". (dot)",
+      "means": "matches any single character except newline",
+      "consequence": "To match a literal dot (like in a domain name or file extension), you must escape it with a backslash: \\.."
+    },
+    {
+      "code": "* and +",
+      "means": "zero or more occurrences / one or more occurrences",
+      "consequence": "Quantifiers are greedy by default: a.*b will match from the very first 'a' to the very last 'b' in the entire document."
+    },
+    {
+      "code": "? (optional quantifier)",
+      "means": "matches zero or one occurrence of the preceding element",
+      "consequence": "https? matches both 'http' and 'https'. Also used after * or + to make them lazy (non-greedy)."
+    },
+    {
+      "code": "^ and $",
+      "means": "anchors matching the start of string / end of string",
+      "consequence": "^\\d+$ matches an entire string of digits from start to finish, preventing matching digits buried inside text."
+    },
+    {
+      "code": "[abc] and [^abc]",
+      "means": "matches any one character inside the set / negated set",
+      "consequence": "[^0-9] matches any single character that is not a digit."
+    },
+    {
+      "code": "[a-z0-9]",
+      "means": "character range matching lowercase letters or digits",
+      "consequence": "Hyphens represent ranges inside brackets unless placed at the start or end of the bracket expression."
+    },
+    {
+      "code": "\\d vs \\D and \\w vs \\W and \\s vs \\S",
+      "means": "shorthand character classes (digit, word, whitespace) and their inverses",
+      "consequence": "\\d matches [0-9]; \\w matches [a-zA-Z0-9_]; \\s matches spaces, tabs, and newlines. Uppercase letters invert the match."
+    },
+    {
+      "code": "\\b (word boundary)",
+      "means": "zero-width assertion between a word character (\\w) and non-word",
+      "consequence": "\\bcat\\b matches the standalone word 'cat', but will not match 'catalog' or 'scatter'."
+    },
+    {
+      "code": "(pattern) (capturing group)",
+      "means": "groups sub-patterns together and captures matched text",
+      "consequence": "(\\d{4})-(\\d{2})-(\\d{2}) captures year, month, and day into indexed groups $1, $2, $3."
+    },
+    {
+      "code": "(?:pattern) (non-capturing group)",
+      "means": "groups sub-patterns without allocating capture memory",
+      "consequence": "Optimizes regex execution performance when you need grouping for quantifiers (e.g. (?:abc)+) but don't need the matched text."
+    },
+    {
+      "code": "(?<name>pattern) (named capture group)",
+      "means": "captures matched text into a named group",
+      "consequence": "Access via match.groups.name in JavaScript/Python, making code far more maintainable than numeric indices."
+    },
+    {
+      "code": "(?=pattern) (positive lookahead)",
+      "means": "asserts that what follows matches pattern without consuming characters",
+      "consequence": "\\d+(?=px) matches digits only if they are immediately followed by 'px', but does not include 'px' in the match."
+    },
+    {
+      "code": "(?!pattern) (negative lookahead)",
+      "means": "asserts that what follows does NOT match pattern",
+      "consequence": "foo(?!bar) matches 'foo' only if it is not followed by 'bar'. Essential for password complexity validations."
+    },
+    {
+      "code": "(?<=pattern) and (?<!pattern) (lookbehinds)",
+      "means": "positive lookbehind / negative lookbehind assertions",
+      "consequence": "(?<=\\$)\\d+ matches numbers immediately preceded by a dollar sign without including the dollar sign."
+    },
+    {
+      "code": "a|b (alternation)",
+      "means": "matches either pattern a or pattern b",
+      "consequence": "Evaluated from left to right: (cat|dog) matches either animal."
+    },
+    {
+      "code": "{n} and {min,max}",
+      "means": "exact repetition count / bounded repetition range",
+      "consequence": "\\d{4} matches exactly 4 digits; \\d{2,4} matches between 2 and 4 digits."
+    },
+    {
+      "code": "*? and +? (lazy / non-greedy match)",
+      "means": "matches as few characters as possible to satisfy the pattern",
+      "consequence": "<.*?> matches single HTML tags like <div>, whereas <.*> greedily consumes everything from the first < to the last >."
+    },
+    {
+      "code": "Flags: /pattern/gims",
+      "means": "modifiers: global, case-insensitive, multiline, dotAll",
+      "consequence": "g finds all matches; i ignores case; m makes ^ and $ match line starts/ends; s allows . to match newline characters."
+    }
+  ]
+}

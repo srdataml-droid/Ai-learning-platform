@@ -1,0 +1,70 @@
+{
+  "id": "C.21-swift",
+  "languageId": "C.21",
+  "lang": "Swift",
+  "category": "Mobile & Multiplatform",
+  "summary": "Fast, safe, modern language engineered by Apple for iOS, macOS, watchOS, and native systems development.",
+  "status": "unsourced",
+  "rows": [
+    {
+      "code": "let vs var",
+      "means": "immutable constant / mutable variable",
+      "consequence": "Swift strongly encourages let for all values that do not change, enabling compiler optimization and thread safety."
+    },
+    {
+      "code": "func name(label param: Type) -> ReturnType",
+      "means": "function declaration with external argument labels",
+      "consequence": "Argument labels make calls read like natural English sentences: greet(person: \"Alice\", from: \"London\")."
+    },
+    {
+      "code": "Optional<Wrapped> (Type?): .some(val) or .none",
+      "means": "type representing a value that may be nil",
+      "consequence": "Swift disallows nil on standard types. Optionals must be explicitly unwrapped before use."
+    },
+    {
+      "code": "if let val = opt and guard let val = opt else { return }",
+      "means": "safe optional binding constructs",
+      "consequence": "guard let checks for non-null and exits early if nil, keeping the unwrapped variable in scope for the rest of the function."
+    },
+    {
+      "code": "Nil-coalescing: opt ?? fallback",
+      "means": "unwraps optional or returns fallback value if nil",
+      "consequence": "let name = username ?? \"Guest\" guarantees a non-optional String value."
+    },
+    {
+      "code": "struct (value type) vs class (reference type)",
+      "means": "copied on assignment / shared reference in memory",
+      "consequence": "Swift prefers structs for almost all models; structs are allocated cheaply and cannot cause unintended shared-state mutations."
+    },
+    {
+      "code": "protocol ProtocolName { func method() }",
+      "means": "defines an interface contract of methods and properties",
+      "consequence": "The core of Protocol-Oriented Programming (POP). Protocols can provide default implementations via extensions."
+    },
+    {
+      "code": "extension Type { ... }",
+      "means": "adds new methods, computed properties, or protocol conformance",
+      "consequence": "Allows extending built-in types (e.g. extension Int { var squared: Int { self * self } }) across codebases."
+    },
+    {
+      "code": "enum with associated values: Result<Success, Failure>",
+      "means": "enumeration variants carrying custom data payloads",
+      "consequence": "enum NetworkState { case loading; case success(Data); case error(Error) } models state machines cleanly."
+    },
+    {
+      "code": "Closures: { (params) -> ReturnType in body }",
+      "means": "self-contained anonymous functional blocks",
+      "consequence": "Trailing closure syntax allows omitting parentheses: numbers.map { $0 * 2 } using shorthand argument names ($0, $1)."
+    },
+    {
+      "code": "defer { cleanup() }",
+      "means": "executes code when the current code scope exits",
+      "consequence": "Guarantees resource teardown (file closes, lock releases) regardless of how the function returns."
+    },
+    {
+      "code": "async / await and Task { ... }",
+      "means": "structured modern asynchronous programming",
+      "consequence": "Paired with Actors (actor BankAccount) to eliminate data races and thread synchronization bugs automatically."
+    }
+  ]
+}

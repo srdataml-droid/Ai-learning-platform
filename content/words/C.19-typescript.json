@@ -1,0 +1,140 @@
+{
+  "id": "C.19-typescript",
+  "languageId": "C.19",
+  "lang": "TypeScript",
+  "category": "Web & Frontend",
+  "summary": "Typed JavaScript at scale: compile-time type verification, structural type modeling, and developer tooling.",
+  "status": "unsourced",
+  "rows": [
+    {
+      "code": ": string | number | boolean",
+      "means": "primitive type annotations for variables and parameters",
+      "consequence": "Enforces compile-time checking. If a function declares (id: string), passing a number immediately halts the build with an error."
+    },
+    {
+      "code": "interface User { id: string; name: string; }",
+      "means": "defines an extensible object shape contract",
+      "consequence": "Interfaces can be extended (interface Admin extends User) and merged; ideal for public library APIs and data contracts."
+    },
+    {
+      "code": "type ID = string | number",
+      "means": "type alias for naming any type, union, or primitive",
+      "consequence": "Unlike interfaces, type aliases can name unions, tuples, and primitive primitives directly: type Point = [number, number]."
+    },
+    {
+      "code": "prop?: string (optional property)",
+      "means": "indicates a property may be undefined or omitted",
+      "consequence": "Equivalent to string | undefined, allowing callers to construct objects without providing that field."
+    },
+    {
+      "code": "readonly prop: string",
+      "means": "prevents modification after object initialization",
+      "consequence": "Enforces immutability at compile-time: user.id = 'new' produces a TypeScript error."
+    },
+    {
+      "code": "Union types: A | B",
+      "means": "value can be either type A or type B",
+      "consequence": "TypeScript requires you to narrow the union with type guards (typeof, instanceof, or in) before accessing specific properties."
+    },
+    {
+      "code": "Intersection types: A & B",
+      "means": "combines all properties of multiple types into one",
+      "consequence": "type Employee = Person & { employeeId: number } requires an object to have all properties from both Person and the new type."
+    },
+    {
+      "code": "Generics: <T>",
+      "means": "parameterizes types so functions work with any type safely",
+      "consequence": "function identity<T>(arg: T): T preserves the exact type passed in rather than erasing it to any or unknown."
+    },
+    {
+      "code": "Generic constraint: <T extends Record<string, any>>",
+      "means": "restricts what types may be passed to a generic parameter",
+      "consequence": "Ensures T satisfies minimum requirements, such as requiring an object or requiring an id property: <T extends { id: string }>."
+    },
+    {
+      "code": "Type assertion: value as string",
+      "means": "overrides compiler inference with developer assertion",
+      "consequence": "Use sparingly. Does not perform runtime conversion; if value is not actually a string, it will cause runtime bugs."
+    },
+    {
+      "code": "satisfies operator",
+      "means": "validates an expression matches a type without widening it",
+      "consequence": "const config = { host: 'localhost' } satisfies Config checks that config matches Config while preserving exact string literal types."
+    },
+    {
+      "code": "keyof T",
+      "means": "extracts a union of all property keys of type T",
+      "consequence": "If type User = { id: string; name: string }, keyof User evaluates to 'id' | 'name'."
+    },
+    {
+      "code": "typeof variable",
+      "means": "extracts the TypeScript type of a runtime JavaScript variable",
+      "consequence": "Allows generating types directly from runtime constants: const defaultUser = { ... }; type User = typeof defaultUser;."
+    },
+    {
+      "code": "as const",
+      "means": "narrows literals to readonly immutable values",
+      "consequence": "const ROLES = ['admin', 'editor'] as const infers readonly ['admin', 'editor'] instead of string[], preserving exact literal values."
+    },
+    {
+      "code": "unknown vs any vs never",
+      "means": "type-safe unknown / opt-out of checking / value that can never occur",
+      "consequence": "Always prefer unknown over any. any disables all type checking; unknown forces you to check the type before using it."
+    },
+    {
+      "code": "Partial<T>",
+      "means": "utility type making all properties in T optional",
+      "consequence": "Essential for PATCH update APIs where users can update any subset of an entity's fields without providing the entire object."
+    },
+    {
+      "code": "Required<T>",
+      "means": "utility type making all properties in T mandatory",
+      "consequence": "Inverts Partial<T>, stripping away all ? optional markers from an interface."
+    },
+    {
+      "code": "Readonly<T>",
+      "means": "utility type freezing all properties in T against mutation",
+      "consequence": "Marks all fields readonly, preventing accidental modifications in pure functional code pipelines."
+    },
+    {
+      "code": "Record<K, V>",
+      "means": "utility type for key-value dictionaries with keys K and values V",
+      "consequence": "Record<string, User> models a lookup table or hash map where string IDs map to User objects."
+    },
+    {
+      "code": "Pick<T, 'id' | 'name'>",
+      "means": "utility type selecting only specified properties from T",
+      "consequence": "Creates a lean sub-type containing only the chosen fields, preventing leaking sensitive fields like passwords."
+    },
+    {
+      "code": "Omit<T, 'password'>",
+      "means": "utility type excluding specified properties from T",
+      "consequence": "Creates a new type with everything from T except the omitted keys, ideal for public DTO projections."
+    },
+    {
+      "code": "ReturnType<typeof fn>",
+      "means": "extracts the return type of a function",
+      "consequence": "Automatically keeps types in sync when a factory function's implementation changes without needing manual type duplication."
+    },
+    {
+      "code": "Parameters<typeof fn>",
+      "means": "extracts function parameter types as a tuple",
+      "consequence": "Useful for wrapping or proxying third-party functions while preserving their exact argument types."
+    },
+    {
+      "code": "Type guard: pet is Dog",
+      "means": "custom function that narrows types in conditional branches",
+      "consequence": "function isDog(p: Animal): p is Dog { return 'bark' in p; }. Inside an if (isDog(pet)) block, pet is automatically typed as Dog."
+    },
+    {
+      "code": "Discriminated union: { kind: 'circle', radius: number } | ...",
+      "means": "union of types sharing a common literal tag property",
+      "consequence": "Switching on the kind property lets the compiler exhaustively narrow the shape in each switch case."
+    },
+    {
+      "code": "tsconfig: strict: true",
+      "means": "enables all strict type checking flags",
+      "consequence": "Turns on noImplicitAny, strictNullChecks, and strictFunctionTypes, catching the vast majority of silent JavaScript bugs at build time."
+    }
+  ]
+}

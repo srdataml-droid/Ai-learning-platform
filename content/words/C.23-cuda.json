@@ -1,0 +1,85 @@
+{
+  "id": "C.23-cuda",
+  "languageId": "C.23",
+  "lang": "CUDA",
+  "category": "AI & High Performance",
+  "summary": "Massively parallel SIMD computing on NVIDIA GPU hardware: kernels, thread blocks, shared memory, and AI tensor acceleration.",
+  "status": "unsourced",
+  "rows": [
+    {
+      "code": "__global__ void kernel()",
+      "means": "declares a GPU kernel function called from the CPU (host)",
+      "consequence": "Executes on the GPU device asynchronously across thousands of parallel threads. Must return void."
+    },
+    {
+      "code": "__device__ void helper()",
+      "means": "GPU function callable only from other GPU kernels or functions",
+      "consequence": "Compiled directly into GPU PTX assembly; executed by individual threads on streaming multiprocessors."
+    },
+    {
+      "code": "__host__ void cpuFunc()",
+      "means": "standard function that executes on the CPU host",
+      "consequence": "Functions can be declared __host__ __device__ to compile for both CPU and GPU execution."
+    },
+    {
+      "code": "kernel<<<gridDim, blockDim>>>(args)",
+      "means": "kernel execution configuration launch syntax",
+      "consequence": "gridDim specifies the number of thread blocks; blockDim specifies the number of threads per block (up to 1024)."
+    },
+    {
+      "code": "threadIdx.x/y/z and blockIdx.x/y/z",
+      "means": "built-in 3D coordinates of current thread and block",
+      "consequence": "int idx = blockIdx.x * blockDim.x + threadIdx.x computes the unique global 1D thread index for array processing."
+    },
+    {
+      "code": "blockDim.x and gridDim.x",
+      "means": "dimensions of the thread block / dimensions of the grid",
+      "consequence": "Allows writing kernels that map directly to 1D vectors, 2D image matrices, or 3D volumetric tensor data."
+    },
+    {
+      "code": "cudaMalloc((void**)&d_ptr, size)",
+      "means": "allocates raw memory on the GPU's high-bandwidth VRAM",
+      "consequence": "The CPU cannot directly dereference d_ptr; data must be transferred using cudaMemcpy."
+    },
+    {
+      "code": "cudaMemcpy(dst, src, size, cudaMemcpyHostToDevice)",
+      "means": "copies data over the PCIe bus from CPU RAM to GPU VRAM",
+      "consequence": "Transferring data across PCIe is often the main performance bottleneck in GPU computing; minimize transfers."
+    },
+    {
+      "code": "cudaMemcpy(dst, src, size, cudaMemcpyDeviceToHost)",
+      "means": "transfers computed results from GPU VRAM back to CPU RAM",
+      "consequence": "Synchronizes execution: the CPU blocks until the memory transfer completes."
+    },
+    {
+      "code": "cudaFree(d_ptr)",
+      "means": "frees allocated VRAM memory on the GPU device",
+      "consequence": "Must be called for every cudaMalloc to prevent running out of GPU memory (CUDA Out of Memory)."
+    },
+    {
+      "code": "__shared__ float cache[256]",
+      "means": "allocates ultra-fast on-chip SRAM shared by threads in a block",
+      "consequence": "Shared memory has orders of magnitude lower latency and higher bandwidth than global VRAM; used for tile caching in matrix multiplication."
+    },
+    {
+      "code": "__syncthreads()",
+      "means": "barrier synchronization for all threads in the same block",
+      "consequence": "Guarantees that all threads in the block reach this point before any thread continues, preventing race conditions on shared memory."
+    },
+    {
+      "code": "cudaDeviceSynchronize()",
+      "means": "CPU host halts and waits for all launched GPU kernels to finish",
+      "consequence": "Kernel launches (<<<...>>>) are asynchronous. cudaDeviceSynchronize() blocks until all GPU work is complete."
+    },
+    {
+      "code": "Warp (32 threads)",
+      "means": "hardware execution unit executing the same instruction in lockstep",
+      "consequence": "If threads in a warp take different branches (warp divergence), both branches are executed serially, degrading performance."
+    },
+    {
+      "code": "atomicAdd(&val, delta)",
+      "means": "hardware-level atomic addition preventing race conditions",
+      "consequence": "Guarantees correct results when multiple threads update the same global or shared memory address simultaneously."
+    }
+  ]
+}

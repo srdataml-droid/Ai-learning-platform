@@ -30,17 +30,34 @@ import { checkTraceable } from './lib/gate.mjs';
 import { validateSeed, loadAllowlist } from './lib/seed-schema.mjs';
 import { validateLesson, proseOf } from './lib/lesson-schema.mjs';
 import { validateStoryline, proseOf as storylineProseOf } from './lib/storyline-schema.mjs';
+import { validateWordList, rowsOf, licensedByRow } from './lib/wordlist-schema.mjs';
 
 const GATED = ['traced', 'verified'];
+
+/** Every .json in a directory that may not exist, sorted. */
+async function contentFiles(dir) {
+  try {
+    return (await readdir(dir)).filter((f) => f.endsWith('.json')).sort();
+  } catch {
+    return [];
+  }
+}
 
 /**
  * The gate itself, over one piece of content that has a status and a seed.
  *
- * Lessons and storylines differ in their fields and not at all in what is
- * being promised, so the rules live here once and each caller supplies its
- * own idea of which fields are prose.
+ * Lessons, storylines and word list rows differ in their fields and not at
+ * all in what is being promised, so the rules live here once and each caller
+ * supplies its own idea of which fields are prose.
+ *
+ * `licenses` is an optional extra permission the caller can grant, used by
+ * word list rows so that a row may name the construct its own code shows. It
+ * is deliberately a predicate rather than a list: the caller has to be able
+ * to justify each atom against something local, which an allowlist cannot do.
  */
-async function gate({ item, prose, root, allowlist, problems }) {
+async function gate({ item, prose, root, allowlist, problems, licenses = () => false }) {
+  const remaining = (unlicensed) => unlicensed.filter((atom) => !licenses(atom));
+
   if (!GATED.includes(item.status)) {
     if (item.seed) {
       problems.push(`${item.id}: status is "${item.status}" but it names seed ${item.seed}; gate it or drop the seed`);
@@ -48,9 +65,10 @@ async function gate({ item, prose, root, allowlist, problems }) {
     // `claimless` asserts that the prose contains nothing checkable. That is
     // an assertion about the text, so it is checked rather than trusted.
     if (item.status === 'claimless') {
-      const { ok, unlicensed } = checkTraceable(prose, { claims: [] }, allowlist);
-      if (!ok) {
-        problems.push(`${item.id}: status "claimless" but the prose asserts ${unlicensed.length}: ${unlicensed.join(', ')}`);
+      const { unlicensed } = checkTraceable(prose, { claims: [] }, allowlist);
+      const left = remaining(unlicensed);
+      if (left.length > 0) {
+        problems.push(`${item.id}: status "claimless" but the prose asserts ${left.length}: ${left.join(', ')}`);
       }
     }
     return;
@@ -71,9 +89,10 @@ async function gate({ item, prose, root, allowlist, problems }) {
 
   for (const fault of validateSeed(seed)) problems.push(`${item.id}: seed ${item.seed}: ${fault}`);
 
-  const { ok, unlicensed } = checkTraceable(prose, seed, allowlist);
-  if (!ok) {
-    problems.push(`${item.id}: ${unlicensed.length} unlicensed in prose: ${unlicensed.join(', ')}`);
+  const { unlicensed } = checkTraceable(prose, seed, allowlist);
+  const left = remaining(unlicensed);
+  if (left.length > 0) {
+    problems.push(`${item.id}: ${left.length} unlicensed in prose: ${left.join(', ')}`);
   }
 }
 
@@ -94,20 +113,35 @@ export async function verifyAll(root = new URL('../content/', import.meta.url)) 
 
   // The same rules over the language pages. A storyline directory that does
   // not exist is not a failure: the gate reports on what is there.
-  let storylineFiles = [];
   const storylineDir = new URL('languages/', root);
-  try {
-    storylineFiles = (await readdir(storylineDir)).filter((f) => f.endsWith('.json')).sort();
-  } catch {
-    storylineFiles = [];
-  }
-
-  for (const file of storylineFiles) {
+  for (const file of await contentFiles(storylineDir)) {
     const storyline = JSON.parse(await readFile(new URL(file, storylineDir), 'utf8'));
 
     for (const fault of validateStoryline(storyline)) problems.push(fault);
 
     await gate({ item: storyline, prose: storylineProseOf(storyline), root, allowlist, problems });
+  }
+
+  // Word lists are gated row by row, because the one thing a row may name
+  // without a claim behind it is the construct its own code puts on display.
+  const wordDir = new URL('words/', root);
+  for (const file of await contentFiles(wordDir)) {
+    const list = JSON.parse(await readFile(new URL(file, wordDir), 'utf8'));
+
+    for (const fault of validateWordList(list)) problems.push(fault);
+
+    const prose = rowsOf(list);
+    for (const [i, rowProse] of prose.entries()) {
+      const row = list.rows[i];
+      await gate({
+        item: { id: `${list.id} row ${i + 1}`, status: list.status, seed: list.seed },
+        prose: rowProse,
+        root,
+        allowlist,
+        problems,
+        licenses: (atom) => licensedByRow(row, atom),
+      });
+    }
   }
 
   return problems;

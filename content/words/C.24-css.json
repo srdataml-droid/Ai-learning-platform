@@ -1,0 +1,170 @@
+{
+  "id": "C.24-css",
+  "languageId": "C.24",
+  "lang": "CSS",
+  "category": "Web & Frontend",
+  "summary": "Cascading Style Sheets: layout engines, the box model, responsive typography, and visual animation systems.",
+  "status": "unsourced",
+  "rows": [
+    {
+      "code": "* { box-sizing: border-box; }",
+      "means": "includes padding and border inside total width and height",
+      "consequence": "The universal CSS reset invariant. With content-box, adding 10px padding makes a 100px element 120px wide, causing layout overflow."
+    },
+    {
+      "code": "element, .class, #id",
+      "means": "tag selector / class selector / unique ID selector",
+      "consequence": "ID selectors (#) have high specificity (1-0-0) that makes them hard to override. Prefer classes (.class, specificity 0-1-0) for maintainable styles."
+    },
+    {
+      "code": "margin vs padding",
+      "means": "space outside the border / space inside the border",
+      "consequence": "Margins separate sibling elements and collapse vertically. Padding adds breathing room between the border and the element's inner content."
+    },
+    {
+      "code": "display: flex",
+      "means": "activates one-dimensional flexible box layout engine",
+      "consequence": "Lays out direct children along a single main axis (row or column) with automated space distribution and alignment."
+    },
+    {
+      "code": "flex-direction: row | column",
+      "means": "sets the primary axis direction of flex items",
+      "consequence": "row (default) arranges items horizontally left-to-right; column arranges items vertically top-to-bottom."
+    },
+    {
+      "code": "justify-content vs align-items",
+      "means": "alignment along the main axis / alignment along the cross axis",
+      "consequence": "justify-content (flex-start, center, space-between) aligns along the flow direction; align-items aligns perpendicular to it."
+    },
+    {
+      "code": "gap: 1rem",
+      "means": "space between flex or grid items",
+      "consequence": "Replaces messy margin hacks on children. Automatically handles spacing without unwanted outer margins on first or last items."
+    },
+    {
+      "code": "flex: 1 1 auto (grow, shrink, basis)",
+      "means": "controls how a flex item expands or contracts",
+      "consequence": "flex-grow allows the item to fill leftover space; flex-shrink allows it to contract under overflow; flex-basis sets initial size."
+    },
+    {
+      "code": "display: grid",
+      "means": "activates two-dimensional grid layout engine",
+      "consequence": "Simultaneously coordinates rows and columns with explicit track definitions and gap spacing."
+    },
+    {
+      "code": "grid-template-columns: repeat(auto-fit, minmax(280px, 1fr))",
+      "means": "responsive auto-wrapping grid with no media queries",
+      "consequence": "Creates as many 280px+ columns as will fit into the container width, expanding them equally to fill remaining space."
+    },
+    {
+      "code": "position: static | relative | absolute | fixed | sticky",
+      "means": "determines how an element is positioned in the viewport or parent",
+      "consequence": "relative keeps space in flow; absolute removes from flow relative to closest positioned ancestor; fixed pins to viewport; sticky sticks on scroll."
+    },
+    {
+      "code": "top / right / bottom / left and z-index",
+      "means": "offset distances from anchor / stacking order along the Z-axis",
+      "consequence": "z-index only takes effect on positioned elements (relative, absolute, fixed, sticky) or flex/grid children."
+    },
+    {
+      "code": "width, max-width: 100%, min-width",
+      "means": "explicit size, fluid ceiling limit, and minimum floor size",
+      "consequence": "max-width: 100% prevents images, tables, and containers from breaking out of parent boundaries on mobile screens."
+    },
+    {
+      "code": "rem vs em vs vh / vw vs %",
+      "means": "font-relative and viewport-relative length units",
+      "consequence": "1rem is relative to root <html> font-size (respecting user browser zoom); em is relative to parent element; vh/vw are 1% of viewport."
+    },
+    {
+      "code": "color vs background-color",
+      "means": "text foreground color / container background surface color",
+      "consequence": "Always ensure at least a 4.5:1 contrast ratio between foreground and background colors to satisfy WCAG AA accessibility standards."
+    },
+    {
+      "code": "font-family: 'Inter', system-ui, sans-serif",
+      "means": "prioritized font fallback stack",
+      "consequence": "The browser attempts to render the first font; if not installed or loaded, falls back down the list to system defaults."
+    },
+    {
+      "code": "line-height: 1.5 to 1.7",
+      "means": "vertical distance between text baselines",
+      "consequence": "Using unitless numbers (e.g. 1.5) scales proportionally with any font-size, preventing clipped descenders and cramped paragraphs."
+    },
+    {
+      "code": "overflow: hidden | auto | scroll",
+      "means": "behavior when content exceeds its container bounds",
+      "consequence": "auto adds scrollbars only when content overflows; hidden clips overflow cleanly; visible (default) spills outside container bounds."
+    },
+    {
+      "code": "opacity vs visibility: hidden vs display: none",
+      "means": "visual transparency / invisible but in layout / completely removed from layout",
+      "consequence": "display: none removes element from layout and accessibility tree; visibility: hidden keeps layout space; opacity changes transparency."
+    },
+    {
+      "code": "transition: all 0.2s cubic-bezier(...)",
+      "means": "smoothly animates property changes between states",
+      "consequence": "Animate transform and opacity for smooth 60fps GPU acceleration; avoid animating width, height, or top which trigger CPU layout reflows."
+    },
+    {
+      "code": "transform: translate(x, y) rotate(deg) scale(s)",
+      "means": "GPU-accelerated geometric transformations",
+      "consequence": "Transforms do not trigger browser layout reflow or repaint loops, making them the primary choice for fluid UI animations."
+    },
+    {
+      "code": "@keyframes spin { from { ... } to { ... } }",
+      "means": "defines multi-step CSS keyframe animation sequence",
+      "consequence": "Paired with animation: spin 1s linear infinite to create continuous or complex visual transitions."
+    },
+    {
+      "code": ":hover, :focus-visible, :active, :disabled",
+      "means": "interactive user state pseudo-classes",
+      "consequence": ":focus-visible displays keyboard focus rings only for keyboard navigators, keeping mouse clicks clean while preserving accessibility."
+    },
+    {
+      "code": ":nth-child(even | odd | 2n+1)",
+      "means": "targets elements by their numeric position among siblings",
+      "consequence": "Used for zebra striping tables, alternating grid cards, or styling specific rows without extra HTML classes."
+    },
+    {
+      "code": "::before and ::after",
+      "means": "pseudo-elements that insert decorative content into CSS",
+      "consequence": "Requires content: '' property. Used for icons, tooltips, accent lines, and overlays without polluting the HTML DOM."
+    },
+    {
+      "code": "--primary-color: #2563eb and var(--primary-color)",
+      "means": "CSS custom properties (design tokens and variables)",
+      "consequence": "Unlike preprocessor variables (Sass), CSS variables update dynamically at runtime and cascade through DOM subtrees, powering dark mode."
+    },
+    {
+      "code": "calc(100% - 2rem)",
+      "means": "performs mathematical calculations across mixed units",
+      "consequence": "Allows subtracting absolute lengths (e.g. 2rem) from fluid percentages (100%), solving complex responsive layouts."
+    },
+    {
+      "code": "clamp(min, preferred, max)",
+      "means": "bounds a value between an absolute floor and ceiling",
+      "consequence": "clamp(1rem, 2.5vw, 2.5rem) creates fluid responsive typography that scales with the screen without ever getting too small or huge."
+    },
+    {
+      "code": "@media (min-width: 768px) { ... }",
+      "means": "mobile-first responsive viewport breakpoint query",
+      "consequence": "Applies styling rules only when the screen is at least 768px wide, allowing clean progression from mobile to tablet to desktop."
+    },
+    {
+      "code": "@container (min-width: 400px) { ... }",
+      "means": "component-level container queries",
+      "consequence": "Applies styles based on the width of the parent container rather than the entire browser window, enabling truly modular components."
+    },
+    {
+      "code": "object-fit: cover | contain",
+      "means": "controls how <img> or <video> scales inside fixed bounds",
+      "consequence": "cover fills the container while preserving aspect ratio (cropping excess); contain scales without cropping (leaving letterboxes)."
+    },
+    {
+      "code": "cursor: pointer | not-allowed | grab",
+      "means": "sets the mouse cursor icon for user feedback",
+      "consequence": "Provides clear tactile affordance that an element can be clicked, dragged, or is currently disabled."
+    }
+  ]
+}

@@ -1,0 +1,120 @@
+{
+  "id": "C.22-sql",
+  "languageId": "C.22",
+  "lang": "SQL",
+  "category": "Data & Storage",
+  "summary": "Declarative relational database engine: describe the desired result set, and let the query optimizer find the optimal physical plan.",
+  "status": "unsourced",
+  "rows": [
+    {
+      "code": "SELECT col1, col2 FROM table_name",
+      "means": "retrieves specific columns from a relational table",
+      "consequence": "Never use SELECT * in production applications; fetching unneeded columns wastes memory, network bandwidth, and prevents index-only scans."
+    },
+    {
+      "code": "WHERE condition (AND, OR, NOT)",
+      "means": "filters physical rows before grouping or aggregation",
+      "consequence": "Filters must be placed here rather than in HAVING so the database engine can utilize B-Tree indexes to avoid full table scans."
+    },
+    {
+      "code": "INNER JOIN vs LEFT JOIN on col = col",
+      "means": "returns matching rows only / returns all left rows plus matched right",
+      "consequence": "INNER JOIN drops rows without a counterpart; LEFT JOIN preserves all left rows, filling unmatched right columns with NULL."
+    },
+    {
+      "code": "GROUP BY column_name",
+      "means": "collapses rows sharing the same value into single summary buckets",
+      "consequence": "Every column in the SELECT list must either appear in the GROUP BY clause or be wrapped inside an aggregate function."
+    },
+    {
+      "code": "HAVING aggregate_condition",
+      "means": "filters aggregated summary buckets after GROUP BY",
+      "consequence": "WHERE filters individual rows before grouping; HAVING filters collapsed groups (e.g. HAVING COUNT(*) > 5)."
+    },
+    {
+      "code": "ORDER BY col ASC | DESC and LIMIT n OFFSET m",
+      "means": "sorts result rows and paginates output",
+      "consequence": "Without ORDER BY, relational row return order is nondeterministic. High OFFSET pagination degrades performance; prefer keyset pagination."
+    },
+    {
+      "code": "INSERT INTO table (col1, col2) VALUES (v1, v2)",
+      "means": "appends new rows to a table",
+      "consequence": "Support batch inserts: INSERT INTO table VALUES (...), (...) executes in a single round-trip."
+    },
+    {
+      "code": "UPDATE table SET col = val WHERE condition",
+      "means": "modifies existing rows matching the filter",
+      "consequence": "Always test the WHERE clause with a SELECT first; omitting WHERE updates every single row in the entire database table."
+    },
+    {
+      "code": "DELETE FROM table WHERE condition",
+      "means": "removes matching rows from a table",
+      "consequence": "Logged row by row. For wiping an entire table instantly, prefer TRUNCATE TABLE, which resets storage extents directly."
+    },
+    {
+      "code": "CREATE TABLE name (id SERIAL PRIMARY KEY, ...)",
+      "means": "defines relational schema, column types, and constraints",
+      "consequence": "Constraints (NOT NULL, UNIQUE, CHECK) enforce data integrity at the database level regardless of application bugs."
+    },
+    {
+      "code": "PRIMARY KEY vs FOREIGN KEY ... REFERENCES",
+      "means": "unique record identifier / enforces referential relationship between tables",
+      "consequence": "Foreign keys guarantee data consistency: the database prevents deleting a parent record if child records still reference it."
+    },
+    {
+      "code": "CREATE INDEX idx_name ON table (column)",
+      "means": "creates a B-Tree lookup structure for fast O(log N) searches",
+      "consequence": "Indexes speed up SELECT queries dramatically, but add minor overhead to INSERT, UPDATE, and DELETE operations."
+    },
+    {
+      "code": "NULL, IS NULL, IS NOT NULL",
+      "means": "represents unknown or missing data in three-valued logic",
+      "consequence": "Never check col = NULL; in SQL, NULL = NULL evaluates to UNKNOWN, not TRUE. You must use IS NULL or IS NOT NULL."
+    },
+    {
+      "code": "COUNT(*), SUM(col), AVG(col), MIN(col), MAX(col)",
+      "means": "aggregate functions computing values across multiple rows",
+      "consequence": "COUNT(*) counts all rows; COUNT(col) counts only rows where col is not NULL."
+    },
+    {
+      "code": "DISTINCT",
+      "means": "eliminates duplicate rows from the result set",
+      "consequence": "Requires the database engine to perform an expensive sort or hash operation across all retrieved rows."
+    },
+    {
+      "code": "LIKE '%pattern%' vs ILIKE",
+      "means": "wildcard pattern matching / case-insensitive matching",
+      "consequence": "Prefix wildcards ('%text') cannot utilize standard B-Tree indexes, triggering full table scans. Use full-text search indexes instead."
+    },
+    {
+      "code": "IN (val1, val2) and NOT IN",
+      "means": "checks if value matches any item in a list or subquery",
+      "consequence": "Warning: NOT IN returns zero rows if the subquery contains even a single NULL value due to three-valued logic. Use NOT EXISTS."
+    },
+    {
+      "code": "CASE WHEN cond THEN val ELSE default END",
+      "means": "conditional branching expression inside queries",
+      "consequence": "Allows dynamic computed columns: CASE WHEN score >= 90 THEN 'A' ELSE 'B' END."
+    },
+    {
+      "code": "BEGIN TRANSACTION, COMMIT, ROLLBACK",
+      "means": "guarantees ACID atomic transaction boundaries",
+      "consequence": "All updates inside the transaction succeed together, or ROLLBACK aborts them completely if a failure occurs."
+    },
+    {
+      "code": "EXPLAIN and EXPLAIN ANALYZE",
+      "means": "displays the query execution plan and actual execution timings",
+      "consequence": "Identifies sequential scans (Seq Scan), index scans (Index Scan), join algorithms, and execution bottlenecks."
+    },
+    {
+      "code": "COALESCE(val1, val2, ...)",
+      "means": "returns the first non-null argument in the list",
+      "consequence": "COALESCE(user.phone, user.email, 'N/A') provides fallbacks for nullable database columns."
+    },
+    {
+      "code": "Window function: ROW_NUMBER() OVER (PARTITION BY ... ORDER BY ...)",
+      "means": "calculates ranking or cumulative metrics across row subsets",
+      "consequence": "Unlike GROUP BY, window functions do not collapse rows together; they compute values alongside the original individual rows."
+    }
+  ]
+}

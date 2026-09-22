@@ -1,0 +1,120 @@
+{
+  "id": "C.9-c",
+  "languageId": "C.9",
+  "lang": "C++",
+  "category": "Systems & Hardware",
+  "summary": "High-performance systems programming with zero-overhead abstractions, RAII resource management, and modern generic STL.",
+  "status": "unsourced",
+  "rows": [
+    {
+      "code": "#include <iostream> and std::cout << val << std::endl",
+      "means": "standard stream input/output library",
+      "consequence": "Type-safe stream operators (<< and >>) replace C's printf format specifiers, automatically formatting any custom object."
+    },
+    {
+      "code": "class vs struct in C++",
+      "means": "user-defined types: private by default / public by default",
+      "consequence": "In C++, classes and structs are identical except for default visibility: class members are private by default; struct members are public."
+    },
+    {
+      "code": "constructor and destructor (~ClassName)",
+      "means": "initialization on creation / automated cleanup on destruction",
+      "consequence": "The destructor runs deterministically as soon as an object goes out of scope, releasing memory, closing sockets, or freeing locks."
+    },
+    {
+      "code": "RAII (Resource Acquisition Is Initialization)",
+      "means": "binds lifecycle of physical resources to C++ object scope",
+      "consequence": "The core architectural superpower of C++. Guarantees no resource leaks even if unexpected exceptions are thrown."
+    },
+    {
+      "code": "std::vector<T>",
+      "means": "contiguous, dynamically resizing heap array",
+      "consequence": "The default collection in C++. Provides O(1) random access and cache-friendly contiguous memory locality."
+    },
+    {
+      "code": "std::string",
+      "means": "dynamically resizing managed character string",
+      "consequence": "Automatically handles memory allocation and null termination, eliminating C-style buffer overflow vulnerabilities."
+    },
+    {
+      "code": "std::unordered_map<Key, Value>",
+      "means": "hash table offering average O(1) key-value lookups",
+      "consequence": "Requires Key to implement std::hash and equality operator (==); use std::map if you need keys kept in sorted order."
+    },
+    {
+      "code": "std::unique_ptr<T> and std::make_unique<T>()",
+      "means": "smart pointer with exclusive, single ownership of a heap resource",
+      "consequence": "Cannot be copied, only moved (std::move). Automatically deletes the underlying resource when the pointer goes out of scope."
+    },
+    {
+      "code": "std::shared_ptr<T> and std::make_shared<T>()",
+      "means": "smart pointer with reference-counted shared ownership",
+      "consequence": "Maintains an atomic reference counter. Frees the resource only when the last shared_ptr pointing to it is destroyed."
+    },
+    {
+      "code": "std::move(val) and rvalue reference (T&&)",
+      "means": "casts an lvalue to an rvalue to transfer ownership without copying",
+      "consequence": "Eliminates expensive deep copies of vectors, strings, and buffers by simply stealing their internal heap pointers."
+    },
+    {
+      "code": "auto keyword",
+      "means": "instructs the compiler to deduce the type automatically",
+      "consequence": "auto it = map.begin() deduces std::unordered_map<std::string, int>::iterator without verbose manual type typing."
+    },
+    {
+      "code": "template<typename T>",
+      "means": "defines generic functions or classes instantiated at compile time",
+      "consequence": "Generates zero-overhead specialized machine code for each concrete type used, delivering high speed with generic reuse."
+    },
+    {
+      "code": "constexpr and consteval",
+      "means": "forces code execution and value computation at compile time",
+      "consequence": "Enables complex mathematical tables or validation logic to run during compilation, resulting in zero runtime CPU cycles."
+    },
+    {
+      "code": "lambda: [capture](params) -> ret { body }",
+      "means": "anonymous inline function object with variable capture",
+      "consequence": "[=] captures outer variables by value; [&] captures by reference. Essential for algorithms like std::sort and multithreading."
+    },
+    {
+      "code": "virtual void method() = 0; (pure virtual)",
+      "means": "defines an abstract method interface that derived classes must implement",
+      "consequence": "Enables runtime polymorphism via virtual method tables (vtables), allowing base class pointers to call derived overrides."
+    },
+    {
+      "code": "override specifier",
+      "means": "validates that a method overrides a virtual method in base class",
+      "consequence": "Prevents subtle bugs where a typo in a derived method name or signature silently creates a new method instead of overriding."
+    },
+    {
+      "code": "namespace name { ... }",
+      "means": "prevents name collisions between libraries and modules",
+      "consequence": "Use explicit namespace qualification (e.g. std::vector) rather than using namespace std;, which causes global namespace pollution."
+    },
+    {
+      "code": "nullptr",
+      "means": "type-safe null pointer literal (replaces integer 0 / NULL)",
+      "consequence": "Has type std::nullptr_t, preventing ambiguous function overload resolution between integer 0 and pointer null."
+    },
+    {
+      "code": "static_cast<T>(v) vs dynamic_cast<T>(v)",
+      "means": "compile-time type conversion / runtime checked polymorphic downcast",
+      "consequence": "dynamic_cast safely checks polymorphic class hierarchies at runtime, returning nullptr if the cast is invalid."
+    },
+    {
+      "code": "std::optional<T>",
+      "means": "container holding either a valid value or nothing (std::nullopt)",
+      "consequence": "Eliminates sentinel values (like -1 or NULL pointers) for operations that may fail to produce a result."
+    },
+    {
+      "code": "std::ranges and views (C++20)",
+      "means": "composable, lazy functional pipelines over collections",
+      "consequence": "auto res = vec | std::views::filter(is_even) | std::views::transform(square) executes lazily without allocating intermediate vectors."
+    },
+    {
+      "code": "std::mutex and std::lock_guard<std::mutex>",
+      "means": "mutual exclusion lock using RAII to prevent thread deadlocks",
+      "consequence": "lock_guard locks the mutex on construction and automatically unlocks it when exiting scope, ensuring thread safety."
+    }
+  ]
+}

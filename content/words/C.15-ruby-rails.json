@@ -1,0 +1,80 @@
+{
+  "id": "C.15-ruby-rails",
+  "languageId": "C.15",
+  "lang": "Ruby & Rails",
+  "category": "Backend & Enterprise",
+  "summary": "Object-oriented language prioritizing developer happiness, elegant DSLs, and convention-over-configuration web development.",
+  "status": "unsourced",
+  "rows": [
+    {
+      "code": "def method_name(param = 'default') ... end",
+      "means": "defines a method with optional default parameters",
+      "consequence": "In Ruby, the last evaluated expression is automatically returned without requiring an explicit return keyword."
+    },
+    {
+      "code": "puts vs print vs p",
+      "means": "print with newline / print without newline / inspect with debug quotes",
+      "consequence": "p object calls object.inspect, displaying quotes on strings and showing internal array structures, ideal for debugging."
+    },
+    {
+      "code": "@instance_var, @@class_var, $global, :symbol",
+      "means": "instance state / class-shared state / global variable / immutable symbol",
+      "consequence": "Symbols (:name) are immutable, internalized strings. Ruby allocates only one memory address per symbol name."
+    },
+    {
+      "code": "attr_accessor :name, :email",
+      "means": "generates getter and setter methods automatically",
+      "consequence": "attr_reader generates only getters; attr_writer generates only setters; attr_accessor creates both."
+    },
+    {
+      "code": "Blocks: [1, 2].each do |x| ... end and { |x| ... }",
+      "means": "chunks of code passed into methods to execute",
+      "consequence": "Use { ... } for single-line blocks; use do ... end for multi-line blocks. The bedrock of Ruby's functional enumerables."
+    },
+    {
+      "code": "yield(arg)",
+      "means": "pauses method execution to execute the passed block",
+      "consequence": "Allows writing custom iteration methods and wrappers: def benchmark; t = Time.now; yield; Time.now - t; end."
+    },
+    {
+      "code": "class Dog < Animal ... end",
+      "means": "defines a class inheriting from a superclass",
+      "consequence": "In Ruby, classes are open: you can reopen any existing class (even String) and add new methods at runtime (monkey patching)."
+    },
+    {
+      "code": "nil and nil? / empty? / blank? / present?",
+      "means": "the singleton null object and state check helpers",
+      "consequence": "In Ruby, ONLY false and nil are falsy. The number 0 and empty string \"\" are truthy! blank? is a Rails helper checking for whitespace."
+    },
+    {
+      "code": "unless condition ... end",
+      "means": "executes the block only if condition evaluates to false",
+      "consequence": "Idiomatic opposite of if. Often used as an inline guard clause: return if user.nil? or redirect_to login unless logged_in?."
+    },
+    {
+      "code": "self keyword",
+      "means": "refers to the current executing object or class context",
+      "consequence": "Inside a class method definition (def self.find_by_email), self refers to the Class object itself."
+    },
+    {
+      "code": "ActiveRecord: User.where(active: true).order(created_at: :desc)",
+      "means": "object-relational mapping querying database tables",
+      "consequence": "Executes lazily: chaining query methods builds an ActiveRecord::Relation; SQL executes only when records are accessed."
+    },
+    {
+      "code": "Associations: has_many :orders, belongs_to :user",
+      "means": "declares relational database foreign key relationships",
+      "consequence": "Automatically injects helper methods like user.orders and order.user, handling SQL joins behind the scenes."
+    },
+    {
+      "code": "Safe navigation: user&.profile&.avatar_url",
+      "means": "calls methods only if the receiver is not nil",
+      "consequence": "Returns nil safely if any link in the chain is nil, preventing NoMethodError: undefined method for nil:NilClass."
+    },
+    {
+      "code": "Enumerable: .map, .select, .reject, .reduce",
+      "means": "functional collection pipeline transformations",
+      "consequence": "numbers.select(&:even?) uses the symbol-to-proc trick (&:method) to call .even? on every item in the list."
+    }
+  ]
+}

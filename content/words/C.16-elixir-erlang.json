@@ -1,0 +1,65 @@
+{
+  "id": "C.16-elixir-erlang",
+  "languageId": "C.16",
+  "lang": "Elixir & Erlang",
+  "category": "Backend & Enterprise",
+  "summary": "Built on the BEAM virtual machine: millions of isolated processes, supervision trees, and nine-nines uptime fault tolerance.",
+  "status": "unsourced",
+  "rows": [
+    {
+      "code": "defmodule ModuleName do ... end",
+      "means": "defines a namespace of related functions",
+      "consequence": "In Elixir, all functions reside inside modules; functions are identified by name and arity (e.g. String.length/1)."
+    },
+    {
+      "code": "|> (pipe operator)",
+      "means": "passes the result of the left expression as the first argument to the right",
+      "consequence": "Turns nested function calls inside out: data |> validate() |> transform() |> save() reads cleanly top-to-bottom."
+    },
+    {
+      "code": "= (match operator)",
+      "means": "pattern matches data structures rather than simple assignment",
+      "consequence": "{:ok, result} = fetch_user(id) asserts that the call succeeded and binds result; crashes cleanly if {:error, _} is returned."
+    },
+    {
+      "code": ":atom (named constant)",
+      "means": "immutable identifier whose name is its own value",
+      "consequence": "Atoms like :ok, :error, :nil are stored in an internal atom table; fast O(1) comparison by memory pointer."
+    },
+    {
+      "code": "{:ok, \"value\"} (tuples) vs [1, 2, 3] (linked lists)",
+      "means": "contiguous fixed-size group / singly linked list for iteration",
+      "consequence": "Tuples are ideal for pattern-matching return values; lists support fast [head | tail] deconstruction."
+    },
+    {
+      "code": "%{ key: \"value\" } and map.key",
+      "means": "key-value dictionary map",
+      "consequence": "Maps allow any key type. Updates (%{ map | key: \"new\" }) create efficient structural-sharing copies."
+    },
+    {
+      "code": "spawn(fn -> ... end)",
+      "means": "spawns a lightweight BEAM actor process in microseconds",
+      "consequence": "BEAM processes are not OS threads; they consume only ~300 words of memory and are isolated from other processes."
+    },
+    {
+      "code": "send(pid, msg) and receive do msg -> ... end",
+      "means": "asynchronous message passing between isolated processes",
+      "consequence": "Processes have private heaps and mailboxes. If a process crashes, it cannot corrupt memory in any other process."
+    },
+    {
+      "code": "GenServer (Generic Server)",
+      "means": "OTP abstraction for stateful client-server worker processes",
+      "consequence": "Standardizes callbacks (init, handle_call, handle_cast, handle_info) for managing concurrent state."
+    },
+    {
+      "code": "Supervisor: 'let it crash' philosophy",
+      "means": "monitors child processes and restarts them on failure",
+      "consequence": "Instead of defensive code trying to handle every rare corrupt state, crashed processes are simply restarted from clean initial state."
+    },
+    {
+      "code": "Enum.map / Enum.filter / Enum.reduce",
+      "means": "functional transformations over collections and streams",
+      "consequence": "Eagerly evaluates collections; for lazy streaming over huge data sources, use the Stream module."
+    }
+  ]
+}

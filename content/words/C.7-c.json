@@ -1,0 +1,125 @@
+{
+  "id": "C.7-c",
+  "languageId": "C.7",
+  "lang": "C",
+  "category": "Systems & Hardware",
+  "summary": "The foundational systems language: direct memory pointers, structs, explicit allocations, and zero runtime overhead.",
+  "status": "unsourced",
+  "rows": [
+    {
+      "code": "#include <stdio.h> / <stdlib.h>",
+      "means": "preprocessor directive importing standard library header prototypes",
+      "consequence": "Copies the header declaration signatures into the file before compilation so the compiler knows function arguments and return types."
+    },
+    {
+      "code": "#define MACRO_NAME value and #ifdef / #ifndef / #endif",
+      "means": "macro text substitution and conditional compilation guards",
+      "consequence": "#ifndef HEADER_H prevents duplicate declaration errors when headers are included multiple times across compilation units."
+    },
+    {
+      "code": "int, char, float, double, void",
+      "means": "primitive numeric, character, and untyped data types",
+      "consequence": "Directly map to hardware register sizes: char is 1 byte, int is typically 4 bytes, double is 8-byte IEEE 754 floating point."
+    },
+    {
+      "code": "int *ptr = &x; (pointers and address-of)",
+      "means": "variable holding the physical RAM memory address of another variable",
+      "consequence": "*ptr accesses the value stored at that address (dereferencing); &x extracts the hexadecimal memory address of variable x."
+    },
+    {
+      "code": "malloc(size_t size) and free(ptr)",
+      "means": "allocates uninitialized heap memory / releases heap memory",
+      "consequence": "Every malloc must be paired with exactly one free. Forgetting free causes memory leaks; using ptr after free causes undefined behavior."
+    },
+    {
+      "code": "calloc(num, size) and realloc(ptr, new_size)",
+      "means": "allocates zeroed memory / resizes existing heap allocation",
+      "consequence": "calloc clears all bytes to zero; realloc resizes existing allocations, copying contents to a new memory block if necessary."
+    },
+    {
+      "code": "struct User { int id; char name[32]; };",
+      "means": "contiguous composite data layout in memory",
+      "consequence": "Groups heterogeneous fields into a single struct. Access fields with dot (.) on values, or arrow (->) on pointers (user_ptr->id)."
+    },
+    {
+      "code": "typedef struct User User_t;",
+      "means": "creates an alias name for a type",
+      "consequence": "Allows referring to User_t directly without having to write struct User on every variable declaration."
+    },
+    {
+      "code": "union Data { int i; float f; char str[20]; };",
+      "means": "shares the same memory location between multiple fields",
+      "consequence": "The union is only as large as its largest member. Writing to one field overwrites the data of all other fields."
+    },
+    {
+      "code": "enum Status { OK = 0, ERR_NOT_FOUND, ERR_SERVER };",
+      "means": "enumerated named integer constants",
+      "consequence": "Assigns sequential integers starting at 0 unless explicitly specified, making code more readable than raw magic numbers."
+    },
+    {
+      "code": "const int x vs int * const ptr vs const int *ptr",
+      "means": "immutable value / constant pointer address / pointer to constant value",
+      "consequence": "Read backwards from right to left: const int *ptr is a pointer to constant integer (the data cannot be modified through this pointer)."
+    },
+    {
+      "code": "static int counter;",
+      "means": "limits symbol visibility to the current file or preserves local state",
+      "consequence": "Inside a function, static preserves value across multiple calls; at file level, keeps functions and globals private."
+    },
+    {
+      "code": "sizeof(type_or_variable)",
+      "means": "computes byte size at compile time",
+      "consequence": "Always use sizeof(*ptr) with malloc: malloc(sizeof(int) * count) guarantees correct byte allocation on any CPU architecture."
+    },
+    {
+      "code": "printf(\"%d %s %p\\n\", count, str, ptr)",
+      "means": "formatted print to standard output",
+      "consequence": "%d formats signed integer, %s prints null-terminated char array, %p prints memory address in hexadecimal format."
+    },
+    {
+      "code": "snprintf(buffer, sizeof(buffer), format, ...)",
+      "means": "safely formats string into a fixed-size memory buffer",
+      "consequence": "Guarantees null termination and prevents catastrophic buffer overflow attacks that plague unsafe legacy sprintf()."
+    },
+    {
+      "code": "fopen(path, mode) and fclose(fp)",
+      "means": "opens a file stream / flushes and closes the stream",
+      "consequence": "mode can be \"r\" (read), \"w\" (overwrite), \"a\" (append), or \"rb\" (binary). Always check if fp == NULL before reading."
+    },
+    {
+      "code": "fread() and fwrite()",
+      "means": "reads / writes raw binary data from or to a file stream",
+      "consequence": "Reads directly into memory buffers without string translation, essential for binary protocols, image processing, and databases."
+    },
+    {
+      "code": "strlen() vs sizeof() on strings",
+      "means": "scans until null byte '\\0' / returns allocated buffer size",
+      "consequence": "char str[10] = \"hi\"; -> strlen is 2, sizeof is 10. String functions require strings to end with a null terminator character '\\0'."
+    },
+    {
+      "code": "memcpy(dst, src, n) and memset(ptr, val, n)",
+      "means": "fast memory block copy / fills memory block with byte value",
+      "consequence": "memset(buf, 0, sizeof(buf)) zeroes out memory. memcpy is optimized using CPU SIMD vector registers."
+    },
+    {
+      "code": "NULL",
+      "means": "pointer literal representing memory address 0",
+      "consequence": "Dereferencing NULL triggers an immediate hardware segmentation fault (SIGSEGV) by the CPU memory management unit."
+    },
+    {
+      "code": "int main(int argc, char *argv[])",
+      "means": "program entry point receiving command-line arguments",
+      "consequence": "argc is the argument count; argv is an array of null-terminated string pointers (argv[0] is the program binary path)."
+    },
+    {
+      "code": "errno and perror(\"Failed\")",
+      "means": "system error number and diagnostic printer",
+      "consequence": "When system calls (like open or socket) fail, they return -1 and set errno. perror prints the human-readable OS error string."
+    },
+    {
+      "code": "void (*fn_ptr)(int) = &my_func;",
+      "means": "pointer holding the memory address of an executable function",
+      "consequence": "Allows passing functions as callbacks to other routines, powering event loops, sorting comparators (qsort), and dynamic tables."
+    }
+  ]
+}

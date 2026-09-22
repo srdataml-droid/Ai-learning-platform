@@ -45,6 +45,7 @@
 
   <script src="./data.js"></script>
   <script src="./storylines-data.js"></script>
+  <script src="./words-data.js"></script>
   <script src="./app.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -192,7 +193,7 @@
 
         <div style="margin-block:2rem;display:flex;gap:.75rem;flex-wrap:wrap;">
           <a href="./languages.html" class="btn">All languages</a>
-          <a href="./words.html#lang-table-${language.name.toLowerCase().replace(/[^a-z0-9]/g, '-')}" class="btn">Its word list</a>
+          ${wordListLinks(language.id)}
           <a href="./lesson.html?id=${language.id}" class="btn">The lesson</a>
         </div>`;
 
@@ -278,6 +279,22 @@
             </p>
             <ol class="source-list">${items}</ol>
           </section>`;
+      }
+
+      /**
+       * Links to the reference tables for this language.
+       *
+       * One language can have more than one table — the markup and the style
+       * sheets are one entry in the chain and two vocabularies — and the
+       * anchor comes from the bundle rather than being derived here, because
+       * deriving it in two places is how this link came to be broken.
+       */
+      function wordListLinks(languageId) {
+        const lists = window.CurriculumWords ? window.CurriculumWords.forLanguage(languageId) : [];
+        if (!lists.length) return '';
+        return lists.map(function (l) {
+          return `<a href="./words.html#lang-table-${l.slug}" class="btn">${escapeHtml(l.lang)} word list (${l.rows.length})</a>`;
+        }).join('');
       }
 
       function escapeHtml(text) {
