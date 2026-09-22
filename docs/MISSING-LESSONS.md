@@ -50,16 +50,11 @@ Study order: the sequence first, then the five habits running underneath.
 
 ## Track L — AI engineering
 
-14 of 26 still missing.
+9 of 26 still missing.
 
 - [ ] `L.10` Evaluation: golden sets, offline scoring, human review, regression gates
 - [ ] `L.14` Guardrails: input filtering, output checking, prompt injection
-- [ ] `L.15` Cost control: caching, model routing, batching, token accounting
-- [ ] `L.16` Latency: streaming, parallel calls, speculative work
-- [ ] `L.17` Observability for AI: trace every step, log every prompt, watch drift
 - [ ] `L.18` When to fine tune, and the three cheaper things to try first
-- [ ] `L.19` Deploying a model: container, endpoint, autoscale, monitor
-- [ ] `L.20` Running small models locally, and when that actually wins
 - [ ] `L.21` Model versioning
 - [ ] `L.22` Reproducibility
 - [ ] `L.23` Drift detection
@@ -89,7 +84,7 @@ Study order: the sequence first, then the five habits running underneath.
 
 ---
 
-**Total remaining: 14 of 313.**
+**Total remaining: 9 of 313.**
 
 Regenerate: `node tools/missing-lessons.mjs > docs/MISSING-LESSONS.md`
 
