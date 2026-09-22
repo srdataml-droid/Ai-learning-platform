@@ -30,3 +30,28 @@ test('the provenance badge points at the sources rather than asserting them alon
   assert.match(page, /href="#sources"/);
   assert.match(page, /id="sources"/);
 });
+
+/**
+ * The language page makes the same promise, so it is held to the same check.
+ *
+ * It arrived later than the lesson page and carried an unsourced storyline
+ * for a while, which is exactly the situation a grep-level test is for: the
+ * badge and the evidence have to ship together or neither should.
+ */
+const languagePage = await readFile(new URL('../language.html', import.meta.url), 'utf8');
+
+test('the language page asks for the sources behind the storyline', () => {
+  assert.match(languagePage, /CurriculumStorylines\.getSources\(/);
+});
+
+test('the language page renders the claim beside its source', () => {
+  assert.match(languagePage, /source-claim/);
+  assert.match(languagePage, /source-cite/);
+  assert.match(languagePage, /source-kind/);
+});
+
+test('the language page shows a provenance state that points at the evidence', () => {
+  assert.match(languagePage, /provenance-banner/);
+  assert.match(languagePage, /href="#sources"/);
+  assert.match(languagePage, /id="sources"/);
+});

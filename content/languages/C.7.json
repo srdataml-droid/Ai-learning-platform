@@ -1,13 +1,14 @@
 {
   "id": "C.7",
   "name": "C",
-  "status": "unsourced",
+  "status": "traced",
+  "seed": "C.7",
   "constraint": "It had to compile to fast machine code on a PDP-11, with no runtime underneath it, because the thing being written in it was the operating system itself.",
   "inherited": {
     "from": "C.5",
     "wall": "Assembly could touch the hardware but could not move between machines. The languages that were portable sat too far above the hardware to write an operating system in."
   },
-  "opening": "Almost everything people find awkward about C is the same decision seen from a different angle. It was written to build an operating system, and an operating system cannot assume anything is already running underneath it, because it IS the thing underneath. Read the syntax with that in mind and the awkwardness turns into arithmetic.",
+  "opening": "Almost everything people find awkward about C is the same decision seen from a different angle. It was written to build an operating system, and an operating system cannot assume anything is already running underneath it, because it is itself the thing underneath. Read the syntax with that in mind and the awkwardness turns into arithmetic.",
   "decisions": [
     {
       "decision": "No runtime, so no garbage collector",

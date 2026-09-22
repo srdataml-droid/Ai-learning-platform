@@ -196,7 +196,89 @@
           <a href="./lesson.html?id=${language.id}" class="btn">The lesson</a>
         </div>`;
 
-      mount.innerHTML = header + walls + decisions + ending;
+      mount.innerHTML = header + provenanceBanner(story) + walls + decisions + ending + sourcesSection(story);
+
+      /**
+       * What the reader is being promised about this page's history.
+       *
+       * The same four states as a lesson, in the same words, because a reader
+       * crossing from one page to the other is being told the same thing and
+       * should not have to learn a second vocabulary to hear it. A language
+       * with no storyline at all gets nothing here: the "not written yet"
+       * notice already sits where the decisions would be, and two banners
+       * saying the same thing is noise.
+       */
+      function provenanceBanner(story) {
+        if (!story) return '';
+        const states = {
+          unsourced: {
+            label: 'Not yet sourced',
+            text: 'This storyline was written before sources were required. Its dates, machines and names have not been traced, so treat them as a starting point to check rather than a fact to quote.',
+            tone: 'warn',
+          },
+          claimless: {
+            label: 'Nothing to source',
+            text: 'This storyline makes no claims about dates, machines or people — only about what the syntax does — so there are no sources to check. Checked mechanically to contain nothing citable.',
+            tone: 'ok',
+          },
+          traced: {
+            label: 'Sources traced',
+            text: 'Every date, machine and name in this storyline is licensed by a claim with a source. Nobody has read it end to end yet.',
+            tone: 'ok',
+          },
+          verified: {
+            label: 'Verified',
+            text: 'Traced to sources and read end to end by a person.',
+            tone: 'ok',
+          },
+        };
+        const state = states[story.status];
+        if (!state) return '';
+        const sources = window.CurriculumStorylines.getSources
+          ? window.CurriculumStorylines.getSources(story.id)
+          : null;
+        const link = sources && sources.length
+          ? ` <a class="provenance-link" href="#sources">Read the ${sources.length} claims and their sources ↓</a>`
+          : '';
+        return `
+          <div class="provenance-banner provenance-${state.tone}" role="note">
+            <span class="provenance-label">${state.label}</span>
+            <span class="provenance-text">${state.text}${link}</span>
+          </div>`;
+      }
+
+      /** Every claim behind the storyline, with what each one rests on. */
+      function sourcesSection(story) {
+        if (!story || !window.CurriculumStorylines.getSources) return '';
+        const sources = window.CurriculumStorylines.getSources(story.id);
+        if (!sources || !sources.length) return '';
+
+        const items = sources.map(function (s) {
+          return `
+            <li class="source-entry">
+              <p class="source-claim">${escapeHtml(s.claim)}</p>
+              <p class="source-cite">
+                <a href="${escapeHtml(s.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(s.title)}</a>
+                <span class="source-kind source-kind-${escapeHtml(s.kind)}">${escapeHtml(s.kind)}</span>
+              </p>
+            </li>`;
+        }).join('');
+
+        return `
+          <section id="sources" class="section-block" aria-labelledby="sources-heading">
+            <div class="section-header">
+              <h2 id="sources-heading">Sources</h2>
+              <span class="section-counter">${sources.length} claims</span>
+            </div>
+            <p class="source-note">
+              Each entry is a statement that could be wrong, followed by what it rests on.
+              <strong>Primary</strong> is the document itself or the account of someone who was there;
+              <strong>secondary</strong> is a later retelling. The code in the syntax examples is not
+              sourced and does not need to be — it is something you type, not a claim about the world.
+            </p>
+            <ol class="source-list">${items}</ol>
+          </section>`;
+      }
 
       function escapeHtml(text) {
         const div = document.createElement('div');

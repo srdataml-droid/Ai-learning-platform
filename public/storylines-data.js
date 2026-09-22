@@ -7,13 +7,14 @@
   "C.7": {
     "id": "C.7",
     "name": "C",
-    "status": "unsourced",
+    "status": "traced",
+    "seed": "C.7",
     "constraint": "It had to compile to fast machine code on a PDP-11, with no runtime underneath it, because the thing being written in it was the operating system itself.",
     "inherited": {
       "from": "C.5",
       "wall": "Assembly could touch the hardware but could not move between machines. The languages that were portable sat too far above the hardware to write an operating system in."
     },
-    "opening": "Almost everything people find awkward about C is the same decision seen from a different angle. It was written to build an operating system, and an operating system cannot assume anything is already running underneath it, because it IS the thing underneath. Read the syntax with that in mind and the awkwardness turns into arithmetic.",
+    "opening": "Almost everything people find awkward about C is the same decision seen from a different angle. It was written to build an operating system, and an operating system cannot assume anything is already running underneath it, because it is itself the thing underneath. Read the syntax with that in mind and the awkwardness turns into arithmetic.",
     "decisions": [
       {
         "decision": "No runtime, so no garbage collector",
@@ -91,8 +92,61 @@
   }
 };
 
+  const SOURCES = {
+  "C.7": [
+    {
+      "claim": "Ritchie’s own account of the language was presented at the Second History of Programming Languages conference in Cambridge, Massachusetts in April 1993 and published in SIGPLAN Notices volume 28 number 3, pages 201 to 208.",
+      "title": "Ritchie, D. M., The Development of the C Language, Second ACM SIGPLAN Conference on History of Programming Languages, April 1993; SIGPLAN Notices 28(3):201-208",
+      "url": "https://dl.acm.org/doi/10.1145/154766.155580",
+      "kind": "primary"
+    },
+    {
+      "claim": "Ritchie describes B as the parent of the language and BCPL as its grandparent. BCPL was Martin Richards’s language and B was Ken Thompson’s; both were typeless, and the new language derived a type structure from a typeless ancestor.",
+      "title": "Ritchie, D. M., The Development of the C Language, Second ACM SIGPLAN Conference on History of Programming Languages, April 1993; SIGPLAN Notices 28(3):201-208",
+      "url": "https://dl.acm.org/doi/10.1145/154766.155580",
+      "kind": "primary"
+    },
+    {
+      "claim": "The language came into being in the years 1969 to 1973, in parallel with the early development of Unix, with the most creative period during 1972. It was created on a small machine as a tool to improve a meagre programming environment.",
+      "title": "Ritchie, D. M., The Development of the C Language, Second ACM SIGPLAN Conference on History of Programming Languages, April 1993; SIGPLAN Notices 28(3):201-208",
+      "url": "https://dl.acm.org/doi/10.1145/154766.155580",
+      "kind": "primary"
+    },
+    {
+      "claim": "By early 1973 the essentials of the modern language were complete, and the language and compiler were strong enough to permit rewriting the Unix kernel for the PDP-11 in it during the summer of that year. Ritchie notes that Thompson had made a brief attempt in 1972 to produce a system coded in an early version of the language, before structures existed, and gave up the effort.",
+      "title": "Ritchie, D. M., The Development of the C Language, Second ACM SIGPLAN Conference on History of Programming Languages, April 1993; SIGPLAN Notices 28(3):201-208",
+      "url": "https://dl.acm.org/doi/10.1145/154766.155580",
+      "kind": "primary"
+    },
+    {
+      "claim": "A second period of change peaked between 1977 and 1979, when portability of Unix was being demonstrated; the compiler was retargeted to other machines, particularly the Honeywell 635 and the IBM 360 and 370.",
+      "title": "Ritchie, D. M., The Development of the C Language, Second ACM SIGPLAN Conference on History of Programming Languages, April 1993; SIGPLAN Notices 28(3):201-208",
+      "url": "https://dl.acm.org/doi/10.1145/154766.155580",
+      "kind": "primary"
+    },
+    {
+      "claim": "The first widely available description was The C Programming Language, which appeared in 1978 and served as the language reference although it did not describe some additions that soon became common. Beginning in 1983 the ANSI X3J11 committee standardised the language.",
+      "title": "Ritchie, D. M., The Development of the C Language, Second ACM SIGPLAN Conference on History of Programming Languages, April 1993; SIGPLAN Notices 28(3):201-208",
+      "url": "https://dl.acm.org/doi/10.1145/154766.155580",
+      "kind": "primary"
+    },
+    {
+      "claim": "Ritchie’s own assessment is that the most characteristic features — the relationship between arrays and pointers, and the declaration syntax — are also major sources of difficulty, and that the language offers limited support for modularisation, automatic memory management and strong type checking, while its pointer-oriented array model complicates optimisation.",
+      "title": "Ritchie, D. M., The Development of the C Language, Second ACM SIGPLAN Conference on History of Programming Languages, April 1993; SIGPLAN Notices 28(3):201-208",
+      "url": "https://dl.acm.org/doi/10.1145/154766.155580",
+      "kind": "primary"
+    }
+  ]
+};
+
   window.CurriculumStorylines.get = function (languageId) {
     return Object.prototype.hasOwnProperty.call(STORYLINES, languageId) ? STORYLINES[languageId] : null;
+  };
+
+  // null, never [] — the same distinction the lessons draw: no seed and a
+  // seed holding nothing must not look alike to the page.
+  window.CurriculumStorylines.getSources = function (languageId) {
+    return Object.prototype.hasOwnProperty.call(SOURCES, languageId) ? SOURCES[languageId] : null;
   };
 
   window.CurriculumStorylines.has = function (languageId) {
