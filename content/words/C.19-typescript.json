@@ -4,7 +4,8 @@
   "lang": "TypeScript",
   "category": "Web & Frontend",
   "summary": "Typed JavaScript at scale: compile-time type verification, structural type modeling, and developer tooling.",
-  "status": "unsourced",
+  "status": "traced",
+  "seed": "C.19",
   "rows": [
     {
       "code": ": string | number | boolean",
@@ -12,14 +13,14 @@
       "consequence": "Enforces compile-time checking. If a function declares (id: string), passing a number immediately halts the build with an error."
     },
     {
-      "code": "interface User { id: string; name: string; }",
+      "code": "interface User { id: string; name: string; }\ninterface Admin extends User { level: number }",
       "means": "defines an extensible object shape contract",
-      "consequence": "Interfaces can be extended (interface Admin extends User) and merged; ideal for public library APIs and data contracts."
+      "consequence": "Interfaces can be extended and merged, which is what makes them the usual choice for a shape a library publishes and other code adds to."
     },
     {
-      "code": "type ID = string | number",
+      "code": "type ID = string | number\ntype Point = [number, number]",
       "means": "type alias for naming any type, union, or primitive",
-      "consequence": "Unlike interfaces, type aliases can name unions, tuples, and primitive primitives directly: type Point = [number, number]."
+      "consequence": "Unlike an interface, an alias can name a union, a tuple or a primitive directly \u2014 the shapes that are not objects."
     },
     {
       "code": "prop?: string (optional property)",
@@ -37,9 +38,9 @@
       "consequence": "TypeScript requires you to narrow the union with type guards (typeof, instanceof, or in) before accessing specific properties."
     },
     {
-      "code": "Intersection types: A & B",
+      "code": "A & B\ntype Employee = Person & { employeeId: number }",
       "means": "combines all properties of multiple types into one",
-      "consequence": "type Employee = Person & { employeeId: number } requires an object to have all properties from both Person and the new type."
+      "consequence": "Requires a value to satisfy both sides at once, which is how a base shape and the extra fields one context adds are combined without inheritance."
     },
     {
       "code": "Generics: <T>",
@@ -57,24 +58,24 @@
       "consequence": "Use sparingly. Does not perform runtime conversion; if value is not actually a string, it will cause runtime bugs."
     },
     {
-      "code": "satisfies operator",
+      "code": "const config = { host: 'localhost' } satisfies Config",
       "means": "validates an expression matches a type without widening it",
-      "consequence": "const config = { host: 'localhost' } satisfies Config checks that config matches Config while preserving exact string literal types."
+      "consequence": "Checks the value against the type while keeping the exact literal types it was written with, which a type annotation would have widened away."
     },
     {
-      "code": "keyof T",
+      "code": "keyof T\ntype User = { id: string; name: string }  // keyof User = 'id' | 'name'",
       "means": "extracts a union of all property keys of type T",
-      "consequence": "If type User = { id: string; name: string }, keyof User evaluates to 'id' | 'name'."
+      "consequence": "Gives the property names as a union of string literals, so a function can be constrained to take only a key that actually exists."
     },
     {
-      "code": "typeof variable",
+      "code": "typeof variable\nconst defaultUser = { ... }; type User = typeof defaultUser;",
       "means": "extracts the TypeScript type of a runtime JavaScript variable",
-      "consequence": "Allows generating types directly from runtime constants: const defaultUser = { ... }; type User = typeof defaultUser;."
+      "consequence": "Derives the type from a value that already exists, so a constant and its type cannot drift apart."
     },
     {
-      "code": "as const",
+      "code": "as const\nconst ROLES = ['admin', 'editor'] as const",
       "means": "narrows literals to readonly immutable values",
-      "consequence": "const ROLES = ['admin', 'editor'] as const infers readonly ['admin', 'editor'] instead of string[], preserving exact literal values."
+      "consequence": "Infers a readonly tuple of exact literals rather than an array of strings, which is what lets those values be used as a type."
     },
     {
       "code": "unknown vs any vs never",
@@ -84,12 +85,12 @@
     {
       "code": "Partial<T>",
       "means": "utility type making all properties in T optional",
-      "consequence": "Essential for PATCH update APIs where users can update any subset of an entity's fields without providing the entire object."
+      "consequence": "What a partial-update endpoint needs: a caller may send any subset of an entity's fields without providing the whole object."
     },
     {
       "code": "Required<T>",
       "means": "utility type making all properties in T mandatory",
-      "consequence": "Inverts Partial<T>, stripping away all ? optional markers from an interface."
+      "consequence": "The inverse of the optional-making utility, stripping the question marks from every property."
     },
     {
       "code": "Readonly<T>",
@@ -97,9 +98,9 @@
       "consequence": "Marks all fields readonly, preventing accidental modifications in pure functional code pipelines."
     },
     {
-      "code": "Record<K, V>",
+      "code": "Record<K, V>\nRecord<string, User>",
       "means": "utility type for key-value dictionaries with keys K and values V",
-      "consequence": "Record<string, User> models a lookup table or hash map where string IDs map to User objects."
+      "consequence": "Models a lookup table where an identifier maps to an entity, with both halves of the mapping typed."
     },
     {
       "code": "Pick<T, 'id' | 'name'>",
@@ -109,7 +110,7 @@
     {
       "code": "Omit<T, 'password'>",
       "means": "utility type excluding specified properties from T",
-      "consequence": "Creates a new type with everything from T except the omitted keys, ideal for public DTO projections."
+      "consequence": "Creates a new type with everything from the original except the named keys \u2014 the usual way to publish a shape with its secrets removed."
     },
     {
       "code": "ReturnType<typeof fn>",
@@ -122,9 +123,9 @@
       "consequence": "Useful for wrapping or proxying third-party functions while preserving their exact argument types."
     },
     {
-      "code": "Type guard: pet is Dog",
+      "code": "function isDog(p: Animal): p is Dog { return 'bark' in p; }",
       "means": "custom function that narrows types in conditional branches",
-      "consequence": "function isDog(p: Animal): p is Dog { return 'bark' in p; }. Inside an if (isDog(pet)) block, pet is automatically typed as Dog."
+      "consequence": "Inside a branch guarded by that call, the value is treated as the narrower type, so the check a person makes and the check the compiler makes are the same check."
     },
     {
       "code": "Discriminated union: { kind: 'circle', radius: number } | ...",

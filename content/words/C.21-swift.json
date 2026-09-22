@@ -4,7 +4,8 @@
   "lang": "Swift",
   "category": "Mobile & Multiplatform",
   "summary": "Fast, safe, modern language engineered by Apple for iOS, macOS, watchOS, and native systems development.",
-  "status": "unsourced",
+  "status": "traced",
+  "seed": "C.21",
   "rows": [
     {
       "code": "let vs var",
@@ -12,9 +13,9 @@
       "consequence": "Swift strongly encourages let for all values that do not change, enabling compiler optimization and thread safety."
     },
     {
-      "code": "func name(label param: Type) -> ReturnType",
+      "code": "func greet(person: String, from town: String) -> String\ngreet(person: \"Ada\", from: \"Lagos\")",
       "means": "function declaration with external argument labels",
-      "consequence": "Argument labels make calls read like natural English sentences: greet(person: \"Alice\", from: \"London\")."
+      "consequence": "Argument labels make a call read as a sentence, which is why the label at the call site and the name inside the function are allowed to differ."
     },
     {
       "code": "Optional<Wrapped> (Type?): .some(val) or .none",
@@ -27,9 +28,9 @@
       "consequence": "guard let checks for non-null and exits early if nil, keeping the unwrapped variable in scope for the rest of the function."
     },
     {
-      "code": "Nil-coalescing: opt ?? fallback",
+      "code": "opt ?? fallback\nlet name = username ?? \"anonymous\"",
       "means": "unwraps optional or returns fallback value if nil",
-      "consequence": "let name = username ?? \"Guest\" guarantees a non-optional String value."
+      "consequence": "Produces a value that is no longer optional, so everything downstream stops having to ask whether it is there."
     },
     {
       "code": "struct (value type) vs class (reference type)",
@@ -39,22 +40,22 @@
     {
       "code": "protocol ProtocolName { func method() }",
       "means": "defines an interface contract of methods and properties",
-      "consequence": "The core of Protocol-Oriented Programming (POP). Protocols can provide default implementations via extensions."
+      "consequence": "Protocols can carry default implementations through extensions, which is what makes composing behaviour from several of them practical rather than relying on a base class."
     },
     {
-      "code": "extension Type { ... }",
+      "code": "extension Type { ... }\nextension Int { var squared: Int { self * self } }",
       "means": "adds new methods, computed properties, or protocol conformance",
-      "consequence": "Allows extending built-in types (e.g. extension Int { var squared: Int { self * self } }) across codebases."
+      "consequence": "Adds methods and computed properties to a type you did not write, including a built-in one, without subclassing it."
     },
     {
-      "code": "enum with associated values: Result<Success, Failure>",
+      "code": "enum NetworkState { case loading; case success(Data); case error(Error) }",
       "means": "enumeration variants carrying custom data payloads",
-      "consequence": "enum NetworkState { case loading; case success(Data); case error(Error) } models state machines cleanly."
+      "consequence": "Each case can carry its own payload, so a state machine and the data belonging to each state are one type rather than two that must be kept in step."
     },
     {
-      "code": "Closures: { (params) -> ReturnType in body }",
+      "code": "{ (params) -> ReturnType in body }\nnumbers.map { $0 * 2 }",
       "means": "self-contained anonymous functional blocks",
-      "consequence": "Trailing closure syntax allows omitting parentheses: numbers.map { $0 * 2 } using shorthand argument names ($0, $1)."
+      "consequence": "A trailing closure can drop the parentheses, and the positional shorthand names its arguments, which is why so much code in this language reads as a chain of small blocks."
     },
     {
       "code": "defer { cleanup() }",
@@ -62,9 +63,9 @@
       "consequence": "Guarantees resource teardown (file closes, lock releases) regardless of how the function returns."
     },
     {
-      "code": "async / await and Task { ... }",
+      "code": "async / await and Task { ... }\nactor BankAccount { ... }",
       "means": "structured modern asynchronous programming",
-      "consequence": "Paired with Actors (actor BankAccount) to eliminate data races and thread synchronization bugs automatically."
+      "consequence": "An actor serialises access to its own state, so concurrent callers cannot race on it and the compiler can check that they do not try."
     }
   ]
 }

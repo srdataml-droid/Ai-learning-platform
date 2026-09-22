@@ -4,7 +4,8 @@
   "lang": "CSS",
   "category": "Web & Frontend",
   "summary": "Cascading Style Sheets: layout engines, the box model, responsive typography, and visual animation systems.",
-  "status": "unsourced",
+  "status": "traced",
+  "seed": "C.24",
   "rows": [
     {
       "code": "* { box-sizing: border-box; }",
@@ -13,8 +14,8 @@
     },
     {
       "code": "element, .class, #id",
-      "means": "tag selector / class selector / unique ID selector",
-      "consequence": "ID selectors (#) have high specificity (1-0-0) that makes them hard to override. Prefer classes (.class, specificity 0-1-0) for maintainable styles."
+      "means": "tag selector / class selector / unique identifier selector",
+      "consequence": "An identifier selector carries high specificity and is correspondingly hard to override later; a class selector is weaker and composes, which is why maintainable sheets are built from classes."
     },
     {
       "code": "margin vs padding",
@@ -74,12 +75,12 @@
     {
       "code": "rem vs em vs vh / vw vs %",
       "means": "font-relative and viewport-relative length units",
-      "consequence": "1rem is relative to root <html> font-size (respecting user browser zoom); em is relative to parent element; vh/vw are 1% of viewport."
+      "consequence": "rem is relative to the root font size, so it respects a reader who has changed it; em is relative to the parent, so it compounds when nested; the viewport units are a hundredth of the viewport's width or height."
     },
     {
       "code": "color vs background-color",
       "means": "text foreground color / container background surface color",
-      "consequence": "Always ensure at least a 4.5:1 contrast ratio between foreground and background colors to satisfy WCAG AA accessibility standards."
+      "consequence": "Text needs a contrast ratio of at least 4.5 to 1 against its background to meet the accessibility guidelines at level AA, with large text allowed 3 to 1. The ratios are thresholds rather than targets to round towards, and the reason for them is readers with moderately low vision who are not using any assistive technology."
     },
     {
       "code": "font-family: 'Inter', system-ui, sans-serif",
@@ -109,7 +110,7 @@
     {
       "code": "transform: translate(x, y) rotate(deg) scale(s)",
       "means": "GPU-accelerated geometric transformations",
-      "consequence": "Transforms do not trigger browser layout reflow or repaint loops, making them the primary choice for fluid UI animations."
+      "consequence": "Transforms do not trigger layout or repaint, which is why they are the ones to reach for when animating something the reader is watching."
     },
     {
       "code": "@keyframes spin { from { ... } to { ... } }",
@@ -127,14 +128,14 @@
       "consequence": "Used for zebra striping tables, alternating grid cards, or styling specific rows without extra HTML classes."
     },
     {
-      "code": "::before and ::after",
+      "code": "::before and ::after\ncontent: '';",
       "means": "pseudo-elements that insert decorative content into CSS",
-      "consequence": "Requires content: '' property. Used for icons, tooltips, accent lines, and overlays without polluting the HTML DOM."
+      "consequence": "Requires the content property to exist at all. Used for icons, tooltips and accent lines without adding elements to the document that mean nothing."
     },
     {
       "code": "--primary-color: #2563eb and var(--primary-color)",
       "means": "CSS custom properties (design tokens and variables)",
-      "consequence": "Unlike preprocessor variables (Sass), CSS variables update dynamically at runtime and cascade through DOM subtrees, powering dark mode."
+      "consequence": "Unlike a preprocessor's variables, which are substituted before the sheet ships, these are live: they cascade, can be changed at run time, and are read by the element that uses them \u2014 which is what makes a theme switch a change to one value."
     },
     {
       "code": "calc(100% - 2rem)",
