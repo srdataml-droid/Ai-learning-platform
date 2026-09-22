@@ -1,0 +1,60 @@
+{
+  "id": "C.2",
+  "name": "FORTRAN",
+  "status": "traced",
+  "seed": "C.2",
+  "constraint": "The translator had to produce object code that a hand coder could not beat, because customers' foremost objection to a compiler was that it probably could not turn out object code as good as their best programmers could.",
+  "inherited": {
+    "from": "C.1",
+    "wall": "A program written in a machine's own notation belongs to that machine. Every formula had to be hand-coded as instructions, again, for each new architecture."
+  },
+  "opening": "Read this as a compiler with a language attached, rather than a language with a compiler. Backus wrote that if the system were to translate any reasonable scientific source program into an object program only half as fast as its hand coded counterpart, acceptance would be in serious danger \u2014 and that this belief caused them to regard the design of the translator as the real challenge, not the simple task of designing the language. Almost every choice below is what happens when the notation is the easy half.",
+  "decisions": [
+    {
+      "decision": "The notation is the formula",
+      "because": "The people who would use it already had the formula written down. Anything that made them rewrite it in another form was reintroducing the work the system existed to remove.",
+      "syntax": [
+        {
+          "code": "X = (A + B) / C",
+          "means": "compute the expression, then store it",
+          "consequence": "An arithmetic expression, taken entirely for granted now, was the product. The machine has no notion of precedence or of nested terms; all of that is the translator's work, done once, so that the physicist does not do it by hand for every statement."
+        },
+        {
+          "code": "DO 10 I = 1, 100",
+          "means": "run everything down to the line labelled 10, counting I upwards",
+          "consequence": "The loop is a counted loop because the formulas were over arrays, and the end of the loop is a statement number rather than a bracket because the card already carried a statement number. The control structure is shaped by the medium it was punched on."
+        }
+      ]
+    },
+    {
+      "decision": "The card is the line, and position on the card carries meaning",
+      "because": "The input device is a punched card and the reader transfers a fixed set of columns. If position is going to be fixed anyway, it may as well be load-bearing.",
+      "syntax": [
+        {
+          "code": "      X = (A + B) / C",
+          "means": "six spaces, then the statement",
+          "consequence": "The manual of October 1956 gives the fixed form: a statement number occupies the first five columns, a character other than zero in the sixth column marks the card as a continuation of the one before it, the statement occupies columns seven to seventy-two, and the rest are ignored by the compiler. The leading indentation every later language treats as style was originally the shape of the card."
+        },
+        {
+          "code": "     1   + D * E",
+          "means": "this card continues the previous statement",
+          "consequence": "Continuation exists because a statement can be longer than a card, and the mark for it is a column rather than a symbol at the end of the line, because the card has no end you can see. The last columns, ignored by the compiler, were used to number the cards so that a dropped deck could be put back in order \u2014 a fact about the floor of a machine room, preserved in the syntax."
+        }
+      ]
+    },
+    {
+      "decision": "The translator makes the choices",
+      "because": "Object code as good as a hand coder's cannot be produced by direct substitution, so the system has to rearrange what you wrote \u2014 and once it is allowed to rearrange anything, it is deciding what runs.",
+      "syntax": [
+        {
+          "code": "DO 10 I = 1, 100\n   A(I) = B(I) * K",
+          "means": "written as a loop over an array",
+          "consequence": "What executes may keep values in registers across iterations, compute addresses incrementally, and look nothing like the statements above. This is the moment the executed program stops being the written program, and it is the origin of every later argument about optimisation, about debugging what the compiler produced, and about trusting a tool you cannot inspect."
+        }
+      ]
+    }
+  ],
+  "wall": "What was planned as roughly a six-month effort took about three years, and the result was superb at exactly one thing. The notation is arithmetic over numbers and arrays; it has nothing to say about records, about text, or about the shape of a business document. Backus's own retrospective judgement, given at the 1978 History of Programming Languages conference, was that prioritising object program efficiency over language design had been correct \u2014 which is worth holding onto, because the resulting language is the one everybody criticises and the priority is the one that made it succeed.",
+  "leadsTo": "C.3",
+  "leadsToReason": "The largest buyers were not computing formulas. They were processing records, and they needed a program a non-programmer could read and a machine from another manufacturer could run."
+}

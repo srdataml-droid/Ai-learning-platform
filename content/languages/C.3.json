@@ -1,0 +1,55 @@
+{
+  "id": "C.3",
+  "name": "COBOL",
+  "status": "traced",
+  "seed": "C.3",
+  "constraint": "It had to be readable by people who were not programmers, portable across machines from competing manufacturers, and specified by a committee working to a deadline \u2014 and the specification, not any one vendor's compiler, had to be the standard.",
+  "inherited": {
+    "from": "C.2",
+    "wall": "A notation built for arithmetic over arrays has nothing to say about a record, a field, a currency amount, or a report \u2014 and the organisation with the most computers was buying them from more than one manufacturer."
+  },
+  "opening": "Almost everything people mock about this language is a consequence of who was meant to read it and who was paying. A meeting at the Pentagon on May 28 and 29, 1959 determined the need for three committees; the steering committee met on June 4 and named the whole activity the Committee on Data Systems Languages. The work was done by the Short Range Committee, chaired by Joseph Wegstein of the National Bureau of Standards, with industry representatives alongside the Air Force, the Navy and the National Bureau of Standards. Read the verbosity as a specification written for an auditor, because that is what it is.",
+  "decisions": [
+    {
+      "decision": "English words, because the reader is not the writer",
+      "because": "The specifications were inspired to a great extent by FLOW-MATIC, invented by Grace Hopper, whose major contributions were long variable names, English words for commands, and the separation of data descriptions from instructions. It was attractive to the group because it was the only language available to them that had actually been implemented.",
+      "syntax": [
+        {
+          "code": "MOVE CUSTOMER-BALANCE TO PRINT-LINE.",
+          "means": "copy one field into another",
+          "consequence": "A verb, then its objects, then a full stop. It costs the writer more keystrokes and it lets somebody who has never written a program read a statement and say whether it is what the business meant. The cost falls on the author and the benefit falls on the reader, which is the whole design and the reason it reads as long-winded to the author."
+        },
+        {
+          "code": "ADD 1 TO RECORD-COUNT.",
+          "means": "increment a counter",
+          "consequence": "Long names were a contribution worth taking, not an accident: a name that describes the field removes the need for the comment that would have described it. Fifty years of advice about naming is this decision rediscovered by people who found the language it came from embarrassing."
+        }
+      ]
+    },
+    {
+      "decision": "Data description is separated from the instructions",
+      "because": "A business record has a layout that outlives any one program, and several programs read the same file. Describing the layout inside the code that happens to process it would make every program the owner of a fact it shares.",
+      "syntax": [
+        {
+          "code": "01  CUSTOMER-RECORD.\n    05  BALANCE   PIC 9(7)V99.",
+          "means": "a record, and a field inside it holding seven digits and two decimal places",
+          "consequence": "The layout is declared once, in a division of its own, and the procedural part refers to it by name. The declaration also fixes the decimal position, because money has a fixed number of decimal places and rounding it the way a binary fraction rounds is not an approximation, it is a discrepancy somebody has to explain."
+        }
+      ]
+    },
+    {
+      "decision": "The written specification is the standard, and compilers are judged against it",
+      "because": "The buyer was purchasing machines from several manufacturers at once, so a language defined by whatever one vendor's compiler accepted would have reproduced the lock-in it was meant to end.",
+      "syntax": [
+        {
+          "code": "IDENTIFICATION DIVISION.\nENVIRONMENT DIVISION.",
+          "means": "declare what this program is, then what machine it expects",
+          "consequence": "A division exists purely to hold the machine-specific facts, so that the parts which are not machine-specific are visibly not. On December 6 and 7, 1960, essentially the same program was run on two different makes of computer \u2014 an RCA machine and a Remington-Rand UNIVAC machine \u2014 demonstrating that compatibility across manufacturers could be achieved. That demonstration is what the division exists to make possible."
+        }
+      ]
+    }
+  ],
+  "wall": "Verbosity was accepted deliberately and the bill arrives anyway: programs are enormous, the structure is rigid, and anything symbolic or recursive is painful to express. The history has a dispute worth carrying too, because it is usually told wrongly. The name was chosen at a meeting on 18 September 1959, with BUSY, INFOSYL and COCOSYL among the rejected alternatives; and while Hopper served as a technical adviser and her earlier language shaped the specification, Jean Sammet, one of the lead designers, said that Hopper \"was not the mother, creator, or developer of Cobol\". A participant's correction of the popular story is the kind of source worth more than the story.",
+  "leadsTo": "C.4",
+  "leadsToReason": "Records and verbs handle the clerical work and cannot express a symbol, a tree, or a function that calls itself \u2014 which is exactly what the people trying to make machines reason needed."
+}

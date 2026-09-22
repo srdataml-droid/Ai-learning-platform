@@ -1,0 +1,71 @@
+{
+  "id": "C.4",
+  "name": "LISP",
+  "status": "traced",
+  "seed": "C.4",
+  "constraint": "It was built for symbolic computation \u2014 expressions a program takes apart and builds, rather than numbers it adds \u2014 and the first implementation ran on a machine whose word divided into parts that could be addressed separately.",
+  "inherited": {
+    "from": "C.3",
+    "wall": "Records and verbs handle a payroll and cannot express a symbol, a tree, or a function defined in terms of itself."
+  },
+  "opening": "The parentheses are not a style choice and were not meant to survive. McCarthy wrote that the notation for representing functions as data was created for the purposes of the paper with no thought that it would be used to express programs in practice, and that the form was an interim measure pending another notation which never caught on. What froze it was an implementation: Russell noticed that one function could serve as an interpreter, hand coded it, and the arrival of that interpreter tended to freeze the form of the language. Everything below is what you get when the notation a theory was written in becomes the notation you type.",
+  "decisions": [
+    {
+      "decision": "One notation for the program and for the data it works on",
+      "because": "The subject is expressions that get transformed. If programs are written in a different notation from the expressions they manipulate, a program that writes a program needs a translator between the two, and the whole point was to avoid needing one.",
+      "syntax": [
+        {
+          "code": "(plus 1 (times 2 3))",
+          "means": "an expression, also a list of three things",
+          "consequence": "Operator first is what makes it a list with the operation at the head, which is what lets a program take the expression apart with the same operations it uses on any other list. The uniformity is the feature, and the parentheses are the price of the uniformity."
+        },
+        {
+          "code": "(quote (plus 1 2))",
+          "means": "this list, as data, not as something to run",
+          "consequence": "Because the two are the same shape, the only thing separating code from data is whether you evaluate it \u2014 which is why this family gets macros and self-modifying programs cheaply, and why the same property is what makes the language hard to reason about statically."
+        }
+      ]
+    },
+    {
+      "decision": "Everything is built from atoms, pairs, and five operations",
+      "because": "The paper's purpose was to show what could be computed, so the base had to be small enough to argue about. Conditional expressions and recursive definitions then build the rest.",
+      "syntax": [
+        {
+          "code": "(car (cons a b))  ->  a",
+          "means": "take the first part of a pair you just made",
+          "consequence": "The paper builds everything from symbolic expressions \u2014 atoms and recursively constructed ordered pairs \u2014 and five elementary operations: atom, eq, car, cdr and cons. Substitution, structural equality, list append and symbolic differentiation are then definitions rather than features, which is why the language has so little in it and so much available."
+        },
+        {
+          "code": "(cdr '(a b c))  ->  (b c)",
+          "means": "everything after the first element",
+          "consequence": "The odd names are hardware. In History of Lisp McCarthy records that car stands for Contents of the Address part of Register number, and that the motivation for implementing car and cdr separately was strengthened by the fact that the IBM 704 had instructions, connected with indexing, that made these operations easy to implement \u2014 a word on that machine being split into an address part and a decrement part holding the locations of the two subexpressions. Register there means a memory location rather than a programmer-visible address register, which that machine did not have."
+        }
+      ]
+    },
+    {
+      "decision": "A function may be defined in terms of itself, and lists are defined that way too",
+      "because": "A list is either empty or an element followed by a list, so the natural definition of anything over lists is recursive, and a language that could not express that would be fighting its own data structure.",
+      "syntax": [
+        {
+          "code": "(defun length (l)\n  (cond ((null l) 0)\n        (t (plus 1 (length (cdr l))))))",
+          "means": "the length of a list is one more than the length of the rest",
+          "consequence": "The definition reads exactly like the inductive definition of a list, which is the strongest argument this language has. What it costs is a call for every element, on a machine where a call is not free \u2014 and the tension between the elegant definition and the loop it should have been is still with us."
+        }
+      ]
+    },
+    {
+      "decision": "The program does not say when memory is finished with",
+      "because": "Expressions are built and abandoned constantly by a program that is rearranging structure. Asking the programmer to track which pairs are still reachable would ask them to hold the one fact the program is busy changing.",
+      "syntax": [
+        {
+          "code": "(cons a (cons b nil))",
+          "means": "build a list, and never say when to release it",
+          "consequence": "Automatic reclamation of unused storage is among the topics the 1960 paper covers, and the paper is its first published description. Every managed language since inherits the bargain: you stop writing one class of bug, and you accept a pause you did not schedule at a moment you did not choose."
+        }
+      ]
+    }
+  ],
+  "wall": "The same uniformity that makes it powerful makes it slow and memory-hungry on the hardware of its time: every pair is an allocation, every call is a call, and reclamation happens when it happens. McCarthy became an assistant professor at MIT in the autumn of 1958, when he and Minsky founded the Artificial Intelligence Project and implementation began that autumn; the paper describing it appeared in Communications of the ACM in April 1960. It is a language defined by a paper and frozen by an interpreter, and what it lacks is exactly what a committee would have insisted on: a defined grammar, and an agreed way to write anything down twice the same way.",
+  "leadsTo": "C.5",
+  "leadsToReason": "If a language can be described precisely enough to argue about, the description should exist on its own \u2014 a formal grammar, block structure and scope, agreed between people rather than fixed by whichever implementation appeared first."
+}

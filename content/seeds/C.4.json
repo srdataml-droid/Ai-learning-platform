@@ -5,7 +5,7 @@
   "claims": [
     {
       "id": "c1",
-      "text": "The language was described in McCarthy’s paper Recursive Functions of Symbolic Expressions and Their Computation by Machine, Part I, published in Communications of the ACM in April 1960. The abstract describes LISP, for list processor, as a system developed for the IBM 704 by the Artificial Intelligence group at MIT, designed to facilitate experiments with a proposed system called the Advice Taker.",
+      "text": "The language was described in McCarthy\u2019s paper Recursive Functions of Symbolic Expressions and Their Computation by Machine, Part I, published in Communications of the ACM in April 1960. The abstract describes LISP, for list processor, as a system developed for the IBM 704 by the Artificial Intelligence group at MIT, designed to facilitate experiments with a proposed system called the Advice Taker.",
       "type": "date",
       "tokens": [
         "McCarthy",
@@ -28,7 +28,7 @@
     },
     {
       "id": "c2",
-      "text": "The paper builds everything from symbolic expressions — atoms and recursively constructed ordered pairs — and five elementary operations: atom, eq, car, cdr and cons. Conditional expressions and recursive definitions then define larger functions such as substitution, structural equality, list append and symbolic differentiation.",
+      "text": "The paper builds everything from symbolic expressions \u2014 atoms and recursively constructed ordered pairs \u2014 and five elementary operations: atom, eq, car, cdr and cons. Conditional expressions and recursive definitions then define larger functions such as substitution, structural equality, list append and symbolic differentiation.",
       "type": "event",
       "tokens": [
         "LISP"
@@ -64,7 +64,7 @@
         "1958"
       ],
       "source": {
-        "title": "McCarthy, J., History of Lisp, 12 February 1979, Stanford University — the author’s own account",
+        "title": "McCarthy, J., History of Lisp, 12 February 1979, Stanford University \u2014 the author\u2019s own account",
         "url": "http://www-formal.stanford.edu/jmc/history/lisp/node3.html",
         "kind": "primary"
       }
@@ -79,7 +79,7 @@
         "LISP"
       ],
       "source": {
-        "title": "McCarthy, J., History of Lisp, 12 February 1979, Stanford University — the author’s own account",
+        "title": "McCarthy, J., History of Lisp, 12 February 1979, Stanford University \u2014 the author\u2019s own account",
         "url": "http://www-formal.stanford.edu/jmc/history/lisp/node3.html",
         "kind": "primary"
       }
@@ -93,14 +93,14 @@
         "LISP"
       ],
       "source": {
-        "title": "McCarthy, J., History of Lisp, 12 February 1979, Stanford University — the author’s own account",
+        "title": "McCarthy, J., History of Lisp, 12 February 1979, Stanford University \u2014 the author\u2019s own account",
         "url": "http://www-formal.stanford.edu/jmc/history/lisp/node3.html",
         "kind": "primary"
       }
     },
     {
       "id": "c7",
-      "text": "Automatic reclamation of unused storage — garbage collection — is among the topics the 1960 paper covers, and the paper is its first published description.",
+      "text": "Automatic reclamation of unused storage \u2014 garbage collection \u2014 is among the topics the 1960 paper covers, and the paper is its first published description.",
       "type": "event",
       "tokens": [
         "LISP",
@@ -111,11 +111,31 @@
         "url": "https://www.cs.tufts.edu/~nr/cs257/archive/john-mccarthy/recursive.pdf",
         "kind": "primary"
       }
+    },
+    {
+      "id": "c8",
+      "type": "quote",
+      "tokens": [
+        "McCarthy",
+        "History",
+        "Lisp",
+        "Contents",
+        "Address",
+        "Register",
+        "704",
+        "IBM"
+      ],
+      "text": "In History of Lisp, dated 12 February 1979, McCarthy records that extracting a subexpression involved composing the extraction of the address part, and continuing along the list involved composing the extraction of the decrement part, so the compounds car, standing for Contents of the Address part of Register number, and its analogues cdr, cpr and ctr were defined. He adds that the motivation for implementing car and cdr separately was strengthened by the fact that the IBM 704 had instructions, connected with indexing, that made these operations easy to implement. The word register there means a memory location rather than a programmer-visible address register, which the 704 did not have.",
+      "source": {
+        "title": "John McCarthy, History of Lisp, 12 February 1979, section on Lisp prehistory",
+        "url": "https://www-formal.stanford.edu/jmc/history/lisp/node2.html",
+        "kind": "primary"
+      }
     }
   ],
   "beats": {
     "broke": "a program that manipulates symbols rather than numbers has to build and take apart structures whose size is not known in advance, and the languages of the day had neither the structures nor the memory management",
-    "fix": "expressions made of pairs, five operations on them, and recursion — with the language’s own programs written in that same structure",
+    "fix": "expressions made of pairs, five operations on them, and recursion \u2014 with the language\u2019s own programs written in that same structure",
     "cost": "the interpreter for the notation was written before anyone decided the notation was final, and the language froze around it",
     "interview": "why code being the same structure as data is a design property and not a syntax quirk"
   }

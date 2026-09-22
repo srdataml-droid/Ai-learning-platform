@@ -1,0 +1,55 @@
+{
+  "id": "C.5",
+  "name": "ALGOL",
+  "status": "traced",
+  "seed": "C.5",
+  "constraint": "It was designed to be published rather than sold: a notation for describing algorithms in print, agreed between thirteen representatives from seven countries, with no manufacturer's machine to be faithful to.",
+  "inherited": {
+    "from": "C.4",
+    "wall": "A notation frozen by whichever interpreter appeared first is not a definition, and a language with no definition cannot be implemented twice and compared."
+  },
+  "opening": "Thirteen representatives from Denmark, England, France, Germany, Holland, Switzerland and the United States conferred in Paris from January 11 to 16, 1960, taking as their basis a completely new draft report Naur had worked out beforehand. Read the result as a specification rather than a product, because that is what was being made \u2014 and read its famous omission the same way, since the decision that kept it honest is also the one that kept it out of production.",
+  "decisions": [
+    {
+      "decision": "The grammar of the language is written down, formally, before any compiler exists",
+      "because": "A language agreed between people in several countries cannot be defined by an implementation, because there is no implementation everyone shares. The definition has to be a document, and a document about syntax needs a notation of its own.",
+      "syntax": [
+        {
+          "code": "<if statement> ::= if <boolean expression> then <statement>",
+          "means": "a rule of the grammar, written in the grammar's own notation",
+          "consequence": "The notation Backus had devised for the earlier specification was revised and expanded by Naur, and at Knuth's suggestion it was renamed Backus-Naur form. Once a grammar can be written down, a compiler can be generated from it and two implementations can be compared against something other than each other \u2014 which is the whole reason a language can outlive its first compiler."
+        }
+      ]
+    },
+    {
+      "decision": "A region of the program is a thing, and names belong to regions",
+      "because": "If every name is visible everywhere, a large program cannot be written by more than one person, because the only protection against collision is memory and courtesy.",
+      "syntax": [
+        {
+          "code": "begin\n  integer i;\n  ...\nend",
+          "means": "a block, and a name that exists only inside it",
+          "consequence": "The report defines blocks delimited by begin and end, procedures nested within one another, and lexical scope, in which a name refers to the declaration enclosing it in the text. Every brace in every descendant is this decision: the text of the program, rather than the order of execution, decides which declaration a name refers to."
+        },
+        {
+          "code": "procedure f(n); integer n;\nbegin ... f(n-1) ... end",
+          "means": "a procedure that may call itself",
+          "consequence": "Recursion in the definition forces a stack in the implementation, because each invocation needs its own copies of its names. The data structure underneath every modern language's function call is here as a consequence of a decision about what you were allowed to write."
+        }
+      ]
+    },
+    {
+      "decision": "Input and output are left out of the language",
+      "because": "Those were the parts that differed most between machines, and the committee was defining something to be published rather than run. Including them would have meant standardising the one area where no standard was possible.",
+      "syntax": [
+        {
+          "code": "(nothing)",
+          "means": "there is no statement here to show",
+          "consequence": "The language as officially defined contains no input or output facilities, so implementations supplied their own, in largely incompatible ways. This is the most instructive decision in the chain: the omission that kept the definition clean is precisely the one that made programs unportable in practice, so a language that was portable on paper was not portable in a machine room. What you leave out of a specification does not go away. It gets decided by somebody else, differently each time."
+        }
+      ]
+    }
+  ],
+  "wall": "It never shipped commercially, and the reason is the decision above rather than any failure of design. The ideas won completely while the language itself did not: it gave rise to CPL, Simula, BCPL, B, Pascal and C, so every language in this chain after it is carrying its block structure and its scope rules. For a beginner, meanwhile, it was hopeless \u2014 a formal grammar and a block structure are no help to somebody who cannot get an answer out of the machine today. Both halves of that are in Hoare's verdict, from his 1980 Turing Award lecture: \u201cHere is a language so far ahead of its time that it was not only an improvement on its predecessors but also on nearly all its successors.\u201d",
+  "leadsTo": "C.6",
+  "leadsToReason": "A student with a teletype and one afternoon needs to type something and see it work, which no amount of formal grammar provides and no batch of punched cards allows."
+}

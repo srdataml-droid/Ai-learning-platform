@@ -1,0 +1,60 @@
+{
+  "id": "C.6",
+  "name": "BASIC",
+  "status": "traced",
+  "seed": "C.6",
+  "constraint": "A beginner sitting at a teletype on a shared machine had to type a program and see it work in one sitting, with no screen to edit on and no manual to read first.",
+  "inherited": {
+    "from": "C.5",
+    "wall": "A precise definition and a block structure are of no use to somebody who cannot get an answer out of the machine today, and the machine answered in batches measured in days."
+  },
+  "opening": "Every feature here is a consequence of a teletype and a shared machine. Kemeny began work on a draft in September 1963, having applied that year for a National Science Foundation grant to bring a GE-225 computer to campus and build a general-purpose time-sharing system \u2014 a grant awarded despite referees' serious doubts about staffing the work with undergraduates. What was being designed was not really a language. It was the shortest path from a person who has never programmed to a correct answer on paper in front of them.",
+  "decisions": [
+    {
+      "decision": "Every line carries a number, and the number is its address",
+      "because": "There is no screen and no editor. The terminal prints and cannot take anything back, so the only way to change a line already typed is to type it again \u2014 and the system needs a way to know which line you meant.",
+      "syntax": [
+        {
+          "code": "10 PRINT \"HELLO\"\n20 END",
+          "means": "two lines, in the order their numbers give",
+          "consequence": "Typing a line whose number already exists replaces it, and typing one in between inserts it, which is why people numbered in tens. The editor and the program are the same thing, and the numbering scheme is an interface designed for a device that cannot erase."
+        },
+        {
+          "code": "GOTO 10",
+          "means": "continue from the line numbered 10",
+          "consequence": "The jump costs nothing to add because the address already exists on every line. A language whose lines are numbered will get a jump whether or not anyone designs one, and the tangle that follows is the consequence of a decision made for the sake of editing."
+        }
+      ]
+    },
+    {
+      "decision": "Short, ordinary words, and no declarations before you begin",
+      "because": "The user is a student in another department with an afternoon free. Anything that must be understood before the first correct answer is a reason to stop.",
+      "syntax": [
+        {
+          "code": "20 INPUT N\n30 LET S = N * N",
+          "means": "ask for a number, then square it",
+          "consequence": "The original version had 14 statements and nine built-in functions, which is the design: a vocabulary small enough to hold in your head after one demonstration. There is no declaration section because a declaration is a promise about a program that does not exist yet, and a beginner has no way to make it."
+        },
+        {
+          "code": "RUN",
+          "means": "translate and execute what has been typed",
+          "consequence": "One word closes the loop from typing to answer, which is the product. Unlike many later implementations that carried the name, the original was a compiler operating compile-and-go: it converted an entire program at once into machine code rather than translating line by line at each run \u2014 so the immediacy was a property of the system's design, not a consequence of interpreting."
+        }
+      ]
+    },
+    {
+      "decision": "The system is shared, and being shared is the point",
+      "because": "A single machine had to serve a campus, and the reason for insisting on time-sharing was that an interactive answer is what makes a beginner continue.",
+      "syntax": [
+        {
+          "code": "(a terminal, and another terminal)",
+          "means": "two people using the machine at once",
+          "consequence": "Dartmouth's own account has Kemeny and a student programmer typing RUN on neighbouring terminals at 4 a.m. on May 1, 1964 and both getting back correct answers \u2014 described by the institution itself as legend rather than as a documented record, with other accounts crediting Kemeny and Kurtz jointly. The system opened to general users in June 1964, and by that autumn hundreds of students were using it on 20 terminals around campus."
+        }
+      ]
+    }
+  ],
+  "wall": "A numbered line is an address, and an address invites a jump, so a program past a few hundred lines becomes a graph nobody can hold. There are no procedures worth the name, no local names, and no way to touch the hardware, so the language that teaches a beginner to program cannot be used to write the system the beginner is sitting in front of.",
+  "leadsTo": "C.7",
+  "leadsToReason": "Writing the system itself needs structured control flow and direct access to memory in the same language, which means a language with the machine underneath it rather than a system between."
+}

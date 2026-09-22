@@ -1,0 +1,62 @@
+{
+  "id": "C.1",
+  "name": "Machine code and assembly",
+  "status": "traced",
+  "seed": "C.1",
+  "constraint": "There is nothing underneath. The machine executes numbers, so any convenience you want has to already exist as a program before your program runs, built on a machine with barely enough memory to hold the program itself.",
+  "opening": "Assembly looks like a thin coat of paint over the numbers, and that is exactly what it is. Every feature it has is one somebody could afford to build with the machine already in the room, and every feature it lacks is one they could not. Read it that way and the notation stops looking primitive and starts looking like a budget.",
+  "decisions": [
+    {
+      "decision": "One line is one instruction, and the notation is the bit pattern with names for its parts",
+      "because": "The translator has to run on the machine it translates for, and that machine has almost no memory. Anything cleverer than a direct substitution costs space that the program itself needs.",
+      "syntax": [
+        {
+          "code": "R16S",
+          "means": "operation R, address 16, short operand",
+          "consequence": "An order on this machine was punched as a character that directly gave the operation code, then decimal digits giving the address, then a letter specifying the operand length bit. R16S assembled to 00100 0 0000010000 0. The notation is not a description of the instruction; it is the instruction, spelled in characters a person can type."
+        },
+        {
+          "code": "T11L",
+          "means": "operation T, address 11, long operand",
+          "consequence": "The characters R and T had codes 4 and 5, so reading the notation and reading the machine word are the same skill. There is no translation to understand, which is why an assembler of this kind can be small enough to fit alongside the thing it assembles."
+        }
+      ]
+    },
+    {
+      "decision": "A name for a place, rather than the number of the place",
+      "because": "An address is a position, and positions move. Insert one instruction near the top and every address below it is now wrong, which makes editing a program an exercise in arithmetic rather than in thought.",
+      "syntax": [
+        {
+          "code": "loop:  ...  JMP loop",
+          "means": "jump to wherever that label ended up",
+          "consequence": "The label is resolved when the program is assembled, so the programmer stops tracking positions and the assembler starts. This is the first time a tool holds a fact about the program that the programmer no longer has to hold, and nearly everything later in this chain is a larger version of the same trade."
+        }
+      ]
+    },
+    {
+      "decision": "The thing that loads a program is itself a program, and it has to be there first",
+      "because": "A stored-program machine runs what is in memory, so something must already be in memory to read a tape. There is no operating system to ask, and no one to ask it.",
+      "syntax": [
+        {
+          "code": "initial orders",
+          "means": "the small program that reads the tape and places what it finds",
+          "consequence": "On this machine the initial orders were written by David Wheeler in May 1949 to load and enter a paper tape representation of a program, and were themselves placed in memory locations 0 to 30 by a mechanism involving uniselectors before execution started from location 0. Every bootstrap since is that shape: a fixed mechanism loads a small program whose job is to load the real one."
+        }
+      ]
+    },
+    {
+      "decision": "A library of routines, and a word for joining them together",
+      "because": "Routines that work are worth more than routines you understand, and the only way to reuse one is to place a copy of it into the program you are building.",
+      "syntax": [
+        {
+          "code": "assemble A, B, C",
+          "means": "put these sections together into one program",
+          "consequence": "The word assembler is generally attributed to Wilkes, Wheeler and Gill in 1951, where it named a program that assembled several sections into one program rather than one that translated mnemonics. The modern meaning drifted onto the translator, and the original job, joining separately written pieces into one image, is now called linking. Worth knowing, because the problem was recognised and named before the translator was the interesting part."
+        }
+      ]
+    }
+  ],
+  "wall": "Every decision here is one-to-one with one machine. The notation is the instruction set, so a program is an asset that belongs to the hardware it was written for and dies with it. Nothing is checked, because nothing above the notation knows what you meant \u2014 a wrong address is not an error, it is a different program. And the first published description of an assembly language is generally identified as a 1947 report by Andrew Booth and Kathleen Britten, later Kathleen Booth, produced while visiting the Institute for Advanced Study at Princeton; that report is not readily available in digital form, so even the origin story rests on later accounts rather than a document you can inspect.",
+  "leadsTo": "C.2",
+  "leadsToReason": "If the expensive part is writing formulas as instructions, and the formulas are the part the scientist already has, then the translator should take the formula."
+}

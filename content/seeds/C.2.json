@@ -37,7 +37,7 @@
     },
     {
       "id": "c3",
-      "text": "Backus wrote: \"It was our belief that if FORTRAN, during its first months, were to translate any reasonable ‘scientific’ source program into an object program only half as fast as its hand coded counterpart, then acceptance of our system would be in serious danger.\" He continued: \"This belief caused us to regard the design of the translator as the real challenge, not the simple task of designing the language.\"",
+      "text": "Backus wrote: \"It was our belief that if FORTRAN, during its first months, were to translate any reasonable \u2018scientific\u2019 source program into an object program only half as fast as its hand coded counterpart, then acceptance of our system would be in serious danger.\" He continued: \"This belief caused us to regard the design of the translator as the real challenge, not the simple task of designing the language.\"",
       "type": "quote",
       "tokens": [
         "FORTRAN",
@@ -86,7 +86,7 @@
     },
     {
       "id": "c6",
-      "text": "Customers’ foremost objection to a compiler was that it probably could not turn out object code as good as their best programmers could. Backus’s own retrospective judgement, given at the 1978 History of Programming Languages conference, was that prioritising object program efficiency over language design had been correct.",
+      "text": "Customers\u2019 foremost objection to a compiler was that it probably could not turn out object code as good as their best programmers could. Backus\u2019s own retrospective judgement, given at the 1978 History of Programming Languages conference, was that prioritising object program efficiency over language design had been correct.",
       "type": "event",
       "tokens": [
         "Backus",
@@ -96,6 +96,21 @@
       "source": {
         "title": "Backus, J., The History of Fortran I, II and III, in History of Programming Languages, ACM/Academic Press, 1978",
         "url": "https://cse.sc.edu/~mgv/csce330f12/Backus78.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c7",
+      "type": "event",
+      "tokens": [
+        "FORTRAN",
+        "IBM",
+        "1956"
+      ],
+      "text": "The Programmer's Reference Manual for the FORTRAN automatic coding system for the IBM 704, dated October 1956, describes the general properties of a source program, including the fixed form in which a statement is punched on a card: a statement number occupies the first five columns, a character other than zero in the sixth column marks the card as a continuation of the one before it, the statement itself occupies columns seven to seventy-two, and the remaining columns are ignored by the compiler and used in practice to number the cards in a deck so that a dropped deck can be put back in order.",
+      "source": {
+        "title": "The FORTRAN Automatic Coding System for the IBM 704 EDPM, Programmer's Reference Manual, IBM, October 1956",
+        "url": "https://bitsavers.org/pdf/ibm/704/704_FortranProgRefMan_Oct56.pdf",
         "kind": "primary"
       }
     }
