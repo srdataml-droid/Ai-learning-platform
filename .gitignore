@@ -6,3 +6,6 @@ dist/
 !.env.example
 *.log
 node_modules/
+
+# keys, never committed
+.env
