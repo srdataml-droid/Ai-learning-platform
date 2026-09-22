@@ -1,0 +1,83 @@
+{
+  "taskId": "K.6",
+  "title": "Backpropagation: what 1986 actually did, and who had it first",
+  "researchedAt": "2026-09-22",
+  "claims": [
+    {
+      "id": "c1",
+      "type": "event",
+      "tokens": [
+        "Rumelhart",
+        "Hinton",
+        "Williams",
+        "David Rumelhart",
+        "Geoffrey Hinton",
+        "Ronald Williams",
+        "Nature",
+        "1986",
+        "9 October 1986"
+      ],
+      "text": "Rumelhart, Hinton and Williams published Learning representations by back-propagating errors in Nature on 9 October 1986. The procedure repeatedly adjusts the weights of connections so as to minimise a measure of the difference between the actual output vector of the net and the desired output vector, and as a result of the weight adjustments internal hidden units which are not part of the input or output come to represent important features of the task domain.",
+      "source": {
+        "title": "David E. Rumelhart, Geoffrey E. Hinton and Ronald J. Williams, Learning representations by back-propagating errors, Nature volume 323, 9 October 1986, pages 533-536",
+        "url": "https://www.nature.com/articles/323533a0",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "type": "date",
+      "tokens": [
+        "Linnainmaa",
+        "Seppo Linnainmaa",
+        "1970",
+        "1976"
+      ],
+      "text": "The method itself is older than that paper. Seppo Linnainmaa introduced the reverse mode of automatic differentiation in his 1970 master's thesis, without reference to neural networks, publishing in English in 1976.",
+      "source": {
+        "title": "Seppo Linnainmaa — his 1970 master's thesis introduced the reverse mode of automatic differentiation, without reference to neural networks",
+        "url": "https://en.wikipedia.org/wiki/Seppo_Linnainmaa",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c3",
+      "type": "date",
+      "tokens": [
+        "Werbos",
+        "Paul Werbos",
+        "Harvard",
+        "1974",
+        "Parker",
+        "1985"
+      ],
+      "text": "Paul Werbos's 1974 Harvard doctoral thesis described how reverse mode differentiation could be used to train neural networks, which is the first application of the method to this problem. The technique was then reinvented several times, including by Parker in 1985, before the 1986 paper brought it to general attention.",
+      "source": {
+        "title": "Paul J. Werbos, Beyond Regression: New Tools for Prediction and Analysis in the Behavioral Sciences, PhD thesis, Harvard University, 1974 — the first application of reverse-mode differentiation to training neural networks",
+        "url": "https://en.wikipedia.org/wiki/Paul_Werbos",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c4",
+      "type": "number",
+      "tokens": [
+        "The",
+        "Reverse",
+        "Forward"
+      ],
+      "text": "The cost structure is what makes the reverse mode the right choice here. Forward accumulation computes the derivatives of all outputs with respect to one input per sweep, so its cost scales with the number of inputs. Reverse accumulation computes the derivatives of one output with respect to all inputs per sweep, so its cost scales with the number of outputs. The costs of forward activation spreading essentially equal the costs of backward derivative calculation.",
+      "source": {
+        "title": "Atilim Gunes Baydin, Barak A. Pearlmutter, Alexey Andreyevich Radul and Jeffrey Mark Siskind, Automatic differentiation in machine learning: a survey, arXiv 1502.05767 — including the history of reverse-mode accumulation",
+        "url": "https://arxiv.org/pdf/1502.05767",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a network with intermediate layers had no way to assign responsibility for an output error to a weight several layers back, and measuring each weight's effect by perturbing it costs one forward pass per weight",
+    "fix": "apply the chain rule in reverse across the computation, accumulating the derivative of one scalar output with respect to every intermediate quantity in a single backward sweep",
+    "cost": "the whole forward computation must be retained so the backward sweep can use it, which is why memory rather than arithmetic limits how large a model can be trained",
+    "interview": "the difference between forward and reverse accumulation, and why training uses reverse"
+  }
+}

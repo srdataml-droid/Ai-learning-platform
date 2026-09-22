@@ -1,0 +1,102 @@
+{
+  "taskId": "K.2",
+  "title": "The perceptron, its limitation, and the contested claim that a book caused a winter",
+  "researchedAt": "2026-09-22",
+  "claims": [
+    {
+      "id": "c1",
+      "type": "event",
+      "tokens": [
+        "Rosenblatt",
+        "Frank Rosenblatt",
+        "Cornell",
+        "Psychological Review",
+        "1958"
+      ],
+      "text": "Frank Rosenblatt, a psychologist at the Cornell Aeronautical Laboratory, described the perceptron in Psychological Review in 1958. The machine built to embody it was an analogue device wired to an array of 400 photocells, and the unit computes a weighted sum of its inputs plus a bias passed through a threshold, which divides the input space with a single hyperplane.",
+      "source": {
+        "title": "Frank Rosenblatt, The Perceptron: A Probabilistic Model for Information Storage and Organization in the Brain, Psychological Review volume 65 number 6, 1958, pages 386-408",
+        "url": "https://psycnet.apa.org/record/1959-09865-001",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "type": "quote",
+      "tokens": [
+        "Navy",
+        "The New York Times",
+        "New York Times",
+        "1958",
+        "8 July 1958"
+      ],
+      "text": "The New York Times reported the Navy's announcement on 8 July 1958, describing the embryo of an electronic computer that the Navy expected would be able to walk, talk, see, write, reproduce itself and be conscious of its existence.",
+      "source": {
+        "title": "New Navy Device Learns By Doing, The New York Times, 8 July 1958 — the Navy's announcement of the perceptron",
+        "url": "https://www.nytimes.com/1958/07/08/archives/new-navy-device-learns-by-doing-psychologist-shows-embryo-of.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "type": "event",
+      "tokens": [
+        "Minsky",
+        "Papert",
+        "Marvin Minsky",
+        "Seymour Papert",
+        "MIT",
+        "XOR",
+        "1969",
+        "1988"
+      ],
+      "text": "Minsky and Papert published Perceptrons: An Introduction to Computational Geometry in 1969, establishing what a single-layer perceptron cannot compute. The exclusive-or function is the standard example: its four input combinations cannot be separated by any single straight line, so no setting of weights and bias for one threshold unit computes it. An expanded edition in 1988 added a chapter responding to the revival of the field.",
+      "source": {
+        "title": "Marvin Minsky and Seymour Papert, Perceptrons: An Introduction to Computational Geometry, MIT Press, 1969; expanded edition 1988",
+        "url": "https://mitpress.mit.edu/9780262534772/perceptrons/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c4",
+      "type": "event",
+      "tokens": [
+        "Olazaran",
+        "Minsky",
+        "Papert",
+        "Rosenblatt",
+        "1965",
+        "1969",
+        "1971"
+      ],
+      "text": "The claim that the book caused the collapse of the field is contested, and Olazaran's 1996 study in Social Studies of Science is the canonical scholarly treatment. The revisionist case is that Minsky and Papert had been arguing against neural networks since around 1965 in talks and preprints, that the book's mathematical content concerns single-layer perceptrons rather than all neural networks, that many researchers had already left the area out of frustration at the lack of progress by 1969, and that Rosenblatt died in 1971. The position most often defended is weaker than the popular one: the critique, combined with its authors' standing, exerted significant influence in temporarily stalling neural network research in the United States.",
+      "source": {
+        "title": "Mikel Olazaran, A Sociological Study of the Official History of the Perceptrons Controversy, Social Studies of Science volume 26 number 3, 1996, pages 611-659 — the canonical scholarly treatment of the dispute",
+        "url": "https://journals.sagepub.com/doi/10.1177/030631296026003005",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c5",
+      "type": "date",
+      "tokens": [
+        "Lighthill",
+        "Department of Defense",
+        "American Study Group",
+        "1973"
+      ],
+      "text": "The first of the funding collapses is associated with the mid-1970s rather than with 1969, and followed the 1973 Lighthill report and the Department of Defense American Study Group report, after which funding decreased sharply in both countries.",
+      "source": {
+        "title": "AI winter — the first winter is associated with the mid-1970s and followed the 1973 Lighthill report and the Department of Defense American Study Group report; the claim that Perceptrons caused it is recorded as contested",
+        "url": "https://en.wikipedia.org/wiki/AI_winter",
+        "kind": "secondary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a model was promoted as an artificial brain on the strength of what it could learn, without anyone having characterised what it could not represent",
+    "fix": "establish the limit formally: one threshold unit divides its input space with a single hyperplane, so any function whose classes are not separable by one hyperplane is outside it entirely",
+    "cost": "the limit was widely read as a limit on the whole approach rather than on one layer of it, and the popular history of what happened next is a stronger causal claim than the evidence supports",
+    "interview": "why one layer cannot compute exclusive-or, and what removes the limitation"
+  }
+}
