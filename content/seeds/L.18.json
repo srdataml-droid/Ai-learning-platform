@@ -1,0 +1,50 @@
+{
+  "taskId": "L.18",
+  "title": "What fine-tuning does and does not inject, and what it costs now",
+  "researchedAt": "2026-09-22",
+  "claims": [
+    {
+      "id": "c1",
+      "type": "event",
+      "tokens": [
+        "Ovadia",
+        "Brief",
+        "Mishaeli",
+        "Elisha",
+        "Oded Ovadia",
+        "2023",
+        "2024"
+      ],
+      "text": "Ovadia, Brief, Mishaeli and Elisha published Fine-Tuning or Retrieval? Comparing Knowledge Injection in LLMs, as a preprint in 2023 and at the 2024 conference on empirical methods in natural language processing, pages 237 to 250. They compare unsupervised fine-tuning with retrieval-augmented generation on knowledge-intensive tasks across several topics. While unsupervised fine-tuning offers some improvement, retrieval consistently outperforms it, both for knowledge encountered during pre-training and for new information. They find that the models struggle to learn new factual information through unsupervised fine-tuning, and suggest that exposing them to numerous variations of the same fact during training could alleviate the problem.",
+      "source": {
+        "title": "Oded Ovadia, Menachem Brief, Moshik Mishaeli and Oren Elisha, Fine-Tuning or Retrieval? Comparing Knowledge Injection in LLMs, EMNLP 2024, pages 237-250",
+        "url": "https://arxiv.org/abs/2312.05934",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "type": "number",
+      "tokens": [
+        "Hu",
+        "Shen",
+        "Edward Hu",
+        "2021",
+        "10,000",
+        "175"
+      ],
+      "text": "Hu, Shen and colleagues published LoRA: Low-Rank Adaptation of Large Language Models in 2021. Their premise is that as models grow, full fine-tuning that retrains all parameters becomes less feasible, and deploying independent instances of a fine-tuned model of 175 billion parameters is prohibitively expensive. The method freezes the pre-trained weights and injects trainable rank decomposition matrices into each layer. Compared with fine-tuning that model with the Adam optimiser, it reduces the number of trainable parameters by 10,000 times and the memory requirement on the accelerator by 3 times, performs on par with or better than fine-tuning in model quality across several models, has higher training throughput, and, unlike adapter layers, adds no additional inference latency.",
+      "source": {
+        "title": "Edward Hu, Yelong Shen and others, LoRA: Low-Rank Adaptation of Large Language Models, ICLR 2022",
+        "url": "https://arxiv.org/abs/2106.09685",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a model that behaves almost right invites the conclusion that it should be trained on your data, which is the most expensive available response and frequently addresses the wrong problem",
+    "fix": "separate what fine-tuning teaches from what it cannot reliably inject: reach for instructions, examples and retrieval first, and train only when the gap is in form rather than in facts",
+    "cost": "a fine-tuned model is a new artefact you own, version, evaluate and maintain, and the training was never the expensive part",
+    "interview": "what fine-tuning is for, what it is not for, and what to try before it"
+  }
+}

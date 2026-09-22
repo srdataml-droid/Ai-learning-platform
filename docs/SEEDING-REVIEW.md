@@ -6,10 +6,13 @@ every lesson, so the numbers are reproducible rather than estimated — see
 
 **RESOLVED 2026-09-22. There are no unsourced lessons left.**
 
-276 lessons: **205 traced, 71 claimless, 0 unsourced.** Checkable atoms in
-unsourced prose: **0**, down from 707 when this was written. Every lesson in
-the repo either traces to a seed or is machine-checked to assert nothing
-checkable. The allowlist was never touched and remains at nine entries.
+Resolved at 276 lessons — 205 traced, 71 claimless, 0 unsourced — and the
+curriculum was finished the same day. It now stands at **313 lessons: 218
+traced, 95 claimless, 0 unsourced**, which is every task in the curriculum.
+Checkable atoms in unsourced prose: **0**, down from 707 when this was
+written. Every lesson in the repo either traces to a seed or is
+machine-checked to assert nothing checkable. The allowlist was never touched
+and remains at nine entries.
 
 Everything below is the original review, kept because the reasoning it records
 is still the reasoning, and because the findings are the argument for the

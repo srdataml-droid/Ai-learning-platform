@@ -50,11 +50,7 @@ Study order: the sequence first, then the five habits running underneath.
 
 ## Track L — AI engineering
 
-3 of 26 still missing.
-
-- [ ] `L.14` Guardrails: input filtering, output checking, prompt injection
-- [ ] `L.18` When to fine tune, and the three cheaper things to try first
-- [ ] `L.26` Safety: bias, red teaming, failure disclosure
+**Complete.** All 26 written.
 
 ## Track A — Systems thinking
 
@@ -78,7 +74,7 @@ Study order: the sequence first, then the five habits running underneath.
 
 ---
 
-**Total remaining: 3 of 313.**
+**Total remaining: 0 of 313.**
 
 Regenerate: `node tools/missing-lessons.mjs > docs/MISSING-LESSONS.md`
 

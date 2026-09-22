@@ -1,0 +1,31 @@
+{
+  "taskId": "L.26",
+  "title": "Bias recoverable from ordinary text corpora, measured with an association test",
+  "researchedAt": "2026-09-22",
+  "claims": [
+    {
+      "id": "c1",
+      "type": "event",
+      "tokens": [
+        "Caliskan",
+        "Bryson",
+        "Narayanan",
+        "Aylin Caliskan",
+        "Science",
+        "2017"
+      ],
+      "text": "Caliskan, Bryson and Narayanan published Semantics derived automatically from language corpora contain human-like biases in Science in 2017, volume 356 number 6334, pages 183 to 186. Applying machine learning to ordinary human language results in human-like semantic biases: using a widely used, purely statistical machine-learning model trained on a standard corpus of text from the web, they replicated a spectrum of known biases as measured by the Implicit Association Test. They conclude that text corpora contain recoverable and accurate imprints of historic biases, ranging from the morally neutral, such as a preference for flowers over insects, to problematic ones regarding race or gender. They note a methodological caveat: the corpora are generated in an uncontrolled fashion and are not representative of any one population, which precludes direct numerical comparison between human results and corpus results.",
+      "source": {
+        "title": "Aylin Caliskan, Joanna Bryson and Arvind Narayanan, Semantics derived automatically from language corpora contain human-like biases, Science volume 356 number 6334, 2017, pages 183-186",
+        "url": "https://www.science.org/doi/10.1126/science.aal4230",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a system trained on ordinary human text absorbs the associations present in that text, so it arrives with the biases of the material rather than in a neutral state",
+    "fix": "measure rather than assert: use a stated test on stated groups, search deliberately for failures before users find them, and say plainly what you found",
+    "cost": "a measurement is only as good as the groups and the test you chose, so absence of evidence in your chosen test is not evidence of absence anywhere else",
+    "interview": "where bias in one of these systems comes from, and what a red teaming exercise is actually for"
+  }
+}

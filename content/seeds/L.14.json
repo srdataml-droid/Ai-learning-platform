@@ -1,0 +1,33 @@
+{
+  "taskId": "L.14",
+  "title": "Indirect prompt injection and the blurred line between data and instructions",
+  "researchedAt": "2026-09-22",
+  "claims": [
+    {
+      "id": "c1",
+      "type": "event",
+      "tokens": [
+        "Greshake",
+        "Abdelnabi",
+        "Mishra",
+        "Endres",
+        "Holz",
+        "Fritz",
+        "Kai Greshake",
+        "2023"
+      ],
+      "text": "Greshake, Abdelnabi, Mishra, Endres, Holz and Fritz published Not What You've Signed Up For: Compromising Real-World LLM-Integrated Applications with Indirect Prompt Injection at the sixteenth workshop on artificial intelligence and security in 2023, pages 79 to 90. They observe that the functionality of these models is modulated through natural language prompts, which makes them susceptible to targeted adversarial prompting that overrides the original instructions and the controls in place, and that integrating a model into an application blurs the line between data and instructions. It had been assumed that the adversarial prompting was performed directly by a malicious user. The authors show new attack vectors using indirect prompt injection, in which adversaries remotely exploit applications without a direct interface by strategically injecting prompts into data that is likely to be retrieved at inference time, where the injected prompts can indirectly control the model. They derive a taxonomy from a computer security perspective covering impacts and vulnerabilities including data theft, worming and contamination of the information ecosystem.",
+      "source": {
+        "title": "Kai Greshake, Sahar Abdelnabi, Shailesh Mishra, Christoph Endres, Thorsten Holz and Mario Fritz, Not What You've Signed Up For: Compromising Real-World LLM-Integrated Applications with Indirect Prompt Injection, AISec 2023, pages 79-90",
+        "url": "https://arxiv.org/abs/2302.12173",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "instructions and data arrive through the same channel as text, so a model has nothing with which to tell an instruction from a user apart from an instruction embedded in a document",
+    "fix": "stop trying to make the model tell them apart and put the defence where authority lives: nothing in the window may grant a permission, and every consequential action is checked outside the model",
+    "cost": "the attack surface now includes every document, page and message your system might retrieve, none of which you control",
+    "interview": "why this is a property of the interface rather than a bug, and where the defence actually goes"
+  }
+}
