@@ -1,0 +1,50 @@
+{
+  "taskId": "K.16",
+  "title": "Learning an objective from comparisons, and the alignment step that changed how models behaved",
+  "researchedAt": "2026-09-22",
+  "claims": [
+    {
+      "id": "c1",
+      "type": "event",
+      "tokens": [
+        "Christiano",
+        "Leike",
+        "Amodei",
+        "Paul Christiano",
+        "2017"
+      ],
+      "text": "Christiano, Leike, Brown, Martic, Legg and Amodei published Deep reinforcement learning from human preferences in 2017. The motivation is that complex goals must be communicated to systems that interact with real-world environments, and the work explores goals defined in terms of non-expert human preferences between pairs of trajectory segments. The approach solves complex tasks without access to the reward function, including simulated robot locomotion and arcade games, while providing feedback on less than one percent of the agent's interactions with the environment, which reduces the cost of human oversight enough to be practically applied. A small amount of non-expert feedback, in the range of fifteen minutes to five hours of human time, sufficed to learn both standard tasks and novel behaviours that are hard to specify.",
+      "source": {
+        "title": "Paul Christiano, Jan Leike, Tom Brown, Miljan Martic, Shane Legg and Dario Amodei, Deep reinforcement learning from human preferences, NeurIPS 2017",
+        "url": "https://arxiv.org/abs/1706.03741",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "type": "event",
+      "tokens": [
+        "Ouyang",
+        "Wu",
+        "Lowe",
+        "Long Ouyang",
+        "RLHF",
+        "NLP",
+        "100x",
+        "2022"
+      ],
+      "text": "Ouyang, Wu, Jiang, Almeida, Wainwright, Lowe and colleagues published Training language models to follow instructions with human feedback in 2022. Its premise is that making language models bigger does not inherently make them better at following a user's intent: large models can generate outputs that are untruthful, toxic, or simply unhelpful, which is to say not aligned with their users. The method collects a dataset of labeler demonstrations of the desired model behaviour and uses it to fine-tune the base model by supervised learning, then collects a dataset of rankings of model outputs and uses it to fine-tune the supervised model further by reinforcement learning from human feedback. In human evaluations on their prompt distribution, outputs from the 1.3 billion parameter instruction-tuned model are preferred to outputs from the 175 billion parameter base model, despite having 100x fewer parameters. The instruction-tuned models show improvements in truthfulness and reductions in toxic output generation, with minimal performance regressions on public NLP datasets, and the authors note that the models still make simple mistakes.",
+      "source": {
+        "title": "Long Ouyang, Jeff Wu, Xu Jiang, Diogo Almeida, Carroll Wainwright, Ryan Lowe and others, Training language models to follow instructions with human feedback, NeurIPS 2022",
+        "url": "https://arxiv.org/abs/2203.02155",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "the thing you want from a model, a helpful and honest answer, cannot be written down as a function, so training optimised the only thing that could be written down, which was predicting the next piece of text",
+    "fix": "stop trying to write the objective and collect comparisons instead: a person says which of two outputs is better, a model is fit to those judgements, and the system is optimised against that model",
+    "cost": "the objective is now a learned proxy for the preferences of particular people under particular instructions, so the model is aligned to those raters rather than to truth, and the proxy can be satisfied without the goal being met",
+    "interview": "why a preference is easier to collect than an objective, and what you are optimising once you do"
+  }
+}

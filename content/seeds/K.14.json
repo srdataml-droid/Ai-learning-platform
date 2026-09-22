@@ -1,0 +1,70 @@
+{
+  "taskId": "K.14",
+  "title": "Pretraining, fine-tuning, and the shift to specifying a task in text",
+  "researchedAt": "2026-09-22",
+  "claims": [
+    {
+      "id": "c1",
+      "type": "event",
+      "tokens": [
+        "Devlin",
+        "Chang",
+        "Lee",
+        "Toutanova",
+        "Jacob Devlin",
+        "BERT",
+        "GLUE",
+        "NLP",
+        "2018",
+        "2019",
+        "80.5",
+        "7.7"
+      ],
+      "text": "Devlin, Chang, Lee and Toutanova published BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding in 2018, appearing at the 2019 conference of the North American chapter of the Association for Computational Linguistics. The model is designed to pre-train deep bidirectional representations from unlabeled text by jointly conditioning on both left and right context in all layers, so that the pre-trained model can be fine-tuned with just one additional output layer for a wide range of tasks without substantial task-specific architecture modifications. It reports new state-of-the-art results on eleven natural language processing tasks, pushing the GLUE score to 80.5, an absolute improvement of 7.7.",
+      "source": {
+        "title": "Jacob Devlin, Ming-Wei Chang, Kenton Lee and Kristina Toutanova, BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding, NAACL-HLT 2019, pages 4171-4186",
+        "url": "https://aclanthology.org/N19-1423/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "type": "event",
+      "tokens": [
+        "Radford",
+        "Alec Radford",
+        "WebText",
+        "2019"
+      ],
+      "text": "Radford and colleagues published Language Models are Unsupervised Multitask Learners in 2019 as a technical report rather than a peer-reviewed paper. The largest model described has 1.5 billion parameters, is trained on a corpus called WebText built from millions of web pages, and reaches state-of-the-art results on 7 of 8 tested language modelling datasets in a zero-shot setting while still underfitting that corpus. The report argues that model capacity is essential to zero-shot task transfer, with performance improving log-linearly across tasks as capacity grows.",
+      "source": {
+        "title": "Alec Radford, Jeffrey Wu, Rewon Child, David Luan, Dario Amodei and Ilya Sutskever, Language Models are Unsupervised Multitask Learners, technical report, 2019",
+        "url": "https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "type": "event",
+      "tokens": [
+        "Brown",
+        "Mann",
+        "Ryder",
+        "Tom Brown",
+        "2020"
+      ],
+      "text": "Brown, Mann, Ryder and colleagues published Language Models are Few-Shot Learners in 2020. The model is autoregressive with 175 billion parameters, ten times more than any previous non-sparse language model, and for all tasks it is applied without any gradient updates or fine-tuning, with tasks and few-shot demonstrations specified purely via text interaction with the model. Eight model sizes were trained, from 125 million up to 175 billion parameters. The paper notes that its predecessor describes its own work as zero-shot task transfer while sometimes providing task examples in context, which is better described as one-shot or few-shot transfer, and it flags datasets where few-shot learning still struggles as well as methodological issues related to training on large web corpora.",
+      "source": {
+        "title": "Tom Brown, Benjamin Mann, Nick Ryder and others, Language Models are Few-Shot Learners, NeurIPS 2020",
+        "url": "https://arxiv.org/abs/2005.14165",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a model trained for one task learned the language and the task together, from data labelled for that task, so every new task paid the full cost again and any task without a labelled corpus was out of reach",
+    "fix": "separate the two: learn the language once from unlabelled text, then attach the task afterwards, first as a small fine-tuned layer and later as nothing but a description written in the input",
+    "cost": "the expensive half is now something you inherit rather than something you built, so what the model knows and what it absorbed are questions about a corpus you did not see",
+    "interview": "what pretraining separated, and why a demonstration in the prompt is not the model learning"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "taskId": "K.15",
+  "title": "Scaling laws for language models, and the correction to their allocation rule",
+  "researchedAt": "2026-09-22",
+  "claims": [
+    {
+      "id": "c1",
+      "type": "event",
+      "tokens": [
+        "Kaplan",
+        "Jared Kaplan",
+        "McCandlish",
+        "2020"
+      ],
+      "text": "Kaplan, McCandlish and colleagues published Scaling Laws for Neural Language Models in 2020. They study empirical scaling laws for language model performance on the cross-entropy loss and find that the loss scales as a power law with model size, dataset size, and the amount of compute used for training, with some trends spanning more than seven orders of magnitude. Architectural details such as network width or depth have minimal effects within a wide range. Their allocation prescription is that larger models are significantly more sample-efficient, so that optimally compute-efficient training involves training very large models on a relatively modest amount of data and stopping significantly before convergence.",
+      "source": {
+        "title": "Jared Kaplan, Sam McCandlish and others, Scaling Laws for Neural Language Models, 2020",
+        "url": "https://arxiv.org/abs/2001.08361",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "type": "number",
+      "tokens": [
+        "Hoffmann",
+        "Jordan Hoffmann",
+        "Chinchilla",
+        "Gopher",
+        "MMLU",
+        "FLOPs",
+        "2022",
+        "67.5%",
+        "7%"
+      ],
+      "text": "Hoffmann and colleagues published Training Compute-Optimal Large Language Models in 2022. They find that current large language models are significantly undertrained, a consequence of the recent focus on scaling model size while keeping training data constant. By training over 400 language models from 70 million to over 16 billion parameters on 5 to 500 billion tokens, they conclude that for compute-optimal training the model size and the number of training tokens should be scaled equally: for every doubling of model size the number of training tokens should also be doubled. The optimal model size for the compute budget of the model called Gopher was predicted to be between 40 and 70 billion parameters, and they tested this by training Chinchilla, a model of 70 billion parameters on 1.4 trillion tokens, for the same number of FLOPs as Gopher, which has 280 billion parameters. Chinchilla uniformly and significantly outperforms Gopher and other larger models on a wide range of downstream evaluation tasks, reaching an average accuracy of 67.5% on the benchmark called MMLU, more than a 7% improvement over Gopher. Being four times smaller, its memory footprint and inference cost are also smaller. The authors note that their analysis runs were trained on less than one epoch of data and that they may still be overestimating the optimal size of large models.",
+      "source": {
+        "title": "Jordan Hoffmann and others, Training Compute-Optimal Large Language Models, NeurIPS 2022",
+        "url": "https://arxiv.org/abs/2203.15556",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "how good a model will be was a matter of opinion until it was trained, so nobody could say in advance whether a budget was worth spending or how to divide it",
+    "fix": "measure the loss across many sizes and budgets and fit a curve, which turns a question of opinion into an extrapolation with a stated shape",
+    "cost": "an empirical fit is only evidence along the axes that were varied, and the first one held the data budget roughly fixed, so its allocation rule was wrong even though its shape was right",
+    "interview": "what a scaling law licenses you to claim, and what the correction to the first one was actually about"
+  }
+}

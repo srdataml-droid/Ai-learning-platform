@@ -46,12 +46,7 @@ Study order: the sequence first, then the five habits running underneath.
 
 ## Track K — Neural networks
 
-3 of 18 still missing.
-
-- [ ] `K.14` Pretraining and transfer: BERT 2018, GPT-2 2019, GPT-3 2020
-- [ ] `K.15` Scaling laws, 2020
-- [ ] `K.16` Instruction tuning and RLHF
-      <br>_note: why ChatGPT in 2022 felt different from GPT-3 in 2020. The base model was not the change, the alignment step was_
+**Complete.** All 18 written.
 
 ## Track L — AI engineering
 
@@ -103,7 +98,7 @@ Study order: the sequence first, then the five habits running underneath.
 
 ---
 
-**Total remaining: 26 of 313.**
+**Total remaining: 23 of 313.**
 
 Regenerate: `node tools/missing-lessons.mjs > docs/MISSING-LESSONS.md`
 
