@@ -657,6 +657,358 @@
     "leadsTo": "C.3",
     "leadsToReason": "The largest buyers were not computing formulas. They were processing records, and they needed a program a non-programmer could read and a machine from another manufacturer could run."
   },
+  "C.20": {
+    "id": "C.20",
+    "name": "Rust",
+    "status": "traced",
+    "seed": "C.20",
+    "constraint": "Memory safety had to come without a collector. The announcement states that it achieves its goals “without requiring a garbage collector or runtime”, which is what allows its libraries to serve as a drop-in substitute for C — so every guarantee has to be proved before the program runs, because there is nothing underneath it at run time to check anything.",
+    "inherited": {
+      "from": "C.18",
+      "wall": "A collector removes a class of bug and adds a pause you did not schedule, which rules the language out of a kernel, a browser engine, or anything with a deadline it must meet."
+    },
+    "opening": "Two things people usually want from a language are in tension, and this is the design that refuses to choose. The announcement describes it as combining low-level control over performance with high-level convenience and safety guarantees, and attributes the distinctiveness to its type system — described as a refinement and codification of best practices drawn from experience with C and C++. That phrase is the most useful summary available: the rules are not new discoveries, they are the disciplines careful programmers in those languages already followed, moved out of their heads and into something that checks.",
+    "decisions": [
+      {
+        "decision": "Every value has exactly one owner, and the owner decides when it is released",
+        "because": "If release happens when an owner goes out of scope, the compiler already knows where every release goes. No collector is needed, and no manual pairing can be forgotten, because there is nothing to pair.",
+        "syntax": [
+          {
+            "code": "let s = String::from(\"x\");\nlet t = s;  // s is no longer usable",
+            "means": "assignment moved ownership rather than copying",
+            "consequence": "The rule that a value has one owner makes double release impossible to express, and turns use-after-release into a compile error rather than a crash later in an unrelated part of the program. What it costs is that assignment no longer means what it means everywhere else, which is the single largest thing a newcomer has to unlearn."
+          }
+        ]
+      },
+      {
+        "decision": "You may have many readers or one writer, never both",
+        "because": "Nearly every memory error and nearly every data race is the same shape: something is being read while something else changes it. Forbidding that one combination removes both classes at once, and it can be checked statically.",
+        "syntax": [
+          {
+            "code": "let a = &v;      // shared, many allowed\nlet b = &mut v;  // exclusive, rejected while a lives",
+            "means": "borrow the value without taking ownership, under a rule",
+            "consequence": "The same rule that makes a dangling reference impossible also makes a data race impossible, which is why concurrency in this language is safe without a runtime doing anything. One constraint, two guarantees — and the reason the compiler rejects programs that would have worked: it is proving a property, and a proof has to refuse the cases it cannot verify."
+          }
+        ]
+      },
+      {
+        "decision": "Failure is a value in the type, so ignoring it is not silent",
+        "because": "A guarantee enforced before the program runs is only as good as its coverage, and the most common escape from a static guarantee is a result nobody looked at.",
+        "syntax": [
+          {
+            "code": "let data = fs::read(path)?;",
+            "means": "unwrap the success, or return the failure to the caller",
+            "consequence": "The type of the call includes the possibility of failure, so handling it is a step the compiler can require rather than a habit a reviewer has to check. The notation is short on purpose: a guarantee that is tedious to satisfy gets bypassed, so the language spends syntax on making the safe path the brief one."
+          }
+        ]
+      }
+    ],
+    "wall": "The bill for a proof is that you have to write a provable program. Ownership and borrowing must be expressed in the code even when they are obvious to you, the compiler refuses working programs it cannot verify, and the learning curve is steep in a specific way — it is not new concepts so much as being asked to state, precisely, things you previously kept in your head. Version 1.0 was announced on 15 May 2015 by the Rust Core Team, sponsored by Mozilla, and marked a stability commitment: the preceding churn ended, breaking changes largely out of scope, and a six-week release train. The announcement's own framing of the benefit is worth keeping: newcomers can write low-level code without minor mistakes leading to mysterious crashes, and experienced developers save the time they were spending on the discipline by hand.",
+    "leadsTo": "C.21",
+    "leadsToReason": "Most programs are not kernels. They are applications on a platform someone else controls, where the language you may use is decided by the platform vendor and the problem is the decades of code already written in the last one."
+  },
+  "C.21": {
+    "id": "C.21",
+    "name": "Kotlin and Swift",
+    "status": "traced",
+    "seed": "C.21",
+    "constraint": "Both had to replace an entrenched language on a platform they could not break: millions of existing applications, a vendor's own frameworks written in the old language, and no possibility of asking anyone to start again.",
+    "inherited": {
+      "from": "C.20",
+      "wall": "Proving memory safety at compile time is the right trade for a kernel and an expensive one for an application whose actual risk is a null reference in a screen nobody tested."
+    },
+    "opening": "These two arrived from different companies for different platforms within three years of each other, and made nearly the same decisions — which is the useful thing about putting them on one page. Kotlin was unveiled in July 2011 and open-sourced in February 2012; Swift was created by Chris Lattner, beginning in 2010 while he was director of the developer tools department at Apple, first announced in June 2014. When two independent teams solve the same constraint the same way, the constraint is doing the designing.",
+    "decisions": [
+      {
+        "decision": "Absence is part of the type, and the compiler insists you handle it",
+        "because": "The dominant crash in application code is a reference that was allowed to be nothing and was not checked. It is not an exotic failure, it is the most common one, and it is entirely preventable by moving the fact into the type.",
+        "syntax": [
+          {
+            "code": "var name: String?      // may be absent\nname?.length           // do nothing if it is",
+            "means": "the possibility of absence is written down and must be dealt with",
+            "consequence": "A type that cannot be absent removes the check, and a type that can be forces it, so the most frequent crash in application development becomes a compile error. Both languages chose this and both spell it with a question mark — independent arrivals at the same answer, because the same failure dominated both platforms."
+          }
+        ]
+      },
+      {
+        "decision": "Interoperate completely with the old language, in both directions",
+        "because": "The platform's own frameworks are written in the old language and cannot be rewritten, and no team will adopt a language that cuts them off from the code they already have.",
+        "syntax": [
+          {
+            "code": "(old classes callable directly; new classes visible to old code)",
+            "means": "one project, two languages, no bridge to write",
+            "consequence": "Adoption becomes a file-level decision rather than a project-level one, which is the only way a platform language ever changes hands. It is the same strategy as adding types to a language that could not be replaced, arriving at the same conclusion from a different direction: migration has to be incremental or it does not happen."
+          }
+        ]
+      },
+      {
+        "decision": "Take the vendor's blessing, because on a platform that is the feature",
+        "because": "A language for an application platform lives or dies by whether the platform's owner supports it in the tools, the documentation and the hiring market. Technical merit is necessary and nowhere near sufficient.",
+        "syntax": [
+          {
+            "code": "(the default template in the official tool)",
+            "means": "what a new project starts as",
+            "consequence": "Swift shipped in the toolchain from Xcode version 6 in September 2014, and the conference application became the first publicly released application written in it that June. Google announced first-class support for Kotlin on Android in 2017 and, on 7 May 2019, that it was its preferred language for Android developers. The version 1.0 release in February 2016, with its commitment to long-term backwards compatibility, is what made that blessing possible — a vendor cannot standardise on a language that is still changing underneath it."
+          }
+        ]
+      }
+    ],
+    "wall": "A language whose adoption depends on a platform owner is a language whose future is a business decision, and neither of these is meaningfully portable off the platform it was built for. Both also carry the old language's model underneath: the frameworks, the idioms and the lifecycle are inherited, so the new syntax sits on semantics designed for something else. The name records how little of this is about the language itself — one is named after Kotlin Island, off Saint Petersburg, and neither name tells you anything about the design, because the design was set by the platform.",
+    "leadsTo": "C.22",
+    "leadsToReason": "Every application so far has been written in the imperative voice — do this, then this. The data most applications exist to move has a notation of its own, and it works the other way round."
+  },
+  "C.22": {
+    "id": "C.22",
+    "name": "SQL",
+    "status": "traced",
+    "seed": "C.22",
+    "constraint": "It was intended as a database sublanguage for both the professional programmer and the more infrequent database user, which means a notation that a non-programmer can write and a machine can optimise — so it had to say what was wanted without saying how to get it.",
+    "inherited": {
+      "from": "C.21",
+      "wall": "Every language so far describes a sequence of steps, which means the person writing it must know how the data is stored in order to get at it efficiently."
+    },
+    "opening": "This is the one language in the chain that is not in the chain: a parallel notation, still in daily use in almost exactly its original form, and the clearest example anywhere of the trade between saying what you want and saying how to do it. The relational model it implements was set out by Codd in 1970; Chamberlin and Boyce of the research laboratory in San Jose presented the language at a workshop in Ann Arbor in 1974, refining an earlier language the same authors had worked on called SQUARE, and built for a prototype intended to demonstrate the practicality of relational technology.",
+    "decisions": [
+      {
+        "decision": "Describe the result, not the route to it",
+        "because": "The user is often not a programmer, and the route depends on facts about storage that change — an index added, a table grown — which the person writing the query cannot be expected to track.",
+        "syntax": [
+          {
+            "code": "SELECT name FROM customers WHERE balance > 100;",
+            "means": "the rows I want, described by a property",
+            "consequence": "Nothing here says which order to read rows in, whether to use an index, or how to join. Those decisions belong to the system, which is free to change them as the data changes. This is the same bargain the first compiler in this chain struck — it shipped to users in April 1957, and the executed program stopped being the written one — except that here the gap between what you wrote and what runs is permanent and re-decided on every execution."
+          }
+        ]
+      },
+      {
+        "decision": "A set of simple operations on tables, rather than variables and quantifiers",
+        "because": "The paper states that without resorting to the concepts of bound variables and quantifiers, the language identifies a set of simple operations on tabular structures which are shown to be of equivalent power to the first-order predicate calculus.",
+        "syntax": [
+          {
+            "code": "SELECT c.name, SUM(o.total)\nFROM customers c JOIN orders o ON o.customer_id = c.id\nGROUP BY c.name;",
+            "means": "combine two tables and summarise the result",
+            "consequence": "The operations compose — the result of one is a table, which is the input to another — so a complicated question is built from simple parts without a single loop or variable. The power of the calculus, without the notation that kept it in the hands of people who had studied it: that equivalence is the entire justification for the design."
+          }
+        ]
+      },
+      {
+        "decision": "Keyword templates in English",
+        "because": "Users are presented with a consistent set of keyword English templates, which is what makes the language writable by the infrequent user the paper names as half its audience.",
+        "syntax": [
+          {
+            "code": "SELECT ... FROM ... WHERE ... GROUP BY ... ORDER BY ...",
+            "means": "fixed slots, filled in",
+            "consequence": "A query is a template with the parts filled in rather than a program composed freely, so a beginner can produce a correct one by pattern rather than by understanding. That accessibility is why the notation escaped its database and became the way an entire industry talks about data — and why a great many people who use it every day have never learned what the system does with it."
+          }
+        ]
+      }
+    ],
+    "wall": "Saying what rather than how is a wonderful bargain until the system chooses badly, and then you are debugging a decision you did not make, in a plan you did not write, with no way to state your intent directly — so tuning becomes the art of persuading an optimiser by rearranging a description. The declarative surface also hides an enormous amount: the same query can be instant or ruinous depending on facts nowhere in its text. The name is a small monument to how little of this was planned: it was changed because the original was a trademark registered by an aircraft company, and Boyce died of a brain aneurysm in 1974, shortly after the work, with Chamberlin continuing the development.",
+    "leadsTo": "C.23",
+    "leadsToReason": "A notation that hides how the work is done is exactly wrong when the machine's shape is the whole point, and the shape in question is thousands of small units doing the same arithmetic at once."
+  },
+  "C.23": {
+    "id": "C.23",
+    "name": "CUDA",
+    "status": "traced",
+    "seed": "C.23",
+    "constraint": "The hardware is thousands of small units doing the same arithmetic on different data, with several distinct memories of very different speeds — and the notation had to expose that shape rather than hide it, because the shape is the entire reason to use the machine.",
+    "inherited": {
+      "from": "C.22",
+      "wall": "A notation that hides how the work is done is exactly the wrong tool when the machine's shape is the point, and before this, using the hardware for general computation required expressing the problem in terms of the graphics pipeline — as textures, shaders and rendering passes — whether or not the problem had anything to do with graphics."
+    },
+    "opening": "Every other entry in this chain moves the programmer further from the machine. This one deliberately moves back, and it is worth being clear about why that is not a regression: the hardware's parallelism and its memory hierarchy are not implementation details that a compiler could choose better, they are the difference between a program that runs in a minute and one that runs in a day. The work began in 2004, when Ian Buck was hired and paired with John Nickolls, then director of architecture for computing on these devices, to develop a research language called Brook into a product.",
+    "decisions": [
+      {
+        "decision": "You write the body for one unit of work, and say how many to run",
+        "because": "The machine's model is the same instruction across many units on different data. A loop would describe a sequence, which is the opposite of what the hardware does, so the notation describes one element's work and the launch describes the extent.",
+        "syntax": [
+          {
+            "code": "__global__ void add(float* a, float* b) { int i = threadIdx.x; a[i] += b[i]; }",
+            "means": "what one unit does, identified by its own index",
+            "consequence": "There is no loop, and the index comes from asking where you are. The programming guide presents a model in which the programmer writes functions executed by many threads in parallel, organised into blocks and grids. The mental shift is the whole difficulty of the model: you stop describing a sequence and start describing a single point in a space of work."
+          }
+        ]
+      },
+      {
+        "decision": "The memory hierarchy is in the source, not behind it",
+        "because": "The speed difference between the memories is large enough that placing data correctly is most of the performance. A compiler cannot make that choice without knowing the algorithm's access pattern, so the notation asks the programmer.",
+        "syntax": [
+          {
+            "code": "__shared__ float tile[32][32];",
+            "means": "this array lives in the fast memory shared by one block",
+            "consequence": "The distinct memory spaces available to those threads — per-thread, per-block shared, and device-wide — are part of the programming model rather than a detail of the implementation. Writing a fast program means moving data into the near memory once and reusing it, which is the same decomposition a cache-aware algorithm uses, except here it is explicit and mandatory rather than hoped for."
+          }
+        ]
+      },
+      {
+        "decision": "Extend an existing language rather than invent one",
+        "because": "The audience already wrote in the systems language, and the only thing that needed to be new was the small set of concepts the hardware actually introduces.",
+        "syntax": [
+          {
+            "code": "add<<<blocks, threads>>>(a, b);",
+            "means": "launch the function across this much work",
+            "consequence": "A handful of markers and one new call syntax carry the entire model, so the learning cost is the model rather than a language. The initial public release was in February 2007, with version 1.0 of the toolkit, including the compiler, following in mid-2007 and a programming guide dated 23 June 2007."
+          }
+        ]
+      }
+    ],
+    "wall": "The cost is written into the first line of every file: the code is for one manufacturer's machines. That coupling is precisely the one an industry spent the previous fifty years removing — the committees that produced the first vendor-independent business language were set up at a Pentagon meeting in May 1959 to make a written specification rather than any vendor's product the authority — and here it is accepted again, knowingly, because the performance is worth it. The other cost is that debugging is genuinely hard: a failure that depends on which units happened to run together is not reproducible in the way a sequential bug is."
+  },
+  "C.24": {
+    "id": "C.24",
+    "name": "HTML and CSS",
+    "status": "traced",
+    "seed": "C.24",
+    "constraint": "A document has to be readable by a person whose screen, fonts, window size and preferences are unknown to its author and cannot be discovered — so presentation has to be negotiated at the far end rather than decided at this one.",
+    "inherited": {
+      "from": "C.22",
+      "wall": "A notation for querying records says nothing about how a document is structured, and the alternative on offer was a proprietary binary format that only one vendor's program could open."
+    },
+    "opening": "These two are usually taught as a pair of syntaxes and are better understood as a single argument about who decides what a page looks like. The first publicly available description of the markup was a document called HTML Tags, first mentioned on the internet by Berners-Lee in late 1991; apart from the hyperlink, its elements were strongly influenced by an in-house documentation format at CERN, and thirteen of those elements still exist. The style proposal came three years later, and its title states the design: Cascading HTML style sheets.",
+    "decisions": [
+      {
+        "decision": "Mark what a thing is, not what it should look like",
+        "because": "The author does not know the reader's screen, window, font size or ability to see it. A description of meaning can be rendered sensibly by any device; a description of appearance can only be rendered by the device it was written for.",
+        "syntax": [
+          {
+            "code": "<h1>Title</h1>\n<p>Some text.</p>",
+            "means": "a heading and a paragraph, with no appearance given",
+            "consequence": "The same document can be a page, a printout, a phone screen or speech, because none of those decisions are in it. This is why the markup survived and the binary document formats it competed with did not: a format that describes meaning can be rendered by devices that did not exist when it was written."
+          }
+        ]
+      },
+      {
+        "decision": "Presentation cascades, rather than being fixed",
+        "because": "The proposal's defining property is in its name: sheets are designed to cascade, so that the user or browser specifies initial preferences and hands the remaining influence to the sheets referenced in the incoming document.",
+        "syntax": [
+          {
+            "code": "h1 { font-size: 2em; color: navy; }",
+            "means": "a preference about headings, not a command",
+            "consequence": "Presentation is negotiated between author and reader rather than dictated by the author, which is why a reader can enlarge the text, override the colours, or read the page with something that has no colours at all. Every complaint about the difficulty of controlling a layout precisely is this decision working as designed."
+          },
+          {
+            "code": "@media (max-width: 600px) { ... }",
+            "means": "a different preference when the environment differs",
+            "consequence": "The original proposal already described logic to make presentation decisions based on the user's environment, such as screen size. The idea that a document adapts to its reader is not a later addition responding to phones; it is in the founding document, seventeen years before it became fashionable."
+          }
+        ]
+      },
+      {
+        "decision": "Separate the two languages, and let them evolve apart",
+        "because": "By 1994 the markup had established itself as a universal document format, but it was clear that even with extensions it would not meet authors' demands for presentational capability — and meeting them inside the markup would have destroyed the property that made it universal.",
+        "syntax": [
+          {
+            "code": "<link rel=\"stylesheet\" href=\"site.css\">",
+            "means": "the appearance lives somewhere else entirely",
+            "consequence": "Level 1 became a recommendation on 17 December 1996, authored by Wium Lie and Bert Bos, the work having begun in October 1994 at CERN and continued from July 1995 at INRIA where Bos joined. Keeping presentation out of the document is what let the visual layer be rewritten repeatedly without invalidating a single page ever written."
+          }
+        ]
+      }
+    ],
+    "wall": "Negotiated presentation means the author cannot be certain what the reader sees, and two decades of effort went into pretending otherwise — pixel-exact layouts, browser-specific hacks, and a permanent argument between designers who want a page to look like a printed one and a medium that was designed not to. The declarative layout model has genuine edge cases nobody enjoys, and the whole system is judged against a standard it was never trying to meet: it is not a page description language, it is a request."
+  },
+  "C.25": {
+    "id": "C.25",
+    "name": "Bash and the shell",
+    "status": "traced",
+    "seed": "C.25",
+    "constraint": "It is an interactive command interpreter first and a language second, so every design decision is a trade against typing speed at a terminal — and it has to join programs that were written separately, by people who never spoke, with no agreed data format between them.",
+    "inherited": {
+      "from": "C.24",
+      "wall": "Marking up a document says nothing about running the programs that produce it, and passing data between two programs otherwise meant editing and recompiling at least one of them."
+    },
+    "opening": "The first shell was written by Ken Thompson and introduced with the first version of Unix in 1971, as a command interpreter rather than a scripting language. The idea that gives it its power came earlier and from someone else: in a typewritten memo of 1964 Douglas McIlroy wrote about coupling programs like garden hose, so that a programmer could screw in another segment when data needed massaging another way. He raised it repeatedly over about nine years before Thompson implemented it. Read the language as a notation for that memo.",
+    "decisions": [
+      {
+        "decision": "The output of one program is the input of the next, and the connector is one character",
+        "because": "If joining two programs is harder than writing a new one, people write a new one. The economics of reuse are decided entirely by how much effort the connection costs.",
+        "syntax": [
+          {
+            "code": "grep error log | cut -d' ' -f3 | sort | uniq -c",
+            "means": "four programs, joined into one job",
+            "consequence": "Each program knows nothing about the others and the shell knows nothing about what they do. That is what makes a program written twenty years ago useful today in a pipeline nobody imagined — the interface is a stream of bytes, which is the weakest possible contract and therefore the most widely satisfiable one."
+          },
+          {
+            "code": "sort results > top.txt",
+            "means": "send the output to a file instead",
+            "consequence": "The redirection syntax was notably compact by comparison with Multics, where redirecting input or output required separate commands to start and stop the redirection; here one appended a symbol and a filename to the command line. Terseness is the feature, because this is typed by hand hundreds of times a day."
+          }
+        ]
+      },
+      {
+        "decision": "Everything is text, because text is what every program already produces",
+        "because": "Any richer format would require every program to agree on it, and the programs already existed and had not agreed on anything.",
+        "syntax": [
+          {
+            "code": "for f in *.log; do process \"$f\"; done",
+            "means": "loop over names, quoting because names contain spaces",
+            "consequence": "The universal format has no types, so a filename with a space in it is two words unless you say otherwise, and a number is a string until something decides it is not. The quoting rules that everybody finds arcane are the price of an interface so weak that everything can speak it."
+          }
+        ]
+      },
+      {
+        "decision": "Make it a scripting language too, once the commands were worth keeping",
+        "because": "A sequence typed twice should be a file, and a file that runs commands wants variables, conditions and loops — but they have to be added without disturbing the interactive use that comes first.",
+        "syntax": [
+          {
+            "code": "if [ -f \"$path\" ]; then ...; fi",
+            "means": "a test that is a program call, not a keyword",
+            "consequence": "The test is a command and the brackets are its name, which is why the spaces matter and why the syntax looks unlike every other language. The Bourne shell, written by Stephen Bourne, was released in 1979 as the default shell of the seventh edition and, unlike its predecessor, was intended as a scripting language as well as an interactive interpreter; Bash was later written by Brian Fox for the GNU Project with support from the Free Software Foundation as a free replacement for it, coding beginning on 10 January 1988 and the beta released on 8 June 1989."
+          }
+        ]
+      }
+    ],
+    "wall": "Everything being text means nothing is checked, and a script that works is one whose failures have not happened yet: a missing quote splits a filename, a failing command in the middle of a pipeline is invisible unless you ask, and an unset variable expands to nothing rather than to an error. It is the best glue ever made and a poor material to build in, and the line between the two is crossed silently, usually around the point where somebody adds a second condition. Even its own history resists precision — accounts of when the pipe was implemented conflict, with some placing the overnight work in the autumn of 1973, though a notice circulated on 15 January 1973 already described the pipe system call and it appears in the Version 3 manual of February 1973."
+  },
+  "C.26": {
+    "id": "C.26",
+    "name": "Regular expressions",
+    "status": "traced",
+    "seed": "C.26",
+    "constraint": "It is a notation for a class of machine rather than a language for a person: what can be expressed is exactly what a finite automaton can recognise, and everything about its power and its limits follows from that equivalence.",
+    "inherited": {
+      "from": "C.25",
+      "wall": "Text is the universal interface, and taking anything out of it meant writing a character-by-character state machine by hand for every new shape of input."
+    },
+    "opening": "This one is a notation with a theorem underneath it, and the theorem is why it is both so useful and so frequently misused. Kleene introduced the notion of regular events in a research memorandum of 1951, published in 1956; Thompson published a search algorithm in Communications of the ACM in June 1968 whose construction simulates a nondeterministic finite automaton in lockstep. The practical properties people argue about — speed, catastrophic slowness, what it cannot parse — are all consequences of which machine the notation describes.",
+    "decisions": [
+      {
+        "decision": "The notation describes a set of strings, not a procedure for recognising them",
+        "because": "A description can be compiled into different machines, checked for equivalence, and reasoned about. A hand-written procedure can only be run and debugged.",
+        "syntax": [
+          {
+            "code": "^[a-z]+[0-9]*$",
+            "means": "letters, then optional digits, and nothing else",
+            "consequence": "One line replaces a loop with a state variable, and it is far easier to get right because there is no state to get wrong. The compression is what made it escape the theory papers and end up in every editor and every language's standard library."
+          }
+        ]
+      },
+      {
+        "decision": "Implement it by tracking the set of states you could be in",
+        "because": "If several paths through the pattern are possible, you can either try them one after another and reconsider when one fails, or advance all of them at once. The second costs more per character and removes the need to reconsider at all.",
+        "syntax": [
+          {
+            "code": "(a|aa)*b   matched by advancing every possibility together",
+            "means": "one pass, carrying a set of positions",
+            "consequence": "Thompson's algorithm maintains state lists of length approximately n over a string of length n, giving quadratic total time — the efficiency coming from tracking the set of reachable states without tracking which paths reached them, since an automaton of n nodes has at most n reachable states at each step. The cost is that you cannot report which path matched, which is exactly what a capturing group asks for."
+          }
+        ]
+      },
+      {
+        "decision": "Most implementations chose the other way, and pay for it",
+        "because": "Capturing groups and backreferences are what users want, and they require knowing which path was taken — so the common implementations try one path at a time and go back when it fails.",
+        "syntax": [
+          {
+            "code": "a?a?a?aaa   against   aaa",
+            "means": "a pattern whose optional parts can be satisfied many ways",
+            "consequence": "Cox demonstrates the difference with the pattern formed of n optional letters followed by n required ones, matched against a string of n letters: a backtracking implementation tries one-then-zero for each optional element, giving two-to-the-n possibilities of which only the last leads to a match. That is the catastrophic case people meet in production, and it is not a bug in an implementation, it is the algorithm doing what it was asked."
+          }
+        ]
+      }
+    ],
+    "wall": "The notation's limit is not a matter of effort: what it can recognise is what a finite automaton can recognise, so nested structure — brackets inside brackets, tags inside tags — is outside it by construction, and every attempt to parse such a thing with it is a slow rediscovery of the theorem. The other cost is denseness: a pattern is unreadable at a length where a program is still fine, because there are no names in it. And the performance lesson generalises well beyond text, in the form Cox gives it: a slow implementation of a linear-time algorithm easily outperforms a fast implementation of an exponential-time one once the exponent is large enough."
+  },
   "C.3": {
     "id": "C.3",
     "name": "COBOL",
@@ -1502,6 +1854,236 @@
       "claim": "The Programmer's Reference Manual for the FORTRAN automatic coding system for the IBM 704, dated October 1956, describes the general properties of a source program, including the fixed form in which a statement is punched on a card: a statement number occupies the first five columns, a character other than zero in the sixth column marks the card as a continuation of the one before it, the statement itself occupies columns seven to seventy-two, and the remaining columns are ignored by the compiler and used in practice to number the cards in a deck so that a dropped deck can be put back in order.",
       "title": "The FORTRAN Automatic Coding System for the IBM 704 EDPM, Programmer's Reference Manual, IBM, October 1956",
       "url": "https://bitsavers.org/pdf/ibm/704/704_FortranProgRefMan_Oct56.pdf",
+      "kind": "primary"
+    }
+  ],
+  "C.20": [
+    {
+      "claim": "Rust 1.0 was announced on 15 May 2015 by the Rust Core Team. The announcement states that it \"combines low-level control over performance with high-level convenience and safety guarantees\".",
+      "title": "Announcing Rust 1.0, The Rust Core Team, The Rust Programming Language Blog, 15 May 2015",
+      "url": "https://blog.rust-lang.org/2015/05/15/Rust-1.0/",
+      "kind": "primary"
+    },
+    {
+      "claim": "The announcement states that it achieves these goals \"without requiring a garbage collector or runtime\", which is what allows its libraries to serve as a drop-in substitute for C.",
+      "title": "Announcing Rust 1.0, The Rust Core Team, The Rust Programming Language Blog, 15 May 2015",
+      "url": "https://blog.rust-lang.org/2015/05/15/Rust-1.0/",
+      "kind": "primary"
+    },
+    {
+      "claim": "The announcement attributes the language’s distinctiveness to its type system, described as a refinement and codification of best practices drawn from experience with C and C++. It says newcomers can write low-level code without worrying about minor mistakes leading to mysterious crashes, and that experienced developers save time they would otherwise spend debugging.",
+      "title": "Announcing Rust 1.0, The Rust Core Team, The Rust Programming Language Blog, 15 May 2015",
+      "url": "https://blog.rust-lang.org/2015/05/15/Rust-1.0/",
+      "kind": "primary"
+    },
+    {
+      "claim": "The release marks a stability commitment: the announcement describes the preceding churn as ended and breaking changes as largely out of scope going forward, alongside a six-week release train.",
+      "title": "Announcing Rust 1.0, The Rust Core Team, The Rust Programming Language Blog, 15 May 2015",
+      "url": "https://blog.rust-lang.org/2015/05/15/Rust-1.0/",
+      "kind": "primary"
+    },
+    {
+      "claim": "The language was sponsored by Mozilla, which supported its development in the years before the 1.0 release.",
+      "title": "Rust (programming language): origins and Mozilla sponsorship",
+      "url": "https://en.wikipedia.org/wiki/Rust_(programming_language)",
+      "kind": "secondary"
+    }
+  ],
+  "C.21": [
+    {
+      "claim": "Kotlin was unveiled in July 2011 and open-sourced under the Apache licence in February 2012. Version 1.0 was released on 15 February 2016 and was the first officially stable release, with a commitment to long-term backwards compatibility from that point. It is named after Kotlin Island, off Saint Petersburg.",
+      "title": "Kotlin: unveiled July 2011, open-sourced February 2012, version 1.0 on 15 February 2016, and Google’s Android announcements of 2017 and 2019",
+      "url": "https://en.wikipedia.org/wiki/Kotlin",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Google announced first-class support for Kotlin on Android in 2017, and on 7 May 2019 announced that it was its preferred language for Android application developers.",
+      "title": "Kotlin: unveiled July 2011, open-sourced February 2012, version 1.0 on 15 February 2016, and Google’s Android announcements of 2017 and 2019",
+      "url": "https://en.wikipedia.org/wiki/Kotlin",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Swift was created by Chris Lattner, beginning in 2010, while he was director of the developer tools department at Apple. It was first announced at the company’s developer conference in June 2014 and shipped in the toolchain from Xcode version 6 in September 2014.",
+      "title": "Swift (programming language): created by Chris Lattner from 2010, announced at WWDC in June 2014, shipped in Xcode 6 in September 2014",
+      "url": "https://en.wikipedia.org/wiki/Swift_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "On 2 June 2014 the conference application became the first publicly released application written in Swift.",
+      "title": "Swift (programming language): created by Chris Lattner from 2010, announced at WWDC in June 2014, shipped in Xcode 6 in September 2014",
+      "url": "https://en.wikipedia.org/wiki/Swift_(programming_language)",
+      "kind": "secondary"
+    }
+  ],
+  "C.22": [
+    {
+      "claim": "The relational model it implements was set out by Codd in A Relational Model of Data for Large Shared Data Banks, Communications of the ACM volume 13 number 6, pages 377 to 387, in 1970.",
+      "title": "Codd, E. F., A Relational Model of Data for Large Shared Data Banks, Communications of the ACM 13(6):377-387, 1970",
+      "url": "https://dl.acm.org/doi/10.1145/362384.362685",
+      "kind": "primary"
+    },
+    {
+      "claim": "Donald Chamberlin and Raymond Boyce of the IBM Research Laboratory in San Jose presented SEQUEL at the 1974 ACM SIGFIDET workshop in Ann Arbor, pages 249 to 264. Participants afterwards renamed the group SIGMOD.",
+      "title": "Chamberlin, D. D. and Boyce, R. F., SEQUEL: A Structured English Query Language, Proc. 1974 ACM SIGFIDET Workshop on Data Description, Access and Control, Ann Arbor, May 1974, pp. 249-264",
+      "url": "https://dl.acm.org/doi/10.1145/800296.811515",
+      "kind": "primary"
+    },
+    {
+      "claim": "The paper states that without resorting to the concepts of bound variables and quantifiers, the language identifies a set of simple operations on tabular structures which are shown to be of equivalent power to the first-order predicate calculus. Users are presented with a consistent set of keyword English templates which can be composed to form more complex queries.",
+      "title": "Chamberlin, D. D. and Boyce, R. F., SEQUEL: A Structured English Query Language, Proc. 1974 ACM SIGFIDET Workshop on Data Description, Access and Control, Ann Arbor, May 1974, pp. 249-264",
+      "url": "https://dl.acm.org/doi/10.1145/800296.811515",
+      "kind": "primary"
+    },
+    {
+      "claim": "It was intended as a database sublanguage for both the professional programmer and the more infrequent database user, refining an earlier language the same authors had worked on called SQUARE, and was built for a prototype intended to demonstrate the practicality of relational technology.",
+      "title": "Chamberlin, D. D. and Boyce, R. F., SEQUEL: A Structured English Query Language, Proc. 1974 ACM SIGFIDET Workshop on Data Description, Access and Control, Ann Arbor, May 1974, pp. 249-264",
+      "url": "https://dl.acm.org/doi/10.1145/800296.811515",
+      "kind": "primary"
+    },
+    {
+      "claim": "The name was later changed because SEQUEL was a trademark registered by the Hawker Siddeley aircraft company. Boyce died of a brain aneurysm in 1974, shortly after the work, and Chamberlin continued the development.",
+      "title": "SQL: the renaming from SEQUEL owing to the Hawker Siddeley trademark, and the deaths and continuations around the 1974 work",
+      "url": "https://en.wikipedia.org/wiki/SQL",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The earlier link this trade is compared with is Fortran, shipped to users in April 1957, where a compiler began choosing machine instructions on the programmer’s behalf and the executed program stopped being the written one.",
+      "title": "Backus, J., The History of Fortran I, II and III, in History of Programming Languages, ACM/Academic Press, 1978",
+      "url": "https://cse.sc.edu/~mgv/csce330f12/Backus78.pdf",
+      "kind": "primary"
+    }
+  ],
+  "C.23": [
+    {
+      "claim": "The work began in 2004, when NVIDIA hired Ian Buck and paired him with John Nickolls, then director of architecture for GPU computing, to develop a research language called Brook into a product.",
+      "title": "CUDA: the 2004 origin with Ian Buck and John Nickolls, the February 2007 initial release, and the July 2007 1.0 toolkit",
+      "url": "https://en.wikipedia.org/wiki/CUDA",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The initial public release was in February 2007, and version 1.0 of the toolkit, including the compiler, followed in mid-2007 with availability for the GeForce 8 Series, the Quadro FX 5600 and 4600, and Tesla. The version 1.0 programming guide is dated 23 June 2007.",
+      "title": "CUDA: the 2004 origin with Ian Buck and John Nickolls, the February 2007 initial release, and the July 2007 1.0 toolkit",
+      "url": "https://en.wikipedia.org/wiki/CUDA",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The programming guide presents a model in which the programmer writes functions executed by many threads in parallel, organised into blocks and grids, and in which the distinct memory spaces available to those threads — per-thread, per-block shared, and device-wide — are part of the programming model rather than hidden by it.",
+      "title": "NVIDIA CUDA Compute Unified Device Architecture Programming Guide, Version 1.0, 23 June 2007",
+      "url": "https://developer.download.nvidia.com/compute/cuda/1.0/NVIDIA_CUDA_Programming_Guide_1.0.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "Before this, using the hardware for general computation required expressing the problem in terms of the graphics pipeline — as textures, shaders and rendering passes — whether or not the problem had anything to do with graphics.",
+      "title": "CUDA: the 2004 origin with Ian Buck and John Nickolls, the February 2007 initial release, and the July 2007 1.0 toolkit",
+      "url": "https://en.wikipedia.org/wiki/CUDA",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The coupling deliberately re-accepted here — code written against one manufacturer’s machine — is the one the COBOL committees were set up to remove at a Pentagon meeting in May 1959, by making a written specification rather than any vendor’s product the authority.",
+      "title": "Sammet, J. E., The Early History of COBOL, in History of Programming Languages, ACM SIGPLAN Notices, 1978",
+      "url": "https://dl.acm.org/doi/10.1145/960118.808378",
+      "kind": "primary"
+    }
+  ],
+  "C.24": [
+    {
+      "claim": "The first publicly available description of the markup language was a document called HTML Tags, first mentioned on the internet by Berners-Lee in late 1991. Apart from the hyperlink, its elements were strongly influenced by an in-house documentation format at CERN. Thirteen of those elements still existed in the fourth version of the language.",
+      "title": "Raggett, D., A history of HTML, in Raggett on HTML 4, published by the World Wide Web Consortium",
+      "url": "https://www.w3.org/People/Raggett/book4/ch02.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "The proposal titled Cascading HTML style sheets is dated 10 October 1994, version 0.92, by Wium Lie, and describes itself as work in progress. It proposes a mapping between elements and presentation hints, with logic to make presentation decisions based on the user’s environment, such as screen size.",
+      "title": "Lie, H. W., Cascading HTML style sheets — a proposal, version 0.92, 10 October 1994",
+      "url": "https://w3.org/People/howcome/p/cascade.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "The proposal’s defining property is in its name: sheets are designed to cascade, so that the user or browser specifies initial preferences and hands the remaining influence to the sheets referenced in the incoming document. Presentation is therefore negotiated between author and reader rather than dictated by either.",
+      "title": "Lie, H. W., Cascading HTML style sheets — a proposal, version 0.92, 10 October 1994",
+      "url": "https://w3.org/People/howcome/p/cascade.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "Level 1 became a W3C Recommendation on 17 December 1996, authored by Wium Lie and Bert Bos. The work began in October 1994 while Lie was at CERN and continued from July 1995 at INRIA, the European host of the consortium, where Bos joined the project.",
+      "title": "The World Wide Web Consortium Issues Cascading Style Sheets Recommendation, W3C press release, 17 December 1996",
+      "url": "https://www.w3.org/press-releases/1996/css1-rec/",
+      "kind": "primary"
+    },
+    {
+      "claim": "The consortium’s account records that by 1994 the markup language had established itself as a universal document format, but that it was clear the language even with extensions would not meet authors’ demands for presentational capability.",
+      "title": "The World Wide Web Consortium Issues Cascading Style Sheets Recommendation, W3C press release, 17 December 1996",
+      "url": "https://www.w3.org/press-releases/1996/css1-rec/",
+      "kind": "primary"
+    }
+  ],
+  "C.25": [
+    {
+      "claim": "The first Unix shell was written by Ken Thompson and introduced with the first version of Unix in 1971. It was a command interpreter rather than a scripting language, and it was distributed with versions one through six, from 1971 to 1975.",
+      "title": "Thompson shell: the first Unix shell, its 1971 introduction, and its redirection syntax against Multics",
+      "url": "https://en.wikipedia.org/wiki/Thompson_shell",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Its redirection syntax was notably compact by comparison with Multics, where redirecting input or output required separate commands to start and stop the redirection; here one appended a symbol and a filename to the command line.",
+      "title": "Thompson shell: the first Unix shell, its 1971 introduction, and its redirection syntax against Multics",
+      "url": "https://en.wikipedia.org/wiki/Thompson_shell",
+      "kind": "secondary"
+    },
+    {
+      "claim": "In a typewritten memo of 1964 Douglas McIlroy wrote about coupling programs like garden hose, so that a programmer could screw in another segment when data needed massaging another way. He raised the idea repeatedly over about nine years before Thompson implemented it, and credits Thompson with the vertical bar notation. McIlroy described the aftermath as an unforgettable orgy of one-liners.",
+      "title": "The Origin of Unix Pipes, collecting McIlroy’s own accounts of the 1964 memo and the 1973 implementation",
+      "url": "http://doc.cat-v.org/unix/pipes/",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Accounts of when the implementation happened conflict. Some place Thompson’s overnight work in the autumn of 1973, but a notice circulated on 15 January 1973 already described the pipe system call, and pipes appear in the Version 3 manual of February 1973. The January dating is the better documented.",
+      "title": "Pipes, Unix Heritage Society wiki — the dating evidence, including the notice of 15 January 1973 and the Version 3 manual",
+      "url": "https://wiki.tuhs.org/doku.php?id=features%3Apipes",
+      "kind": "primary"
+    },
+    {
+      "claim": "The Bourne shell, written by Stephen Bourne at Bell Laboratories, was released in 1979 as the default shell of the seventh edition, replacing the earlier shell of the same name. Unlike its predecessor it was intended as a scripting language as well as an interactive interpreter.",
+      "title": "Bourne shell: its authorship, its 1979 release with the seventh edition, and its scripting intent",
+      "url": "https://en.wikipedia.org/wiki/Bourne_shell",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Bash was written by Brian Fox for the GNU Project with support from the Free Software Foundation, as a free replacement for the Bourne shell. Coding began on 10 January 1988 and it was released as a beta, version 0.99, on 8 June 1989.",
+      "title": "Bash (Unix shell): authorship by Brian Fox for the GNU Project, and the beta release of 8 June 1989",
+      "url": "https://en.wikipedia.org/wiki/Bash_(Unix_shell)",
+      "kind": "secondary"
+    }
+  ],
+  "C.26": [
+    {
+      "claim": "Kleene introduced the notion of regular events in Representation of Events in Nerve Nets and Finite Automata, a RAND research memorandum of 1951, published in 1956 in Automata Studies, Annals of Mathematics Studies 34, pages 3 to 41, Princeton University Press. He offered the term as an alternative to an existing one and said he would welcome a more descriptive suggestion.",
+      "title": "Kleene, S. C., Representation of Events in Nerve Nets and Finite Automata, RAND Research Memorandum RM-704, 1951; published in Automata Studies, Annals of Mathematics Studies 34, pp. 3-41, Princeton University Press, 1956",
+      "url": "https://www.rand.org/pubs/research_memoranda/RM704.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "Thompson published Regular expression search algorithm in Communications of the ACM volume 11 number 6, June 1968, pages 419 to 422, in the journal’s programming techniques department. The construction simulates a nondeterministic finite automaton in lockstep.",
+      "title": "Thompson, K., Regular expression search algorithm, Communications of the ACM 11(6):419-422, June 1968",
+      "url": "https://dl.acm.org/doi/10.1145/363347.363387",
+      "kind": "primary"
+    },
+    {
+      "claim": "Cox demonstrates the difference with the pattern formed of n optional letters followed by n required ones, matched against a string of n letters. A backtracking implementation tries one-then-zero for each optional element, giving two-to-the-n possibilities of which only the last leads to a match, so it requires exponential time and does not scale much beyond n of about 25.",
+      "title": "Cox, R., Regular Expression Matching Can Be Simple And Fast (but is slow in Java, Perl, PHP, Python, Ruby, ...), January 2007",
+      "url": "https://swtch.com/~rsc/regexp/regexp1.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "Thompson’s algorithm instead maintains state lists of length approximately n over a string of length n, giving quadratic total time. The efficiency comes from tracking the set of reachable states without tracking which paths reached them: an automaton of n nodes has at most n reachable states at each step, although there may be two-to-the-n paths.",
+      "title": "Cox, R., Regular Expression Matching Can Be Simple And Fast (but is slow in Java, Perl, PHP, Python, Ruby, ...), January 2007",
+      "url": "https://swtch.com/~rsc/regexp/regexp1.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "Cox observes that a slow implementation of a linear-time algorithm easily outperforms a fast implementation of an exponential-time one once the exponent is large enough.",
+      "title": "Cox, R., Regular Expression Matching Can Be Simple And Fast (but is slow in Java, Perl, PHP, Python, Ruby, ...), January 2007",
+      "url": "https://swtch.com/~rsc/regexp/regexp1.html",
       "kind": "primary"
     }
   ],

@@ -1,0 +1,50 @@
+{
+  "id": "C.20",
+  "name": "Rust",
+  "status": "traced",
+  "seed": "C.20",
+  "constraint": "Memory safety had to come without a collector. The announcement states that it achieves its goals \u201cwithout requiring a garbage collector or runtime\u201d, which is what allows its libraries to serve as a drop-in substitute for C \u2014 so every guarantee has to be proved before the program runs, because there is nothing underneath it at run time to check anything.",
+  "inherited": {
+    "from": "C.18",
+    "wall": "A collector removes a class of bug and adds a pause you did not schedule, which rules the language out of a kernel, a browser engine, or anything with a deadline it must meet."
+  },
+  "opening": "Two things people usually want from a language are in tension, and this is the design that refuses to choose. The announcement describes it as combining low-level control over performance with high-level convenience and safety guarantees, and attributes the distinctiveness to its type system \u2014 described as a refinement and codification of best practices drawn from experience with C and C++. That phrase is the most useful summary available: the rules are not new discoveries, they are the disciplines careful programmers in those languages already followed, moved out of their heads and into something that checks.",
+  "decisions": [
+    {
+      "decision": "Every value has exactly one owner, and the owner decides when it is released",
+      "because": "If release happens when an owner goes out of scope, the compiler already knows where every release goes. No collector is needed, and no manual pairing can be forgotten, because there is nothing to pair.",
+      "syntax": [
+        {
+          "code": "let s = String::from(\"x\");\nlet t = s;  // s is no longer usable",
+          "means": "assignment moved ownership rather than copying",
+          "consequence": "The rule that a value has one owner makes double release impossible to express, and turns use-after-release into a compile error rather than a crash later in an unrelated part of the program. What it costs is that assignment no longer means what it means everywhere else, which is the single largest thing a newcomer has to unlearn."
+        }
+      ]
+    },
+    {
+      "decision": "You may have many readers or one writer, never both",
+      "because": "Nearly every memory error and nearly every data race is the same shape: something is being read while something else changes it. Forbidding that one combination removes both classes at once, and it can be checked statically.",
+      "syntax": [
+        {
+          "code": "let a = &v;      // shared, many allowed\nlet b = &mut v;  // exclusive, rejected while a lives",
+          "means": "borrow the value without taking ownership, under a rule",
+          "consequence": "The same rule that makes a dangling reference impossible also makes a data race impossible, which is why concurrency in this language is safe without a runtime doing anything. One constraint, two guarantees \u2014 and the reason the compiler rejects programs that would have worked: it is proving a property, and a proof has to refuse the cases it cannot verify."
+        }
+      ]
+    },
+    {
+      "decision": "Failure is a value in the type, so ignoring it is not silent",
+      "because": "A guarantee enforced before the program runs is only as good as its coverage, and the most common escape from a static guarantee is a result nobody looked at.",
+      "syntax": [
+        {
+          "code": "let data = fs::read(path)?;",
+          "means": "unwrap the success, or return the failure to the caller",
+          "consequence": "The type of the call includes the possibility of failure, so handling it is a step the compiler can require rather than a habit a reviewer has to check. The notation is short on purpose: a guarantee that is tedious to satisfy gets bypassed, so the language spends syntax on making the safe path the brief one."
+        }
+      ]
+    }
+  ],
+  "wall": "The bill for a proof is that you have to write a provable program. Ownership and borrowing must be expressed in the code even when they are obvious to you, the compiler refuses working programs it cannot verify, and the learning curve is steep in a specific way \u2014 it is not new concepts so much as being asked to state, precisely, things you previously kept in your head. Version 1.0 was announced on 15 May 2015 by the Rust Core Team, sponsored by Mozilla, and marked a stability commitment: the preceding churn ended, breaking changes largely out of scope, and a six-week release train. The announcement's own framing of the benefit is worth keeping: newcomers can write low-level code without minor mistakes leading to mysterious crashes, and experienced developers save the time they were spending on the discipline by hand.",
+  "leadsTo": "C.21",
+  "leadsToReason": "Most programs are not kernels. They are applications on a platform someone else controls, where the language you may use is decided by the platform vendor and the problem is the decades of code already written in the last one."
+}

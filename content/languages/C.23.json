@@ -1,0 +1,48 @@
+{
+  "id": "C.23",
+  "name": "CUDA",
+  "status": "traced",
+  "seed": "C.23",
+  "constraint": "The hardware is thousands of small units doing the same arithmetic on different data, with several distinct memories of very different speeds \u2014 and the notation had to expose that shape rather than hide it, because the shape is the entire reason to use the machine.",
+  "inherited": {
+    "from": "C.22",
+    "wall": "A notation that hides how the work is done is exactly the wrong tool when the machine's shape is the point, and before this, using the hardware for general computation required expressing the problem in terms of the graphics pipeline \u2014 as textures, shaders and rendering passes \u2014 whether or not the problem had anything to do with graphics."
+  },
+  "opening": "Every other entry in this chain moves the programmer further from the machine. This one deliberately moves back, and it is worth being clear about why that is not a regression: the hardware's parallelism and its memory hierarchy are not implementation details that a compiler could choose better, they are the difference between a program that runs in a minute and one that runs in a day. The work began in 2004, when Ian Buck was hired and paired with John Nickolls, then director of architecture for computing on these devices, to develop a research language called Brook into a product.",
+  "decisions": [
+    {
+      "decision": "You write the body for one unit of work, and say how many to run",
+      "because": "The machine's model is the same instruction across many units on different data. A loop would describe a sequence, which is the opposite of what the hardware does, so the notation describes one element's work and the launch describes the extent.",
+      "syntax": [
+        {
+          "code": "__global__ void add(float* a, float* b) { int i = threadIdx.x; a[i] += b[i]; }",
+          "means": "what one unit does, identified by its own index",
+          "consequence": "There is no loop, and the index comes from asking where you are. The programming guide presents a model in which the programmer writes functions executed by many threads in parallel, organised into blocks and grids. The mental shift is the whole difficulty of the model: you stop describing a sequence and start describing a single point in a space of work."
+        }
+      ]
+    },
+    {
+      "decision": "The memory hierarchy is in the source, not behind it",
+      "because": "The speed difference between the memories is large enough that placing data correctly is most of the performance. A compiler cannot make that choice without knowing the algorithm's access pattern, so the notation asks the programmer.",
+      "syntax": [
+        {
+          "code": "__shared__ float tile[32][32];",
+          "means": "this array lives in the fast memory shared by one block",
+          "consequence": "The distinct memory spaces available to those threads \u2014 per-thread, per-block shared, and device-wide \u2014 are part of the programming model rather than a detail of the implementation. Writing a fast program means moving data into the near memory once and reusing it, which is the same decomposition a cache-aware algorithm uses, except here it is explicit and mandatory rather than hoped for."
+        }
+      ]
+    },
+    {
+      "decision": "Extend an existing language rather than invent one",
+      "because": "The audience already wrote in the systems language, and the only thing that needed to be new was the small set of concepts the hardware actually introduces.",
+      "syntax": [
+        {
+          "code": "add<<<blocks, threads>>>(a, b);",
+          "means": "launch the function across this much work",
+          "consequence": "A handful of markers and one new call syntax carry the entire model, so the learning cost is the model rather than a language. The initial public release was in February 2007, with version 1.0 of the toolkit, including the compiler, following in mid-2007 and a programming guide dated 23 June 2007."
+        }
+      ]
+    }
+  ],
+  "wall": "The cost is written into the first line of every file: the code is for one manufacturer's machines. That coupling is precisely the one an industry spent the previous fifty years removing \u2014 the committees that produced the first vendor-independent business language were set up at a Pentagon meeting in May 1959 to make a written specification rather than any vendor's product the authority \u2014 and here it is accepted again, knowingly, because the performance is worth it. The other cost is that debugging is genuinely hard: a failure that depends on which units happened to run together is not reproducible in the way a sequential bug is."
+}

@@ -1,0 +1,48 @@
+{
+  "id": "C.26",
+  "name": "Regular expressions",
+  "status": "traced",
+  "seed": "C.26",
+  "constraint": "It is a notation for a class of machine rather than a language for a person: what can be expressed is exactly what a finite automaton can recognise, and everything about its power and its limits follows from that equivalence.",
+  "inherited": {
+    "from": "C.25",
+    "wall": "Text is the universal interface, and taking anything out of it meant writing a character-by-character state machine by hand for every new shape of input."
+  },
+  "opening": "This one is a notation with a theorem underneath it, and the theorem is why it is both so useful and so frequently misused. Kleene introduced the notion of regular events in a research memorandum of 1951, published in 1956; Thompson published a search algorithm in Communications of the ACM in June 1968 whose construction simulates a nondeterministic finite automaton in lockstep. The practical properties people argue about \u2014 speed, catastrophic slowness, what it cannot parse \u2014 are all consequences of which machine the notation describes.",
+  "decisions": [
+    {
+      "decision": "The notation describes a set of strings, not a procedure for recognising them",
+      "because": "A description can be compiled into different machines, checked for equivalence, and reasoned about. A hand-written procedure can only be run and debugged.",
+      "syntax": [
+        {
+          "code": "^[a-z]+[0-9]*$",
+          "means": "letters, then optional digits, and nothing else",
+          "consequence": "One line replaces a loop with a state variable, and it is far easier to get right because there is no state to get wrong. The compression is what made it escape the theory papers and end up in every editor and every language's standard library."
+        }
+      ]
+    },
+    {
+      "decision": "Implement it by tracking the set of states you could be in",
+      "because": "If several paths through the pattern are possible, you can either try them one after another and reconsider when one fails, or advance all of them at once. The second costs more per character and removes the need to reconsider at all.",
+      "syntax": [
+        {
+          "code": "(a|aa)*b   matched by advancing every possibility together",
+          "means": "one pass, carrying a set of positions",
+          "consequence": "Thompson's algorithm maintains state lists of length approximately n over a string of length n, giving quadratic total time \u2014 the efficiency coming from tracking the set of reachable states without tracking which paths reached them, since an automaton of n nodes has at most n reachable states at each step. The cost is that you cannot report which path matched, which is exactly what a capturing group asks for."
+        }
+      ]
+    },
+    {
+      "decision": "Most implementations chose the other way, and pay for it",
+      "because": "Capturing groups and backreferences are what users want, and they require knowing which path was taken \u2014 so the common implementations try one path at a time and go back when it fails.",
+      "syntax": [
+        {
+          "code": "a?a?a?aaa   against   aaa",
+          "means": "a pattern whose optional parts can be satisfied many ways",
+          "consequence": "Cox demonstrates the difference with the pattern formed of n optional letters followed by n required ones, matched against a string of n letters: a backtracking implementation tries one-then-zero for each optional element, giving two-to-the-n possibilities of which only the last leads to a match. That is the catastrophic case people meet in production, and it is not a bug in an implementation, it is the algorithm doing what it was asked."
+        }
+      ]
+    }
+  ],
+  "wall": "The notation's limit is not a matter of effort: what it can recognise is what a finite automaton can recognise, so nested structure \u2014 brackets inside brackets, tags inside tags \u2014 is outside it by construction, and every attempt to parse such a thing with it is a slow rediscovery of the theorem. The other cost is denseness: a pattern is unreadable at a length where a program is still fine, because there are no names in it. And the performance lesson generalises well beyond text, in the form Cox gives it: a slow implementation of a linear-time algorithm easily outperforms a fast implementation of an exponential-time one once the exponent is large enough."
+}

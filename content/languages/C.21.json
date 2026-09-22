@@ -1,0 +1,50 @@
+{
+  "id": "C.21",
+  "name": "Kotlin and Swift",
+  "status": "traced",
+  "seed": "C.21",
+  "constraint": "Both had to replace an entrenched language on a platform they could not break: millions of existing applications, a vendor's own frameworks written in the old language, and no possibility of asking anyone to start again.",
+  "inherited": {
+    "from": "C.20",
+    "wall": "Proving memory safety at compile time is the right trade for a kernel and an expensive one for an application whose actual risk is a null reference in a screen nobody tested."
+  },
+  "opening": "These two arrived from different companies for different platforms within three years of each other, and made nearly the same decisions \u2014 which is the useful thing about putting them on one page. Kotlin was unveiled in July 2011 and open-sourced in February 2012; Swift was created by Chris Lattner, beginning in 2010 while he was director of the developer tools department at Apple, first announced in June 2014. When two independent teams solve the same constraint the same way, the constraint is doing the designing.",
+  "decisions": [
+    {
+      "decision": "Absence is part of the type, and the compiler insists you handle it",
+      "because": "The dominant crash in application code is a reference that was allowed to be nothing and was not checked. It is not an exotic failure, it is the most common one, and it is entirely preventable by moving the fact into the type.",
+      "syntax": [
+        {
+          "code": "var name: String?      // may be absent\nname?.length           // do nothing if it is",
+          "means": "the possibility of absence is written down and must be dealt with",
+          "consequence": "A type that cannot be absent removes the check, and a type that can be forces it, so the most frequent crash in application development becomes a compile error. Both languages chose this and both spell it with a question mark \u2014 independent arrivals at the same answer, because the same failure dominated both platforms."
+        }
+      ]
+    },
+    {
+      "decision": "Interoperate completely with the old language, in both directions",
+      "because": "The platform's own frameworks are written in the old language and cannot be rewritten, and no team will adopt a language that cuts them off from the code they already have.",
+      "syntax": [
+        {
+          "code": "(old classes callable directly; new classes visible to old code)",
+          "means": "one project, two languages, no bridge to write",
+          "consequence": "Adoption becomes a file-level decision rather than a project-level one, which is the only way a platform language ever changes hands. It is the same strategy as adding types to a language that could not be replaced, arriving at the same conclusion from a different direction: migration has to be incremental or it does not happen."
+        }
+      ]
+    },
+    {
+      "decision": "Take the vendor's blessing, because on a platform that is the feature",
+      "because": "A language for an application platform lives or dies by whether the platform's owner supports it in the tools, the documentation and the hiring market. Technical merit is necessary and nowhere near sufficient.",
+      "syntax": [
+        {
+          "code": "(the default template in the official tool)",
+          "means": "what a new project starts as",
+          "consequence": "Swift shipped in the toolchain from Xcode version 6 in September 2014, and the conference application became the first publicly released application written in it that June. Google announced first-class support for Kotlin on Android in 2017 and, on 7 May 2019, that it was its preferred language for Android developers. The version 1.0 release in February 2016, with its commitment to long-term backwards compatibility, is what made that blessing possible \u2014 a vendor cannot standardise on a language that is still changing underneath it."
+        }
+      ]
+    }
+  ],
+  "wall": "A language whose adoption depends on a platform owner is a language whose future is a business decision, and neither of these is meaningfully portable off the platform it was built for. Both also carry the old language's model underneath: the frameworks, the idioms and the lifecycle are inherited, so the new syntax sits on semantics designed for something else. The name records how little of this is about the language itself \u2014 one is named after Kotlin Island, off Saint Petersburg, and neither name tells you anything about the design, because the design was set by the platform.",
+  "leadsTo": "C.22",
+  "leadsToReason": "Every application so far has been written in the imperative voice \u2014 do this, then this. The data most applications exist to move has a notation of its own, and it works the other way round."
+}

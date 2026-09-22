@@ -1,0 +1,53 @@
+{
+  "id": "C.24",
+  "name": "HTML and CSS",
+  "status": "traced",
+  "seed": "C.24",
+  "constraint": "A document has to be readable by a person whose screen, fonts, window size and preferences are unknown to its author and cannot be discovered \u2014 so presentation has to be negotiated at the far end rather than decided at this one.",
+  "inherited": {
+    "from": "C.22",
+    "wall": "A notation for querying records says nothing about how a document is structured, and the alternative on offer was a proprietary binary format that only one vendor's program could open."
+  },
+  "opening": "These two are usually taught as a pair of syntaxes and are better understood as a single argument about who decides what a page looks like. The first publicly available description of the markup was a document called HTML Tags, first mentioned on the internet by Berners-Lee in late 1991; apart from the hyperlink, its elements were strongly influenced by an in-house documentation format at CERN, and thirteen of those elements still exist. The style proposal came three years later, and its title states the design: Cascading HTML style sheets.",
+  "decisions": [
+    {
+      "decision": "Mark what a thing is, not what it should look like",
+      "because": "The author does not know the reader's screen, window, font size or ability to see it. A description of meaning can be rendered sensibly by any device; a description of appearance can only be rendered by the device it was written for.",
+      "syntax": [
+        {
+          "code": "<h1>Title</h1>\n<p>Some text.</p>",
+          "means": "a heading and a paragraph, with no appearance given",
+          "consequence": "The same document can be a page, a printout, a phone screen or speech, because none of those decisions are in it. This is why the markup survived and the binary document formats it competed with did not: a format that describes meaning can be rendered by devices that did not exist when it was written."
+        }
+      ]
+    },
+    {
+      "decision": "Presentation cascades, rather than being fixed",
+      "because": "The proposal's defining property is in its name: sheets are designed to cascade, so that the user or browser specifies initial preferences and hands the remaining influence to the sheets referenced in the incoming document.",
+      "syntax": [
+        {
+          "code": "h1 { font-size: 2em; color: navy; }",
+          "means": "a preference about headings, not a command",
+          "consequence": "Presentation is negotiated between author and reader rather than dictated by the author, which is why a reader can enlarge the text, override the colours, or read the page with something that has no colours at all. Every complaint about the difficulty of controlling a layout precisely is this decision working as designed."
+        },
+        {
+          "code": "@media (max-width: 600px) { ... }",
+          "means": "a different preference when the environment differs",
+          "consequence": "The original proposal already described logic to make presentation decisions based on the user's environment, such as screen size. The idea that a document adapts to its reader is not a later addition responding to phones; it is in the founding document, seventeen years before it became fashionable."
+        }
+      ]
+    },
+    {
+      "decision": "Separate the two languages, and let them evolve apart",
+      "because": "By 1994 the markup had established itself as a universal document format, but it was clear that even with extensions it would not meet authors' demands for presentational capability \u2014 and meeting them inside the markup would have destroyed the property that made it universal.",
+      "syntax": [
+        {
+          "code": "<link rel=\"stylesheet\" href=\"site.css\">",
+          "means": "the appearance lives somewhere else entirely",
+          "consequence": "Level 1 became a recommendation on 17 December 1996, authored by Wium Lie and Bert Bos, the work having begun in October 1994 at CERN and continued from July 1995 at INRIA where Bos joined. Keeping presentation out of the document is what let the visual layer be rewritten repeatedly without invalidating a single page ever written."
+        }
+      ]
+    }
+  ],
+  "wall": "Negotiated presentation means the author cannot be certain what the reader sees, and two decades of effort went into pretending otherwise \u2014 pixel-exact layouts, browser-specific hacks, and a permanent argument between designers who want a page to look like a printed one and a medium that was designed not to. The declarative layout model has genuine edge cases nobody enjoys, and the whole system is judged against a standard it was never trying to meet: it is not a page description language, it is a request."
+}

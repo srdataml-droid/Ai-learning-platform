@@ -1,0 +1,53 @@
+{
+  "id": "C.25",
+  "name": "Bash and the shell",
+  "status": "traced",
+  "seed": "C.25",
+  "constraint": "It is an interactive command interpreter first and a language second, so every design decision is a trade against typing speed at a terminal \u2014 and it has to join programs that were written separately, by people who never spoke, with no agreed data format between them.",
+  "inherited": {
+    "from": "C.24",
+    "wall": "Marking up a document says nothing about running the programs that produce it, and passing data between two programs otherwise meant editing and recompiling at least one of them."
+  },
+  "opening": "The first shell was written by Ken Thompson and introduced with the first version of Unix in 1971, as a command interpreter rather than a scripting language. The idea that gives it its power came earlier and from someone else: in a typewritten memo of 1964 Douglas McIlroy wrote about coupling programs like garden hose, so that a programmer could screw in another segment when data needed massaging another way. He raised it repeatedly over about nine years before Thompson implemented it. Read the language as a notation for that memo.",
+  "decisions": [
+    {
+      "decision": "The output of one program is the input of the next, and the connector is one character",
+      "because": "If joining two programs is harder than writing a new one, people write a new one. The economics of reuse are decided entirely by how much effort the connection costs.",
+      "syntax": [
+        {
+          "code": "grep error log | cut -d' ' -f3 | sort | uniq -c",
+          "means": "four programs, joined into one job",
+          "consequence": "Each program knows nothing about the others and the shell knows nothing about what they do. That is what makes a program written twenty years ago useful today in a pipeline nobody imagined \u2014 the interface is a stream of bytes, which is the weakest possible contract and therefore the most widely satisfiable one."
+        },
+        {
+          "code": "sort results > top.txt",
+          "means": "send the output to a file instead",
+          "consequence": "The redirection syntax was notably compact by comparison with Multics, where redirecting input or output required separate commands to start and stop the redirection; here one appended a symbol and a filename to the command line. Terseness is the feature, because this is typed by hand hundreds of times a day."
+        }
+      ]
+    },
+    {
+      "decision": "Everything is text, because text is what every program already produces",
+      "because": "Any richer format would require every program to agree on it, and the programs already existed and had not agreed on anything.",
+      "syntax": [
+        {
+          "code": "for f in *.log; do process \"$f\"; done",
+          "means": "loop over names, quoting because names contain spaces",
+          "consequence": "The universal format has no types, so a filename with a space in it is two words unless you say otherwise, and a number is a string until something decides it is not. The quoting rules that everybody finds arcane are the price of an interface so weak that everything can speak it."
+        }
+      ]
+    },
+    {
+      "decision": "Make it a scripting language too, once the commands were worth keeping",
+      "because": "A sequence typed twice should be a file, and a file that runs commands wants variables, conditions and loops \u2014 but they have to be added without disturbing the interactive use that comes first.",
+      "syntax": [
+        {
+          "code": "if [ -f \"$path\" ]; then ...; fi",
+          "means": "a test that is a program call, not a keyword",
+          "consequence": "The test is a command and the brackets are its name, which is why the spaces matter and why the syntax looks unlike every other language. The Bourne shell, written by Stephen Bourne, was released in 1979 as the default shell of the seventh edition and, unlike its predecessor, was intended as a scripting language as well as an interactive interpreter; Bash was later written by Brian Fox for the GNU Project with support from the Free Software Foundation as a free replacement for it, coding beginning on 10 January 1988 and the beta released on 8 June 1989."
+        }
+      ]
+    }
+  ],
+  "wall": "Everything being text means nothing is checked, and a script that works is one whose failures have not happened yet: a missing quote splits a filename, a failing command in the middle of a pipeline is invisible unless you ask, and an unset variable expands to nothing rather than to an error. It is the best glue ever made and a poor material to build in, and the line between the two is crossed silently, usually around the point where somebody adds a second condition. Even its own history resists precision \u2014 accounts of when the pipe was implemented conflict, with some placing the overnight work in the autumn of 1973, though a notice circulated on 15 January 1973 already described the pipe system call and it appears in the Version 3 manual of February 1973."
+}

@@ -223,6 +223,13 @@ consequence of.
 
 - The order of `decisions[]` **is** the reading order. A reader meets constructs in
   the order the language's problem forces, not alphabetically.
+- **Gated, as of 2026-09-22.** The shape above is missing two fields the
+  implementation requires: `status` and `seed`. A storyline is prose making the
+  same kind of claim a lesson makes — a machine, a year, a person, a standard —
+  so it goes through the same gate over its own fields, with `code` excluded from
+  the checked prose exactly as `worked.code` is. All 26 are `traced` against the
+  seed their lesson already uses, which is why the research was done once rather
+  than twice.
 - The existing 432 rows migrate into `decisions[].syntax[]`. This is per-language
   judgment work, done one language at a time, and is the bulk of this workstream.
 - `words.html` survives unchanged in purpose — a flat searchable lookup is genuinely

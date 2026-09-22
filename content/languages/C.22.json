@@ -1,0 +1,50 @@
+{
+  "id": "C.22",
+  "name": "SQL",
+  "status": "traced",
+  "seed": "C.22",
+  "constraint": "It was intended as a database sublanguage for both the professional programmer and the more infrequent database user, which means a notation that a non-programmer can write and a machine can optimise \u2014 so it had to say what was wanted without saying how to get it.",
+  "inherited": {
+    "from": "C.21",
+    "wall": "Every language so far describes a sequence of steps, which means the person writing it must know how the data is stored in order to get at it efficiently."
+  },
+  "opening": "This is the one language in the chain that is not in the chain: a parallel notation, still in daily use in almost exactly its original form, and the clearest example anywhere of the trade between saying what you want and saying how to do it. The relational model it implements was set out by Codd in 1970; Chamberlin and Boyce of the research laboratory in San Jose presented the language at a workshop in Ann Arbor in 1974, refining an earlier language the same authors had worked on called SQUARE, and built for a prototype intended to demonstrate the practicality of relational technology.",
+  "decisions": [
+    {
+      "decision": "Describe the result, not the route to it",
+      "because": "The user is often not a programmer, and the route depends on facts about storage that change \u2014 an index added, a table grown \u2014 which the person writing the query cannot be expected to track.",
+      "syntax": [
+        {
+          "code": "SELECT name FROM customers WHERE balance > 100;",
+          "means": "the rows I want, described by a property",
+          "consequence": "Nothing here says which order to read rows in, whether to use an index, or how to join. Those decisions belong to the system, which is free to change them as the data changes. This is the same bargain the first compiler in this chain struck \u2014 it shipped to users in April 1957, and the executed program stopped being the written one \u2014 except that here the gap between what you wrote and what runs is permanent and re-decided on every execution."
+        }
+      ]
+    },
+    {
+      "decision": "A set of simple operations on tables, rather than variables and quantifiers",
+      "because": "The paper states that without resorting to the concepts of bound variables and quantifiers, the language identifies a set of simple operations on tabular structures which are shown to be of equivalent power to the first-order predicate calculus.",
+      "syntax": [
+        {
+          "code": "SELECT c.name, SUM(o.total)\nFROM customers c JOIN orders o ON o.customer_id = c.id\nGROUP BY c.name;",
+          "means": "combine two tables and summarise the result",
+          "consequence": "The operations compose \u2014 the result of one is a table, which is the input to another \u2014 so a complicated question is built from simple parts without a single loop or variable. The power of the calculus, without the notation that kept it in the hands of people who had studied it: that equivalence is the entire justification for the design."
+        }
+      ]
+    },
+    {
+      "decision": "Keyword templates in English",
+      "because": "Users are presented with a consistent set of keyword English templates, which is what makes the language writable by the infrequent user the paper names as half its audience.",
+      "syntax": [
+        {
+          "code": "SELECT ... FROM ... WHERE ... GROUP BY ... ORDER BY ...",
+          "means": "fixed slots, filled in",
+          "consequence": "A query is a template with the parts filled in rather than a program composed freely, so a beginner can produce a correct one by pattern rather than by understanding. That accessibility is why the notation escaped its database and became the way an entire industry talks about data \u2014 and why a great many people who use it every day have never learned what the system does with it."
+        }
+      ]
+    }
+  ],
+  "wall": "Saying what rather than how is a wonderful bargain until the system chooses badly, and then you are debugging a decision you did not make, in a plan you did not write, with no way to state your intent directly \u2014 so tuning becomes the art of persuading an optimiser by rearranging a description. The declarative surface also hides an enormous amount: the same query can be instant or ruinous depending on facts nowhere in its text. The name is a small monument to how little of this was planned: it was changed because the original was a trademark registered by an aircraft company, and Boyce died of a brain aneurysm in 1974, shortly after the work, with Chamberlin continuing the development.",
+  "leadsTo": "C.23",
+  "leadsToReason": "A notation that hides how the work is done is exactly wrong when the machine's shape is the whole point, and the shape in question is thousands of small units doing the same arithmetic at once."
+}
