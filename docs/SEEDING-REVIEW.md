@@ -4,12 +4,12 @@ Written 2026-09-21. Derived by running the gate's own atom extractor over
 every lesson, so the numbers are reproducible rather than estimated — see
 "How to regenerate" at the end.
 
-Updated 2026-09-22, after the habit tracks were resolved to `claimless`,
-Track A was closed, and the whole of priority band 1 was sourced. Current:
-**276 lessons, 186 traced, 53 claimless, 37 unsourced**, and **399 checkable
-atoms** still sitting in unsourced prose — down from 707 at the time of
-writing. The section below records the state *before* those changes, because
-the prioritisation was built on it and still holds for what remains.
+Updated 2026-09-22. Current: **276 lessons, 186 traced, 67 claimless, 23
+unsourced**, and **399 checkable atoms** still sitting in unsourced prose —
+down from 707 at the time of writing. The section below records the state
+*before* those changes, because the prioritisation was built on it and still
+holds for what remains. See "Where this stands" at the end for the resume
+point.
 
 ## The state, as measured before the `claimless` change
 
@@ -343,3 +343,59 @@ node -e "import('./tools/lib/gate.mjs').then(async g=>{ \
 
 This number should fall monotonically. If it rises, an unsourced lesson gained
 a factual claim, which is the one direction that should never happen.
+
+
+## Where this stands, and what is left
+
+### Done
+
+- **Tracks C, M, N, O** — fully sourced before this review.
+- **Tracks G, H, I, J** (46) — 45 `claimless`, 1 `traced` (`J.1`).
+- **Track A** (11) — 3 `traced` (`A.2`, `A.3`, `A.4`), 8 `claimless`.
+- **Priority band 1** (7) — `B.39`, `B.32`, `B.1`, `K.11`, `B.14`, `0.7`,
+  `0.12`, all `traced`. Every one contained at least one error; see the table
+  above.
+- **Eleven concept lessons converted with no edit** — `0.3`, `0.4`, `0.5`,
+  `0.8`, `0.9`, `0.10`, `0.11`, `E.6`, `E.7`, `E.22`, `E.24`.
+- **Three rewritten to `claimless`** — `F.3`, `B.2`, `L.9`. The last is worth
+  remembering: it presented *the Honest Refusal Rate* in title case as an
+  established industry metric and called it the most important metric in
+  production retrieval systems. The name appears to have been invented by the
+  lesson. That is worse than an unsourced figure, because a reader cannot tell
+  there is anything to check.
+
+### The 23 lessons still `unsourced`
+
+Every one of these makes real historical or empirical claims and needs a seed.
+None can be honestly converted to `claimless` — that option is now exhausted.
+
+| track | lessons | the subject, and what it will need |
+|---|---|---|
+| 0 | `0.2`, `0.6` | shell and Unix lineage; floating point and IEEE 754 |
+| B | `B.8`, `B.16`, `B.18`, `B.22`, `B.24`, `B.28` | TCP/IP; transactions and write-ahead logging (Jim Gray); Dynamo; caching systems; idempotency |
+| D | `D.1`, `D.12`, `D.13` | git's origin; AI-assisted development claims; YAGNI and Gall's law |
+| E | `E.1`, `E.4` | Dijkstra 1956 and Knuth; hashing and Luhn 1953 |
+| F | `F.1`, `F.8` | Boole 1854 and Shannon 1937; three-valued logic and `NULL` |
+| K | `K.2`, `K.6`, `K.13` | the perceptron and its winter; backpropagation 1986; attention and transformers |
+| L | `L.6`, `L.12` | retrieval and ranking; agent evaluation figures |
+| P | `P.3`, `P.5`, `P.11` | injection; password hashing; prompt injection |
+
+**Two of these already have their sources in the repo.** `B.8` needs Cerf and
+Kahn 1974, which is claim `c1` of `content/seeds/0.12.json`. `B.22` needs the
+Dynamo paper, which is claim `c5` of `content/seeds/B.32.json`. Reuse the
+source rather than duplicating it, as `A.3` does with `B.29`'s Amdahl citation.
+
+**Highest risk of the 23**, on the same reasoning as the original
+prioritisation: `L.12` (asserts `90%`, `59%`, `34%`, `60%` — four unsourced
+percentages, the densest numeric claim left in the repo), `P.5` (asserts
+hardware cracking rates, which are stale by construction like `B.39`'s
+pricing was), `P.11` (attributes prompt injection work to a named individual
+and a year), `D.12` (asserts a `10x` productivity figure). Do those four
+first.
+
+### The 37 tasks with no lesson at all
+
+`K.1`, `K.3`, `K.4`, `K.5`, `K.7`, `K.8`, `K.9`, `K.10`, `K.12`, `K.14`-`K.18`
+(14) and `L.1`-`L.5`, `L.7`, `L.8`, `L.10`, `L.11`, `L.13`-`L.26` (23). These
+are a different kind of work from the above — writing rather than correcting —
+and `tools/missing-lessons.mjs` lists them.
