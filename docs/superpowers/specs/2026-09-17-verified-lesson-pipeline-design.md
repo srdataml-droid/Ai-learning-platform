@@ -2,6 +2,12 @@
 
 Design, 2026-09-17. Supersedes nothing; this is the first spec in the repo.
 
+**Where it is (2026-09-22).** The site is static and deploys to Vercel from
+`main`: `npm run build` regenerates every bundle in `public/` from `content/`
+and then builds to `dist/`, so a deployment carries whatever the repository
+says and nothing else. Nothing in the pipeline runs at read time, which is
+the first reason listed under generation below.
+
 ## Why this exists
 
 The site presents 313 curriculum tasks as if each has a lesson. 44 are handcrafted,
