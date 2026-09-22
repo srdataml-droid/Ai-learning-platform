@@ -16,14 +16,14 @@
         "1995"
       ],
       "source": {
-        "title": "History of PHP — the project’s own account of the 1995 Personal Home Page Tools release and the rewrites that followed",
+        "title": "History of PHP \u2014 the project\u2019s own account of the 1995 Personal Home Page Tools release and the rewrites that followed",
         "url": "https://www.php.net/manual/en/history.php.php",
         "kind": "primary"
       }
     },
     {
       "id": "c2",
-      "text": "What was released was a set of small, tightly written CGI binaries in C — a utility library and templating mechanism rather than a scripting language. A complete rewrite followed in October 1995, and the second generation arrived in April 1996.",
+      "text": "What was released was a set of small, tightly written CGI binaries in C \u2014 a utility library and templating mechanism rather than a scripting language. A complete rewrite followed in October 1995, and the second generation arrived in April 1996.",
       "type": "event",
       "tokens": [
         "CGI",
@@ -31,7 +31,7 @@
         "1996"
       ],
       "source": {
-        "title": "History of PHP — the project’s own account of the 1995 Personal Home Page Tools release and the rewrites that followed",
+        "title": "History of PHP \u2014 the project\u2019s own account of the 1995 Personal Home Page Tools release and the rewrites that followed",
         "url": "https://www.php.net/manual/en/history.php.php",
         "kind": "primary"
       }
@@ -47,7 +47,7 @@
         "Hypertext"
       ],
       "source": {
-        "title": "History of PHP — the project’s own account of the 1995 Personal Home Page Tools release and the rewrites that followed",
+        "title": "History of PHP \u2014 the project\u2019s own account of the 1995 Personal Home Page Tools release and the rewrites that followed",
         "url": "https://www.php.net/manual/en/history.php.php",
         "kind": "primary"
       }
@@ -61,15 +61,29 @@
         "HTML"
       ],
       "source": {
-        "title": "History of PHP — the project’s own account of the 1995 Personal Home Page Tools release and the rewrites that followed",
+        "title": "History of PHP \u2014 the project\u2019s own account of the 1995 Personal Home Page Tools release and the rewrites that followed",
         "url": "https://www.php.net/manual/en/history.php.php",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "w1",
+      "type": "quote",
+      "tokens": [
+        "JSON",
+        "RFC"
+      ],
+      "text": "The JavaScript Object Notation data interchange format, commonly abbreviated JSON, is specified by RFC 8259, which defines it as a lightweight, text-based, language-independent syntax for interchanging structured data.",
+      "source": {
+        "title": "T. Bray, editor, The JavaScript Object Notation (JSON) Data Interchange Format, RFC 8259, December 2017",
+        "url": "https://www.rfc-editor.org/rfc/rfc8259",
         "kind": "primary"
       }
     }
   ],
   "beats": {
     "broke": "producing a page that varied by request meant writing a program that printed the page, so the document lived inside the program as strings",
-    "fix": "invert it — the document is the file, and code is escaped into it where the page has to vary",
+    "fix": "invert it \u2014 the document is the file, and code is escaped into it where the page has to vary",
     "cost": "the inversion puts logic wherever the output goes, so there is no structural boundary between what the page says and how it was decided",
     "interview": "what the inversion actually buys, and why the property that made it spread is the property that made large ones unmaintainable"
   }

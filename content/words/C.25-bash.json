@@ -4,12 +4,13 @@
   "lang": "Bash",
   "category": "Data & Storage",
   "summary": "Unix shell interpreter: connecting operating system processes, streams, exit codes, and automating system pipelines.",
-  "status": "unsourced",
+  "status": "traced",
+  "seed": "C.25",
   "rows": [
     {
       "code": "| (pipe: cmd1 | cmd2)",
       "means": "connects standard output (stdout, fd 1) of cmd1 to standard input (stdin) of cmd2",
-      "consequence": "Unix's fundamental pipeline operator. By default, error messages (stderr, fd 2) do NOT pass through the pipe."
+      "consequence": "The fundamental pipeline operator. By default, error messages (stderr, fd 2) do not pass through the pipe, which is why a failing command in the middle of a pipeline can leave you reading an empty result and no error."
     },
     {
       "code": "> file and >> file",
@@ -34,7 +35,7 @@
     {
       "code": "$? (exit code of last command)",
       "means": "status code returned by previous command (0 = success, 1-255 = error)",
-      "consequence": "In Unix, an exit status of 0 means OK; any non-zero value indicates a failure code."
+      "consequence": "An exit status of zero means success; any non-zero value is a failure code, which is the opposite of the convention in most languages and the source of a great many inverted conditions."
     },
     {
       "code": "$$ (process ID) and $! (background PID)",
@@ -87,9 +88,9 @@
       "consequence": "The s command substitutes; the g flag replaces all occurrences across the line rather than just the first."
     },
     {
-      "code": "awk '{print $1, $3}' file.txt",
+      "code": "awk '{print $1, $3}' file.txt    # $NF last column, NR line number",
       "means": "pattern-directed column processing language",
-      "consequence": "Splits lines by whitespace by default; $1 is the first column, $NF is the last column, NR is the line number."
+      "consequence": "Splits lines by whitespace by default; $1 is the first column, $NF is the last, and NR is the line number."
     },
     {
       "code": "xargs -I {} cmd {}",
@@ -99,7 +100,7 @@
     {
       "code": "trap \"cleanup_fn\" EXIT INT TERM",
       "means": "registers signals and exit handlers for automatic cleanup",
-      "consequence": "Ensures temporary directories and locks are removed when the script finishes or is aborted with Ctrl+C."
+      "consequence": "Ensures temporary directories and locks are removed when the script finishes or is interrupted at the terminal."
     },
     {
       "code": "$(command)",

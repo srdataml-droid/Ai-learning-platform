@@ -15393,6 +15393,24 @@
       "title": "Brendan Eich: the ten-day prototype of May 1995 at Netscape, the Mocha and LiveScript names, and the December 1995 renaming under the Sun licensing deal",
       "url": "https://en.wikipedia.org/wiki/Brendan_Eich",
       "kind": "secondary"
+    },
+    {
+      "claim": "The JavaScript Object Notation data interchange format, commonly abbreviated JSON, is specified by RFC 8259, which defines it as a lightweight, text-based, language-independent syntax for interchanging structured data.",
+      "title": "T. Bray, editor, The JavaScript Object Notation (JSON) Data Interchange Format, RFC 8259, December 2017",
+      "url": "https://www.rfc-editor.org/rfc/rfc8259",
+      "kind": "primary"
+    },
+    {
+      "claim": "The Document Object Model, abbreviated DOM, is defined by a living standard as the tree of objects a document is represented as, which scripts read and modify.",
+      "title": "DOM Standard, WHATWG living standard",
+      "url": "https://dom.spec.whatwg.org/",
+      "kind": "primary"
+    },
+    {
+      "claim": "Cascading Style Sheets, abbreviated CSS, is the language for describing the presentation of documents, defined across a family of specifications collected by the W3C in its periodic snapshot.",
+      "title": "CSS Snapshot, W3C",
+      "url": "https://www.w3.org/TR/CSS/",
+      "kind": "primary"
     }
   ],
   "C.14": [
@@ -15418,6 +15436,12 @@
       "claim": "The model is that a file is a document which may contain code, rather than a program which emits a document: the page is served as written except where an escape into code occurs.",
       "title": "History of PHP — the project’s own account of the 1995 Personal Home Page Tools release and the rewrites that followed",
       "url": "https://www.php.net/manual/en/history.php.php",
+      "kind": "primary"
+    },
+    {
+      "claim": "The JavaScript Object Notation data interchange format, commonly abbreviated JSON, is specified by RFC 8259, which defines it as a lightweight, text-based, language-independent syntax for interchanging structured data.",
+      "title": "T. Bray, editor, The JavaScript Object Notation (JSON) Data Interchange Format, RFC 8259, December 2017",
+      "url": "https://www.rfc-editor.org/rfc/rfc8259",
       "kind": "primary"
     }
   ],
@@ -15546,6 +15570,18 @@
       "claim": "The earlier link this argument is drawn from is the time-sharing system built at Dartmouth, demonstrated on 1 May 1964, where the barrier to using a computer was the hours-long turnaround of a single attempt rather than the difficulty of the language.",
       "title": "BASIC at Dartmouth, Dartmouth College",
       "url": "https://www.dartmouth.edu/basicfifty/basic.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "The JavaScript Object Notation data interchange format, commonly abbreviated JSON, is specified by RFC 8259, which defines it as a lightweight, text-based, language-independent syntax for interchanging structured data.",
+      "title": "T. Bray, editor, The JavaScript Object Notation (JSON) Data Interchange Format, RFC 8259, December 2017",
+      "url": "https://www.rfc-editor.org/rfc/rfc8259",
+      "kind": "primary"
+    },
+    {
+      "claim": "The Extensible Markup Language, abbreviated XML, is defined by a W3C Recommendation as a subset of SGML whose goal is that documents conforming to it should be straightforwardly usable over the internet.",
+      "title": "Extensible Markup Language (XML) 1.0 (Fifth Edition), W3C Recommendation",
+      "url": "https://www.w3.org/TR/xml/",
       "kind": "primary"
     }
   ],
@@ -15782,6 +15818,30 @@
       "claim": "The consortium’s account records that by 1994 the markup language had established itself as a universal document format, but that it was clear the language even with extensions would not meet authors’ demands for presentational capability.",
       "title": "The World Wide Web Consortium Issues Cascading Style Sheets Recommendation, W3C press release, 17 December 1996",
       "url": "https://www.w3.org/press-releases/1996/css1-rec/",
+      "kind": "primary"
+    },
+    {
+      "claim": "The markup language is now published as a living standard by the WHATWG rather than as numbered versions; the numbered name HTML5 refers to the generation of the language standardised in that era, and the living standard requires the UTF-8 encoding, treating no other as valid.",
+      "title": "HTML Standard, WHATWG living standard",
+      "url": "https://html.spec.whatwg.org/multipage/",
+      "kind": "primary"
+    },
+    {
+      "claim": "UTF-8 is defined by RFC 3629 as a transformation format of ISO 10646, encoding the Unicode character set as a sequence of bytes in a way that preserves the ASCII range unchanged.",
+      "title": "F. Yergeau, UTF-8, a transformation format of ISO 10646, RFC 3629, November 2003",
+      "url": "https://www.rfc-editor.org/rfc/rfc3629",
+      "kind": "primary"
+    },
+    {
+      "claim": "The Extensible Markup Language, abbreviated XML, is defined by a W3C Recommendation as a subset of SGML whose goal is that documents conforming to it should be straightforwardly usable over the internet.",
+      "title": "Extensible Markup Language (XML) 1.0 (Fifth Edition), W3C Recommendation",
+      "url": "https://www.w3.org/TR/xml/",
+      "kind": "primary"
+    },
+    {
+      "claim": "Cascading Style Sheets, abbreviated CSS, is the language for describing the presentation of documents, defined across a family of specifications collected by the W3C in its periodic snapshot.",
+      "title": "CSS Snapshot, W3C",
+      "url": "https://www.w3.org/TR/CSS/",
       "kind": "primary"
     }
   ],

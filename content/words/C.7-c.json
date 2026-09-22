@@ -4,7 +4,8 @@
   "lang": "C",
   "category": "Systems & Hardware",
   "summary": "The foundational systems language: direct memory pointers, structs, explicit allocations, and zero runtime overhead.",
-  "status": "unsourced",
+  "status": "traced",
+  "seed": "C.7",
   "rows": [
     {
       "code": "#include <stdio.h> / <stdlib.h>",
@@ -19,7 +20,7 @@
     {
       "code": "int, char, float, double, void",
       "means": "primitive numeric, character, and untyped data types",
-      "consequence": "Directly map to hardware register sizes: char is 1 byte, int is typically 4 bytes, double is 8-byte IEEE 754 floating point."
+      "consequence": "Their widths are not fixed by the language: the standard sets minimum ranges and lets the sizes follow the machine, which is why code that assumes a particular width stops being portable the moment it moves. The one size you may rely on is that sizeof(char) is one, by definition."
     },
     {
       "code": "int *ptr = &x; (pointers and address-of)",
@@ -84,7 +85,7 @@
     {
       "code": "fopen(path, mode) and fclose(fp)",
       "means": "opens a file stream / flushes and closes the stream",
-      "consequence": "mode can be \"r\" (read), \"w\" (overwrite), \"a\" (append), or \"rb\" (binary). Always check if fp == NULL before reading."
+      "consequence": "mode can be \"r\" to read, \"w\" to overwrite, \"a\" to append, or \"rb\" for binary. The call returns a null pointer on failure, so the result is checked before it is used."
     },
     {
       "code": "fread() and fwrite()",
@@ -99,12 +100,12 @@
     {
       "code": "memcpy(dst, src, n) and memset(ptr, val, n)",
       "means": "fast memory block copy / fills memory block with byte value",
-      "consequence": "memset(buf, 0, sizeof(buf)) zeroes out memory. memcpy is optimized using CPU SIMD vector registers."
+      "consequence": "memset(buf, 0, sizeof(buf)) zeroes a block. Both are expected to be replaced by the compiler or the library with whatever the target's fastest copy is, which is why hand-written byte loops lose to them."
     },
     {
       "code": "NULL",
-      "means": "pointer literal representing memory address 0",
-      "consequence": "Dereferencing NULL triggers an immediate hardware segmentation fault (SIGSEGV) by the CPU memory management unit."
+      "means": "pointer literal representing the address zero",
+      "consequence": "Dereferencing it is not a language-level error and not detected by the compiler; on a machine with memory protection the hardware refuses the access and the program is stopped."
     },
     {
       "code": "int main(int argc, char *argv[])",

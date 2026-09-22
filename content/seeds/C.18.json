@@ -55,7 +55,7 @@
     },
     {
       "id": "c4",
-      "text": "Pike frames the work as being designed by and for people who write, read, debug and maintain large software systems, and says its purpose is improving the working environment rather than programming-language research — that it is more about software engineering than programming language research.",
+      "text": "Pike frames the work as being designed by and for people who write, read, debug and maintain large software systems, and says its purpose is improving the working environment rather than programming-language research \u2014 that it is more about software engineering than programming language research.",
       "type": "quote",
       "tokens": [
         "Pike"
@@ -77,6 +77,33 @@
       "source": {
         "title": "BASIC at Dartmouth, Dartmouth College",
         "url": "https://www.dartmouth.edu/basicfifty/basic.html",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "w1",
+      "type": "quote",
+      "tokens": [
+        "JSON",
+        "RFC"
+      ],
+      "text": "The JavaScript Object Notation data interchange format, commonly abbreviated JSON, is specified by RFC 8259, which defines it as a lightweight, text-based, language-independent syntax for interchanging structured data.",
+      "source": {
+        "title": "T. Bray, editor, The JavaScript Object Notation (JSON) Data Interchange Format, RFC 8259, December 2017",
+        "url": "https://www.rfc-editor.org/rfc/rfc8259",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "w2",
+      "type": "quote",
+      "tokens": [
+        "XML"
+      ],
+      "text": "The Extensible Markup Language, abbreviated XML, is defined by a W3C Recommendation as a subset of SGML whose goal is that documents conforming to it should be straightforwardly usable over the internet.",
+      "source": {
+        "title": "Extensible Markup Language (XML) 1.0 (Fifth Edition), W3C Recommendation",
+        "url": "https://www.w3.org/TR/xml/",
         "kind": "primary"
       }
     }

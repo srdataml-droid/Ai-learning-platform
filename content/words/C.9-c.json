@@ -4,7 +4,8 @@
   "lang": "C++",
   "category": "Systems & Hardware",
   "summary": "High-performance systems programming with zero-overhead abstractions, RAII resource management, and modern generic STL.",
-  "status": "unsourced",
+  "status": "traced",
+  "seed": "C.9",
   "rows": [
     {
       "code": "#include <iostream> and std::cout << val << std::endl",
@@ -93,8 +94,8 @@
     },
     {
       "code": "nullptr",
-      "means": "type-safe null pointer literal (replaces integer 0 / NULL)",
-      "consequence": "Has type std::nullptr_t, preventing ambiguous function overload resolution between integer 0 and pointer null."
+      "means": "type-safe null pointer literal, replacing the integer zero",
+      "consequence": "Has type std::nullptr_t, so a function overloaded on both an integer and a pointer is no longer ambiguous when passed a null pointer."
     },
     {
       "code": "static_cast<T>(v) vs dynamic_cast<T>(v)",
@@ -104,7 +105,7 @@
     {
       "code": "std::optional<T>",
       "means": "container holding either a valid value or nothing (std::nullopt)",
-      "consequence": "Eliminates sentinel values (like -1 or NULL pointers) for operations that may fail to produce a result."
+      "consequence": "Removes the need for a sentinel value \u2014 a negative number, or a null pointer \u2014 to mean that an operation produced no result."
     },
     {
       "code": "std::ranges and views (C++20)",
@@ -113,8 +114,8 @@
     },
     {
       "code": "std::mutex and std::lock_guard<std::mutex>",
-      "means": "mutual exclusion lock using RAII to prevent thread deadlocks",
-      "consequence": "lock_guard locks the mutex on construction and automatically unlocks it when exiting scope, ensuring thread safety."
+      "means": "a mutual exclusion lock whose release is tied to scope",
+      "consequence": "lock_guard locks the mutex when it is constructed and unlocks it when the scope exits, so an early return or a thrown exception cannot leave it held."
     }
   ]
 }

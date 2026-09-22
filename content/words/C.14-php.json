@@ -4,7 +4,8 @@
   "lang": "PHP",
   "category": "Web & Frontend",
   "summary": "Server-side web processing language powering over 75% of content-managed websites, modern Laravel APIs, and web hosting.",
-  "status": "unsourced",
+  "status": "traced",
+  "seed": "C.14",
   "rows": [
     {
       "code": "<?php ... ?>",
@@ -52,9 +53,9 @@
       "consequence": "Declaring public string $name in the constructor signature automatically defines and assigns the instance property."
     },
     {
-      "code": "namespace App\\Services; and use App\\Models\\User;",
+      "code": "namespace App\\Services;\nuse App\\Models\\User;",
       "means": "organizes classes into hierarchical packages and imports them",
-      "consequence": "Follows the PSR-4 autoloading standard, allowing Composer to map namespace paths directly to filesystem directories."
+      "consequence": "Follows the autoloading standard that maps a namespace path directly onto a filesystem directory, which is what lets the package manager find a class without any registration step."
     },
     {
       "code": "null, isset($var), empty($var)",
@@ -67,9 +68,9 @@
       "consequence": "Always use ===. In PHP, loose comparisons like '123' == 123 evaluate to true, and in older PHP 'test' == 0 was true."
     },
     {
-      "code": "Null coalescing: $val ?? 'default'",
+      "code": "$val ?? 'default'\n$name = $_GET['user'] ?? 'anonymous';",
       "means": "returns fallback if variable is null or unset",
-      "consequence": "Safe against unset variables: $name = $_GET['user'] ?? 'anonymous' will not trigger an 'Undefined index' warning."
+      "consequence": "Safe against a key that is not there: the fallback is used rather than a warning being raised for an undefined index."
     },
     {
       "code": "Spaceship operator: $a <=> $b",
@@ -83,18 +84,18 @@
     },
     {
       "code": "PDO: $stmt = $pdo->prepare('SELECT * FROM users WHERE id = ?');",
-      "means": "PHP Data Objects abstraction layer with prepared statements",
-      "consequence": "Prepared statements send SQL query structure and data parameters separately, mathematically preventing SQL injection."
+      "means": "a database access layer with prepared statements",
+      "consequence": "A prepared statement sends the query structure and the data separately, so a value can never be read as part of the statement \u2014 which is what closes injection rather than any amount of escaping."
     },
     {
-      "code": "json_encode($data) and json_decode($json, associative: true)",
+      "code": "json_encode($data)\njson_decode($json, associative: true)",
       "means": "serializes PHP data to JSON string / parses JSON into array",
-      "consequence": "Passing true as the second argument to json_decode converts JSON objects into associative PHP arrays instead of stdClass."
+      "consequence": "Passing true as the second argument turns objects into associative arrays rather than into instances of the standard class."
     },
     {
       "code": "composer require vendor/package",
-      "means": "dependency manager and PSR-4 autoloader for PHP",
-      "consequence": "require 'vendor/autoload.php' loads all third-party libraries and project classes on demand without manual include statements."
+      "means": "dependency manager and class autoloader",
+      "consequence": "require 'vendor/autoload.php' then loads third-party libraries and project classes on demand, without a manual include for each one."
     }
   ]
 }

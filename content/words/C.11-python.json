@@ -4,7 +4,8 @@
   "lang": "Python",
   "category": "Backend & Enterprise",
   "summary": "Clear, readable, batteries-included language dominating scripting, backend web services, data science, and modern AI.",
-  "status": "unsourced",
+  "status": "traced",
+  "seed": "C.11",
   "rows": [
     {
       "code": "print(*args, sep=' ', end='\\n')",
@@ -24,7 +25,7 @@
     {
       "code": "if / elif / else",
       "means": "conditional branching based on truthy evaluation",
-      "consequence": "Python treats 0, None, empty collections ([], {}, ''), and False as falsy; everything else evaluates to truthy."
+      "consequence": "Zero, the empty collections and the absent value are all falsy; everything else is truthy \u2014 which means a check for presence and a check for non-emptiness are the same expression, and the difference matters when zero is a legitimate value."
     },
     {
       "code": "for item in iterable:",
@@ -113,13 +114,13 @@
     },
     {
       "code": "sorted(iterable, key=fn, reverse=True)",
-      "means": "returns a new sorted list using Timsort algorithm",
-      "consequence": "Stable O(n log n) sorting algorithm. Use the key parameter to sort by custom object attributes or dictionary keys."
+      "means": "returns a new sorted list, leaving the original alone",
+      "consequence": "The sort is stable, so items comparing equal keep their original order, and passing key sorts by a computed value rather than by the item itself."
     },
     {
-      "code": "any(iterable) and all(iterable)",
+      "code": "any(iterable)\nall(iterable)",
       "means": "checks if at least one item is truthy / checks if all are truthy",
-      "consequence": "Short-circuits immediately upon determining the outcome: any() stops at the first True; all() stops at the first False."
+      "consequence": "Both short-circuit: any stops at the first truthy item, all stops at the first falsy one, so an expensive generator is only consumed as far as the answer requires."
     },
     {
       "code": "isinstance(obj, (int, float))",
@@ -132,14 +133,14 @@
       "consequence": "Counter(words) automatically calculates word frequencies; defaultdict(list) initializes new keys with empty lists without KeyError."
     },
     {
-      "code": "@dataclasses.dataclass",
+      "code": "@dataclasses.dataclass\nclass User:\n    id: int\n    name: str",
       "means": "automatically generates __init__, __repr__, and __eq__ for classes",
-      "consequence": "Eliminates repetitive boilerplate when defining pure data-holding classes: @dataclass class User: id: int; name: str."
+      "consequence": "Removes the repetitive constructor, representation and equality methods from a class that exists to hold data."
     },
     {
       "code": "typing: Optional[T], List[T], Dict[K, V], Union[A, B]",
       "means": "type annotations for static analysis tools like mypy",
-      "consequence": "Provides self-documenting function contracts that can be verified during CI/CD to catch type bugs before production."
+      "consequence": "Gives a function a self-documenting contract that a checker can verify in the build, catching a class of type error before it reaches production. Nothing is enforced at run time."
     },
     {
       "code": "is None vs == None",

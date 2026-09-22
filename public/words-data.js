@@ -96,12 +96,13 @@
     "lang": "Bash",
     "category": "Data & Storage",
     "summary": "Unix shell interpreter: connecting operating system processes, streams, exit codes, and automating system pipelines.",
-    "status": "unsourced",
+    "status": "traced",
+    "seed": "C.25",
     "rows": [
       {
         "code": "| (pipe: cmd1 | cmd2)",
         "means": "connects standard output (stdout, fd 1) of cmd1 to standard input (stdin) of cmd2",
-        "consequence": "Unix's fundamental pipeline operator. By default, error messages (stderr, fd 2) do NOT pass through the pipe."
+        "consequence": "The fundamental pipeline operator. By default, error messages (stderr, fd 2) do not pass through the pipe, which is why a failing command in the middle of a pipeline can leave you reading an empty result and no error."
       },
       {
         "code": "> file and >> file",
@@ -126,7 +127,7 @@
       {
         "code": "$? (exit code of last command)",
         "means": "status code returned by previous command (0 = success, 1-255 = error)",
-        "consequence": "In Unix, an exit status of 0 means OK; any non-zero value indicates a failure code."
+        "consequence": "An exit status of zero means success; any non-zero value is a failure code, which is the opposite of the convention in most languages and the source of a great many inverted conditions."
       },
       {
         "code": "$$ (process ID) and $! (background PID)",
@@ -179,9 +180,9 @@
         "consequence": "The s command substitutes; the g flag replaces all occurrences across the line rather than just the first."
       },
       {
-        "code": "awk '{print $1, $3}' file.txt",
+        "code": "awk '{print $1, $3}' file.txt    # $NF last column, NR line number",
         "means": "pattern-directed column processing language",
-        "consequence": "Splits lines by whitespace by default; $1 is the first column, $NF is the last column, NR is the line number."
+        "consequence": "Splits lines by whitespace by default; $1 is the first column, $NF is the last, and NR is the line number."
       },
       {
         "code": "xargs -I {} cmd {}",
@@ -191,7 +192,7 @@
       {
         "code": "trap \"cleanup_fn\" EXIT INT TERM",
         "means": "registers signals and exit handlers for automatic cleanup",
-        "consequence": "Ensures temporary directories and locks are removed when the script finishes or is aborted with Ctrl+C."
+        "consequence": "Ensures temporary directories and locks are removed when the script finishes or is interrupted at the terminal."
       },
       {
         "code": "$(command)",
@@ -207,7 +208,8 @@
     "lang": "C",
     "category": "Systems & Hardware",
     "summary": "The foundational systems language: direct memory pointers, structs, explicit allocations, and zero runtime overhead.",
-    "status": "unsourced",
+    "status": "traced",
+    "seed": "C.7",
     "rows": [
       {
         "code": "#include <stdio.h> / <stdlib.h>",
@@ -222,7 +224,7 @@
       {
         "code": "int, char, float, double, void",
         "means": "primitive numeric, character, and untyped data types",
-        "consequence": "Directly map to hardware register sizes: char is 1 byte, int is typically 4 bytes, double is 8-byte IEEE 754 floating point."
+        "consequence": "Their widths are not fixed by the language: the standard sets minimum ranges and lets the sizes follow the machine, which is why code that assumes a particular width stops being portable the moment it moves. The one size you may rely on is that sizeof(char) is one, by definition."
       },
       {
         "code": "int *ptr = &x; (pointers and address-of)",
@@ -287,7 +289,7 @@
       {
         "code": "fopen(path, mode) and fclose(fp)",
         "means": "opens a file stream / flushes and closes the stream",
-        "consequence": "mode can be \"r\" (read), \"w\" (overwrite), \"a\" (append), or \"rb\" (binary). Always check if fp == NULL before reading."
+        "consequence": "mode can be \"r\" to read, \"w\" to overwrite, \"a\" to append, or \"rb\" for binary. The call returns a null pointer on failure, so the result is checked before it is used."
       },
       {
         "code": "fread() and fwrite()",
@@ -302,12 +304,12 @@
       {
         "code": "memcpy(dst, src, n) and memset(ptr, val, n)",
         "means": "fast memory block copy / fills memory block with byte value",
-        "consequence": "memset(buf, 0, sizeof(buf)) zeroes out memory. memcpy is optimized using CPU SIMD vector registers."
+        "consequence": "memset(buf, 0, sizeof(buf)) zeroes a block. Both are expected to be replaced by the compiler or the library with whatever the target's fastest copy is, which is why hand-written byte loops lose to them."
       },
       {
         "code": "NULL",
-        "means": "pointer literal representing memory address 0",
-        "consequence": "Dereferencing NULL triggers an immediate hardware segmentation fault (SIGSEGV) by the CPU memory management unit."
+        "means": "pointer literal representing the address zero",
+        "consequence": "Dereferencing it is not a language-level error and not detected by the compiler; on a machine with memory protection the hardware refuses the access and the program is stopped."
       },
       {
         "code": "int main(int argc, char *argv[])",
@@ -419,7 +421,8 @@
     "lang": "C++",
     "category": "Systems & Hardware",
     "summary": "High-performance systems programming with zero-overhead abstractions, RAII resource management, and modern generic STL.",
-    "status": "unsourced",
+    "status": "traced",
+    "seed": "C.9",
     "rows": [
       {
         "code": "#include <iostream> and std::cout << val << std::endl",
@@ -508,8 +511,8 @@
       },
       {
         "code": "nullptr",
-        "means": "type-safe null pointer literal (replaces integer 0 / NULL)",
-        "consequence": "Has type std::nullptr_t, preventing ambiguous function overload resolution between integer 0 and pointer null."
+        "means": "type-safe null pointer literal, replacing the integer zero",
+        "consequence": "Has type std::nullptr_t, so a function overloaded on both an integer and a pointer is no longer ambiguous when passed a null pointer."
       },
       {
         "code": "static_cast<T>(v) vs dynamic_cast<T>(v)",
@@ -519,7 +522,7 @@
       {
         "code": "std::optional<T>",
         "means": "container holding either a valid value or nothing (std::nullopt)",
-        "consequence": "Eliminates sentinel values (like -1 or NULL pointers) for operations that may fail to produce a result."
+        "consequence": "Removes the need for a sentinel value — a negative number, or a null pointer — to mean that an operation produced no result."
       },
       {
         "code": "std::ranges and views (C++20)",
@@ -528,8 +531,8 @@
       },
       {
         "code": "std::mutex and std::lock_guard<std::mutex>",
-        "means": "mutual exclusion lock using RAII to prevent thread deadlocks",
-        "consequence": "lock_guard locks the mutex on construction and automatically unlocks it when exiting scope, ensuring thread safety."
+        "means": "a mutual exclusion lock whose release is tied to scope",
+        "consequence": "lock_guard locks the mutex when it is constructed and unlocks it when the scope exits, so an early return or a thrown exception cannot leave it held."
       }
     ],
     "slug": "c--"
@@ -863,7 +866,8 @@
     "lang": "Go",
     "category": "Systems & Hardware",
     "summary": "Fast compilation, cheap goroutine concurrency, explicit error handling, and single static binaries powering cloud infrastructure.",
-    "status": "unsourced",
+    "status": "traced",
+    "seed": "C.18",
     "rows": [
       {
         "code": "package main and import (\"fmt\"; \"net/http\")",
@@ -878,12 +882,12 @@
       {
         "code": ":= (short variable declaration)",
         "means": "declares and initializes a variable with inferred type",
-        "consequence": "Only valid inside function bodies. For package-level globals, use var Name string = \"val\"."
+        "consequence": "Infers the type from the value on the right, so the type is written once where it is produced rather than repeated at every declaration. Only valid inside a function, which keeps package-level declarations explicit."
       },
       {
         "code": "struct { Field string `json:\"field\"` }",
         "means": "composite data type with field definitions and reflection tags",
-        "consequence": "Struct tags provide metadata for serialization (JSON, XML, DB). Fields starting with a capital letter are public/exported."
+        "consequence": "Struct tags carry metadata for serialisation — how this field should be named in JSON or XML, or which database column it maps to. A field whose name starts with a capital letter is exported from the package; a lower-case one is not, which makes visibility a property of the name rather than a keyword."
       },
       {
         "code": "type Reader interface { Read(p []byte) (n int, err error) }",
@@ -908,17 +912,17 @@
       {
         "code": "defer cleanupFunction()",
         "means": "schedules a function call to run when the surrounding function returns",
-        "consequence": "Arguments are evaluated immediately, but execution is deferred until function exit. Ideal for f.Close() or mu.Unlock()."
+        "consequence": "Runs when the surrounding function returns, whichever path it takes, so a file close or a lock release sits next to the thing it undoes instead of at every exit."
       },
       {
         "code": "go workerFunction()",
         "means": "launches a function on a lightweight concurrent goroutine",
-        "consequence": "Goroutines begin with only a ~2KB memory stack that grows and shrinks dynamically, allowing millions of concurrent tasks."
+        "consequence": "Starts a concurrent unit managed by the runtime rather than by the operating system, with a stack that starts at a couple of kilobytes and grows as needed — which is why a program can hold hundreds of thousands of them."
       },
       {
         "code": "chan Type and ch <- val / val := <-ch",
         "means": "typed channel pipe: send value / receive value",
-        "consequence": "\"Do not communicate by sharing memory; instead, share memory by communicating.\" Enables safe synchronization between goroutines."
+        "consequence": "A channel carries values between concurrent units, so state is passed rather than shared and the usual race on shared memory has nowhere to happen."
       },
       {
         "code": "select { case msg := <-ch1: ... default: ... }",
@@ -1256,7 +1260,8 @@
     "lang": "JavaScript",
     "category": "Web & Frontend",
     "summary": "The dynamic runtime language of the web, Node.js servers, and asynchronous event-driven computing.",
-    "status": "unsourced",
+    "status": "traced",
+    "seed": "C.13",
     "rows": [
       {
         "code": "let / const / var",
@@ -1345,13 +1350,13 @@
       },
       {
         "code": "Nullish coalescing: val ?? fallback",
-        "means": "provides fallback ONLY if value is null or undefined",
-        "consequence": "Unlike || (OR), which treats 0, '', and false as falsy and overwrites them, ?? preserves valid falsy values."
+        "means": "provides a fallback only when the value is null or undefined",
+        "consequence": "Falls back only when the left side is null or undefined, unlike the older operator, which also falls back on zero and the empty string — which is the bug it was introduced to fix."
       },
       {
         "code": "async / await",
         "means": "writes asynchronous promise code in synchronous style",
-        "consequence": "Syntactic sugar over Promises. An async function always returns a Promise; await pauses execution until the promise settles."
+        "consequence": "Syntax over the same underlying objects: await suspends the function until the pending value settles, so sequential-looking code does not block anything else."
       },
       {
         "code": "new Promise((resolve, reject) => { ... })",
@@ -1366,7 +1371,7 @@
       {
         "code": "fetch(url, { method: 'POST', body: JSON.stringify(data) })",
         "means": "native HTTP client for network requests",
-        "consequence": "Returns a Promise resolving to a Response object. Does not reject on HTTP 404/500 errors; check res.ok === true."
+        "consequence": "Returns a pending value that settles into a response object; the body is read with a second await, because the headers arriving and the body arriving are two different moments."
       },
       {
         "code": "try { ... } catch (err) { ... } finally { ... }",
@@ -1401,12 +1406,12 @@
       {
         "code": "localStorage.setItem(key, val) / getItem(key)",
         "means": "persists string key-value pairs across browser sessions",
-        "consequence": "Synchronous API limited to ~5MB per domain. Stores strings only; use JSON.stringify/JSON.parse to store complex objects."
+        "consequence": "Stores strings only, so anything structured has to be serialised on the way in and parsed on the way out, and the space available is a few megabytes and varies by browser."
       },
       {
         "code": "setTimeout(fn, ms) / setInterval(fn, ms)",
         "means": "schedules a function call after delay / on recurring interval",
-        "consequence": "Returns a numeric timer ID; cancel with clearTimeout(id) or clearInterval(id) to avoid memory leaks."
+        "consequence": "Returns a handle that must be kept if the timer is ever to be cancelled, and a repeating timer that nobody cancels keeps the page busy long after the thing that wanted it has gone."
       },
       {
         "code": "class Name extends Base { constructor() { super(); } }",
@@ -1447,7 +1452,8 @@
     "lang": "Kotlin",
     "category": "Mobile & Multiplatform",
     "summary": "Modern, concise, null-safe language serving as Google's premier standard for Android development and modern JVM backends.",
-    "status": "unsourced",
+    "status": "traced",
+    "seed": "C.21",
     "rows": [
       {
         "code": "val vs var",
@@ -1455,9 +1461,9 @@
         "consequence": "Prefer val by default. Immutable references prevent side-effect bugs across multithreaded Android apps."
       },
       {
-        "code": "fun name(param: Type): ReturnType { ... }",
+        "code": "fun name(param: Type): ReturnType { ... }\nfun double(x: Int) = x * 2",
         "means": "function declaration with concise syntax",
-        "consequence": "Single-expression functions can omit curly braces: fun double(x: Int) = x * 2."
+        "consequence": "A function whose body is a single expression can drop the braces and the return, as the second form shows."
       },
       {
         "code": "Nullable types: String? vs non-null String",
@@ -1470,9 +1476,9 @@
         "consequence": "Returns null safely if user or profile is null rather than throwing an exception."
       },
       {
-        "code": "Elvis operator: name ?: \"Anonymous\"",
+        "code": "name ?: \"Anonymous\"\nval length: Int = str?.length ?: 0",
         "means": "provides fallback value if left-hand expression is null",
-        "consequence": "val length = str?.length ?: 0 ensures length is a non-null Int with zero fallback."
+        "consequence": "The fallback makes the result non-null, so the type after the operator has no question mark and the compiler stops asking about it."
       },
       {
         "code": "data class User(val id: Int, val name: String)",
@@ -1502,12 +1508,12 @@
       {
         "code": "coroutine: viewModelScope.launch { val data = fetchData() }",
         "means": "lightweight asynchronous concurrency framework",
-        "consequence": "suspend fun functions pause execution without blocking the underlying OS thread, keeping Android UI smooth at 60/120fps."
+        "consequence": "A suspending function pauses without blocking the thread underneath it, which is what keeps an interface responsive while work is in flight."
       },
       {
-        "code": "sealed class / sealed interface",
+        "code": "sealed interface UiState {\n  object Loading\n  data class Success(val d: Data)\n  data class Error(val msg: String)\n}",
         "means": "restricted class hierarchies representing finite state variants",
-        "consequence": "Used extensively for UI states: sealed interface UiState { object Loading; data class Success(val d: Data); data class Error(val msg: String); }."
+        "consequence": "The compiler knows the whole set of variants, so a when over them can be checked for exhaustiveness and a new state cannot be forgotten at one of the places that handles them."
       }
     ],
     "slug": "kotlin"
@@ -1518,7 +1524,8 @@
     "lang": "PHP",
     "category": "Web & Frontend",
     "summary": "Server-side web processing language powering over 75% of content-managed websites, modern Laravel APIs, and web hosting.",
-    "status": "unsourced",
+    "status": "traced",
+    "seed": "C.14",
     "rows": [
       {
         "code": "<?php ... ?>",
@@ -1566,9 +1573,9 @@
         "consequence": "Declaring public string $name in the constructor signature automatically defines and assigns the instance property."
       },
       {
-        "code": "namespace App\\Services; and use App\\Models\\User;",
+        "code": "namespace App\\Services;\nuse App\\Models\\User;",
         "means": "organizes classes into hierarchical packages and imports them",
-        "consequence": "Follows the PSR-4 autoloading standard, allowing Composer to map namespace paths directly to filesystem directories."
+        "consequence": "Follows the autoloading standard that maps a namespace path directly onto a filesystem directory, which is what lets the package manager find a class without any registration step."
       },
       {
         "code": "null, isset($var), empty($var)",
@@ -1581,9 +1588,9 @@
         "consequence": "Always use ===. In PHP, loose comparisons like '123' == 123 evaluate to true, and in older PHP 'test' == 0 was true."
       },
       {
-        "code": "Null coalescing: $val ?? 'default'",
+        "code": "$val ?? 'default'\n$name = $_GET['user'] ?? 'anonymous';",
         "means": "returns fallback if variable is null or unset",
-        "consequence": "Safe against unset variables: $name = $_GET['user'] ?? 'anonymous' will not trigger an 'Undefined index' warning."
+        "consequence": "Safe against a key that is not there: the fallback is used rather than a warning being raised for an undefined index."
       },
       {
         "code": "Spaceship operator: $a <=> $b",
@@ -1597,18 +1604,18 @@
       },
       {
         "code": "PDO: $stmt = $pdo->prepare('SELECT * FROM users WHERE id = ?');",
-        "means": "PHP Data Objects abstraction layer with prepared statements",
-        "consequence": "Prepared statements send SQL query structure and data parameters separately, mathematically preventing SQL injection."
+        "means": "a database access layer with prepared statements",
+        "consequence": "A prepared statement sends the query structure and the data separately, so a value can never be read as part of the statement — which is what closes injection rather than any amount of escaping."
       },
       {
-        "code": "json_encode($data) and json_decode($json, associative: true)",
+        "code": "json_encode($data)\njson_decode($json, associative: true)",
         "means": "serializes PHP data to JSON string / parses JSON into array",
-        "consequence": "Passing true as the second argument to json_decode converts JSON objects into associative PHP arrays instead of stdClass."
+        "consequence": "Passing true as the second argument turns objects into associative arrays rather than into instances of the standard class."
       },
       {
         "code": "composer require vendor/package",
-        "means": "dependency manager and PSR-4 autoloader for PHP",
-        "consequence": "require 'vendor/autoload.php' loads all third-party libraries and project classes on demand without manual include statements."
+        "means": "dependency manager and class autoloader",
+        "consequence": "require 'vendor/autoload.php' then loads third-party libraries and project classes on demand, without a manual include for each one."
       }
     ],
     "slug": "php"
@@ -1619,7 +1626,8 @@
     "lang": "Python",
     "category": "Backend & Enterprise",
     "summary": "Clear, readable, batteries-included language dominating scripting, backend web services, data science, and modern AI.",
-    "status": "unsourced",
+    "status": "traced",
+    "seed": "C.11",
     "rows": [
       {
         "code": "print(*args, sep=' ', end='\\n')",
@@ -1639,7 +1647,7 @@
       {
         "code": "if / elif / else",
         "means": "conditional branching based on truthy evaluation",
-        "consequence": "Python treats 0, None, empty collections ([], {}, ''), and False as falsy; everything else evaluates to truthy."
+        "consequence": "Zero, the empty collections and the absent value are all falsy; everything else is truthy — which means a check for presence and a check for non-emptiness are the same expression, and the difference matters when zero is a legitimate value."
       },
       {
         "code": "for item in iterable:",
@@ -1728,13 +1736,13 @@
       },
       {
         "code": "sorted(iterable, key=fn, reverse=True)",
-        "means": "returns a new sorted list using Timsort algorithm",
-        "consequence": "Stable O(n log n) sorting algorithm. Use the key parameter to sort by custom object attributes or dictionary keys."
+        "means": "returns a new sorted list, leaving the original alone",
+        "consequence": "The sort is stable, so items comparing equal keep their original order, and passing key sorts by a computed value rather than by the item itself."
       },
       {
-        "code": "any(iterable) and all(iterable)",
+        "code": "any(iterable)\nall(iterable)",
         "means": "checks if at least one item is truthy / checks if all are truthy",
-        "consequence": "Short-circuits immediately upon determining the outcome: any() stops at the first True; all() stops at the first False."
+        "consequence": "Both short-circuit: any stops at the first truthy item, all stops at the first falsy one, so an expensive generator is only consumed as far as the answer requires."
       },
       {
         "code": "isinstance(obj, (int, float))",
@@ -1747,14 +1755,14 @@
         "consequence": "Counter(words) automatically calculates word frequencies; defaultdict(list) initializes new keys with empty lists without KeyError."
       },
       {
-        "code": "@dataclasses.dataclass",
+        "code": "@dataclasses.dataclass\nclass User:\n    id: int\n    name: str",
         "means": "automatically generates __init__, __repr__, and __eq__ for classes",
-        "consequence": "Eliminates repetitive boilerplate when defining pure data-holding classes: @dataclass class User: id: int; name: str."
+        "consequence": "Removes the repetitive constructor, representation and equality methods from a class that exists to hold data."
       },
       {
         "code": "typing: Optional[T], List[T], Dict[K, V], Union[A, B]",
         "means": "type annotations for static analysis tools like mypy",
-        "consequence": "Provides self-documenting function contracts that can be verified during CI/CD to catch type bugs before production."
+        "consequence": "Gives a function a self-documenting contract that a checker can verify in the build, catching a class of type error before it reaches production. Nothing is enforced at run time."
       },
       {
         "code": "is None vs == None",
@@ -1876,7 +1884,8 @@
     "lang": "Ruby & Rails",
     "category": "Backend & Enterprise",
     "summary": "Object-oriented language prioritizing developer happiness, elegant DSLs, and convention-over-configuration web development.",
-    "status": "unsourced",
+    "status": "traced",
+    "seed": "C.15",
     "rows": [
       {
         "code": "def method_name(param = 'default') ... end",
@@ -1904,19 +1913,19 @@
         "consequence": "Use { ... } for single-line blocks; use do ... end for multi-line blocks. The bedrock of Ruby's functional enumerables."
       },
       {
-        "code": "yield(arg)",
+        "code": "yield(arg)\ndef benchmark; t = Time.now; yield; Time.now - t; end",
         "means": "pauses method execution to execute the passed block",
-        "consequence": "Allows writing custom iteration methods and wrappers: def benchmark; t = Time.now; yield; Time.now - t; end."
+        "consequence": "Lets you write your own iteration methods and wrappers, as the timing example shows."
       },
       {
         "code": "class Dog < Animal ... end",
         "means": "defines a class inheriting from a superclass",
-        "consequence": "In Ruby, classes are open: you can reopen any existing class (even String) and add new methods at runtime (monkey patching)."
+        "consequence": "Classes are open: you can reopen any existing class, including one from the standard library, and add methods to it at run time. Powerful, and the reason a library can change behaviour you never asked it to touch."
       },
       {
         "code": "nil and nil? / empty? / blank? / present?",
         "means": "the singleton null object and state check helpers",
-        "consequence": "In Ruby, ONLY false and nil are falsy. The number 0 and empty string \"\" are truthy! blank? is a Rails helper checking for whitespace."
+        "consequence": "Only false and nil are falsy. The number zero and the empty string are both truthy, which is the opposite of several other languages and a reliable source of bugs when moving between them."
       },
       {
         "code": "unless condition ... end",
@@ -1924,14 +1933,14 @@
         "consequence": "Idiomatic opposite of if. Often used as an inline guard clause: return if user.nil? or redirect_to login unless logged_in?."
       },
       {
-        "code": "self keyword",
+        "code": "self keyword\ndef self.find_by_email(...)",
         "means": "refers to the current executing object or class context",
-        "consequence": "Inside a class method definition (def self.find_by_email), self refers to the Class object itself."
+        "consequence": "Inside a method defined with self, it refers to the class itself rather than to an instance of it."
       },
       {
         "code": "ActiveRecord: User.where(active: true).order(created_at: :desc)",
         "means": "object-relational mapping querying database tables",
-        "consequence": "Executes lazily: chaining query methods builds an ActiveRecord::Relation; SQL executes only when records are accessed."
+        "consequence": "Executes lazily: chaining query methods builds up a query object, and the database is only asked when the records are actually read."
       },
       {
         "code": "Associations: has_many :orders, belongs_to :user",
@@ -2397,7 +2406,356 @@
   }
 ];
 
-  const SOURCES = {};
+  const SOURCES = {
+  "C.25-bash": [
+    {
+      "claim": "The first Unix shell was written by Ken Thompson and introduced with the first version of Unix in 1971. It was a command interpreter rather than a scripting language, and it was distributed with versions one through six, from 1971 to 1975.",
+      "title": "Thompson shell: the first Unix shell, its 1971 introduction, and its redirection syntax against Multics",
+      "url": "https://en.wikipedia.org/wiki/Thompson_shell",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Its redirection syntax was notably compact by comparison with Multics, where redirecting input or output required separate commands to start and stop the redirection; here one appended a symbol and a filename to the command line.",
+      "title": "Thompson shell: the first Unix shell, its 1971 introduction, and its redirection syntax against Multics",
+      "url": "https://en.wikipedia.org/wiki/Thompson_shell",
+      "kind": "secondary"
+    },
+    {
+      "claim": "In a typewritten memo of 1964 Douglas McIlroy wrote about coupling programs like garden hose, so that a programmer could screw in another segment when data needed massaging another way. He raised the idea repeatedly over about nine years before Thompson implemented it, and credits Thompson with the vertical bar notation. McIlroy described the aftermath as an unforgettable orgy of one-liners.",
+      "title": "The Origin of Unix Pipes, collecting McIlroy’s own accounts of the 1964 memo and the 1973 implementation",
+      "url": "http://doc.cat-v.org/unix/pipes/",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Accounts of when the implementation happened conflict. Some place Thompson’s overnight work in the autumn of 1973, but a notice circulated on 15 January 1973 already described the pipe system call, and pipes appear in the Version 3 manual of February 1973. The January dating is the better documented.",
+      "title": "Pipes, Unix Heritage Society wiki — the dating evidence, including the notice of 15 January 1973 and the Version 3 manual",
+      "url": "https://wiki.tuhs.org/doku.php?id=features%3Apipes",
+      "kind": "primary"
+    },
+    {
+      "claim": "The Bourne shell, written by Stephen Bourne at Bell Laboratories, was released in 1979 as the default shell of the seventh edition, replacing the earlier shell of the same name. Unlike its predecessor it was intended as a scripting language as well as an interactive interpreter.",
+      "title": "Bourne shell: its authorship, its 1979 release with the seventh edition, and its scripting intent",
+      "url": "https://en.wikipedia.org/wiki/Bourne_shell",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Bash was written by Brian Fox for the GNU Project with support from the Free Software Foundation, as a free replacement for the Bourne shell. Coding began on 10 January 1988 and it was released as a beta, version 0.99, on 8 June 1989.",
+      "title": "Bash (Unix shell): authorship by Brian Fox for the GNU Project, and the beta release of 8 June 1989",
+      "url": "https://en.wikipedia.org/wiki/Bash_(Unix_shell)",
+      "kind": "secondary"
+    }
+  ],
+  "C.7-c": [
+    {
+      "claim": "Ritchie’s own account of the language was presented at the Second History of Programming Languages conference in Cambridge, Massachusetts in April 1993 and published in SIGPLAN Notices volume 28 number 3, pages 201 to 208.",
+      "title": "Ritchie, D. M., The Development of the C Language, Second ACM SIGPLAN Conference on History of Programming Languages, April 1993; SIGPLAN Notices 28(3):201-208",
+      "url": "https://dl.acm.org/doi/10.1145/154766.155580",
+      "kind": "primary"
+    },
+    {
+      "claim": "Ritchie describes B as the parent of the language and BCPL as its grandparent. BCPL was Martin Richards’s language and B was Ken Thompson’s; both were typeless, and the new language derived a type structure from a typeless ancestor.",
+      "title": "Ritchie, D. M., The Development of the C Language, Second ACM SIGPLAN Conference on History of Programming Languages, April 1993; SIGPLAN Notices 28(3):201-208",
+      "url": "https://dl.acm.org/doi/10.1145/154766.155580",
+      "kind": "primary"
+    },
+    {
+      "claim": "The language came into being in the years 1969 to 1973, in parallel with the early development of Unix, with the most creative period during 1972. It was created on a small machine as a tool to improve a meagre programming environment.",
+      "title": "Ritchie, D. M., The Development of the C Language, Second ACM SIGPLAN Conference on History of Programming Languages, April 1993; SIGPLAN Notices 28(3):201-208",
+      "url": "https://dl.acm.org/doi/10.1145/154766.155580",
+      "kind": "primary"
+    },
+    {
+      "claim": "By early 1973 the essentials of the modern language were complete, and the language and compiler were strong enough to permit rewriting the Unix kernel for the PDP-11 in it during the summer of that year. Ritchie notes that Thompson had made a brief attempt in 1972 to produce a system coded in an early version of the language, before structures existed, and gave up the effort.",
+      "title": "Ritchie, D. M., The Development of the C Language, Second ACM SIGPLAN Conference on History of Programming Languages, April 1993; SIGPLAN Notices 28(3):201-208",
+      "url": "https://dl.acm.org/doi/10.1145/154766.155580",
+      "kind": "primary"
+    },
+    {
+      "claim": "A second period of change peaked between 1977 and 1979, when portability of Unix was being demonstrated; the compiler was retargeted to other machines, particularly the Honeywell 635 and the IBM 360 and 370.",
+      "title": "Ritchie, D. M., The Development of the C Language, Second ACM SIGPLAN Conference on History of Programming Languages, April 1993; SIGPLAN Notices 28(3):201-208",
+      "url": "https://dl.acm.org/doi/10.1145/154766.155580",
+      "kind": "primary"
+    },
+    {
+      "claim": "The first widely available description was The C Programming Language, which appeared in 1978 and served as the language reference although it did not describe some additions that soon became common. Beginning in 1983 the ANSI X3J11 committee standardised the language.",
+      "title": "Ritchie, D. M., The Development of the C Language, Second ACM SIGPLAN Conference on History of Programming Languages, April 1993; SIGPLAN Notices 28(3):201-208",
+      "url": "https://dl.acm.org/doi/10.1145/154766.155580",
+      "kind": "primary"
+    },
+    {
+      "claim": "Ritchie’s own assessment is that the most characteristic features — the relationship between arrays and pointers, and the declaration syntax — are also major sources of difficulty, and that the language offers limited support for modularisation, automatic memory management and strong type checking, while its pointer-oriented array model complicates optimisation.",
+      "title": "Ritchie, D. M., The Development of the C Language, Second ACM SIGPLAN Conference on History of Programming Languages, April 1993; SIGPLAN Notices 28(3):201-208",
+      "url": "https://dl.acm.org/doi/10.1145/154766.155580",
+      "kind": "primary"
+    }
+  ],
+  "C.9-c": [
+    {
+      "claim": "Stroustrup states the motivation as wanting to write efficient systems programs in the styles encouraged by Simula, so he added better type checking, data abstraction and object-oriented programming to C. His stated goal was \"to design a language in which I could write programs that were both efficient and elegant\", and the triggering tasks concerned distributing operating system facilities across a network.",
+      "title": "Stroustrup, B., Bjarne Stroustrup’s FAQ — the author’s own answers on motivation, naming and design criteria",
+      "url": "https://www.stroustrup.com/bs_faq.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "Stroustrup gives the design criterion that \"a facility must not just be useful, it must be affordable\".",
+      "title": "Stroustrup, B., Bjarne Stroustrup’s FAQ — the author’s own answers on motivation, naming and design criteria",
+      "url": "https://www.stroustrup.com/bs_faq.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "Work began in 1979. By October 1979 a pre-processor named Cpre added classes in the style of Simula to C, and by March 1980 it had been refined to support one real project and several experiments. The language it accepted was called C with Classes.",
+      "title": "Stroustrup, B., A History of C++: 1979-1991, HOPL-II, ACM SIGPLAN Notices 28(3), March 1993",
+      "url": "https://www.stroustrup.com/hopl2.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "The work and experience with C with Classes from 1979 to 1983 determined the shape of the successor. Cfront, the compiler front end, was designed and implemented between spring 1982 and summer 1983; the features added to C through it included the class, the derived class, strong type checking, inlining and default arguments.",
+      "title": "Stroustrup, B., A History of C++: 1979-1991, HOPL-II, ACM SIGPLAN Notices 28(3), March 1993",
+      "url": "https://www.stroustrup.com/hopl2.pdf",
+      "kind": "primary"
+    },
+    {
+      "claim": "The first version was used internally at AT&T in August 1983. The name was suggested by Rick Mascitti; it was first used in December 1983, when it was edited into the final copies of the 1984 papers, and signifies evolution from C via the increment operator.",
+      "title": "Stroustrup, B., Bjarne Stroustrup’s FAQ — the author’s own answers on motivation, naming and design criteria",
+      "url": "https://www.stroustrup.com/bs_faq.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "The first commercial implementation was released in October 1985, at the same time as the publication of the first edition of The C++ Programming Language.",
+      "title": "Stroustrup, B., A History of C++: 1979-1991, HOPL-II, ACM SIGPLAN Notices 28(3), March 1993",
+      "url": "https://www.stroustrup.com/hopl2.pdf",
+      "kind": "primary"
+    }
+  ],
+  "C.18-go": [
+    {
+      "claim": "The language was conceived in September 2007 by Robert Griesemer, Rob Pike and Ken Thompson at Google, as an answer to problems seen while developing software infrastructure there. It first appeared on 10 November 2009 and stabilised at version 1 in early 2012.",
+      "title": "Go (programming language): conception in September 2007 by Griesemer, Pike and Thompson, first appearance 10 November 2009, and Go 1 in early 2012",
+      "url": "https://en.wikipedia.org/wiki/Go_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Pike describes the environment it was designed for: server programs grown to tens of millions of lines of code, worked on by hundreds or thousands of programmers, updated daily, in one source tree with a distributed build system, written mostly in C++ with substantial amounts of Java and Python.",
+      "title": "Pike, R., Go at Google: Language Design in the Service of Software Engineering, keynote at SPLASH 2012, Tucson, 25 October 2012",
+      "url": "https://go.dev/talks/2012/splash.article",
+      "kind": "primary"
+    },
+    {
+      "claim": "Pike states that in that environment build times, even on large compilation clusters, had stretched to many minutes, even hours. The stated goals of the project were to eliminate slowness, eliminate clumsiness, improve effectiveness, and maintain or improve scale.",
+      "title": "Pike, R., Go at Google: Language Design in the Service of Software Engineering, keynote at SPLASH 2012, Tucson, 25 October 2012",
+      "url": "https://go.dev/talks/2012/splash.article",
+      "kind": "primary"
+    },
+    {
+      "claim": "Pike frames the work as being designed by and for people who write, read, debug and maintain large software systems, and says its purpose is improving the working environment rather than programming-language research — that it is more about software engineering than programming language research.",
+      "title": "Pike, R., Go at Google: Language Design in the Service of Software Engineering, keynote at SPLASH 2012, Tucson, 25 October 2012",
+      "url": "https://go.dev/talks/2012/splash.article",
+      "kind": "primary"
+    },
+    {
+      "claim": "The earlier link this argument is drawn from is the time-sharing system built at Dartmouth, demonstrated on 1 May 1964, where the barrier to using a computer was the hours-long turnaround of a single attempt rather than the difficulty of the language.",
+      "title": "BASIC at Dartmouth, Dartmouth College",
+      "url": "https://www.dartmouth.edu/basicfifty/basic.html",
+      "kind": "primary"
+    },
+    {
+      "claim": "The JavaScript Object Notation data interchange format, commonly abbreviated JSON, is specified by RFC 8259, which defines it as a lightweight, text-based, language-independent syntax for interchanging structured data.",
+      "title": "T. Bray, editor, The JavaScript Object Notation (JSON) Data Interchange Format, RFC 8259, December 2017",
+      "url": "https://www.rfc-editor.org/rfc/rfc8259",
+      "kind": "primary"
+    },
+    {
+      "claim": "The Extensible Markup Language, abbreviated XML, is defined by a W3C Recommendation as a subset of SGML whose goal is that documents conforming to it should be straightforwardly usable over the internet.",
+      "title": "Extensible Markup Language (XML) 1.0 (Fifth Edition), W3C Recommendation",
+      "url": "https://www.w3.org/TR/xml/",
+      "kind": "primary"
+    }
+  ],
+  "C.13-javascript": [
+    {
+      "claim": "Brendan Eich, recently hired by Netscape Communications, was tasked in May 1995 with producing a scripting language for client-side interactivity in Netscape Navigator, and prototyped it in about ten days.",
+      "title": "Brendan Eich: the ten-day prototype of May 1995 at Netscape, the Mocha and LiveScript names, and the December 1995 renaming under the Sun licensing deal",
+      "url": "https://en.wikipedia.org/wiki/Brendan_Eich",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The design drew on Scheme for its functional elements, Self for prototype-based inheritance, and the syntax of Java for familiarity. Despite the eventual name the two languages differ fundamentally: one is compiled, class-based and statically typed, the other interpreted, prototype-based and dynamically typed, and the main similarity is C-style syntax.",
+      "title": "Brendan Eich: the ten-day prototype of May 1995 at Netscape, the Mocha and LiveScript names, and the December 1995 renaming under the Sun licensing deal",
+      "url": "https://en.wikipedia.org/wiki/Brendan_Eich",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The prototype was codenamed Mocha, renamed LiveScript in September 1995 for the beta of the second version of the browser, and renamed again in December 1995 after Netscape and Sun reached a licensing deal. Eich described it in a later interview: \"in early December Netscape and Sun reached a licensing deal, and the language became JavaScript.\"",
+      "title": "Brendan Eich: the ten-day prototype of May 1995 at Netscape, the Mocha and LiveScript names, and the December 1995 renaming under the Sun licensing deal",
+      "url": "https://en.wikipedia.org/wiki/Brendan_Eich",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The name was chosen to ride on the contemporaneous success of Java, and the resulting confusion between the two has persisted ever since.",
+      "title": "Brendan Eich: the ten-day prototype of May 1995 at Netscape, the Mocha and LiveScript names, and the December 1995 renaming under the Sun licensing deal",
+      "url": "https://en.wikipedia.org/wiki/Brendan_Eich",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Eich also wrote the first engine to execute the language in the browser. When Mozilla inherited the Netscape codebase in 1998, that engine came with it. The language was taken to Ecma in 1996 and 1997 to produce a standard specification.",
+      "title": "Brendan Eich: the ten-day prototype of May 1995 at Netscape, the Mocha and LiveScript names, and the December 1995 renaming under the Sun licensing deal",
+      "url": "https://en.wikipedia.org/wiki/Brendan_Eich",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The JavaScript Object Notation data interchange format, commonly abbreviated JSON, is specified by RFC 8259, which defines it as a lightweight, text-based, language-independent syntax for interchanging structured data.",
+      "title": "T. Bray, editor, The JavaScript Object Notation (JSON) Data Interchange Format, RFC 8259, December 2017",
+      "url": "https://www.rfc-editor.org/rfc/rfc8259",
+      "kind": "primary"
+    },
+    {
+      "claim": "The Document Object Model, abbreviated DOM, is defined by a living standard as the tree of objects a document is represented as, which scripts read and modify.",
+      "title": "DOM Standard, WHATWG living standard",
+      "url": "https://dom.spec.whatwg.org/",
+      "kind": "primary"
+    },
+    {
+      "claim": "Cascading Style Sheets, abbreviated CSS, is the language for describing the presentation of documents, defined across a family of specifications collected by the W3C in its periodic snapshot.",
+      "title": "CSS Snapshot, W3C",
+      "url": "https://www.w3.org/TR/CSS/",
+      "kind": "primary"
+    }
+  ],
+  "C.21-kotlin": [
+    {
+      "claim": "Kotlin was unveiled in July 2011 and open-sourced under the Apache licence in February 2012. Version 1.0 was released on 15 February 2016 and was the first officially stable release, with a commitment to long-term backwards compatibility from that point. It is named after Kotlin Island, off Saint Petersburg.",
+      "title": "Kotlin: unveiled July 2011, open-sourced February 2012, version 1.0 on 15 February 2016, and Google’s Android announcements of 2017 and 2019",
+      "url": "https://en.wikipedia.org/wiki/Kotlin",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Google announced first-class support for Kotlin on Android in 2017, and on 7 May 2019 announced that it was its preferred language for Android application developers.",
+      "title": "Kotlin: unveiled July 2011, open-sourced February 2012, version 1.0 on 15 February 2016, and Google’s Android announcements of 2017 and 2019",
+      "url": "https://en.wikipedia.org/wiki/Kotlin",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Swift was created by Chris Lattner, beginning in 2010, while he was director of the developer tools department at Apple. It was first announced at the company’s developer conference in June 2014 and shipped in the toolchain from Xcode version 6 in September 2014.",
+      "title": "Swift (programming language): created by Chris Lattner from 2010, announced at WWDC in June 2014, shipped in Xcode 6 in September 2014",
+      "url": "https://en.wikipedia.org/wiki/Swift_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "On 2 June 2014 the conference application became the first publicly released application written in Swift.",
+      "title": "Swift (programming language): created by Chris Lattner from 2010, announced at WWDC in June 2014, shipped in Xcode 6 in September 2014",
+      "url": "https://en.wikipedia.org/wiki/Swift_(programming_language)",
+      "kind": "secondary"
+    }
+  ],
+  "C.14-php": [
+    {
+      "claim": "Rasmus Lerdorf released version 1.0, then called Personal Home Page Tools, on 8 June 1995, announcing it on the newsgroup comp.infosystems.www.authoring.cgi under the subject Announce: Personal Home Page Tools.",
+      "title": "History of PHP — the project’s own account of the 1995 Personal Home Page Tools release and the rewrites that followed",
+      "url": "https://www.php.net/manual/en/history.php.php",
+      "kind": "primary"
+    },
+    {
+      "claim": "What was released was a set of small, tightly written CGI binaries in C — a utility library and templating mechanism rather than a scripting language. A complete rewrite followed in October 1995, and the second generation arrived in April 1996.",
+      "title": "History of PHP — the project’s own account of the 1995 Personal Home Page Tools release and the rewrites that followed",
+      "url": "https://www.php.net/manual/en/history.php.php",
+      "kind": "primary"
+    },
+    {
+      "claim": "The name was originally an abbreviation of Personal Home Page, and was later redefined as a recursive abbreviation for Hypertext Preprocessor.",
+      "title": "History of PHP — the project’s own account of the 1995 Personal Home Page Tools release and the rewrites that followed",
+      "url": "https://www.php.net/manual/en/history.php.php",
+      "kind": "primary"
+    },
+    {
+      "claim": "The model is that a file is a document which may contain code, rather than a program which emits a document: the page is served as written except where an escape into code occurs.",
+      "title": "History of PHP — the project’s own account of the 1995 Personal Home Page Tools release and the rewrites that followed",
+      "url": "https://www.php.net/manual/en/history.php.php",
+      "kind": "primary"
+    },
+    {
+      "claim": "The JavaScript Object Notation data interchange format, commonly abbreviated JSON, is specified by RFC 8259, which defines it as a lightweight, text-based, language-independent syntax for interchanging structured data.",
+      "title": "T. Bray, editor, The JavaScript Object Notation (JSON) Data Interchange Format, RFC 8259, December 2017",
+      "url": "https://www.rfc-editor.org/rfc/rfc8259",
+      "kind": "primary"
+    }
+  ],
+  "C.11-python": [
+    {
+      "claim": "Implementation was started in December 1989 by Guido van Rossum at CWI in the Netherlands, as a successor to ABC capable of exception handling and of interfacing with the Amoeba operating system. It was begun over a Christmas holiday.",
+      "title": "History of Python: the December 1989 start at CWI, the ABC and Amoeba context, the Modula-3 module system, and the February 1991 release to alt.sources",
+      "url": "https://en.wikipedia.org/wiki/History_of_Python",
+      "kind": "secondary"
+    },
+    {
+      "claim": "In 1989 van Rossum was working on Amoeba, a microkernel-based distributed system, developing system utilities for it. He found that developing in C took too much time and decided to spend his free time building a language that would let him work faster.",
+      "title": "History of Python: the December 1989 start at CWI, the ABC and Amoeba context, the Modula-3 module system, and the February 1991 release to alt.sources",
+      "url": "https://en.wikipedia.org/wiki/History_of_Python",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Van Rossum had worked in the early 1980s as an implementer on the team at CWI that built ABC, and has said he feels indebted to what he learned on that project, while also remembering his frustration with it.",
+      "title": "History of Python: the December 1989 start at CWI, the ABC and Amoeba context, the Modula-3 module system, and the February 1991 release to alt.sources",
+      "url": "https://en.wikipedia.org/wiki/History_of_Python",
+      "kind": "secondary"
+    },
+    {
+      "claim": "CWI records that the language was designed in December 1989, that the first working draft was finished some months later in 1990, and that the first public release, version 0.9.0, came on 20 February 1991.",
+      "title": "25 Years of Python at CWI — Centrum Wiskunde & Informatica’s own account",
+      "url": "https://www.cwi.nl/en/news/25-years-of-python-at-cwi/",
+      "kind": "primary"
+    },
+    {
+      "claim": "The code was published to the alt.sources newsgroup in February 1991; the interpreter source had to be split into 21 uuencoded messages to be posted there. Accounts differ on whether the version posted was labelled 0.9.0 or 0.9.1.",
+      "title": "History of Python: the December 1989 start at CWI, the ABC and Amoeba context, the Modula-3 module system, and the February 1991 release to alt.sources",
+      "url": "https://en.wikipedia.org/wiki/History_of_Python",
+      "kind": "secondary"
+    },
+    {
+      "claim": "Several features were present in the initial release: classes with inheritance, exception handling, functions, and the core datatypes list, dict and str. The module system was borrowed from Modula-3, and the exception model also resembled that of Modula-3, with the addition of an else clause.",
+      "title": "History of Python: the December 1989 start at CWI, the ABC and Amoeba context, the Modula-3 module system, and the February 1991 release to alt.sources",
+      "url": "https://en.wikipedia.org/wiki/History_of_Python",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The language is named after the British comedy series Monty Python’s Flying Circus.",
+      "title": "History of Python: the December 1989 start at CWI, the ABC and Amoeba context, the Modula-3 module system, and the February 1991 release to alt.sources",
+      "url": "https://en.wikipedia.org/wiki/History_of_Python",
+      "kind": "secondary"
+    }
+  ],
+  "C.15-ruby-rails": [
+    {
+      "claim": "The name was chosen on 24 February 1993, in a chat between Yukihiro Matsumoto and Keiju Ishitsuka, before any code existed. Coral and Ruby were the two proposals and Matsumoto picked the latter.",
+      "title": "Ruby (programming language): the February 1993 naming, the 0.95 release of 21 December 1995, and the 1.0 release of 25 December 1996",
+      "url": "https://en.wikipedia.org/wiki/Ruby_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The first public release, version 0.95, was announced on Japanese domestic newsgroups on 21 December 1995. Three further versions followed within two days, and the release coincided with the launch of the language’s first mailing list. Version 1.0 followed on 25 December 1996.",
+      "title": "Ruby (programming language): the February 1993 naming, the 0.95 release of 21 December 1995, and the 1.0 release of 25 December 1996",
+      "url": "https://en.wikipedia.org/wiki/Ruby_(programming_language)",
+      "kind": "secondary"
+    },
+    {
+      "claim": "David Heinemeier Hansson extracted the framework from his work on the project management application Basecamp at 37signals. It was created for the company’s internal use first, open-sourced in July 2004, and reached version 1.0 in December 2005. Hansson had discovered the language in 2003.",
+      "title": "Ruby on Rails: extraction from Basecamp at 37signals, the July 2004 open-source release, and version 1.0 in December 2005",
+      "url": "https://en.wikipedia.org/wiki/Ruby_on_Rails",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The framework is built on convention over configuration: defaults derived from names and locations stand in for declarations the developer would otherwise have to write.",
+      "title": "Ruby on Rails: extraction from Basecamp at 37signals, the July 2004 open-source release, and version 1.0 in December 2005",
+      "url": "https://en.wikipedia.org/wiki/Ruby_on_Rails",
+      "kind": "secondary"
+    },
+    {
+      "claim": "The earlier link in this chain that this one is contrasted with is Fortran, whose designers deliberately treated the translator rather than the language as the real challenge — that is, they optimised for the machine rather than for the programmer writing it.",
+      "title": "Backus, J., The History of Fortran I, II and III, in History of Programming Languages, ACM/Academic Press, 1978",
+      "url": "https://cse.sc.edu/~mgv/csce330f12/Backus78.pdf",
+      "kind": "primary"
+    }
+  ]
+};
 
   window.CurriculumWords.all = function () {
     return LISTS;

@@ -4,7 +4,8 @@
   "lang": "Go",
   "category": "Systems & Hardware",
   "summary": "Fast compilation, cheap goroutine concurrency, explicit error handling, and single static binaries powering cloud infrastructure.",
-  "status": "unsourced",
+  "status": "traced",
+  "seed": "C.18",
   "rows": [
     {
       "code": "package main and import (\"fmt\"; \"net/http\")",
@@ -19,12 +20,12 @@
     {
       "code": ":= (short variable declaration)",
       "means": "declares and initializes a variable with inferred type",
-      "consequence": "Only valid inside function bodies. For package-level globals, use var Name string = \"val\"."
+      "consequence": "Infers the type from the value on the right, so the type is written once where it is produced rather than repeated at every declaration. Only valid inside a function, which keeps package-level declarations explicit."
     },
     {
       "code": "struct { Field string `json:\"field\"` }",
       "means": "composite data type with field definitions and reflection tags",
-      "consequence": "Struct tags provide metadata for serialization (JSON, XML, DB). Fields starting with a capital letter are public/exported."
+      "consequence": "Struct tags carry metadata for serialisation \u2014 how this field should be named in JSON or XML, or which database column it maps to. A field whose name starts with a capital letter is exported from the package; a lower-case one is not, which makes visibility a property of the name rather than a keyword."
     },
     {
       "code": "type Reader interface { Read(p []byte) (n int, err error) }",
@@ -49,17 +50,17 @@
     {
       "code": "defer cleanupFunction()",
       "means": "schedules a function call to run when the surrounding function returns",
-      "consequence": "Arguments are evaluated immediately, but execution is deferred until function exit. Ideal for f.Close() or mu.Unlock()."
+      "consequence": "Runs when the surrounding function returns, whichever path it takes, so a file close or a lock release sits next to the thing it undoes instead of at every exit."
     },
     {
       "code": "go workerFunction()",
       "means": "launches a function on a lightweight concurrent goroutine",
-      "consequence": "Goroutines begin with only a ~2KB memory stack that grows and shrinks dynamically, allowing millions of concurrent tasks."
+      "consequence": "Starts a concurrent unit managed by the runtime rather than by the operating system, with a stack that starts at a couple of kilobytes and grows as needed \u2014 which is why a program can hold hundreds of thousands of them."
     },
     {
       "code": "chan Type and ch <- val / val := <-ch",
       "means": "typed channel pipe: send value / receive value",
-      "consequence": "\"Do not communicate by sharing memory; instead, share memory by communicating.\" Enables safe synchronization between goroutines."
+      "consequence": "A channel carries values between concurrent units, so state is passed rather than shared and the usual race on shared memory has nowhere to happen."
     },
     {
       "code": "select { case msg := <-ch1: ... default: ... }",

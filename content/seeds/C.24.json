@@ -21,7 +21,7 @@
     },
     {
       "id": "c2",
-      "text": "The proposal titled Cascading HTML style sheets is dated 10 October 1994, version 0.92, by Wium Lie, and describes itself as work in progress. It proposes a mapping between elements and presentation hints, with logic to make presentation decisions based on the user’s environment, such as screen size.",
+      "text": "The proposal titled Cascading HTML style sheets is dated 10 October 1994, version 0.92, by Wium Lie, and describes itself as work in progress. It proposes a mapping between elements and presentation hints, with logic to make presentation decisions based on the user\u2019s environment, such as screen size.",
       "type": "date",
       "tokens": [
         "HTML",
@@ -31,20 +31,20 @@
         "1994"
       ],
       "source": {
-        "title": "Lie, H. W., Cascading HTML style sheets — a proposal, version 0.92, 10 October 1994",
+        "title": "Lie, H. W., Cascading HTML style sheets \u2014 a proposal, version 0.92, 10 October 1994",
         "url": "https://w3.org/People/howcome/p/cascade.html",
         "kind": "primary"
       }
     },
     {
       "id": "c3",
-      "text": "The proposal’s defining property is in its name: sheets are designed to cascade, so that the user or browser specifies initial preferences and hands the remaining influence to the sheets referenced in the incoming document. Presentation is therefore negotiated between author and reader rather than dictated by either.",
+      "text": "The proposal\u2019s defining property is in its name: sheets are designed to cascade, so that the user or browser specifies initial preferences and hands the remaining influence to the sheets referenced in the incoming document. Presentation is therefore negotiated between author and reader rather than dictated by either.",
       "type": "event",
       "tokens": [
         "CSS"
       ],
       "source": {
-        "title": "Lie, H. W., Cascading HTML style sheets — a proposal, version 0.92, 10 October 1994",
+        "title": "Lie, H. W., Cascading HTML style sheets \u2014 a proposal, version 0.92, 10 October 1994",
         "url": "https://w3.org/People/howcome/p/cascade.html",
         "kind": "primary"
       }
@@ -75,7 +75,7 @@
     },
     {
       "id": "c5",
-      "text": "The consortium’s account records that by 1994 the markup language had established itself as a universal document format, but that it was clear the language even with extensions would not meet authors’ demands for presentational capability.",
+      "text": "The consortium\u2019s account records that by 1994 the markup language had established itself as a universal document format, but that it was clear the language even with extensions would not meet authors\u2019 demands for presentational capability.",
       "type": "event",
       "tokens": [
         "HTML",
@@ -86,12 +86,67 @@
         "url": "https://www.w3.org/press-releases/1996/css1-rec/",
         "kind": "primary"
       }
+    },
+    {
+      "id": "w1",
+      "type": "quote",
+      "tokens": [
+        "HTML",
+        "HTML5"
+      ],
+      "text": "The markup language is now published as a living standard by the WHATWG rather than as numbered versions; the numbered name HTML5 refers to the generation of the language standardised in that era, and the living standard requires the UTF-8 encoding, treating no other as valid.",
+      "source": {
+        "title": "HTML Standard, WHATWG living standard",
+        "url": "https://html.spec.whatwg.org/multipage/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "w2",
+      "type": "quote",
+      "tokens": [
+        "UTF",
+        "Unicode",
+        "ISO"
+      ],
+      "text": "UTF-8 is defined by RFC 3629 as a transformation format of ISO 10646, encoding the Unicode character set as a sequence of bytes in a way that preserves the ASCII range unchanged.",
+      "source": {
+        "title": "F. Yergeau, UTF-8, a transformation format of ISO 10646, RFC 3629, November 2003",
+        "url": "https://www.rfc-editor.org/rfc/rfc3629",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "w3",
+      "type": "quote",
+      "tokens": [
+        "XML"
+      ],
+      "text": "The Extensible Markup Language, abbreviated XML, is defined by a W3C Recommendation as a subset of SGML whose goal is that documents conforming to it should be straightforwardly usable over the internet.",
+      "source": {
+        "title": "Extensible Markup Language (XML) 1.0 (Fifth Edition), W3C Recommendation",
+        "url": "https://www.w3.org/TR/xml/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "w4",
+      "type": "quote",
+      "tokens": [
+        "CSS"
+      ],
+      "text": "Cascading Style Sheets, abbreviated CSS, is the language for describing the presentation of documents, defined across a family of specifications collected by the W3C in its periodic snapshot.",
+      "source": {
+        "title": "CSS Snapshot, W3C",
+        "url": "https://www.w3.org/TR/CSS/",
+        "kind": "primary"
+      }
     }
   ],
   "beats": {
-    "broke": "authors wanted control of presentation and the only way to get it was to add presentational elements to a document format — which, on this substrate, could never be removed again",
-    "fix": "put presentation in a separate sheet, and make the sheets cascade so the reader’s environment keeps a say rather than being overridden",
-    "cost": "if no single place decides, then what any one rule does depends on every other rule and on the reader’s context",
+    "broke": "authors wanted control of presentation and the only way to get it was to add presentational elements to a document format \u2014 which, on this substrate, could never be removed again",
+    "fix": "put presentation in a separate sheet, and make the sheets cascade so the reader\u2019s environment keeps a say rather than being overridden",
+    "cost": "if no single place decides, then what any one rule does depends on every other rule and on the reader\u2019s context",
     "interview": "what the cascade is actually for, and why it is not a fallback mechanism"
   }
 }

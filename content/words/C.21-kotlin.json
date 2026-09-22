@@ -4,7 +4,8 @@
   "lang": "Kotlin",
   "category": "Mobile & Multiplatform",
   "summary": "Modern, concise, null-safe language serving as Google's premier standard for Android development and modern JVM backends.",
-  "status": "unsourced",
+  "status": "traced",
+  "seed": "C.21",
   "rows": [
     {
       "code": "val vs var",
@@ -12,9 +13,9 @@
       "consequence": "Prefer val by default. Immutable references prevent side-effect bugs across multithreaded Android apps."
     },
     {
-      "code": "fun name(param: Type): ReturnType { ... }",
+      "code": "fun name(param: Type): ReturnType { ... }\nfun double(x: Int) = x * 2",
       "means": "function declaration with concise syntax",
-      "consequence": "Single-expression functions can omit curly braces: fun double(x: Int) = x * 2."
+      "consequence": "A function whose body is a single expression can drop the braces and the return, as the second form shows."
     },
     {
       "code": "Nullable types: String? vs non-null String",
@@ -27,9 +28,9 @@
       "consequence": "Returns null safely if user or profile is null rather than throwing an exception."
     },
     {
-      "code": "Elvis operator: name ?: \"Anonymous\"",
+      "code": "name ?: \"Anonymous\"\nval length: Int = str?.length ?: 0",
       "means": "provides fallback value if left-hand expression is null",
-      "consequence": "val length = str?.length ?: 0 ensures length is a non-null Int with zero fallback."
+      "consequence": "The fallback makes the result non-null, so the type after the operator has no question mark and the compiler stops asking about it."
     },
     {
       "code": "data class User(val id: Int, val name: String)",
@@ -59,12 +60,12 @@
     {
       "code": "coroutine: viewModelScope.launch { val data = fetchData() }",
       "means": "lightweight asynchronous concurrency framework",
-      "consequence": "suspend fun functions pause execution without blocking the underlying OS thread, keeping Android UI smooth at 60/120fps."
+      "consequence": "A suspending function pauses without blocking the thread underneath it, which is what keeps an interface responsive while work is in flight."
     },
     {
-      "code": "sealed class / sealed interface",
+      "code": "sealed interface UiState {\n  object Loading\n  data class Success(val d: Data)\n  data class Error(val msg: String)\n}",
       "means": "restricted class hierarchies representing finite state variants",
-      "consequence": "Used extensively for UI states: sealed interface UiState { object Loading; data class Success(val d: Data); data class Error(val msg: String); }."
+      "consequence": "The compiler knows the whole set of variants, so a when over them can be checked for exhaustiveness and a new state cannot be forgotten at one of the places that handles them."
     }
   ]
 }

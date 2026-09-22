@@ -4,7 +4,8 @@
   "lang": "Ruby & Rails",
   "category": "Backend & Enterprise",
   "summary": "Object-oriented language prioritizing developer happiness, elegant DSLs, and convention-over-configuration web development.",
-  "status": "unsourced",
+  "status": "traced",
+  "seed": "C.15",
   "rows": [
     {
       "code": "def method_name(param = 'default') ... end",
@@ -32,19 +33,19 @@
       "consequence": "Use { ... } for single-line blocks; use do ... end for multi-line blocks. The bedrock of Ruby's functional enumerables."
     },
     {
-      "code": "yield(arg)",
+      "code": "yield(arg)\ndef benchmark; t = Time.now; yield; Time.now - t; end",
       "means": "pauses method execution to execute the passed block",
-      "consequence": "Allows writing custom iteration methods and wrappers: def benchmark; t = Time.now; yield; Time.now - t; end."
+      "consequence": "Lets you write your own iteration methods and wrappers, as the timing example shows."
     },
     {
       "code": "class Dog < Animal ... end",
       "means": "defines a class inheriting from a superclass",
-      "consequence": "In Ruby, classes are open: you can reopen any existing class (even String) and add new methods at runtime (monkey patching)."
+      "consequence": "Classes are open: you can reopen any existing class, including one from the standard library, and add methods to it at run time. Powerful, and the reason a library can change behaviour you never asked it to touch."
     },
     {
       "code": "nil and nil? / empty? / blank? / present?",
       "means": "the singleton null object and state check helpers",
-      "consequence": "In Ruby, ONLY false and nil are falsy. The number 0 and empty string \"\" are truthy! blank? is a Rails helper checking for whitespace."
+      "consequence": "Only false and nil are falsy. The number zero and the empty string are both truthy, which is the opposite of several other languages and a reliable source of bugs when moving between them."
     },
     {
       "code": "unless condition ... end",
@@ -52,14 +53,14 @@
       "consequence": "Idiomatic opposite of if. Often used as an inline guard clause: return if user.nil? or redirect_to login unless logged_in?."
     },
     {
-      "code": "self keyword",
+      "code": "self keyword\ndef self.find_by_email(...)",
       "means": "refers to the current executing object or class context",
-      "consequence": "Inside a class method definition (def self.find_by_email), self refers to the Class object itself."
+      "consequence": "Inside a method defined with self, it refers to the class itself rather than to an instance of it."
     },
     {
       "code": "ActiveRecord: User.where(active: true).order(created_at: :desc)",
       "means": "object-relational mapping querying database tables",
-      "consequence": "Executes lazily: chaining query methods builds an ActiveRecord::Relation; SQL executes only when records are accessed."
+      "consequence": "Executes lazily: chaining query methods builds up a query object, and the database is only asked when the records are actually read."
     },
     {
       "code": "Associations: has_many :orders, belongs_to :user",

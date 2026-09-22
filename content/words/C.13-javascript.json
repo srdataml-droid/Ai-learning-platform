@@ -4,7 +4,8 @@
   "lang": "JavaScript",
   "category": "Web & Frontend",
   "summary": "The dynamic runtime language of the web, Node.js servers, and asynchronous event-driven computing.",
-  "status": "unsourced",
+  "status": "traced",
+  "seed": "C.13",
   "rows": [
     {
       "code": "let / const / var",
@@ -93,13 +94,13 @@
     },
     {
       "code": "Nullish coalescing: val ?? fallback",
-      "means": "provides fallback ONLY if value is null or undefined",
-      "consequence": "Unlike || (OR), which treats 0, '', and false as falsy and overwrites them, ?? preserves valid falsy values."
+      "means": "provides a fallback only when the value is null or undefined",
+      "consequence": "Falls back only when the left side is null or undefined, unlike the older operator, which also falls back on zero and the empty string \u2014 which is the bug it was introduced to fix."
     },
     {
       "code": "async / await",
       "means": "writes asynchronous promise code in synchronous style",
-      "consequence": "Syntactic sugar over Promises. An async function always returns a Promise; await pauses execution until the promise settles."
+      "consequence": "Syntax over the same underlying objects: await suspends the function until the pending value settles, so sequential-looking code does not block anything else."
     },
     {
       "code": "new Promise((resolve, reject) => { ... })",
@@ -114,7 +115,7 @@
     {
       "code": "fetch(url, { method: 'POST', body: JSON.stringify(data) })",
       "means": "native HTTP client for network requests",
-      "consequence": "Returns a Promise resolving to a Response object. Does not reject on HTTP 404/500 errors; check res.ok === true."
+      "consequence": "Returns a pending value that settles into a response object; the body is read with a second await, because the headers arriving and the body arriving are two different moments."
     },
     {
       "code": "try { ... } catch (err) { ... } finally { ... }",
@@ -149,12 +150,12 @@
     {
       "code": "localStorage.setItem(key, val) / getItem(key)",
       "means": "persists string key-value pairs across browser sessions",
-      "consequence": "Synchronous API limited to ~5MB per domain. Stores strings only; use JSON.stringify/JSON.parse to store complex objects."
+      "consequence": "Stores strings only, so anything structured has to be serialised on the way in and parsed on the way out, and the space available is a few megabytes and varies by browser."
     },
     {
       "code": "setTimeout(fn, ms) / setInterval(fn, ms)",
       "means": "schedules a function call after delay / on recurring interval",
-      "consequence": "Returns a numeric timer ID; cancel with clearTimeout(id) or clearInterval(id) to avoid memory leaks."
+      "consequence": "Returns a handle that must be kept if the timer is ever to be cancelled, and a repeating timer that nobody cancels keeps the page busy long after the thing that wanted it has gone."
     },
     {
       "code": "class Name extends Base { constructor() { super(); } }",

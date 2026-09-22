@@ -84,6 +84,46 @@
         "url": "https://en.wikipedia.org/wiki/Brendan_Eich",
         "kind": "secondary"
       }
+    },
+    {
+      "id": "w1",
+      "type": "quote",
+      "tokens": [
+        "JSON",
+        "RFC"
+      ],
+      "text": "The JavaScript Object Notation data interchange format, commonly abbreviated JSON, is specified by RFC 8259, which defines it as a lightweight, text-based, language-independent syntax for interchanging structured data.",
+      "source": {
+        "title": "T. Bray, editor, The JavaScript Object Notation (JSON) Data Interchange Format, RFC 8259, December 2017",
+        "url": "https://www.rfc-editor.org/rfc/rfc8259",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "w2",
+      "type": "quote",
+      "tokens": [
+        "DOM"
+      ],
+      "text": "The Document Object Model, abbreviated DOM, is defined by a living standard as the tree of objects a document is represented as, which scripts read and modify.",
+      "source": {
+        "title": "DOM Standard, WHATWG living standard",
+        "url": "https://dom.spec.whatwg.org/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "w3",
+      "type": "quote",
+      "tokens": [
+        "CSS"
+      ],
+      "text": "Cascading Style Sheets, abbreviated CSS, is the language for describing the presentation of documents, defined across a family of specifications collected by the W3C in its periodic snapshot.",
+      "source": {
+        "title": "CSS Snapshot, W3C",
+        "url": "https://www.w3.org/TR/CSS/",
+        "kind": "primary"
+      }
     }
   ],
   "beats": {
