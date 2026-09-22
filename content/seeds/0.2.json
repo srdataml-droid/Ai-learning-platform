@@ -1,0 +1,79 @@
+{
+  "taskId": "0.2",
+  "title": "The terminal's lineage: teleprinters, the Bourne shell, and who actually invented the mouse",
+  "researchedAt": "2026-09-22",
+  "claims": [
+    {
+      "id": "c1",
+      "type": "event",
+      "tokens": [
+        "Teletype",
+        "1963"
+      ],
+      "text": "The Teletype Model 33, an electromechanical teleprinter introduced in 1963, was widely used as a computer terminal. Interaction was a line of typed text sent to the machine and a line of printed text sent back, on paper.",
+      "source": {
+        "title": "Teletype Model 33 — the electromechanical teleprinter, introduced in 1963, widely used as a computer terminal",
+        "url": "https://en.wikipedia.org/wiki/Teletype_Model_33",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c2",
+      "type": "date",
+      "tokens": [
+        "Engelbart",
+        "Douglas Engelbart",
+        "Stanford Research Institute",
+        "1968",
+        "December 1968"
+      ],
+      "text": "The mouse was invented by Douglas Engelbart at the Stanford Research Institute and demonstrated publicly in December 1968, not at Xerox.",
+      "source": {
+        "title": "Douglas Engelbart — inventor of the computer mouse at the Stanford Research Institute, demonstrated publicly in December 1968",
+        "url": "https://en.wikipedia.org/wiki/Douglas_Engelbart",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c3",
+      "type": "event",
+      "tokens": [
+        "Xerox",
+        "Alto",
+        "1973"
+      ],
+      "text": "The Xerox Alto, built at Xerox's Palo Alto research centre in 1973, established the graphical user interface as it is now understood, combining windows, icons and a mouse on one machine.",
+      "source": {
+        "title": "Xerox Alto — the 1973 Xerox PARC machine that established the graphical user interface with windows, icons and a mouse",
+        "url": "https://en.wikipedia.org/wiki/Xerox_Alto",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c4",
+      "type": "event",
+      "tokens": [
+        "Bourne",
+        "Stephen Bourne",
+        "Bell Labs",
+        "Unix",
+        "Brian Fox",
+        "1979",
+        "1989",
+        "Bash"
+      ],
+      "text": "The Bourne shell was written by Stephen Bourne at Bell Labs and released in the seventh edition of Unix in 1979. Bash was written by Brian Fox and first released in 1989.",
+      "source": {
+        "title": "Bourne shell — written by Stephen Bourne at Bell Labs and released in the seventh edition of Unix in 1979; and Bash, written by Brian Fox and first released in 1989",
+        "url": "https://en.wikipedia.org/wiki/Bourne_shell",
+        "kind": "secondary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "interaction was a line of text in and a line of text out, because the hardware was a printer, and that shape was inherited by everything built on top of it",
+    "fix": "treat the constraint as a design: small programs reading text and writing text can be composed by connecting one's output to another's input, which no graphical equivalent has matched",
+    "cost": "composition through untyped text means every program must parse the previous one's output, so the interface between two tools is a convention rather than a contract",
+    "interview": "why the text stream interface outlived the hardware that forced it"
+  }
+}

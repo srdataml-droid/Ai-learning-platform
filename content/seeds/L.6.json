@@ -1,0 +1,49 @@
+{
+  "taskId": "L.6",
+  "title": "Sparse and dense retrieval, and how to combine rankings without comparable scores",
+  "researchedAt": "2026-09-22",
+  "claims": [
+    {
+      "id": "c1",
+      "type": "event",
+      "tokens": [
+        "Robertson",
+        "Sparck Jones",
+        "Stephen Robertson",
+        "Karen Sparck Jones",
+        "Okapi"
+      ],
+      "text": "The standard sparse ranking function was developed from the probabilistic relevance framework by Robertson, Sparck Jones and colleagues. It scores a document by the query terms it contains, weighting rarer terms more heavily, applying saturation so that repeated occurrences of a term give diminishing returns, and normalising for document length so that long documents are not favoured merely for containing more words.",
+      "source": {
+        "title": "Okapi BM25 — the ranking function developed from the probabilistic relevance framework by Stephen Robertson, Karen Sparck Jones and colleagues, scoring documents by query term frequency with saturation and document length normalisation",
+        "url": "https://en.wikipedia.org/wiki/Okapi_BM25",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c2",
+      "type": "event",
+      "tokens": [
+        "Cormack",
+        "Clarke",
+        "Buettcher",
+        "SIGIR",
+        "Reciprocal Rank Fusion",
+        "2009",
+        "Rank Fusion"
+      ],
+      "text": "Cormack, Clarke and Buettcher presented Reciprocal Rank Fusion at SIGIR in 2009, reporting that this simple method of combining ranked result lists outperformed Condorcet fusion and individual rank learning methods. It scores each document by summing, across the lists it appears in, one divided by a constant plus that document's rank in the list, so only positions are used and the scores produced by the individual systems are never compared.",
+      "source": {
+        "title": "Gordon V. Cormack, Charles L. A. Clarke and Stefan Buettcher, Reciprocal Rank Fusion outperforms Condorcet and individual Rank Learning Methods, Proceedings of SIGIR 2009, pages 758-759",
+        "url": "https://dl.acm.org/doi/10.1145/1571941.1572114",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a retriever matching meaning cannot find an identifier, because an identifier has no meaning to match — it is a string whose value is that it is exactly itself",
+    "fix": "run both a term-matching and a meaning-matching retriever and combine their rankings, since each fails precisely where the other is strong",
+    "cost": "the two produce scores on incomparable scales, so they cannot simply be added, and the combination needs a method that uses positions rather than values",
+    "interview": "why a semantic retriever fails on a product code, and how to merge two ranked lists"
+  }
+}

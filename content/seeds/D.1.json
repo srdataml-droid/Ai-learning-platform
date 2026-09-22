@@ -1,0 +1,47 @@
+{
+  "taskId": "D.1",
+  "title": "Git's origin and its data model: snapshots addressed by content",
+  "researchedAt": "2026-09-22",
+  "claims": [
+    {
+      "id": "c1",
+      "type": "event",
+      "tokens": [
+        "Torvalds",
+        "Linus Torvalds",
+        "Git",
+        "Linux",
+        "BitKeeper",
+        "2005",
+        "April 2005"
+      ],
+      "text": "Git was begun by Linus Torvalds in April 2005, after the Linux kernel project lost free use of the proprietary system BitKeeper it had been relying on. The design goals stated at the time were speed, simple design, strong support for non-linear development with many parallel branches, full distribution so that every copy is a complete repository, and the ability to handle large projects efficiently.",
+      "source": {
+        "title": "Git — begun by Linus Torvalds in April 2005 after the Linux kernel project lost free use of BitKeeper; a content-addressable filesystem storing snapshots identified by hashes of their contents",
+        "url": "https://en.wikipedia.org/wiki/Git",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c2",
+      "type": "event",
+      "tokens": [
+        "Git",
+        "Every",
+        "A"
+      ],
+      "text": "Git stores content as objects addressed by a hash of the content itself, so identical content is stored once and an identifier for an object is a verification of it. A commit records a complete snapshot of the tree together with a pointer to its parent or parents, which makes the history a directed acyclic graph rather than a sequence. A branch is therefore not a copy of anything: it is a file containing the identifier of one commit.",
+      "source": {
+        "title": "Git — begun by Linus Torvalds in April 2005 after the Linux kernel project lost free use of BitKeeper; a content-addressable filesystem storing snapshots identified by hashes of their contents",
+        "url": "https://en.wikipedia.org/wiki/Git",
+        "kind": "secondary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "version control was a record of changes held centrally, so history was a sequence, branching was expensive, and a lost or unreachable server was a lost project",
+    "fix": "address content by a hash of itself and record each commit as a snapshot with pointers to its parents, which makes branching the creation of one small file and gives every copy the whole history",
+    "cost": "the model is exposed rather than hidden, so operations that move pointers can be used to lose work, and the safety of any command depends on whether anyone else has the commits it abandons",
+    "interview": "why a branch is cheap, and what makes rewriting history dangerous"
+  }
+}

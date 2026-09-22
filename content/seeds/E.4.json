@@ -1,0 +1,45 @@
+{
+  "taskId": "E.4",
+  "title": "Hash tables: Luhn's 1953 proposal, and how the average case is lost",
+  "researchedAt": "2026-09-22",
+  "claims": [
+    {
+      "id": "c1",
+      "type": "event",
+      "tokens": [
+        "Luhn",
+        "Hans Peter Luhn",
+        "IBM",
+        "1953",
+        "January 1953"
+      ],
+      "text": "Hans Peter Luhn, at IBM, is credited with the first description of hashing with chaining, in an internal memorandum of January 1953. The idea is to pass a key through a function producing an index, and to address an array position directly rather than searching for the key.",
+      "source": {
+        "title": "Hans Peter Luhn — IBM researcher credited with the first description of hashing with chaining, in an internal memorandum of January 1953",
+        "url": "https://en.wikipedia.org/wiki/Hash_table",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c2",
+      "type": "event",
+      "tokens": [
+        "The",
+        "An",
+        "2011"
+      ],
+      "text": "The expected constant-time behaviour depends on keys being spread across the array. An attacker who knows or can determine the hash function may submit keys chosen to collide, concentrating them in one position, so that operations degrade to linear time in the number of colliding entries. This was demonstrated against many widely deployed web platforms in 2011, allowing a small request to consume disproportionate processing time, and the standard mitigation is to introduce a per-process random seed into the hash so that an attacker cannot predict which keys collide.",
+      "source": {
+        "title": "Collision attack — hash flooding, in which an attacker submits keys chosen to collide, degrading a hash table's expected constant-time operations to linear; demonstrated against many web platforms in 2011",
+        "url": "https://en.wikipedia.org/wiki/Collision_attack",
+        "kind": "secondary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "finding a record among many required searching, so the cost of a lookup grew with the number of records however the records were arranged",
+    "fix": "compute the location from the key itself, so a lookup addresses a position directly instead of searching for it",
+    "cost": "the constant time is an expectation rather than a guarantee, and it rests on an assumption about the keys that an adversary can deliberately break",
+    "interview": "what makes a hash table degrade, and why it can be triggered on purpose"
+  }
+}

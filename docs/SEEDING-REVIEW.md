@@ -4,12 +4,16 @@ Written 2026-09-21. Derived by running the gate's own atom extractor over
 every lesson, so the numbers are reproducible rather than estimated — see
 "How to regenerate" at the end.
 
-Updated 2026-09-22. Current: **276 lessons, 190 traced, 69 claimless, 17
-unsourced**, and **271 checkable atoms** still sitting in unsourced prose —
-down from 707 at the time of writing. The section below records the state
-*before* those changes, because the prioritisation was built on it and still
-holds for what remains. See "Where this stands" at the end for the resume
-point.
+**RESOLVED 2026-09-22. There are no unsourced lessons left.**
+
+276 lessons: **205 traced, 71 claimless, 0 unsourced.** Checkable atoms in
+unsourced prose: **0**, down from 707 when this was written. Every lesson in
+the repo either traces to a seed or is machine-checked to assert nothing
+checkable. The allowlist was never touched and remains at nine entries.
+
+Everything below is the original review, kept because the reasoning it records
+is still the reasoning, and because the findings are the argument for the
+pipeline existing.
 
 ## The state, as measured before the `claimless` change
 
@@ -364,7 +368,7 @@ a factual claim, which is the one direction that should never happen.
   lesson. That is worse than an unsourced figure, because a reader cannot tell
   there is anything to check.
 
-### The 17 lessons still `unsourced`
+### The lessons that were still `unsourced` (all now done)
 
 **Correction to an earlier version of this section**, which claimed all 23
 remaining lessons made real historical claims and that `claimless` was
@@ -449,3 +453,74 @@ Boole 1854 and Shannon 1937), `E.1` (Dijkstra 1956 and Knuth).
 (14) and `L.1`-`L.5`, `L.7`, `L.8`, `L.10`, `L.11`, `L.13`-`L.26` (23). These
 are a different kind of work from the above — writing rather than correcting —
 and `tools/missing-lessons.mjs` lists them.
+
+
+## Final tally, and what the audit actually found
+
+Every one of the pre-pipeline lessons that made checkable claims has now been
+read against its sources. **The great majority contained at least one error**,
+and they were not typos. Grouped by kind, because the pattern is the finding:
+
+**Arithmetic that was simply wrong.** `B.39`'s blueprint gave the KV-cache
+formula at batch 16 and concluded ≈10.7 GB, which is the batch-of-8 answer —
+off by exactly 2x in its own worked example. `B.1` had four compounding
+errors starting from "L1 ≈ 1 ns (the speed of light through a few millimeters
+of silicon)", wrong by about two orders of magnitude, whose bad 1 ns then
+propagated into a wrong 100x ratio; its human-scale analogy also disagreed
+with itself between story and blueprint, and its "12 years" matched no entry
+in the table at all.
+
+**Attributions given to the wrong person.** `P.11` credited Simon Willison
+with *discovering* prompt injection; he has said publicly and repeatedly, "I
+didn't discover it, I coined it." `B.16` and `B.18` both credited the ACID
+acronym to Gray 1981; it is Härder and Reuter 1983. `B.8` credited RFC 675 to
+Cerf and Kahn; it is Cerf, Dalal and Sunshine. `K.6` implied backpropagation
+was invented in 1986; Linnainmaa 1970 and Werbos 1974 precede it. `0.2` said
+the mouse was invented at Xerox PARC; it was Engelbart, at SRI.
+
+**Contested history stated as settled.** `K.2` asserted that *Perceptrons*
+"triggered the devastating First AI Winter", a disputed causal claim whose
+dates do not even fit — the funding collapse followed the 1973 Lighthill
+report, four years after the book.
+
+**Hedges deleted in retelling.** `K.13` said the √dk scaling is "mandatory
+because" dot products saturate the softmax. The paper says *"We suspect…"*.
+The same pattern sits one paper earlier, where Bahdanau, Cho and Bengio write
+*"we conjecture…"*. Both papers defining that lineage hedge their central
+causal claim and both hedges vanished on the way into textbooks. This is the
+most on-the-nose finding of the whole exercise: a curriculum about checking
+claims had itself flattened two conjectures into facts.
+
+**Invented specifics.** `A.4` opened "In 2010, an engineering team noticed…",
+a fabricated date attached to a hypothetical — worse than an unsourced figure,
+because it is unfalsifiable *and* reads as history. `B.39` priced an H100 at
+$30,000, which is also structurally wrong since the SXM part is not sold as a
+card at all. `K.11` had "wasting 95% of GPU cycles". `L.9` presented *the
+Honest Refusal Rate* in title case as an established industry metric; the name
+appears to have been the lesson's own invention.
+
+**Technical conflations.** `B.22` listed "sloppy quorums (R + W > N)" as one
+item and then asked how that condition "ensures strong read consistency" — two
+different mechanisms, and the question contains a false premise, since the
+sloppy quorum is precisely what stops the condition guaranteeing anything.
+
+### Two errors of my own, recorded here rather than quietly fixed
+
+A commit message claimed unsourced prose had fallen to 391 when the measured
+figure was 470, and another claimed 201 traced when the build reported 199.
+Both were written before running the count. And an earlier version of this
+document asserted that all 23 then-remaining lessons made real historical
+claims and that `claimless` was exhausted — asserted from atom lists without
+reading the lessons. `L.12`, which this document had ranked as the densest
+numeric claim left in the repo, turned out to be 0.9^5 and 0.9^10 worked out
+from an explicitly hypothetical premise.
+
+The lesson generalises and is worth keeping: an atom count tells you the
+extractor fired, not what the prose was doing.
+
+### How to regenerate the headline number
+
+The command at the end of this document should now print `0`. If it ever
+prints anything else, an unsourced lesson has appeared or a `traced` one has
+lost its seed — both of which the suite already fails on, so this is a second
+check rather than the only one.

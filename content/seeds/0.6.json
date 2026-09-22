@@ -1,0 +1,71 @@
+{
+  "taskId": "0.6",
+  "title": "Binary floating point, and the Dhahran failure caused by one repeating fraction",
+  "researchedAt": "2026-09-22",
+  "claims": [
+    {
+      "id": "c1",
+      "type": "event",
+      "tokens": [
+        "IEEE",
+        "Kahan",
+        "William Kahan",
+        "1985",
+        "53",
+        "64"
+      ],
+      "text": "The representation almost all hardware uses is specified by IEEE 754, first published in 1985, with William Kahan as its principal architect. Its double precision format occupies 64 bits, of which 53 are available for the significand, so a value is represented as a sign, an exponent and a fixed number of significant binary digits.",
+      "source": {
+        "title": "IEEE 754 — the IEEE Standard for Floating-Point Arithmetic, first published as IEEE 754-1985, developed with William Kahan as its principal architect",
+        "url": "https://en.wikipedia.org/wiki/IEEE_754",
+        "kind": "secondary"
+      }
+    },
+    {
+      "id": "c2",
+      "type": "number",
+      "tokens": [
+        "Patriot",
+        "Dhahran",
+        "Scud",
+        "25 February 1991",
+        "1991",
+        "28",
+        "24",
+        "100",
+        "0.34",
+        "1,676"
+      ],
+      "text": "On 25 February 1991 a Patriot battery at Dhahran in Saudi Arabia failed to track and intercept an incoming Scud, which struck an army barracks and killed 28 Americans. The unit had been operating continuously for over 100 hours. Time was kept by the internal clock as an integer count of tenths of a second, and converting it for the prediction arithmetic multiplied it by one tenth in a 24-bit register. One tenth has a non-terminating binary expansion, which was therefore chopped, and the resulting error grew in proportion to how long the system had been running: after about 100 hours it reached roughly 0.34 seconds. A Scud travels at about 1,676 metres per second, so in that interval it moves more than half a kilometre — far enough to fall outside the range gate being tracked.",
+      "source": {
+        "title": "United States General Accounting Office, Patriot Missile Defense: Software Problem Led to System Failure at Dhahran, Saudi Arabia, GAO/IMTEC-92-26, 4 February 1992",
+        "url": "https://www.gao.gov/assets/imtec-92-26.pdf",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c3",
+      "type": "date",
+      "tokens": [
+        "Patriot",
+        "Israeli",
+        "11 February",
+        "16 February",
+        "21 February",
+        "26 February"
+      ],
+      "text": "Israeli data showing a significant range gate shift reached the Patriot Project Office on 11 February. Modified software was released on 16 February, a message on 21 February warned about very long run times without defining a threshold, and the corrected software arrived at Dhahran on 26 February, the day after the attack.",
+      "source": {
+        "title": "United States General Accounting Office, Patriot Missile Defense: Software Problem Led to System Failure at Dhahran, Saudi Arabia, GAO/IMTEC-92-26, 4 February 1992",
+        "url": "https://www.gao.gov/assets/imtec-92-26.pdf",
+        "kind": "primary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a fraction that terminates in decimal need not terminate in binary, so a value written exactly in source is stored approximately, and the discrepancy is invisible until it accumulates",
+    "fix": "treat the stored value as an approximation with a known bound: compare within a tolerance, and hold quantities that must be exact in integers of the smallest unit instead",
+    "cost": "integer arithmetic on the smallest unit requires deciding that unit in advance and handling overflow, and gives up the enormous range that the exponent provides",
+    "interview": "why adding two decimal fractions does not produce the expected result"
+  }
+}

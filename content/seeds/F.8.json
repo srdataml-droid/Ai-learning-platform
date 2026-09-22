@@ -1,0 +1,48 @@
+{
+  "taskId": "F.8",
+  "title": "Hoare's null reference, and SQL's three-valued logic",
+  "researchedAt": "2026-09-22",
+  "claims": [
+    {
+      "id": "c1",
+      "type": "quote",
+      "tokens": [
+        "Hoare",
+        "Tony Hoare",
+        "ALGOL",
+        "1965",
+        "2009",
+        "Null References",
+        "The Billion Dollar Mistake"
+      ],
+      "text": "Tony Hoare gave a talk called Null References: The Billion Dollar Mistake at QCon London in March 2009. He traced the null reference to 1965, when he was designing the first comprehensive type system for references in an object-oriented language. His stated goal had been that all use of references should be absolutely safe, with checking performed automatically by the compiler; he added the null reference simply because it was so easy to implement.",
+      "source": {
+        "title": "Tony Hoare, Null References: The Billion Dollar Mistake, presented at QCon London, 9-12 March 2009",
+        "url": "https://www.infoq.com/presentations/Null-References-The-Billion-Dollar-Mistake-Tony-Hoare/",
+        "kind": "primary"
+      }
+    },
+    {
+      "id": "c2",
+      "type": "event",
+      "tokens": [
+        "SQL",
+        "NULL",
+        "UNKNOWN",
+        "Comparing"
+      ],
+      "text": "SQL does not use two-valued logic for expressions involving NULL. It uses a three-valued logic whose values are true, false and unknown. Comparing anything to NULL, including NULL itself, yields unknown rather than true or false, because NULL represents the absence of a known value rather than a value, and two unknown quantities cannot be asserted to be equal. A row is returned by a query only when its condition evaluates to true, so a condition evaluating to unknown excludes the row exactly as a false one would.",
+      "source": {
+        "title": "Three-valued logic — the system with truth values true, false and unknown, as used for SQL's treatment of NULL",
+        "url": "https://en.wikipedia.org/wiki/Three-valued_logic",
+        "kind": "secondary"
+      }
+    }
+  ],
+  "beats": {
+    "broke": "a placeholder meaning no known value was given the same syntax as a value, so expressions that look like comparisons are not comparisons and code written as though they were is wrong in a way that produces no error",
+    "fix": "treat the absence of a value as its own logical state with its own operators, and test for it explicitly rather than comparing to it",
+    "cost": "a third truth value propagates through every expression, so conditions that appear exhaustive are not, and the missing rows are silently excluded rather than reported",
+    "interview": "why a negated comparison does not return the rows whose value is absent"
+  }
+}
