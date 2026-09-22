@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>One program, several languages — Curriculum</title>
+  <meta name="description" content="One specification implemented in several languages, with what each one compelled you to state and what it decided on your behalf.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..900&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to main content</a>
+  <div class="scroll-progress-line" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="./index.html" class="site-brand">
+        <span class="brand-symbol">0→L</span>
+        <span class="brand-name">Curriculum</span>
+      </a>
+      <nav class="site-nav" aria-label="Main Navigation">
+        <a href="./index.html" class="nav-link">Curriculum</a>
+        <a href="./languages.html" class="nav-link">Languages</a>
+        <a href="./words.html" class="nav-link">Word Lists</a>
+        <a href="./compare.html" class="nav-link" aria-current="page">Compare</a>
+        <a href="./progress.html" class="nav-link">Progress</a>
+        <button type="button" class="theme-toggle-btn" aria-label="Toggle visual theme">Dark</button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="main-wrapper page-entrance">
+    <div id="compare-mount">
+      <div class="inverted-band"><p class="signal-text">Loading…</p></div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span class="footer-copy">Curriculum — Software &amp; AI Engineering</span>
+      <span class="footer-meta" id="footer-stats-line"></span>
+    </div>
+  </footer>
+
+  <script src="./data.js"></script>
+  <script src="./comparisons-data.js"></script>
+  <script src="./app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const mount = document.getElementById('compare-mount');
+      const all = window.CurriculumComparisons ? window.CurriculumComparisons.all() : [];
+
+      if (!all.length) {
+        mount.innerHTML = `
+          <div class="inverted-band">
+            <h1>Nothing to compare yet</h1>
+            <p>A comparison is one specification implemented several times. None has been written.</p>
+          </div>`;
+        return;
+      }
+
+      const params = new URLSearchParams(window.location.search);
+      const wanted = params.get('id');
+      const comparison = (wanted && window.CurriculumComparisons.get(wanted)) || all[0];
+
+      document.title = `${comparison.title} — Curriculum`;
+
+      /**
+       * The two lists are the point of the page, so they sit above the code
+       * rather than below it. What a language compelled you to state and what
+       * it decided on your behalf are the language's opinion expressed as a
+       * constraint — the listing is only the evidence for them.
+       */
+      const implementations = comparison.implementations.map((impl) => `
+        <article class="section-block" aria-labelledby="impl-${escapeAttr(impl.languageId)}">
+          <div class="section-header">
+            <h3 id="impl-${escapeAttr(impl.languageId)}" style="margin:0;">${escapeHtml(impl.lang)}</h3>
+            <a class="section-counter" href="./language.html?id=${escapeAttr(impl.languageId)}">why it looks like this →</a>
+          </div>
+
+          <div class="compare-lists">
+            <div class="compare-list">
+              <h4>It made you state</h4>
+              <ul>${impl.compelled.map((x) => `<li>${escapeHtml(x)}</li>`).join('')}</ul>
+            </div>
+            <div class="compare-list">
+              <h4>It decided for you</h4>
+              <ul>${impl.decided.map((x) => `<li>${escapeHtml(x)}</li>`).join('')}</ul>
+            </div>
+          </div>
+
+          <pre class="compare-code"><code>${escapeHtml(impl.code)}</code></pre>
+          ${impl.note ? `<p class="compare-note">${escapeHtml(impl.note)}</p>` : ''}
+        </article>`).join('');
+
+      const others = all.filter((c) => c.id !== comparison.id);
+
+      mount.innerHTML = `
+        <div class="lesson-meta-bar">
+          <div class="lesson-breadcrumbs">
+            <a href="./index.html">Curriculum Map</a>
+            <span>/</span>
+            <span>One program, several languages</span>
+          </div>
+          ${comparison.taskId ? `<div><a class="track-card-count" href="./lesson.html?id=${escapeAttr(comparison.taskId)}">${escapeHtml(comparison.taskId)}</a></div>` : ''}
+        </div>
+
+        <section class="inverted-band" aria-labelledby="compare-heading">
+          <span class="lesson-number-badge">ONE SPECIFICATION, ${comparison.implementations.length} IMPLEMENTATIONS</span>
+          <h1 id="compare-heading" class="lesson-main-title">${escapeHtml(comparison.title)}</h1>
+          <p style="color:var(--inv-ink);max-inline-size:72ch;margin-top:.75rem;">${escapeHtml(comparison.task)}</p>
+        </section>
+
+        ${provenanceBanner(comparison)}
+        ${implementations}
+
+        <section class="section-block" aria-labelledby="reading-heading">
+          <div class="section-header">
+            <h2 id="reading-heading">What the three versions say</h2>
+            <span class="section-counter">The comparison</span>
+          </div>
+          ${comparison.reading.split('\n\n').map((p) => `<p style="max-inline-size:72ch;">${escapeHtml(p)}</p>`).join('')}
+          ${comparison.furtherWork ? `<p class="compare-note" style="max-inline-size:72ch;">${escapeHtml(comparison.furtherWork)}</p>` : ''}
+        </section>
+
+        ${others.length ? `
+          <section class="section-block" aria-labelledby="others-heading">
+            <div class="section-header">
+              <h2 id="others-heading">Other comparisons</h2>
+            </div>
+            <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
+              ${others.map((c) => `<a class="btn" href="./compare.html?id=${escapeAttr(c.id)}">${escapeHtml(c.title)}</a>`).join('')}
+            </div>
+          </section>` : ''}`;
+
+      /**
+       * The same four states as every other page. A comparison is usually
+       * `claimless`: it argues about code on the page rather than about the
+       * world, so there is nothing to cite and the status says so rather than
+       * leaving the reader to guess which kind of page this is.
+       */
+      function provenanceBanner(c) {
+        const states = {
+          unsourced: ['warn', 'Not yet sourced', 'This comparison makes claims that have not been checked against a source.'],
+          claimless: ['ok', 'Nothing to source', 'This page argues about the code printed on it, not about dates, figures or people — checked mechanically to name nothing beyond the languages it compares.'],
+          traced: ['ok', 'Sources traced', 'Every date, figure and name here is licensed by a claim with a source.'],
+          verified: ['ok', 'Verified', 'Traced to sources and read end to end by a person.'],
+        };
+        const s = states[c.status];
+        if (!s) return '';
+        return `
+          <div class="provenance-banner provenance-${s[0]}" role="note">
+            <span class="provenance-label">${s[1]}</span>
+            <span class="provenance-text">${s[2]}</span>
+          </div>`;
+      }
+
+      function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text == null ? '' : String(text);
+        return div.innerHTML;
+      }
+
+      function escapeAttr(text) {
+        return escapeHtml(text).replace(/"/g, '&quot;');
+      }
+    });
+  </script>
+</body>
+</html>

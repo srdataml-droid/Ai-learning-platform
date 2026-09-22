@@ -1,0 +1,87 @@
+// GENERATED FILE — do not edit by hand.
+// Source: content/comparisons/*.json — regenerate with `npm run build:data`.
+(function () {
+  window.CurriculumComparisons = window.CurriculumComparisons || {};
+
+  const COMPARISONS = {
+  "read-sum-report": {
+    "id": "read-sum-report",
+    "title": "Read a file of numbers, total them, and report what could not be read",
+    "status": "claimless",
+    "taskId": "C.27.6",
+    "task": "Read a file whose lines are meant to be whole numbers. Print the total. If the file is not there, say so and stop. If a line is not a number, skip it and report how many were skipped. One specification, three implementations — not three idiomatic programs, so that every difference between them is attributable to the language rather than to a choice the author made.",
+    "implementations": [
+      {
+        "languageId": "C.11",
+        "lang": "Python",
+        "code": "import sys\n\ndef main(path):\n    total = skipped = 0\n    try:\n        with open(path) as f:\n            for line in f:\n                try:\n                    total += int(line)\n                except ValueError:\n                    skipped += 1\n    except FileNotFoundError:\n        print(f\"no such file: {path}\")\n        return 1\n    print(total, skipped)\n    return 0\n\nsys.exit(main(sys.argv[1]))",
+        "compelled": [
+          "nothing about types, anywhere",
+          "a decision about where to catch each failure, since both of them travel until something stops them",
+          "the closing of the file, only to the extent of saying which block owns it"
+        ],
+        "decided": [
+          "that a failure not caught here keeps going, and will reach the top of the program by itself",
+          "that the accumulator is whatever the additions make it, with no declared width and no overflow to think about",
+          "that the file is closed at the end of the block, so the resource question is answered by the syntax rather than by you"
+        ],
+        "note": "The shortest of the three and the one where the most is happening out of sight. Both failure paths exist and neither is visible at the point where it could occur — you have to know that opening and converting can both raise, because the code does not say so."
+      },
+      {
+        "languageId": "C.13",
+        "lang": "JavaScript",
+        "code": "import { readFile } from 'node:fs/promises';\n\nasync function main(path) {\n  let text;\n  try {\n    text = await readFile(path, 'utf8');\n  } catch {\n    console.log(`no such file: ${path}`);\n    return 1;\n  }\n  let total = 0, skipped = 0;\n  for (const line of text.split('\\n')) {\n    const n = Number(line);\n    if (line.trim() === '' || !Number.isInteger(n)) { skipped++; continue; }\n    total += n;\n  }\n  console.log(total, skipped);\n  return 0;\n}\n\nprocess.exit(await main(process.argv[2]));",
+        "compelled": [
+          "a decision about whether this function is asynchronous, which then spreads to everyone who calls it",
+          "an explicit test for what counts as a number, because the conversion does not refuse anything",
+          "handling the empty line yourself, since the conversion is happy to treat it as zero"
+        ],
+        "decided": [
+          "that the whole file is read into memory before any line is examined",
+          "that a failed conversion is a value rather than an error, so nothing is raised and nothing is caught",
+          "that arithmetic is done in one numeric type, whose behaviour beyond a certain size you have to know rather than be told"
+        ],
+        "note": "The only one of the three where the bad line does not announce itself. The conversion returns a value for input that is not a number at all, so the check has to be written by hand — and if you forget it, the total is quietly wrong rather than absent."
+      },
+      {
+        "languageId": "C.18",
+        "lang": "Go",
+        "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tf, err := os.Open(os.Args[1])\n\tif err != nil {\n\t\tfmt.Printf(\"no such file: %s\\n\", os.Args[1])\n\t\tos.Exit(1)\n\t}\n\tdefer f.Close()\n\n\ttotal, skipped := 0, 0\n\ts := bufio.NewScanner(f)\n\tfor s.Scan() {\n\t\tn, err := strconv.Atoi(s.Text())\n\t\tif err != nil {\n\t\t\tskipped++\n\t\t\tcontinue\n\t\t}\n\t\ttotal += n\n\t}\n\tfmt.Println(total, skipped)\n}",
+        "compelled": [
+          "a decision at every call that can fail, written where the call is",
+          "the type of the accumulator, once",
+          "saying explicitly that the file should be closed when the function returns",
+          "importing each thing you use, and using each thing you import"
+        ],
+        "decided": [
+          "almost nothing: the reading, the conversion and the closing are all yours to arrange",
+          "that a failure is an ordinary value, so it can be ignored — and ignoring it is visible in the source rather than absent from it"
+        ],
+        "note": "Twice the length of the first, and every failure appears at the point it can happen. The verbosity people object to is the same property as the thing they praise in a review: you can read the failure paths without knowing anything about what the called functions do."
+      }
+    ],
+    "reading": "The three differ in where a failure is allowed to be invisible. In the first, both failures are raised and neither is mentioned at the point of the call, so a reader must bring knowledge of what can go wrong. In the second, one of them is not a failure at all — the conversion returns a value — so the check exists only if the author thought of it, and a program that skipped it would still run and still print a number. In the third, both appear as values at the exact call that produces them, which is why it is the longest and why its failure paths can be reviewed without leaving the page.\n\nNotice what the lists do not contain. None of them has a line about memory, and none about what happens when the file is very large — except that the middle one reads it all at once, which was a choice its standard way of working made for you rather than one anybody wrote down.\n\nThe limit is the honest one from the exercise: a program of twenty lines exercises a small part of a language. What you have is evidence about ergonomics and about what each refuses to let you skip, not a verdict about any of them.",
+    "furtherWork": "Add a fourth implementation in a language with no runtime underneath it, and the lists change shape: the question stops being where a failure is reported and becomes who owns the memory the line was read into."
+  }
+};
+
+  const BY_TASK = {
+  "C.27.6": [
+    "read-sum-report"
+  ]
+};
+
+  window.CurriculumComparisons.get = function (id) {
+    return Object.prototype.hasOwnProperty.call(COMPARISONS, id) ? COMPARISONS[id] : null;
+  };
+
+  window.CurriculumComparisons.all = function () {
+    return Object.keys(COMPARISONS).map(function (id) { return COMPARISONS[id]; });
+  };
+
+  // null, never [] — a task with no comparison and a task with an empty one
+  // must not look the same to the page.
+  window.CurriculumComparisons.forTask = function (taskId) {
+    return Object.prototype.hasOwnProperty.call(BY_TASK, taskId) ? BY_TASK[taskId] : null;
+  };
+})();

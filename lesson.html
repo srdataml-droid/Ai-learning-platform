@@ -48,6 +48,7 @@
 
   <script src="./data.js"></script>
   <script src="./lessons-data.js"></script>
+  <script src="./comparisons-data.js"></script>
   <script src="./app.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -159,6 +160,11 @@
              origin: either its facts are traced to sources, a person has
              checked it, or the page says neither has happened yet. -->
         ${provenanceBanner(lesson)}
+
+        <!-- An exercise that has a worked version says so here, because the
+             page setting the task and the page answering it were otherwise
+             two artefacts with nothing between them. -->
+        ${comparisonLink(lesson.id)}
 
         <!-- Core Takeaway Banner -->
         ${lesson.takeaway ? `
@@ -428,6 +434,24 @@
        * There is no state for "failed the check": such a lesson is never
        * written to content/, so it cannot reach this page.
        */
+      /** A link to the worked comparison for this task, when one exists. */
+      function comparisonLink(taskId) {
+        const ids = window.CurriculumComparisons
+          ? window.CurriculumComparisons.forTask(taskId)
+          : null;
+        if (!ids || !ids.length) return '';
+        const first = window.CurriculumComparisons.get(ids[0]);
+        if (!first) return '';
+        return `
+          <div class="provenance-banner provenance-ok" role="note">
+            <span class="provenance-label">Worked version</span>
+            <span class="provenance-text">
+              This exercise has one specification implemented in ${first.implementations.length} languages, with what each one made you state and what it decided for you.
+              <a class="provenance-link" href="./compare.html?id=${first.id}">Read the comparison &rarr;</a>
+            </span>
+          </div>`;
+      }
+
       function provenanceBanner(lesson) {
         const states = {
           unsourced: {

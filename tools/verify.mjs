@@ -31,6 +31,7 @@ import { validateSeed, loadAllowlist } from './lib/seed-schema.mjs';
 import { validateLesson, proseOf } from './lib/lesson-schema.mjs';
 import { validateStoryline, proseOf as storylineProseOf } from './lib/storyline-schema.mjs';
 import { validateWordList, rowsOf, licensedByRow } from './lib/wordlist-schema.mjs';
+import { validateComparison, proseOf as comparisonProseOf, subjectsOf } from './lib/comparison-schema.mjs';
 
 const GATED = ['traced', 'verified'];
 
@@ -142,6 +143,25 @@ export async function verifyAll(root = new URL('../content/', import.meta.url)) 
         licenses: (atom) => licensedByRow(row, atom),
       });
     }
+  }
+
+  // A comparison may name the languages it compares, and nothing else it has
+  // not sourced. Same reasoning as a word row naming its own construct.
+  const comparisonDir = new URL('comparisons/', root);
+  for (const file of await contentFiles(comparisonDir)) {
+    const comparison = JSON.parse(await readFile(new URL(file, comparisonDir), 'utf8'));
+
+    for (const fault of validateComparison(comparison)) problems.push(fault);
+
+    const subjects = subjectsOf(comparison);
+    await gate({
+      item: comparison,
+      prose: comparisonProseOf(comparison),
+      root,
+      allowlist,
+      problems,
+      licenses: (atom) => subjects.some((lang) => lang === atom || lang.split(/\s+/).includes(atom)),
+    });
   }
 
   return problems;
